@@ -1,0 +1,752 @@
+// Copyright (c) 2012 Russell Savage - Dented Pixel
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+
+/*
+TERMS OF USE - EASING EQUATIONS
+Open source under the BSD License.
+Copyright (c)2001 Robert Penner
+All rights reserved.
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+Neither the name of the author nor the names of contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+*/
+#pragma strict 
+#pragma downcast
+
+/// <summary>
+/// LeanTween is an efficient tweening engine that does not Instantiate or Destroy objects after the engine is started. This helps avoid memory management hiccups (great for iOS systems and other low-power devices)
+///
+/// Optional params can be passed as an object for the last parameter. These items include:
+/// delay: float of time (or frames if you are using "useFrames") before the tween starts
+/// ease: Function that desribes the easing you want to be used, you can pass your own or use many of the included tweens.
+/// 	  Example: {"ease":LeanTween.easeOutQuad}
+/// useEstimatedTime: This is useful if the Time.timeScale is set to zero (such as when the game is paused) or some other value and you still want to the tween to move at a normal pace
+/// 				  Example: {"useEstimatedTime":true}
+/// useFrames: Instead of time passed for both the delay and time value, the amount of frames that have passed is used
+/// 		   Example: {"useFrames":true}
+/// </summary>
+
+class TweenDescr{
+	var toggle:boolean;
+	var trans:Transform;
+	var from:Vector3;
+	var to:Vector3;
+	var time:float;
+	var useEstimatedTime:boolean;
+	var useFrames:boolean;
+	var passed:float;
+	var type:TweenType;
+	var optional:Hashtable;
+	var delay:float;
+	var tweenFunc:Function;
+	var id:int;
+	
+	public function ToString(){
+		return "gameObject:"+trans.gameObject+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id;
+	}
+}
+
+private enum TweenType{
+	MOVE_X,
+	MOVE_Y,
+	MOVE_Z,
+	SCALE_X,
+	SCALE_Y,
+	SCALE_Z,
+	ALPHA,
+	CALLBACK,
+	MOVE,
+	MOVE_LOCAL,
+	ROTATE,
+	ROTATE_X,
+	ROTATE_Y,
+	ROTATE_Z,
+	SCALE
+}
+
+public static var throwErrors:boolean = true;
+private static var tweens:TweenDescr[];
+private static var tweenMaxSearch:int = 0;
+private static var maxTweens:int = 400;
+private static var frameRendered:int = -1;
+private static var tweenEmpty:GameObject;
+private static var dtEstimated:float;
+private static var dt:float;
+private static var dtActual:float;
+
+public static function init(){
+	init(maxTweens);
+}
+
+public static function init(maxSimultaneousTweens:int){
+	if(tweens==null){
+		maxTweens = maxSimultaneousTweens;
+		tweens = new TweenDescr[maxTweens];
+		tweenEmpty = Instantiate(new GameObject(), Vector3.zero, new Quaternion());
+		tweenEmpty.name = "~LeanTween";
+		tweenEmpty.AddComponent(LeanTween);
+		tweenEmpty.isStatic = true;
+		DontDestroyOnLoad( tweenEmpty );
+		for(var i:int = 0; i < maxTweens; i++){
+			tweens[i] = new TweenDescr();
+		}
+	}
+}
+
+public function Update(){
+	LeanTween.update();
+}
+
+public static function update() {
+	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
+		init();
+		dtEstimated = 1.0 / Application.targetFrameRate;
+		dtActual = Time.deltaTime*Time.timeScale;
+		//Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" maxTweens:"+maxTweens);
+		for(var i:int = 0; i < tweenMaxSearch && i < maxTweens; i++){
+			//Debug.Log("tweens["+i+"].toggle:"+tweens[i].toggle);
+			if(tweens[i].toggle){
+				//Debug.Log("tweens["+i+"]:"+tweens[i] + " dt:"+Time.deltaTime);
+				var trans:Transform = tweens[i].trans as Transform;
+				var timeTotal:float = tweens[i].time;
+				var tweenType:int = tweens[i].type;
+				var optionalItems:Hashtable = tweens[i].optional;
+				var tweenFunc:Function = tweens[i].tweenFunc;
+				dt = dtActual;
+				if( tweens[i].useEstimatedTime){
+					dt = dtEstimated;
+				}else if(tweens[i].useFrames){
+					dt = 1;
+				}
+				
+				if(trans==null){
+					removeTween(i);
+					continue;
+				}
+				
+				// Check for tween finished
+				var isTweenFinished:boolean = false;
+				if(tweens[i].passed>=timeTotal){
+					isTweenFinished = true;
+					tweens[i].passed = timeTotal; // Set to the exact end time so that it can finish tween exactly on the end value
+				}
+				
+				if(tweens[i].passed==0.0 && tweens[i].delay==0.0){
+					// Initialize From Values
+					if(tweenType==TweenType.MOVE_X){
+						tweens[i].from = new Vector3(trans.position.x,0,0);
+					}else if(tweenType==TweenType.MOVE_Y){
+						tweens[i].from = new Vector3(trans.position.y,0,0);
+					}else if(tweenType==TweenType.MOVE_Z){
+						tweens[i].from = new Vector3(trans.position.z,0,0);
+					}else if(tweenType==TweenType.SCALE_X){
+						tweens[i].from = new Vector3(trans.localScale.x,0,0);
+					}else if(tweenType==TweenType.SCALE_Y){
+						tweens[i].from = new Vector3(trans.localScale.y,0,0);
+					}else if(tweenType==TweenType.SCALE_Z){
+						tweens[i].from = new Vector3(trans.localScale.z,0,0);
+					}else if(tweenType==TweenType.ALPHA){
+						tweens[i].from = new Vector3(trans.gameObject.renderer.material.color.a,0,0);
+					}else if(tweenType==TweenType.MOVE){
+						tweens[i].from = trans.position;
+					}else if(tweenType==TweenType.MOVE_LOCAL){
+						tweens[i].from = trans.localPosition;
+					}else if(tweenType==TweenType.ROTATE){
+						tweens[i].from = trans.eulerAngles;
+					}else if(tweenType==TweenType.ROTATE_X){
+						tweens[i].from = new Vector3(trans.eulerAngles.x,0,0);
+					}else if(tweenType==TweenType.ROTATE_Y){
+						tweens[i].from = new Vector3(trans.eulerAngles.y,0,0);
+					}else if(tweenType==TweenType.ROTATE_Z){
+						tweens[i].from = new Vector3(trans.eulerAngles.z,0,0);
+					}else if(tweenType==TweenType.SCALE){
+						tweens[i].from = trans.localScale;
+					}
+				}
+				if(tweens[i].delay<=0){
+					// Move Values
+					var ratioPassed:float = tweens[i].passed / timeTotal;
+					if(ratioPassed>1.0)
+						ratioPassed = 1.0;
+					
+					if(tweenType>=TweenType.MOVE_X && tweenType<=TweenType.CALLBACK){
+						var from:float = tweens[i].from.x;
+						var to:float = tweens[i].to.x;
+						var val:float = tweenFunc(from, to, ratioPassed);
+						if(tweenType==TweenType.MOVE_X){
+							trans.position.x = val;
+						}else if(tweenType==TweenType.MOVE_Y){
+							trans.position.y = val;
+						}else if(tweenType==TweenType.MOVE_Z){
+							trans.position.z = val;
+						}else if(tweenType==TweenType.SCALE_X){
+							trans.localScale.x = val;
+						}else if(tweenType==TweenType.SCALE_Y){
+							trans.localScale.y = val;
+						}else if(tweenType==TweenType.SCALE_Z){
+							trans.localScale.z = val;
+						}else if(tweenType==TweenType.ALPHA){
+							trans.gameObject.renderer.material.color.a = val;
+						}
+						if(tweens[i].optional!=null){
+							var onUpdate:Function = optionalItems["onUpdate"] as Function;
+							var updateParam:Hashtable = optionalItems["onUpdateParam"];
+							if(onUpdate){
+								if(updateParam) onUpdate( val, updateParam );
+								else onUpdate(val);
+							}
+						}
+					}else if(tweenType>=TweenType.MOVE){
+						var fromVect:Vector3 = tweens[i].from;
+						var toVect:Vector3 = tweens[i].to;
+						var newVect:Vector3 = new Vector3(tweenFunc(fromVect.x, toVect.x, ratioPassed),
+														 tweenFunc(fromVect.y, toVect.y, ratioPassed),
+														 tweenFunc(fromVect.z, toVect.z, ratioPassed));
+						if(tweenType==TweenType.MOVE){
+							trans.position = newVect;
+					    }else if(tweenType==TweenType.MOVE_LOCAL){
+							trans.localPosition = newVect;
+					    }else if(tweenType==TweenType.ROTATE){
+					    	trans.rotation.eulerAngles = newVect;
+					    }else if(tweenType==TweenType.ROTATE_X){
+					    	trans.rotation.eulerAngles.x = newVect.x;
+					    }else if(tweenType==TweenType.ROTATE_Y){
+					    	trans.rotation.eulerAngles.y = newVect.y;
+					    }else if(tweenType==TweenType.ROTATE_Z){
+					    	trans.rotation.eulerAngles.z = newVect.z;
+					    }else if(tweenType==TweenType.SCALE){
+					    	trans.localScale = newVect;
+					    }
+					}
+				}
+				
+				if(isTweenFinished){
+					var callback:Function;
+					var callbackParam;
+					if(tweens[i].optional!=null && tweens[i].trans){
+						callback = optionalItems["onComplete"] as Function;
+						callbackParam = optionalItems["onCompleteParam"];
+					}
+					removeTween(i);
+					if(callback){
+						if(callbackParam) callback( callbackParam );
+						else callback();
+					}
+				}else if(tweens[i].delay<=0){
+					tweens[i].passed += dt;
+				}else{
+					tweens[i].delay -= dt;
+					if(tweens[i].delay<0){
+						tweens[i].passed = 0.0;//-tweens[i].delay
+						tweens[i].delay = 0.0;
+					}
+				}
+			}
+		}
+
+		frameRendered = Time.frameCount;
+	}
+}
+
+private static function removeTween( i:int ){
+	tweens[i].toggle = false;
+	if(i+1>=tweenMaxSearch)
+		tweenMaxSearch--;
+}
+
+private static function pushNewTween( gameObject:GameObject, to:Vector3, time:float, tweenType:TweenType, optional:Hashtable ):int{
+	init(maxTweens);
+	
+	var i:int;
+	var maxSearch:int = tweenMaxSearch+1;
+	if(maxSearch>=maxTweens){
+		var errorMsg:String = "LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );";
+		if(throwErrors) Debug.LogError(errorMsg); else Debug.Log(errorMsg);
+		return -1;
+	}
+	for(i = 0; i <= maxSearch; i++){
+		if(tweens[i].toggle==false){
+			if(i+1>tweenMaxSearch)
+				tweenMaxSearch = i+1;
+			break;
+		}
+	}
+	if(i<tweenMaxSearch+1){ // resets the tweenMaxSearch in case it is be lower (when previous tweens have finished).
+		var foundAlive:boolean = false;
+		for(var j:int = i; j <= tweenMaxSearch; j++){
+			if(tweens[j].toggle){
+				foundAlive = true;
+				break;
+			}
+		}
+	}
+	//Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" adding to:"+i+" maxTweens:"+maxTweens);
+	
+	tweens[i].toggle = true;
+	tweens[i].trans = gameObject.transform;
+	tweens[i].to = to;
+	tweens[i].time = time;
+	tweens[i].passed = 0.0;
+	tweens[i].type = tweenType;
+	tweens[i].optional = optional;
+	tweens[i].delay = 0.0;
+	tweens[i].tweenFunc = Mathf.Lerp;
+	tweens[i].id = i;
+	tweens[i].useEstimatedTime = false;
+	tweens[i].useFrames = false;
+	
+	if(optional){
+		if(optional["delay"])
+			tweens[i].delay = optional["delay"];
+		if(optional["ease"]!=null)
+			tweens[i].tweenFunc = optional["ease"] as Function;
+		if(optional["useEstimatedTime"])
+			tweens[i].useEstimatedTime = optional["useEstimatedTime"];
+		if(optional["useFrames"])
+			tweens[i].useFrames = optional["useFrames"];
+	}
+	//Debug.Log("pushing new tween["+i+"]:"+tweens[i]);
+	
+	return tweens[i].id;
+}
+
+public static function cancel( gameObject:GameObject ){
+	var trans:Transform = gameObject.transform;
+	for(var i:int = 0; i < tweenMaxSearch; i++){
+		if(tweens[i].trans===trans)
+			removeTween(i);
+	}
+}
+
+public static function cancel( gameObject:GameObject, id:int ){
+	var trans:Transform = gameObject.transform;
+	for(var i:int = 0; i < tweenMaxSearch; i++){
+		if(tweens[i].trans===trans && tweens[i].id == id)
+			removeTween(i);
+	}
+}
+
+public static function value(callOnUpdate:Function, from:float, to:float, time:float, optional:Hashtable):int{
+	return value( tweenEmpty, callOnUpdate, from, to, time, optional );
+}
+
+public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float):int{
+	return value(gameObject, callOnUpdate, from, to, time, null); 
+}
+public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float, optional:Hashtable):int{
+	if(optional==null)
+		optional = {};
+		
+	optional["onUpdate"] = callOnUpdate;
+	var id:int = pushNewTween( gameObject, new Vector3(to,0,0), time, TweenType.CALLBACK, optional );
+	tweens[id].from = new Vector3(from,0,0);
+	return id;
+}
+
+public static function rotate(gameObject:GameObject, to:Vector3, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, to, time, TweenType.ROTATE, optional );
+}
+
+public static function rotateX(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(0,0,to), time, TweenType.ROTATE_X, optional );
+}
+
+public static function rotateY(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(0,0,to), time, TweenType.ROTATE_Y, optional );
+}
+
+public static function rotateZ(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(0,0,to), time, TweenType.ROTATE_Z, optional );
+}
+
+public static function moveX(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenType.MOVE_X, optional );
+}
+
+public static function moveY(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenType.MOVE_Y, optional );
+}
+
+public static function moveZ(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenType.MOVE_Z, optional );
+}
+
+public static function move(gameObject:GameObject, to:Vector3, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, to, time, TweenType.MOVE, optional );
+}
+
+public static function moveLocal(gameObject:GameObject, to:Vector3, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, to, time, TweenType.MOVE_LOCAL, optional );
+}
+
+public static function scale(gameObject:GameObject, to:Vector3, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, to, time, TweenType.SCALE, optional );
+}
+
+public static function scaleX(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenType.SCALE_X, optional );
+}
+
+public static function scaleY(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenType.SCALE_Y, optional );
+}
+
+public static function scaleZ(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenType.SCALE_Z, optional );
+}
+
+public static function delayedCall( delayTime:float, callback:Function):int{
+	return delayedCall( tweenEmpty, delayTime, callback, null );
+}
+
+public static function delayedCall( delayTime:float, callback:Function, optional:Hashtable ):int{
+	return delayedCall( tweenEmpty, delayTime, callback, optional );
+}
+
+public static function delayedCall( gameObject:GameObject, delayTime:float, callback:Function ):int{
+	return delayedCall( gameObject, delayTime, callback, null );
+}
+
+public static function delayedCall( gameObject:GameObject, delayTime:float, callback:Function, optional:Hashtable ):int{
+	if(optional==null)
+		optional = {};
+		
+	optional["onComplete"] = callback;
+	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenType.CALLBACK, optional );
+}
+
+public static function alpha(gameObject:GameObject, to:float, time:float){ return alpha(gameObject,to,time,null); }
+public static function alpha(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenType.ALPHA, optional );
+}
+
+// Tweening Functions - Thanks to Robert Penner and GFX47
+
+public static function linear(start:float, end:float, val:float):float{
+	return Mathf.Lerp(start, end, val);
+}
+
+public static function clerp(start:float, end:float, val:float):float{
+	var min:float = 0.0f;
+	var max:float = 360.0f;
+	var half:float = Mathf.Abs((max - min) / 2.0f);
+	var retval:float = 0.0f;
+	var diff:float = 0.0f;
+	if ((end - start) < -half){
+		diff = ((max - start) + end) * val;
+		retval = start + diff;
+	}else if ((end - start) > half){
+		diff = -((max - end) + start) * val;
+		retval = start + diff;
+	}else retval = start + (end - start) * val;
+	return retval;
+}
+
+public static function spring(start:float, end:float, val:float):float{
+	val = Mathf.Clamp01(val);
+	val = (Mathf.Sin(val * Mathf.PI * (0.2f + 2.5f * val * val * val)) * Mathf.Pow(1f - val, 2.2f) + val) * (1f + (1.2f * (1f - val)));
+	return start + (end - start) * val;
+}
+
+public static function easeInQuad(start:float, end:float, val:float):float{
+	end -= start;
+	return end * val * val + start;
+}
+
+public static function easeOutQuad(start:float, end:float, val:float):float{
+	end -= start;
+	return -end * val * (val - 2) + start;
+}
+
+public static function easeInOutQuad(start:float, end:float, val:float):float{
+	val /= .5f;
+	end -= start;
+	if (val < 1) return end / 2 * val * val + start;
+	val--;
+	return -end / 2 * (val * (val - 2) - 1) + start;
+}
+
+public static function easeInCubic(start:float, end:float, val:float):float{
+	end -= start;
+	return end * val * val * val + start;
+}
+
+public static function easeOutCubic(start:float, end:float, val:float):float{
+	val--;
+	end -= start;
+	return end * (val * val * val + 1) + start;
+}
+
+public static function easeInOutCubic(start:float, end:float, val:float):float{
+	val /= .5f;
+	end -= start;
+	if (val < 1) return end / 2 * val * val * val + start;
+	val -= 2;
+	return end / 2 * (val * val * val + 2) + start;
+}
+
+public static function easeInQuart(start:float, end:float, val:float):float{
+	end -= start;
+	return end * val * val * val * val + start;
+}
+
+public static function easeOutQuart(start:float, end:float, val:float):float{
+	val--;
+	end -= start;
+	return -end * (val * val * val * val - 1) + start;
+}
+
+public static function easeInOutQuart(start:float, end:float, val:float):float{
+	val /= .5f;
+	end -= start;
+	if (val < 1) return end / 2 * val * val * val * val + start;
+	val -= 2;
+	return -end / 2 * (val * val * val * val - 2) + start;
+}
+
+public static function easeInQuint(start:float, end:float, val:float):float{
+	end -= start;
+	return end * val * val * val * val * val + start;
+}
+
+public static function easeOutQuint(start:float, end:float, val:float):float{
+	val--;
+	end -= start;
+	return end * (val * val * val * val * val + 1) + start;
+}
+
+public static function easeInOutQuint(start:float, end:float, val:float):float{
+	val /= .5f;
+	end -= start;
+	if (val < 1) return end / 2 * val * val * val * val * val + start;
+	val -= 2;
+	return end / 2 * (val * val * val * val * val + 2) + start;
+}
+
+public static function easeInSine(start:float, end:float, val:float):float{
+	end -= start;
+	return -end * Mathf.Cos(val / 1 * (Mathf.PI / 2)) + end + start;
+}
+
+public static function easeOutSine(start:float, end:float, val:float):float{
+	end -= start;
+	return end * Mathf.Sin(val / 1 * (Mathf.PI / 2)) + start;
+}
+
+public static function easeInOutSine(start:float, end:float, val:float):float{
+	end -= start;
+	return -end / 2 * (Mathf.Cos(Mathf.PI * val / 1) - 1) + start;
+}
+
+public static function easeInExpo(start:float, end:float, val:float):float{
+	end -= start;
+	return end * Mathf.Pow(2, 10 * (val / 1 - 1)) + start;
+}
+
+public static function easeOutExpo(start:float, end:float, val:float):float{
+	end -= start;
+	return end * (-Mathf.Pow(2, -10 * val / 1) + 1) + start;
+}
+
+public static function easeInOutExpo(start:float, end:float, val:float):float{
+	val /= .5f;
+	end -= start;
+	if (val < 1) return end / 2 * Mathf.Pow(2, 10 * (val - 1)) + start;
+	val--;
+	return end / 2 * (-Mathf.Pow(2, -10 * val) + 2) + start;
+}
+
+public static function easeInCirc(start:float, end:float, val:float):float{
+	end -= start;
+	return -end * (Mathf.Sqrt(1 - val * val) - 1) + start;
+}
+
+public static function easeOutCirc(start:float, end:float, val:float):float{
+	val--;
+	end -= start;
+	return end * Mathf.Sqrt(1 - val * val) + start;
+}
+
+public static function easeInOutCirc(start:float, end:float, val:float):float{
+	val /= .5f;
+	end -= start;
+	if (val < 1) return -end / 2 * (Mathf.Sqrt(1 - val * val) - 1) + start;
+	val -= 2;
+	return end / 2 * (Mathf.Sqrt(1 - val * val) + 1) + start;
+}
+
+/* GFX47 MOD START */
+public static function easeInBounce(start:float, end:float, val:float):float{
+	end -= start;
+	var d:float = 1f;
+	return end - easeOutBounce(0, end, d-val) + start;
+}
+/* GFX47 MOD END */
+
+/* GFX47 MOD START */
+//public static function bounce(start:float, end:float, val:float):float{
+public static function easeOutBounce(start:float, end:float, val:float):float{
+	val /= 1f;
+	end -= start;
+	if (val < (1 / 2.75f)){
+		return end * (7.5625f * val * val) + start;
+	}else if (val < (2 / 2.75f)){
+		val -= (1.5f / 2.75f);
+		return end * (7.5625f * (val) * val + .75f) + start;
+	}else if (val < (2.5 / 2.75)){
+		val -= (2.25f / 2.75f);
+		return end * (7.5625f * (val) * val + .9375f) + start;
+	}else{
+		val -= (2.625f / 2.75f);
+		return end * (7.5625f * (val) * val + .984375f) + start;
+	}
+}
+/* GFX47 MOD END */
+
+/* GFX47 MOD START */
+public static function easeInOutBounce(start:float, end:float, val:float):float{
+	end -= start;
+	var d:float = 1f;
+	if (val < d/2) return easeInBounce(0, end, val*2) * 0.5f + start;
+	else return easeOutBounce(0, end, val*2-d) * 0.5f + end*0.5f + start;
+}
+/* GFX47 MOD END */
+
+public static function easeInBack(start:float, end:float, val:float):float{
+	end -= start;
+	val /= 1;
+	var s:float = 1.70158f;
+	return end * (val) * val * ((s + 1) * val - s) + start;
+}
+
+public static function easeOutBack(start:float, end:float, val:float):float{
+	var s:float = 1.70158f;
+	end -= start;
+	val = (val / 1) - 1;
+	return end * ((val) * val * ((s + 1) * val + s) + 1) + start;
+}
+
+public static function easeInOutBack(start:float, end:float, val:float):float{
+	var s:float = 1.70158f;
+	end -= start;
+	val /= .5f;
+	if ((val) < 1){
+		s *= (1.525f);
+		return end / 2 * (val * val * (((s) + 1) * val - s)) + start;
+	}
+	val -= 2;
+	s *= (1.525f);
+	return end / 2 * ((val) * val * (((s) + 1) * val + s) + 2) + start;
+}
+
+public static function punch(amplitude:float, val:float):float{
+	var s:float = 9;
+	if (val == 0){
+		return 0;
+	}
+	if (val == 1){
+		return 0;
+	}
+	var period:float = 1 * 0.3f;
+	s = period / (2 * Mathf.PI) * Mathf.Asin(0);
+	return (amplitude * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * 1 - s) * (2 * Mathf.PI) / period));
+}
+
+/* GFX47 MOD START */
+public static function easeInElastic(start:float, end:float, val:float):float{
+	end -= start;
+	
+	var d:float = 1f;
+	var p:float = d * .3f;
+	var s:float = 0;
+	var a:float = 0;
+	
+	if (val == 0) return start;
+	val = val/d;
+	if (val == 1) return start + end;
+	
+	if (a == 0f || a < Mathf.Abs(end)){
+		a = end;
+		s = p / 4;
+		}else{
+		s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
+	}
+	val = val-1;
+	return -(a * Mathf.Pow(2, 10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p)) + start;
+}		
+/* GFX47 MOD END */
+
+/* GFX47 MOD START */
+//public static function elastic(start:float, end:float, val:float):float{
+public static function easeOutElastic(start:float, end:float, val:float):float{
+/* GFX47 MOD END */
+	//Thank you to rafael.marteleto for fixing this as a port over from Pedro's UnityTween
+	end -= start;
+	
+	var d:float = 1f;
+	var p:float = d * .3f;
+	var s:float = 0;
+	var a:float = 0;
+	
+	if (val == 0) return start;
+	
+	val = val / d;
+	if (val == 1) return start + end;
+	
+	if (a == 0f || a < Mathf.Abs(end)){
+		a = end;
+		s = p / 4;
+		}else{
+		s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
+	}
+	
+	return (a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) + end + start);
+}		
+
+/* GFX47 MOD START */
+public static function easeInOutElastic(start:float, end:float, val:float):float{
+	end -= start;
+	
+	var d:float = 1f;
+	var p:float = d * .3f;
+	var s:float = 0;
+	var a:float = 0;
+	
+	if (val == 0) return start;
+	
+	val = val / (d/2);
+	if (val == 2) return start + end;
+	
+	if (a == 0f || a < Mathf.Abs(end)){
+		a = end;
+		s = p / 4;
+		}else{
+		s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
+	}
+	
+	if (val < 1){
+	 val = val-1;
+	 return -0.5f * (a * Mathf.Pow(2, 10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p)) + start;
+	}
+	val = val-1;
+	return a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
+}
