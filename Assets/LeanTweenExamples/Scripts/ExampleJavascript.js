@@ -4,6 +4,8 @@ public var debugInfo:GUIText;
 
 public var customAnimationCurve:AnimationCurve;
 
+public var punchCurve:AnimationCurve;
+
 function Awake(){
 	LeanTween.init(400); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
 }
@@ -15,7 +17,7 @@ function Start () {
 }
 
 private var exampleIter:int = 0;
-private var exampleFunctions = [customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, delayedCallExample, alphaExample, moveLocalExample];
+private var exampleFunctions = [punchTest];//, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, delayedCallExample, alphaExample, moveLocalExample];
 private var useEstimatedTime:boolean = true;
 function cycleThroughExamples(){
 	if(exampleIter==0){
@@ -28,6 +30,10 @@ function cycleThroughExamples(){
 	
 	debugInfo.text = "useEstimatedTime:"+useEstimatedTime;
 	LeanTween.delayedCall( 1.05, cycleThroughExamples, {"useEstimatedTime":useEstimatedTime});
+}
+
+function punchTest(){
+	LeanTween.moveX( gameObject, 7, 1.0, {"useEstimatedTime":useEstimatedTime, "ease":punchCurve});
 }
 
 function customTweenExample(){

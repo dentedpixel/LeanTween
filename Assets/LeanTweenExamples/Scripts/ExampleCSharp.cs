@@ -69,7 +69,14 @@ public class ExampleCSharp : MonoBehaviour {
 		optional.Add("useEstimatedTime", useEstimatedTime);
 		optional.Add("ease",LeanTweenType.easeOutQuad);
 		optional.Add("onComplete", "rotateFinished");
+		optional.Add("onCompleteTarget",gameObject);
+		optional.Add("onUpdate", "rotateOnUpdate");
+		optional.Add("onUpdateTarget",gameObject);
 		LeanTween.rotate( gameObject, new Vector3(180f,360f,0f), 1, optional);
+	}
+
+	public void rotateOnUpdate( float val ){
+		Debug.Log("rotating val:"+val);
 	}
 
 	public void rotateFinished(){

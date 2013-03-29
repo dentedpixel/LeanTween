@@ -138,10 +138,13 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
 * @property {integer} easeInOutElastic
 */
+/**
+* @property {integer} punch
+*/
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
-	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic,
+	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch
 }
 
 class TweenDescr{
@@ -231,7 +234,7 @@ private enum TweenAction{
 
 /**
 * LeanTween is an efficient tweening engine for Unity3d<br><br>
-* <strong id='optional'>Optional Parameters</strong> are passed in a hastable variable that is accepted at the end of every tweening function.<br>
+* <strong id='optional'>Optional Parameters</strong> are passed in a hash table variable that is accepted at the end of every tweening function.<br>
 * Values you can pass:<br>
 * <strong>delay</strong>: time (or frames if you are using "useFrames") before the tween starts<br>
 * <strong>ease</strong>: Function that desribes the easing you want to be used, you can pass your own or use many of the included tweens. ex: <i>{"ease":LeanTween.easeOutQuad}</i><br> 
@@ -239,6 +242,8 @@ private enum TweenAction{
 * <strong>onUpdate</strong>: Function to call on every update ex: <i>{"onUpdate":functionToCallOnUpdate}</i> or <i>{"onUpdate":functionToCallOnUpdate,"onUpdateParam":hashTableToPassToOnUpdate}</i><br>
 * <strong>useEstimatedTime</strong>: This is useful if the Time.timeScale is set to zero (such as when the game is paused) or some other value and you still want the tween to move at a normal pace ex: <i>{"useEstimatedTime":true}</i><br>
 * <strong>useFrames</strong>: Instead of time passed for both the delay and time value, the amount of frames that have passed is used <i>ex: {"useFrames":true}</i><br>
+* <strong>onCompleteTarget</strong>: In C# if you are passing a String to the "onComplete" parameter, this variable allows you to define target to call the function than the game object you are tweening.<br>
+* <strong>onUpdateTarget</strong>: The same as onCompleteTarget, but for the onUpdate function.<br>
 *
 * @class LeanTween
 */
@@ -257,6 +262,8 @@ private static var dtActual:float;
 private static var tween:TweenDescr;
 private static var i:int;
 private static var j:int;
+private static var punch:AnimationCurve = new AnimationCurve( Keyframe(0, 0 ), Keyframe(0.112586, 0.9976035 ), Keyframe(0.3120486, -0.1720615 ), Keyframe(0.4316337, 0.07030682 ), Keyframe(0.5524869, -0.03141804 ), Keyframe(0.6549395, 0.003909959 ), Keyframe(0.770987, -0.009817753 ), Keyframe(0.8838775, 0.001939224 ), Keyframe(1, 0 ) );
+
 
 public static function init(){
 	init(maxTweens);
@@ -304,6 +311,7 @@ private static var toVect:Vector3;
 private static var newVect:Vector3;
 private static var isTweenFinished:boolean;
 private static var target:GameObject;
+private static var customTarget:GameObject;
 
 public static function update() {
 	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
@@ -479,6 +487,9 @@ public static function update() {
 									val = easeOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
 								case LeanTweenType.easeInOutElastic:
 									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
+								case LeanTweenType.punch:
+									tween.animationCurve = LeanTween.punch;
+									val = tweenOnCurve(tween, ratioPassed); break;
 								default:
 									val = tweenFunc(tween.from.x, tween.to.x, ratioPassed);								
 							}
@@ -585,6 +596,9 @@ public static function update() {
 										newVect = Vector3(easeOutElastic(tween.from.x, tween.to.x, ratioPassed), easeOutElastic(tween.from.y, tween.to.y, ratioPassed), easeOutElastic(tween.from.z, tween.to.z, ratioPassed)); break;
 									case LeanTweenType.easeInOutElastic:
 										newVect = Vector3(easeInOutElastic(tween.from.x, tween.to.x, ratioPassed), easeInOutElastic(tween.from.y, tween.to.y, ratioPassed), easeInOutElastic(tween.from.z, tween.to.z, ratioPassed)); break;
+									case LeanTweenType.punch:
+										tween.animationCurve = LeanTween.punch;
+										newVect = tweenOnCurveVector(tween, ratioPassed); break;
 								}
 							}else{
 								fromVect = tween.from;
@@ -620,7 +634,12 @@ public static function update() {
 							var updateParam:Hashtable = optionalItems["onUpdateParam"];
 							if(onUpdate.GetType() == String){
 								var onUpdateS:String = onUpdate as String;
-								trans.gameObject.BroadcastMessage( onUpdateS, val );
+								if (optionalItems["onUpdateTarget"]){
+									customTarget = optionalItems["onUpdateTarget"];
+									customTarget.BroadcastMessage( onUpdateS, val );
+								}else{
+									trans.gameObject.BroadcastMessage( onUpdateS, val );
+								}
 							}else{
 								var onUpdateF:Function = onUpdate as Function;
 								if(updateParam) onUpdateF( val, updateParam );
@@ -649,8 +668,14 @@ public static function update() {
 						if(callbackParam) callback( callbackParam );
 						else callback();
 					}else if(callbackS){
-						if(callbackParam) trans.gameObject.BroadcastMessage( callbackS, callbackParam );
-						else trans.gameObject.BroadcastMessage( callbackS );
+						if (optionalItems["onCompleteTarget"]){
+							customTarget = optionalItems["onCompleteTarget"];
+							if(callbackParam) customTarget.BroadcastMessage( callbackS, callbackParam );
+							else customTarget.BroadcastMessage( callbackS );
+						}else{
+							if(callbackParam) trans.gameObject.BroadcastMessage( callbackS, callbackParam );
+							else trans.gameObject.BroadcastMessage( callbackS );
+						}
 					}
 				}else if(tween.delay<=0){
 					tween.passed += dt;
@@ -856,7 +881,7 @@ public static function value(callOnUpdate:Function, from:float, to:float, time:f
 }
 public static function value(gameObject:GameObject, callOnUpdate:String, from:float, to:float, time:float, optional:Hashtable):int{
 	if(optional==null)
-		optional = {};
+		optional = {} as Hashtable;
 		
 	optional["onUpdate"] = callOnUpdate;
 	var id:int = pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.CALLBACK, optional );
@@ -881,7 +906,7 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 */
 public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float, optional:Hashtable):int{
 	if(optional==null)
-		optional = {};
+		optional = {} as Hashtable;
 		
 	optional["onUpdate"] = callOnUpdate;
 	var id:int = pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.CALLBACK, optional );
@@ -1093,7 +1118,7 @@ public static function move(gameObject:GameObject, to:Vector3, time:float, optio
 public static function move(ltRect:LTRect, to:Vector2, time:float, optional:Hashtable):int{
 	init();
 	if( optional == null )
-		optional = {};
+		optional = {} as Hashtable;
 
 	optional["rect"] = ltRect;
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_MOVE, optional );
@@ -1173,7 +1198,7 @@ public static function scale(gameObject:GameObject, to:Vector3, time:float, opti
 public static function scale(ltRect:LTRect, to:Vector2, time:float, optional:Hashtable):int{
 	init();
 	if( optional == null )
-		optional = {};
+		optional = {} as Hashtable;
 
 	optional["rect"] = ltRect;
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_SCALE, optional );
@@ -1268,7 +1293,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:Function, optional:Hashtable ):int{
 	if(optional==null)
-		optional = {};
+		optional = {} as Hashtable;
 		
 	optional["onComplete"] = callback;
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, optional );
@@ -1298,7 +1323,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:String, optional:Hashtable):int{
 	if(optional==null)
-		optional = {};
+		optional = {} as Hashtable;
 	optional["onComplete"] = callback;
 
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, optional );
