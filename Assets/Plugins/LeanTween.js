@@ -219,6 +219,7 @@ private enum TweenAction{
 	ROTATE_Y,
 	ROTATE_Z,
 	ALPHA,
+	ALPHA_VERTEX,
 	CALLBACK,
 	MOVE,
 	MOVE_LOCAL,
@@ -290,6 +291,9 @@ public function Update(){
 }
 
 private static var trans:Transform;
+private static var mesh:Mesh;
+private static var vertices:Vector3[];
+private static var colors:Color32[];
 private static var timeTotal:float;
 private static var tweenAction:int;
 private static var optionalItems:Hashtable;
@@ -369,6 +373,9 @@ public static function update() {
 							tween.from.x = trans.localScale.z; break;
 						case TweenAction.ALPHA:
 							tween.from.x = trans.gameObject.renderer.material.color.a; break;
+						case TweenAction.ALPHA_VERTEX:
+							tween.from.x = trans.GetComponent(MeshFilter).mesh.colors32[0].a;
+							break;
 						case TweenAction.MOVE_LOCAL:
 							tween.from = trans.localPosition; break;
 						case TweenAction.ROTATE:
@@ -511,6 +518,16 @@ public static function update() {
 					    	trans.eulerAngles.z = val;
 					    }else if(tweenAction==TweenAction.ALPHA){
 							trans.gameObject.renderer.material.color.a = val;
+						}else if(tweenAction==TweenAction.ALPHA_VERTEX){
+							mesh = trans.GetComponent(MeshFilter).mesh;
+							vertices = mesh.vertices;
+							colors = new Color32[vertices.Length];
+							var c:Color32 = mesh.colors32[0];
+							c.a = val;
+							for (var k = 0; k < vertices.Length; k++) {
+								colors[k] = c;
+							}
+							mesh.colors32 = colors;
 						}
 						
 					}else if(tweenAction>=TweenAction.MOVE){
@@ -1320,6 +1337,14 @@ public static function alpha(gameObject:GameObject, to:float, time:float, option
 
 public static function alpha(gameObject:GameObject, to:float, time:float):int{ 
 	return alpha(gameObject,to,time,null); 
+}
+
+public static function alphaVertex(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
+	return pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.ALPHA_VERTEX, optional );
+}
+
+public static function alphaVertex(gameObject:GameObject, to:float, time:float):int{
+	return alphaVertex(gameObject,to,time,null);
 }
 
 // Tweening Functions - Thanks to Robert Penner and GFX47
