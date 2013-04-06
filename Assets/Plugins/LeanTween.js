@@ -278,7 +278,7 @@ public static function init(){
 *   LeanTween.init( 800 );
 */
 public static function init(maxSimultaneousTweens:int){
-	if(tweens==null){
+	if(!tweens){
 		maxTweens = maxSimultaneousTweens;
 		tweens = new TweenDescr[maxTweens];
 		tweenEmpty = new GameObject();
@@ -303,8 +303,6 @@ private static var optionalItems:Hashtable;
 private static var tweenFunc:Function;
 private static var animationCurve:AnimationCurve;
 private static var ratioPassed:float;
-private static var from:float;
-private static var to:float;
 private static var val:float;
 private static var fromVect:Vector3;
 private static var toVect:Vector3;
@@ -421,7 +419,7 @@ public static function update() {
 						ratioPassed = 1.0;
 					
 					if(tweenAction>=TweenAction.MOVE_X && tweenAction<=TweenAction.CALLBACK){
-						if(animationCurve){
+						if(animationCurve!=null){
 							val = tweenOnCurve(tween, ratioPassed);
 						}else {
 							switch( tween.tweenType ){
@@ -489,13 +487,14 @@ public static function update() {
 									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
 								case LeanTweenType.punch:
 									tween.animationCurve = LeanTween.punch;
+									tween.to.x = tween.from.x + tween.to.x;
 									val = tweenOnCurve(tween, ratioPassed); break;
 								default:
 									val = tweenFunc(tween.from.x, tween.to.x, ratioPassed);								
 							}
 						
 						}
-						//Debug.Log("from:"+from+" to:"+to+" val:"+val+" ratioPassed:"+ratioPassed);
+						// Debug.Log("from:"+tween.from.x+" to:"+tween.to.x+" val:"+val+" ratioPassed:"+ratioPassed);
 						if(tweenAction==TweenAction.MOVE_X){
 							trans.position.x = val;
 						}else if(tweenAction==TweenAction.MOVE_Y){
@@ -527,7 +526,7 @@ public static function update() {
 					}else if(tweenAction>=TweenAction.MOVE){
 						//
 						
-						if(animationCurve){
+						if(animationCurve!=null){
 							newVect = tweenOnCurveVector(tween, ratioPassed);
 						}else{
 							if(tween.tweenType == LeanTweenType.linear){
@@ -598,6 +597,14 @@ public static function update() {
 										newVect = Vector3(easeInOutElastic(tween.from.x, tween.to.x, ratioPassed), easeInOutElastic(tween.from.y, tween.to.y, ratioPassed), easeInOutElastic(tween.from.z, tween.to.z, ratioPassed)); break;
 									case LeanTweenType.punch:
 										tween.animationCurve = LeanTween.punch;
+										tween.to.x = tween.from.x + tween.to.x;
+										tween.to.y = tween.from.y + tween.to.y;
+										tween.to.z = tween.from.z + tween.to.z;
+										if(tweenAction==TweenAction.ROTATE || tweenAction==TweenAction.ROTATE_LOCAL){
+											tween.to.x = closestRot(tween.from.x, tween.to.x);
+											tween.to.y = closestRot(tween.from.y, tween.to.y);
+											tween.to.z = closestRot(tween.from.z, tween.to.z);
+										}
 										newVect = tweenOnCurveVector(tween, ratioPassed); break;
 								}
 							}else{
@@ -630,11 +637,11 @@ public static function update() {
 
 					if(tween.optional!=null){
 						var onUpdate = optionalItems["onUpdate"];
-						if(onUpdate){
+						if(onUpdate!=null){
 							var updateParam:Hashtable = optionalItems["onUpdateParam"];
 							if(onUpdate.GetType() == String){
 								var onUpdateS:String = onUpdate as String;
-								if (optionalItems["onUpdateTarget"]){
+								if (optionalItems["onUpdateTarget"]!=null){
 									customTarget = optionalItems["onUpdateTarget"];
 									customTarget.BroadcastMessage( onUpdateS, val );
 								}else{
@@ -642,7 +649,7 @@ public static function update() {
 								}
 							}else{
 								var onUpdateF:Function = onUpdate as Function;
-								if(updateParam) onUpdateF( val, updateParam );
+								if(updateParam!=null) onUpdateF( val, updateParam );
 								else onUpdateF(val);
 							}
 						}
@@ -653,8 +660,8 @@ public static function update() {
 					var callback:Function;
 					var callbackS:String;
 					var callbackParam;
-					if(tween.optional!=null && tween.trans){
-						if(optionalItems["onComplete"]){
+					if(tween.optional!=null && tween.trans!=null){
+						if(optionalItems["onComplete"]!=null){
 							if(optionalItems["onComplete"].GetType()==String){
 								callbackS = optionalItems["onComplete"] as String;
 							}else{
@@ -664,16 +671,16 @@ public static function update() {
 						callbackParam = optionalItems["onCompleteParam"];
 					}
 					removeTween(i);
-					if(callback){
+					if(callback!=null){
 						if(callbackParam) callback( callbackParam );
 						else callback();
-					}else if(callbackS){
-						if (optionalItems["onCompleteTarget"]){
+					}else if(callbackS!=null){
+						if (optionalItems["onCompleteTarget"]!=null){
 							customTarget = optionalItems["onCompleteTarget"];
-							if(callbackParam) customTarget.BroadcastMessage( callbackS, callbackParam );
+							if(callbackParam!=null) customTarget.BroadcastMessage( callbackS, callbackParam );
 							else customTarget.BroadcastMessage( callbackS );
 						}else{
-							if(callbackParam) trans.gameObject.BroadcastMessage( callbackS, callbackParam );
+							if(callbackParam!=null) trans.gameObject.BroadcastMessage( callbackS, callbackParam );
 							else trans.gameObject.BroadcastMessage( callbackS );
 						}
 					}
@@ -754,7 +761,7 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 	tween.animationCurve = null;
 	tween.tweenType = LeanTweenType.linear;
 
-	if(optional){
+	if(optional!=null){
 		var ease = optional["ease"];
 		var optionsNotUsed = 0;
 		if(ease!=null){
@@ -775,19 +782,19 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 			}
 			optionsNotUsed++;
 		}
-		if(optional["rect"]){
+		if(optional["rect"]!=null){
 			tween.ltRect = optional["rect"];
 			optionsNotUsed++;
 		}
-		if(optional["delay"]){
+		if(optional["delay"]!=null){
 			tween.delay = optional["delay"];
 			optionsNotUsed++;
 		}
-		if(optional["useEstimatedTime"]){
+		if(optional["useEstimatedTime"]!=null){
 			tween.useEstimatedTime = optional["useEstimatedTime"];
 			optionsNotUsed++;
 		}
-		if(optional["useFrames"]){
+		if(optional["useFrames"]!=null){
 			tween.useFrames = optional["useFrames"];
 			optionsNotUsed++;
 		}
@@ -881,7 +888,7 @@ public static function value(callOnUpdate:Function, from:float, to:float, time:f
 }
 public static function value(gameObject:GameObject, callOnUpdate:String, from:float, to:float, time:float, optional:Hashtable):int{
 	if(optional==null)
-		optional = {} as Hashtable;
+		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
 	var id:int = pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.CALLBACK, optional );
@@ -906,7 +913,7 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 */
 public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float, optional:Hashtable):int{
 	if(optional==null)
-		optional = {} as Hashtable;
+		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
 	var id:int = pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.CALLBACK, optional );
@@ -1118,7 +1125,7 @@ public static function move(gameObject:GameObject, to:Vector3, time:float, optio
 public static function move(ltRect:LTRect, to:Vector2, time:float, optional:Hashtable):int{
 	init();
 	if( optional == null )
-		optional = {} as Hashtable;
+		optional = new Hashtable();
 
 	optional["rect"] = ltRect;
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_MOVE, optional );
@@ -1198,7 +1205,7 @@ public static function scale(gameObject:GameObject, to:Vector3, time:float, opti
 public static function scale(ltRect:LTRect, to:Vector2, time:float, optional:Hashtable):int{
 	init();
 	if( optional == null )
-		optional = {} as Hashtable;
+		optional = new Hashtable();
 
 	optional["rect"] = ltRect;
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_SCALE, optional );
@@ -1293,7 +1300,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:Function, optional:Hashtable ):int{
 	if(optional==null)
-		optional = {} as Hashtable;
+		optional = new Hashtable();
 		
 	optional["onComplete"] = callback;
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, optional );
@@ -1323,7 +1330,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:String, optional:Hashtable):int{
 	if(optional==null)
-		optional = {} as Hashtable;
+		optional = new Hashtable();
 	optional["onComplete"] = callback;
 
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, optional );
