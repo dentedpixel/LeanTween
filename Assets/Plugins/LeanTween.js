@@ -1371,6 +1371,22 @@ public static function alpha(gameObject:GameObject, to:float, time:float):int{
 	return alpha(gameObject,to,time,null); 
 }
 
+/**
+* This works by tweening the vertex colors directly.<br>
+<br>
+Vertex-based coloring is useful because you avoid making a copy of your
+object's material for each instance that needs a different color.<br>
+<br>
+A shader that supports vertex colors is required for it to work
+(for example the shaders in Mobile/Particles/)
+* 
+* @method LeanTween.alphaVertex
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
+* @param {float} to:float The time with which to delay before callin the function
+* @param {float} time:float The time with which to delay before calling the function
+* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
+* @return {int} Returns an integer id that is used to distinguish this tween
+*/
 public static function alphaVertex(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
 	return pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.ALPHA_VERTEX, optional );
 }
