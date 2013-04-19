@@ -35,10 +35,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 /**
 * Pass this to the "ease" parameter in the optional hashtable, to get a different easing behavior<br><br>
-* <strong>Example Javascript: </strong><br>LeanTween.rotateX(gameObject, 270.0f, 1.5f, ["ease",LeanTweenType.easeInBack]);<br>
+* <strong>Example Javascript: </strong><br>LeanTween.rotateX(gameObject, 270.0f, 1.5f, {"ease":LeanTweenType.easeInBack});<br>
 * <br>
 * <strong>Example C#: </strong> <br>
-* LeanTween.rotateX(gameObject, 270.0f, 1.5f, new object[]{ "ease", LeanTweenType.easeInBack });<br>
+* Hashtable optional = new Hashtable();<br>
+* optional.Add("ease":LeanTweenType.easeInBack);<br>
+* LeanTween.rotateX(gameObject, 270.0f, 1.5f, optional);<br>
 *
 * @class LeanTweenType
 */
@@ -915,7 +917,7 @@ public static function value(callOnUpdate:Function, from:float, to:float, time:f
 	return value( tweenEmpty, callOnUpdate, from, to, time, h(optional) );
 }
 public static function value(gameObject:GameObject, callOnUpdate:String, from:float, to:float, time:float, optional:Hashtable):int{
-	if(optional==null)
+	if(optional==null || optional==emptyHash)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -923,18 +925,6 @@ public static function value(gameObject:GameObject, callOnUpdate:String, from:fl
 	tweens[id].from = new Vector3(from,0,0);
 	return id;
 }
-/**
-* Tween any particular value, it does not need to be tied to any particular type or GameObject
-* 
-* @method LeanTween.value
-* @param {GameObject} gameObject:GameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
-* @param {Function} callOnUpdate:Function The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( val:float ){ }
-* @param {float} from:float The original value to start the tween from
-* @param {float} to:float The value to end the tween on
-* @param {float} time:float The time to complete the tween in
-* @param {Object[]} optional:Object Array to pass other parameters
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static function value(gameObject:GameObject, callOnUpdate:String, from:float, to:float, time:float, optional:Object[]):int{
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
 }
@@ -952,11 +942,11 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 * @param {float} from:float The original value to start the tween from
 * @param {float} to:float The value to end the tween on
 * @param {float} time:float The time to complete the tween in
-* @param {Hashtable} optional:Hashtable to pass other parameters
+* @param {Hashtable} time:Hashtable The time to complete the tween in
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float, optional:Hashtable):int{
-	if(optional==null)
+	if(optional==null || optional==emptyHash)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -1008,21 +998,7 @@ public static function rotate(gameObject:GameObject, to:Vector3, time:float):int
 public static function rotate(gameObject:GameObject, to:Vector3, time:float, optional:Hashtable):int{
 	return pushNewTween( gameObject, to, time, TweenAction.ROTATE, optional );
 }
-/**
-* Rotate a GameObject, to values that are in passed in degrees
-* 
-* @method LeanTween.rotate
-* @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
-* @param {Vector3} to:Vector3 The final rotation with which to rotate to
-* @param {float} time:float The time to complete the tween in
-* @param {Object[]} optional:Array Object Array where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example <i>Javascript:</i><br>
-* LeanTween.rotate(cube, Vector3(180,30,0), 1.5, ["ease",LeanTween.easeInOutQuad, "onComplete",finishedTweening]);
-* <br><br>
-* <i>C#: </i> <br>
-* LeanTween.rotate(cube, Vector3(180f,30f,0f), 1.5f, new object[]{"ease",LeanTween.easeInOutQuad, "onComplete",finishedTweening});<br>
-*/
+
 public static function rotate(gameObject:GameObject, to:Vector3, time:float, optional:Object[]):int{
 	return rotate( gameObject, to, time, h( optional ) );
 }
@@ -1203,21 +1179,6 @@ public static function move(gameObject:GameObject, to:Vector3, time:float, optio
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE, optional );
 }
 
-/**
-* Move a GameObject to a certain location
-* 
-* @method LeanTween.move
-* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
-* @param {Vector3} to:Vector3 The final positin with which to move to
-* @param {float} time:float The time to complete the tween in
-* @param {Object[]} optional:Array Object Array where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example
-* <i>Javascript:</i><br>
-* LeanTween.move(gameObject, Vector3(0,-3,5), 2.0, {"ease":LeanTween.easeOutQuad});<br><br>
-* <i>C#:</i><br>
-* LeanTween.move(gameObject, Vector3(0f,-3f,5f), 1.5f, new object[]{ "useEstimatedTime", useEstimatedTime, "ease", LeanTweenType.easeOutBounce });<br>
-*/
 public static function move(gameObject:GameObject, to:Vector3, time:float, optional:Object[]):int{
 	return move( gameObject, to, time, LeanTween.h( optional ) );
 }
@@ -1242,16 +1203,6 @@ public static function move(ltRect:LTRect, to:Vector2, time:float, optional:Hash
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_MOVE, optional );
 }
 
-/**
-* Move a GUI Element to a certain location
-* 
-* @method LeanTween.move (GUI)
-* @param {LTRect} ltRect:LTRect LTRect object that you wish to move
-* @param {Vector2} to:Vector2 The final position with which to move to (pixel coordinates)
-* @param {float} time:float The time to complete the tween in
-* @param {Object[]} optional:Array Object Array where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static function move(ltRect:LTRect, to:Vector2, time:float, optional:Object[]):int{
 	return move( ltRect, to, time, h(optional) );
 }
@@ -1352,16 +1303,6 @@ public static function scale(ltRect:LTRect, to:Vector2, time:float, optional:Has
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_SCALE, optional );
 }
 
-/**
-* Scale a GUI Element to a certain width and height
-* 
-* @method LeanTween.scale (GUI)
-* @param {LTRect} ltRect:LTRect LTRect object that you wish to move
-* @param {Vector2} to:Vector2 The final width and height to scale to (pixel based)
-* @param {float} time:float The time to complete the tween in
-* @param {Object[]} optional:Array Object Array where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static function scale(ltRect:LTRect, to:Vector2, time:float, optional:Object[]):int{
 	return scale( ltRect, to, time, h(optional) );
 }
@@ -1466,7 +1407,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:Function, optional:Hashtable ):int{
-	if(optional==null)
+	if(optional==null || optional==emptyHash)
 		optional = new Hashtable();
 		
 	optional["onComplete"] = callback;
@@ -1496,7 +1437,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:String, optional:Hashtable):int{
-	if(optional==null)
+	if(optional==null || optional==emptyHash)
 		optional = new Hashtable();
 	optional["onComplete"] = callback;
 
