@@ -192,6 +192,8 @@ class TweenDescr{
 * @param {float} y:float Y location
 * @param {float} width:float Width
 * @param {float} height:float Height
+* @param {float} (alpha:float) Alpha (optional parameter, in case you are using the alpha functions and wish to start at an alpha different than 1.0)
+* @param {float} (rotation:float) Rotation (optional parameter, in case you are using the rotate function and wish to start at a rotation different than 0.0)
 */
 
 class LTRect{
@@ -201,10 +203,70 @@ class LTRect{
 	* @property rect
 	* @type {Rect} rect:Rect Rect object that controls the positioning and size
 	*/
-	public var rect:Rect;
+	public var _rect:Rect;
+	public var alpha:float;
+	public var rotation:float;
+	public var pivot:Vector2;
+
+	public var rotateEnabled:boolean;
+	public var rotateFinished:boolean;
+	public var alphaEnabled:boolean;
 
 	public function LTRect(x:float, y:float, width:float, height:float){
-		rect = Rect(x,y,width,height);
+		_rect = Rect(x,y,width,height);
+		this.alpha = 1.0;
+		this.rotation = 0.0;
+		this.rotateEnabled = this.alphaEnabled = false;
+	}
+
+	public function LTRect(x:float, y:float, width:float, height:float, alpha:float){
+		_rect = Rect(x,y,width,height);
+		this.alpha = alpha;
+		this.rotation = 0.0;
+		this.rotateEnabled = this.alphaEnabled = false;
+	}
+
+	public function LTRect(x:float, y:float, width:float, height:float, alpha:float, rotation:float){
+		_rect = Rect(x,y,width,height);
+		this.alpha = alpha;
+		this.rotation = rotation;
+		this.rotateEnabled = this.alphaEnabled = false;
+		if(rotation!=0.0){
+			this.rotateEnabled = true;
+			resetForRotation();
+		}
+	}
+
+	function resetForRotation(){
+		if(pivot==Vector2.zero){
+			pivot = Vector2(_rect.x+_rect.width*0.5, _rect.y+_rect.height*0.5);
+			_rect.x += -pivot.x;
+			_rect.y += -pivot.y;
+		}
+	}
+
+	function get rect():Rect{
+		if(rotateEnabled){
+			if(rotateFinished){
+				rotateFinished = false;
+				rotateEnabled = false;
+				_rect.x += pivot.x;
+				_rect.y += pivot.y;
+				pivot = Vector2.zero;
+				GUI.matrix = Matrix4x4.identity; 
+			}else{
+				var trsMatrix:Matrix4x4 = Matrix4x4.identity; 
+				trsMatrix.SetTRS(pivot, Quaternion.Euler(0,0,rotation), Vector3.one);
+				GUI.matrix = trsMatrix;
+			}
+		}else if(alphaEnabled){
+			GUI.color.a = alpha;
+		}
+		return _rect;
+	}
+
+	function set rect( value ){
+		_rect = value;
 	}
 }
 
@@ -230,7 +292,9 @@ private enum TweenAction{
 	ROTATE_LOCAL,
 	SCALE,
 	GUI_MOVE,
-	GUI_SCALE
+	GUI_SCALE,
+	GUI_ALPHA,
+	GUI_ROTATE
 }
 
 /**
@@ -414,6 +478,15 @@ public static function update() {
 							tween.from = Vector3(tween.ltRect.rect.x, tween.ltRect.rect.y, 0.0); break;
 						case TweenAction.GUI_SCALE:
 							tween.from = Vector3(tween.ltRect.rect.width, tween.ltRect.rect.height, 0.0); break;
+						case TweenAction.GUI_ALPHA:
+							tween.from.x = tween.ltRect.alpha; break;
+						case TweenAction.GUI_ROTATE:
+							if(tween.ltRect.rotateEnabled==false){
+								tween.ltRect.rotateEnabled = true;
+								tween.ltRect.resetForRotation();
+							}
+							
+							tween.from.x = tween.ltRect.rotation; break;
 					}
 					tween.diff.x = tween.to.x - tween.from.x;
 					tween.diff.y = tween.to.y - tween.from.y;
@@ -644,11 +717,15 @@ public static function update() {
 					    }else if(tweenAction==TweenAction.SCALE){
 					    	trans.localScale = newVect;
 					    }else if(tweenAction==TweenAction.GUI_MOVE){
-					    	tween.ltRect.rect.x = newVect.x;
-					    	tween.ltRect.rect.y = newVect.y;
+					    	tween.ltRect._rect.x = newVect.x;
+					    	tween.ltRect._rect.y = newVect.y;
 					    }else if(tweenAction==TweenAction.GUI_SCALE){
-					    	tween.ltRect.rect.width = newVect.x;
-					    	tween.ltRect.rect.height = newVect.y;
+					    	tween.ltRect._rect.width = newVect.x;
+					    	tween.ltRect._rect.height = newVect.y;
+					    }else if(tweenAction==TweenAction.GUI_ALPHA){
+					    	tween.ltRect.alpha = newVect.x;
+					    }else if(tweenAction==TweenAction.GUI_ROTATE){
+					    	tween.ltRect.rotation = newVect.x;
 					    }
 					}
 
@@ -674,6 +751,9 @@ public static function update() {
 				}
 				
 				if(isTweenFinished){
+					if(tweenAction==TweenAction.GUI_ROTATE){
+						tween.ltRect.rotateFinished = true;
+					}
 					var callback:Function;
 					var callbackS:String;
 					var callbackParam;
@@ -1001,6 +1081,38 @@ public static function rotate(gameObject:GameObject, to:Vector3, time:float, opt
 
 public static function rotate(gameObject:GameObject, to:Vector3, time:float, optional:Object[]):int{
 	return rotate( gameObject, to, time, h( optional ) );
+}
+
+public static function rotate(ltRect:LTRect, to:float, time:float, optional:Hashtable):int{
+	init();
+	if( optional == null )
+		optional = new Hashtable();
+
+	optional["rect"] = ltRect;
+	return pushNewTween( tweenEmpty, Vector3(to,0,0), time, TweenAction.GUI_ROTATE, optional );
+}
+
+/**
+* Rotate a GUI element (using an LTRect object), to a value that is in degrees
+* 
+* @method LeanTween.rotate
+* @param {LTRect} ltRect:LTRect LTRect that you wish to rotate
+* @param {float} to:float The final rotation with which to rotate to
+* @param {float} time:float The time to complete the tween in
+* @param {Array} optional:Array Object Array where you can pass <a href="#optional">optional items</a>.
+* @return {int} Returns an integer id that is used to distinguish this tween
+* @example <i>Javascript:</i><br>
+* if(GUI.Button(buttonRect.rect, "Rotate"))<br>
+*	LeanTween.rotate( buttonRect4, 150.0, 1.0, ["ease",LeanTween.easeOutElastic]);<br>
+* GUI.matrix = Matrix4x4.identity;<br>
+* <br><br>
+* <i>C#: </i> <br>
+* if(GUI.Button(buttonRect.rect, "Rotate"))<br>
+*	LeanTween.rotate( buttonRect4, 150.0, 1.0, new object[]{"ease",LeanTween.easeOutElastic});<br>
+* GUI.matrix = Matrix4x4.identity;<br>
+*/
+public static function rotate(ltRect:LTRect, to:float, time:float, optional:Object[]):int{
+	return rotate( ltRect, to, time, h(optional) );
 }
 
 /**
@@ -1332,6 +1444,19 @@ public static function scale(ltRect:LTRect, to:Vector2, time:float, optional:Obj
 */
 public static function scale(ltRect:LTRect, to:Vector2, time:float):int{
 	return scale( ltRect, to, time, emptyHash );
+}
+
+public static function alpha(ltRect:LTRect, to:float, time:float, optional:Hashtable):int{
+	init();
+	if( optional == null )
+		optional = new Hashtable();
+
+	ltRect.alphaEnabled = true;
+	optional["rect"] = ltRect;
+	return pushNewTween( tweenEmpty, Vector3(to,0,0), time, TweenAction.GUI_ALPHA, optional );
+}
+public static function alpha(ltRect:LTRect, to:float, time:float, optional:Object[]):int{
+	return alpha( ltRect, to, time, h(optional) );
 }
 
 public static function scaleX(gameObject:GameObject, to:float, time:float):int{
