@@ -3,61 +3,75 @@ using System.Collections;
 
 public class MenuExampleCSharp : MonoBehaviour {
 	public Texture2D grumpy;
+	public Texture2D beauty;
+
+	private float w;
+	private float h;
 
 	private LTRect buttonRect1;
 	private LTRect buttonRect2;
+	private LTRect buttonRect3;
+	private LTRect buttonRect4;
 	private LTRect grumpyRect;
+	private LTRect beautyTileRect;
 
 
 	// Use this for initialization
 	void Start () {
-		buttonRect1 = new LTRect(0.25f*Screen.width, 0.75f*Screen.height, 0.2f*Screen.width, 0.2f*Screen.height );
-		buttonRect2 = new LTRect(1.2f*Screen.width, 0.75f*Screen.height, 0.2f*Screen.width, 0.2f*Screen.height );
+		w = Screen.width;
+		h = Screen.height;
+		buttonRect1 = new LTRect(0.10f*w, 0.8f*h, 0.2f*w, 0.14f*h );
+		buttonRect2 = new LTRect(1.2f*w, 0.8f*h, 0.2f*w, 0.14f*h );
+		buttonRect3 = new LTRect(0.35f*w, 0.0f*h, 0.3f*w, 0.2f*h );
+		buttonRect4 = new LTRect(0.0f*w, 0.4f*h, 0.3f*w, 0.2f*h, 1.0f, 15.0f );
 		
-		grumpyRect = new LTRect(0.5f*Screen.width - grumpy.width/2.0f, 0.5f*Screen.height - grumpy.height/2.0f, grumpy.width, grumpy.height );
+		grumpyRect = new LTRect(0.5f*w - grumpy.width*0.5f, 0.5f*h - grumpy.height*0.5f, grumpy.width, grumpy.height );
+		beautyTileRect = new LTRect(0.0f,0.0f,1.0f,1.0f );
 
-
-		Hashtable optional = new Hashtable();
-		optional.Add("ease",LeanTweenType.easeOutBounce);
-		LeanTween.move( buttonRect2, new Vector2(0.6f*Screen.width, buttonRect2.rect.y), 0.7f, optional);
+		LeanTween.move( buttonRect2, new Vector2(0.55f*w, buttonRect2.rect.y), 0.7f, new object[]{"ease",LeanTweenType.easeOutQuad} );
 	}
 	
 	// Update is called once per frame
 	void OnGUI () {
-		Hashtable optional;
 		if(GUI.Button(buttonRect1.rect, "Scale Centered")){
-			// Pass the LTRect object to many of LeanTween's standard animation functions for fun animation effects
-			optional = new Hashtable();
-			optional.Add("ease",LeanTweenType.easeOutQuad);
-			LeanTween.scale( buttonRect1, new Vector2(buttonRect1.rect.width, buttonRect1.rect.height) * 1.2f, 0.25f, optional );
-			
-			optional = new Hashtable();
-			optional.Add("ease",LeanTweenType.easeOutQuad);
-			LeanTween.move( buttonRect1, new Vector2(buttonRect1.rect.x-buttonRect1.rect.width*0.1f, buttonRect1.rect.y-buttonRect1.rect.height*0.1f), 0.25f, optional );
+			LeanTween.scale( buttonRect1, new Vector2(buttonRect1.rect.width, buttonRect1.rect.height) * 1.2f, 0.25f, new object[]{ "ease", LeanTweenType.easeOutQuad } );
+			LeanTween.move( buttonRect1, new Vector2(buttonRect1.rect.x-buttonRect1.rect.width*0.1f, buttonRect1.rect.y-buttonRect1.rect.height*0.1f), 0.25f, new object[]{ "ease", LeanTweenType.easeOutQuad }  );
 		}
 
-
 		if(GUI.Button(buttonRect2.rect, "Scale")){
-			optional = new Hashtable();
-			optional.Add("ease",LeanTweenType.easeOutBounce);
-			LeanTween.scale( buttonRect2, new Vector2(buttonRect2.rect.width, buttonRect2.rect.height) * 1.2f, 0.25f, optional );
+			LeanTween.scale( buttonRect2, new Vector2(buttonRect2.rect.width, buttonRect2.rect.height) * 1.2f, 0.25f, new object[]{ "ease", LeanTweenType.easeOutBounce }  );
 		}
 
 		GUI.DrawTexture( grumpyRect.rect, grumpy);
 
-		Rect staticRect = new Rect(0.1f*Screen.width, 0.1f*Screen.height, 0.2f*Screen.width, 0.2f*Screen.height);
+		Rect staticRect = new Rect(0.0f*w, 0.0f*h, 0.2f*w, 0.14f*h);
 		if(GUI.Button( staticRect, "Move Cat")){
 			if(LeanTween.isTweening(grumpyRect)==false){ // Check to see if the cat is already tweening, so it doesn't freak out
 				Vector2 orig = new Vector2( grumpyRect.rect.x, grumpyRect.rect.y );
-				optional = new Hashtable();
-				optional.Add("ease",LeanTweenType.easeOutBounce);
-				LeanTween.move( grumpyRect, new Vector2( 1.0f*Screen.width - grumpy.width, 0.0f*Screen.height ), 1.0f, optional );
-
-				optional = new Hashtable();
-				optional.Add("ease",LeanTweenType.easeOutBounce);
-				optional.Add("delay",1.0f);
-				LeanTween.move( grumpyRect, orig, 1.0f, optional );
+				LeanTween.move( grumpyRect, new Vector2( 1.0f*Screen.width - grumpy.width, 0.0f*Screen.height ), 1.0f, new object[]{ "ease", LeanTweenType.easeOutBounce } );
+				LeanTween.move( grumpyRect, orig, 1.0f, new object[]{ "delay", 1.0f, "ease", LeanTweenType.easeOutBounce } );
 			}
 		}
+
+		staticRect = new Rect(0.76f*w, 0.53f*h, 0.2f*w, 0.14f*h);
+		if(GUI.Button( staticRect, "Flip Tile")){
+			LeanTween.move( beautyTileRect, new Vector2( 0f, beautyTileRect.rect.y + 1.0f ), 1.0f, new object[]{"ease",LeanTweenType.easeOutBounce} );
+		}
+
+		GUI.DrawTextureWithTexCoords( new Rect(0.8f*w, 0.5f*h - beauty.height*0.5f, beauty.width*0.5f, beauty.height*0.5f), beauty, beautyTileRect.rect);
+
+
+		if(GUI.Button(buttonRect3.rect, "Alpha")){
+			LeanTween.alpha( buttonRect3, 0.0f, 1.0f, new object[]{"ease",LeanTweenType.easeOutQuad} );
+			LeanTween.alpha( buttonRect3, 1.0f, 1.0f, new object[]{"ease",LeanTweenType.easeInQuad,"delay",1.0} );
+		}
+		GUI.color = new Color(1.0f,1.0f,1.0f,1.0f); // Reset to normal alpha, otherwise other gui elements will be effected
+
+		
+		if(GUI.Button(buttonRect4.rect, "Rotate")){
+			LeanTween.rotate( buttonRect4, 150.0f, 1.0f, new object[]{"ease",LeanTweenType.easeOutElastic});
+			LeanTween.rotate( buttonRect4, 0.0f, 1.0f, new object[]{"ease",LeanTweenType.easeOutElastic,"delay",1.0});
+		}
+		GUI.matrix = Matrix4x4.identity;
 	}
 }

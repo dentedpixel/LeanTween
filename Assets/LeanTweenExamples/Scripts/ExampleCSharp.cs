@@ -30,36 +30,21 @@ public class ExampleCSharp : MonoBehaviour {
 		exampleIter = exampleIter+1>=exampleFunctions.Length ? 0 : exampleIter + 1;
 		
 		debugInfo.text = "useEstimatedTime:"+useEstimatedTime;
-		Hashtable optional = new Hashtable();
-		optional.Add("useEstimatedTime", useEstimatedTime);
-		LeanTween.delayedCall( gameObject, 1.05f, "cycleThroughExamples", optional );
+		LeanTween.delayedCall( gameObject, 1.05f, "cycleThroughExamples", new object[]{ "useEstimatedTime", useEstimatedTime, "ease", customAnimationCurve } );
 	}
 	
 	public void customTweenExample(){
 		Debug.Log("customTweenExample");
 		
-		Hashtable optional = new Hashtable();
-		optional.Add("useEstimatedTime", useEstimatedTime);
-		optional.Add("ease",customAnimationCurve);
-		LeanTween.moveX( gameObject, -10.0f, 0.5f, optional);
-		
-		Hashtable optional2 = new Hashtable();
-		optional2.Add("useEstimatedTime", useEstimatedTime);
-		optional2.Add("ease",customAnimationCurve);
-		optional2.Add("delay",0.5f);	
-		LeanTween.moveX( gameObject, 0.0f, 0.5f, optional2);
+		LeanTween.moveX( gameObject, -10.0f, 0.5f, new object[]{ "useEstimatedTime", useEstimatedTime, "ease", customAnimationCurve });
+		LeanTween.moveX( gameObject, 0.0f, 0.5f, new object[]{ "delay", 0.5f, "useEstimatedTime", useEstimatedTime, "ease", customAnimationCurve });
 	}
 	
 	public void moveExample(){
 		Debug.Log("moveExample");
 		
-		Hashtable optional = new Hashtable();
-		optional.Add("useEstimatedTime", useEstimatedTime);
-		LeanTween.move( gameObject, new Vector3(-2f,-1f,0f), 0.5f, optional);
-		Hashtable optional2 = new Hashtable();
-		optional2.Add("useEstimatedTime", useEstimatedTime);
-		optional2.Add("delay",0.5f);	
-		LeanTween.move( gameObject, new Vector3(0f,0f,0f), 0.5f, optional2);
+		LeanTween.move( gameObject, new Vector3(-2f,-1f,0f), 0.5f, new object[]{ "useEstimatedTime", useEstimatedTime });
+		LeanTween.move( gameObject, new Vector3(0f,0f,0f), 0.5f, new object[]{ "delay", 0.5f, "useEstimatedTime", useEstimatedTime});
 	}
 	
 	public void rotateExample(){
@@ -86,20 +71,14 @@ public class ExampleCSharp : MonoBehaviour {
 	public void scaleExample(){
 		Debug.Log("scaleExample");
 		
-		Hashtable optional = new Hashtable();
-		optional.Add("useEstimatedTime", useEstimatedTime);
-		optional.Add("ease",LeanTweenType.easeOutBounce);
 		Vector3 currentScale = gameObject.transform.localScale;
-		LeanTween.scale( gameObject, new Vector3(currentScale.x+0.2f,currentScale.y+0.2f,currentScale.z+0.2f), 1f, optional);
+		LeanTween.scale( gameObject, new Vector3(currentScale.x+0.2f,currentScale.y+0.2f,currentScale.z+0.2f), 1f, new object[]{ "useEstimatedTime", useEstimatedTime, "ease", LeanTweenType.easeOutBounce });
 	}
 	
 	public void updateValueExample(){
 		Debug.Log("updateValueExample");
 		
-		Hashtable optional = new Hashtable();
-		optional.Add("useEstimatedTime", useEstimatedTime);
-		optional.Add("ease",LeanTweenType.easeOutElastic);
-		LeanTween.value( gameObject, "updateValueExampleCallback", gameObject.transform.eulerAngles.z, 270f, 1f, optional);
+		LeanTween.value( gameObject, "updateValueExampleCallback", gameObject.transform.eulerAngles.z, 270f, 1f, new object[]{ "useEstimatedTime", useEstimatedTime, "ease", LeanTweenType.easeOutElastic });
 	}
 	
 	public void updateValueExampleCallback( float val ){
@@ -112,29 +91,21 @@ public class ExampleCSharp : MonoBehaviour {
 		Debug.Log("delayedCallExample");
 		
 		LeanTween.delayedCall(gameObject, 0.5f, "delayedCallExampleCallback");
-		
 	}
 	
 	public void delayedCallExampleCallback(){
 		Debug.Log("Delayed function was called");
 		Vector3 currentScale = gameObject.transform.localScale;
-		Hashtable optional = new Hashtable();
-		optional.Add("useEstimatedTime", useEstimatedTime);
-		optional.Add("ease",LeanTweenType.easeInOutCirc);	
-		LeanTween.scale( gameObject, new Vector3(currentScale.x-0.2f,currentScale.y-0.2f,currentScale.z-0.2f), 0.5f, optional);
+
+		LeanTween.scale( gameObject, new Vector3(currentScale.x-0.2f,currentScale.y-0.2f,currentScale.z-0.2f), 0.5f, new object[]{ "useEstimatedTime", useEstimatedTime, "ease", LeanTweenType.easeInOutCirc });
 	}
 	
 	public void alphaExample(){
 		Debug.Log("alphaExample");
 		
 		GameObject cube = GameObject.Find ("Cube1");
-		Hashtable optional = new Hashtable();
-		optional.Add("useEstimatedTime", useEstimatedTime);	
-		LeanTween.alpha( cube, 0.0f, 0.5f, optional );
-		Hashtable optional2 = new Hashtable();
-		optional2.Add("useEstimatedTime", useEstimatedTime);
-		optional2.Add("delay",0.5f);
-		LeanTween.alpha( cube, 1.0f, 0.5f, optional2 );
+		LeanTween.alpha( cube, 0.0f, 0.5f, new object[]{ "useEstimatedTime", useEstimatedTime } );
+		LeanTween.alpha( cube, 1.0f, 0.5f, new object[]{ "delay", 0.5f, "useEstimatedTime", useEstimatedTime } );
 	}
 	
 	public void moveLocalExample(){
@@ -142,13 +113,8 @@ public class ExampleCSharp : MonoBehaviour {
 		
 		GameObject cube = GameObject.Find ("Cube1");
 		Vector3 origPos = cube.transform.localPosition;
-		Hashtable optional = new Hashtable();
-		optional.Add("useEstimatedTime", useEstimatedTime);
-		LeanTween.moveLocal( cube, new Vector3(0f,2f,0f), 0.5f, optional);
-		Hashtable optional2 = new Hashtable();
-		optional2.Add("useEstimatedTime", useEstimatedTime);
-		optional2.Add("delay",0.5f);	
-		LeanTween.moveLocal( cube, origPos, 0.5f, optional2);
+		LeanTween.moveLocal( cube, new Vector3(0f,2f,0f), 0.5f, new object[]{ "useEstimatedTime", useEstimatedTime });
+		LeanTween.moveLocal( cube, origPos, 0.5f, new object[]{ "delay", 0.5f, "useEstimatedTime", useEstimatedTime });
 	}
 
 }
