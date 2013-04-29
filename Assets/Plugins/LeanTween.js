@@ -1,4 +1,6 @@
-// Copyright (c) 2012 Russell Savage - Dented Pixel
+// Copyright (c) 2013 Russell Savage - Dented Pixel
+// 
+// LeanTween version 0.99 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1230,6 +1232,9 @@ public static function moveX(gameObject:GameObject, to:float, time:float, option
 public static function moveX(gameObject:GameObject, to:float, time:float, optional:Object[]):int{
 	return moveX( gameObject, to, time, h(optional) );
 }
+public static function moveX(gameObject:GameObject, to:float, time:float):int{
+	return moveX( gameObject, to, time, emptyHash );
+}
 
 /**
 * Move a GameObject along the y-axis
@@ -1246,6 +1251,9 @@ public static function moveY(gameObject:GameObject, to:float, time:float, option
 public static function moveY(gameObject:GameObject, to:float, time:float, optional:Object[]):int{
 	return moveY( gameObject, to, time, h(optional) );
 }
+public static function moveY(gameObject:GameObject, to:float, time:float):int{
+	return moveY( gameObject, to, time, emptyHash );
+}
 
 /**
 * Move a GameObject along the z-axis
@@ -1256,14 +1264,14 @@ public static function moveY(gameObject:GameObject, to:float, time:float, option
 * @param {float} time:float The time to complete the move in
 * @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
 */
-public static function moveZ(gameObject:GameObject, to:float, time:float):int{
-	return moveZ( gameObject, to, time, emptyHash );
-}
 public static function moveZ(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
 	return pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.MOVE_Z, optional );
 }
 public static function moveZ(gameObject:GameObject, to:float, time:float, optional:Object[]):int{
 	return moveZ( gameObject, to, time, h(optional) );
+}
+public static function moveZ(gameObject:GameObject, to:float, time:float):int{
+	return moveZ( gameObject, to, time, emptyHash );
 }
 
 public static function move(gameObject:GameObject, to:Vector3, time:float):int{

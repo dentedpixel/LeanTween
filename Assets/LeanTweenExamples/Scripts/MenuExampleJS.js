@@ -14,7 +14,7 @@ private var beautyTileRect:LTRect;
 function Start () {
 	w = Screen.width;
 	h = Screen.height;
-	buttonRect1 = new LTRect(0.10*w, 0.8*h, 0.2*w, 0.14*h );
+	buttonRect1 = new LTRect(0.10*w, 0.8*h, 0.25*w, 0.14*h );
 	buttonRect2 = new LTRect(1.2*w, 0.8*h, 0.2*w, 0.14*h );
 	buttonRect3 = new LTRect(0.35*w, 0.0*h, 0.3*w, 0.2*h );
 	buttonRect4 = new LTRect(0.0*w, 0.4*h, 0.3*w, 0.2*h, 1.0, 15.0 );
@@ -26,16 +26,6 @@ function Start () {
 }
 
 function OnGUI(){
-
-	if(GUI.Button(buttonRect1.rect, "Scale Centered")){
-		LeanTween.scale( buttonRect1, Vector2(buttonRect1.rect.width, buttonRect1.rect.height) * 1.2, 0.25, ["ease",LeanTweenType.easeOutQuad] );
-		LeanTween.move( buttonRect1, Vector2(buttonRect1.rect.x-buttonRect1.rect.width*0.1, buttonRect1.rect.y-buttonRect1.rect.height*0.1), 0.25, ["ease",LeanTweenType.easeOutQuad] );
-	}
-
-	if(GUI.Button(buttonRect2.rect, "Scale")){
-		LeanTween.scale( buttonRect2, Vector2(buttonRect2.rect.width, buttonRect2.rect.height) * 1.2, 0.25, ["ease",LeanTweenType.easeOutBounce] );
-	}
-
 	var staticRect:Rect = Rect(0.0*w, 0.0*h, 0.2*w, 0.14*h);
 	if(GUI.Button( staticRect, "Move Cat")){
 		if(LeanTween.isTweening(grumpyRect)==false){ // Check to see if the cat is already tweening, so it doesn't freak out
@@ -45,6 +35,15 @@ function OnGUI(){
 		}
 	}
 	GUI.DrawTexture( grumpyRect.rect, grumpy);
+
+	if(GUI.Button(buttonRect1.rect, "Scale Centered")){
+		LeanTween.scale( buttonRect1, Vector2(buttonRect1.rect.width, buttonRect1.rect.height) * 1.2, 0.25, ["ease",LeanTweenType.easeOutQuad] );
+		LeanTween.move( buttonRect1, Vector2(buttonRect1.rect.x-buttonRect1.rect.width*0.1, buttonRect1.rect.y-buttonRect1.rect.height*0.1), 0.25, ["ease",LeanTweenType.easeOutQuad] );
+	}
+
+	if(GUI.Button(buttonRect2.rect, "Scale")){
+		LeanTween.scale( buttonRect2, Vector2(buttonRect2.rect.width, buttonRect2.rect.height) * 1.2, 0.25, ["ease",LeanTweenType.easeOutBounce] );
+	}
 
 	staticRect = Rect(0.76*w, 0.53*h, 0.2*w, 0.14*h);
 	if(GUI.Button( staticRect, "Flip Tile")){

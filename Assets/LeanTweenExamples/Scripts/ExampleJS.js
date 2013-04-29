@@ -7,7 +7,7 @@ function Awake(){
 }
 
 function Start () {
-	ltLogo = GameObject.Find("LeanTween-Icon");
+	ltLogo = GameObject.Find("LeanTweenLogo");
 	cycleThroughExamples();
 }
 
@@ -104,7 +104,7 @@ function moveLocalExample(){
 }
 
 function moveXExample(){
-
+	LeanTween.moveX( ltLogo, 5, 0.5);
 }
 
 function rotateXExample(){
