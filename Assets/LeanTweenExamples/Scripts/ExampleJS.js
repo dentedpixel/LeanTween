@@ -2,6 +2,12 @@
 
 public var customAnimationCurve:AnimationCurve;
 
+public var pt1:Transform;
+public var pt2:Transform;
+public var pt3:Transform;
+public var pt4:Transform;
+public var pt5:Transform;
+
 function Awake(){
 	LeanTween.init(400); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
 }
@@ -16,7 +22,7 @@ function OnGUI(){
 }
 
 private var exampleIter:int = 0;
-private var exampleFunctions = [punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, delayedCallExample, alphaExample, moveLocalExample];
+private var exampleFunctions = [moveOnACurveExample,punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, delayedCallExample, alphaExample, moveLocalExample];
 private var useEstimatedTime:boolean = true;
 private var ltLogo:GameObject;
 
@@ -29,6 +35,11 @@ function cycleThroughExamples(){
 	exampleIter = exampleIter+1>=exampleFunctions.length ? 0 : exampleIter + 1;
 	
 	LeanTween.delayedCall( 1.05, cycleThroughExamples, ["useEstimatedTime",useEstimatedTime]);
+}
+
+function moveOnACurveExample(){
+	Debug.Log("moveOnACurveExample");
+	LeanTween.move( ltLogo, [pt1.position,pt2.position,pt3.position,pt4.position,pt5.position,ltLogo.transform.position], 1.0, {"ease":LeanTweenType.easeOutQuad,"useEstimatedTime":useEstimatedTime});
 }
 
 function punchTest(){
