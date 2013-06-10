@@ -22,7 +22,7 @@ function OnGUI(){
 }
 
 private var exampleIter:int = 0;
-private var exampleFunctions = [moveOnACurveExample,punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, delayedCallExample, alphaExample, moveLocalExample];
+private var exampleFunctions = [moveOnACurveExample,punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, alphaExample, moveLocalExample, delayedCallExample];
 private var useEstimatedTime:boolean = true;
 private var ltLogo:GameObject;
 
@@ -39,7 +39,8 @@ function cycleThroughExamples(){
 
 function moveOnACurveExample(){
 	Debug.Log("moveOnACurveExample");
-	LeanTween.move( ltLogo, [pt1.position,pt2.position,pt3.position,pt4.position,pt5.position,ltLogo.transform.position], 1.0, {"ease":LeanTweenType.easeOutQuad,"useEstimatedTime":useEstimatedTime});
+	var path:Vector3[] = [ltLogo.transform.position,pt1.position,pt2.position,pt3.position,pt3.position,pt4.position,pt5.position,ltLogo.transform.position];
+	LeanTween.move( ltLogo, path, 1.0, ["ease",LeanTweenType.easeInQuad,"useEstimatedTime",useEstimatedTime,"orientToPath",true]);
 }
 
 function punchTest(){
@@ -53,18 +54,17 @@ function customTweenExample(){
 	LeanTween.moveX( ltLogo, 0, 0.5, ["delay",0.5,"useEstimatedTime",useEstimatedTime, "ease",customAnimationCurve]);
 }
 
-
 function moveExample(){
 	Debug.Log("moveExample");
 	
-	LeanTween.move( ltLogo, new Vector3(-2,-1,0), 0.5, ["useEstimatedTime",useEstimatedTime]);
-	LeanTween.move( ltLogo, ltLogo.transform.position, 0.5, ["delay",0.5,"useEstimatedTime",useEstimatedTime]);
+	LeanTween.move( ltLogo, new Vector3(-2f,-1f,0f), 0.5f, ["useEstimatedTime",useEstimatedTime]);
+	LeanTween.move( ltLogo, ltLogo.transform.position, 0.5f, ["delay",0.5f,"useEstimatedTime",useEstimatedTime]);
 }
 
 function rotateExample(){
 	Debug.Log("rotateExample");
 	
-	LeanTween.rotateY( ltLogo, 360, 1.0, ["ease",LeanTweenType.easeOutQuad,"useEstimatedTime",useEstimatedTime]);
+	LeanTween.rotate( ltLogo, Vector3(0,360,0), 1.0, ["ease",LeanTweenType.easeOutQuad,"useEstimatedTime",useEstimatedTime]);
 }
 
 function scaleExample(){
@@ -101,8 +101,8 @@ function alphaExample(){
 	Debug.Log("alphaExample");
 	
 	var cube:GameObject = GameObject.Find ("LCharacter");
-	LeanTween.alpha( cube, 0.0, 0.5, ["useEstimatedTime",useEstimatedTime] );
-	LeanTween.alpha( cube, 1.0, 0.5, ["delay",0.5,"useEstimatedTime",useEstimatedTime] );
+	LeanTween.alpha( cube, 0.0f, 0.5f, ["useEstimatedTime",useEstimatedTime] );
+	LeanTween.alpha( cube, 1.0f, 0.5f, ["delay",0.5f,"useEstimatedTime",useEstimatedTime] );
 }
 
 function moveLocalExample(){
@@ -110,8 +110,8 @@ function moveLocalExample(){
 	
 	var cube:GameObject = GameObject.Find ("LCharacter");
 	var origPos:Vector3 = cube.transform.localPosition;
-	LeanTween.moveLocal( cube, new Vector3(0,2,0), 0.5, ["useEstimatedTime",useEstimatedTime]);
-	LeanTween.moveLocal( cube, origPos, 0.5, ["delay",0.5,"useEstimatedTime",useEstimatedTime]);
+	LeanTween.moveLocal( cube, new Vector3(0.0f,2.0f,0.0f), 0.5f, ["useEstimatedTime",useEstimatedTime]);
+	LeanTween.moveLocal( cube, origPos, 0.5f, ["delay",0.5f,"useEstimatedTime",useEstimatedTime]);
 }
 
 function moveXExample(){

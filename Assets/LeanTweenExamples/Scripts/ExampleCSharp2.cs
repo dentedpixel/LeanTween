@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using System.Threading;
 
-public class ExampleCSharp : MonoBehaviour {
+public class ExampleCSharp2 : MonoBehaviour {
 	public AnimationCurve customAnimationCurve;
 	public Transform pt1;
 	public Transform pt2;
@@ -39,7 +39,7 @@ public class ExampleCSharp : MonoBehaviour {
 		
 		exampleIter = exampleIter+1>=exampleFunctions.Length ? 0 : exampleIter + 1;
 		
-		LeanTween.delayedCall( gameObject, 1.05f, "cycleThroughExamples", new object[]{ "useEstimatedTime", useEstimatedTime, "ease", customAnimationCurve } );
+		LeanTween.delayedCall( gameObject, 1.05f, "cycleThroughExamples", new []{ "useEstimatedTime", useEstimatedTime, "ease", customAnimationCurve } );
 	}
 
 	public void moveOnACurveExample(){

@@ -156,7 +156,7 @@ class TweenDescr{
 	var from:Vector3;
 	var to:Vector3;
 	var diff:Vector3;
-	var curves:Vector3[];
+	var path:LTBezierPath;
 	var time:float;
 	var useEstimatedTime:boolean;
 	var useFrames:boolean;
@@ -270,6 +270,125 @@ class LTRect{
 
 	function set rect( value ){
 		_rect = value;
+	}
+}
+
+class LTBezier{
+	public var length:float;
+
+	private var a:Vector3;
+	private var b:Vector3;
+	private var c:Vector3;
+	private var d:Vector3;
+	private var len:float;
+	private var arcLengths:float[];
+
+	public function LTBezier(a:Vector3, b:Vector3, c:Vector3, d:Vector3, precision:float){
+		this.a = a;
+	    this.b = b;
+	    this.c = c;
+	    this.d = d;
+
+	    this.len = 1.0 / precision;
+	    this.arcLengths = new float[this.len + 1];
+	    this.arcLengths[0] = 0;
+
+	    var ov:Vector3 = Vector3(x(0),y(0),z(0));
+	    var v:Vector3;
+	    var clen:float = 0.0;
+	    for(var i:int = 1; i <= this.len; i++) {
+	        v = Vector3(x(i * precision), y(i * precision), z(i * precision));
+	        clen += (ov - v).magnitude;
+	        this.arcLengths[i] = clen;
+	        ov = v;
+	    }
+	    this.length = clen;
+	}
+
+	private function x(t:float):float {
+        return ((1 - t) * (1 - t) * (1 - t)) * this.a.x + 3 * ((1 - t) * (1 - t)) * t * this.b.x + 3 * (1 - t) * (t * t) * this.c.x + (t * t * t) * this.d.x;
+    }
+    private function y(t:float):float {
+        return ((1 - t) * (1 - t) * (1 - t)) * this.a.y + 3 * ((1 - t) * (1 - t)) * t * this.b.y + 3 * (1 - t) * (t * t) * this.c.y + (t * t * t) * this.d.y;
+    }
+    private function z(t:float):float {
+        return ((1 - t) * (1 - t) * (1 - t)) * this.a.z + 3 * ((1 - t) * (1 - t)) * t * this.b.z + 3 * (1 - t) * (t * t) * this.c.z + (t * t * t) * this.d.z;
+    }
+
+    private function map(u:float):float {
+        var targetLength:float = u * this.arcLengths[this.len];
+        var low:int = 0;
+        var high:int = this.len;
+        var index:int = 0;
+        while (low < high) {
+            index = low + (((high - low) / 2) | 0);
+            if (this.arcLengths[index] < targetLength) {
+                low = index + 1;
+            } else {
+                high = index;
+            }
+        }
+        if(this.arcLengths[index] > targetLength)
+            index--;
+        if(index<0)
+        	index = 0;
+
+        var lengthBefore:float = this.arcLengths[index];
+
+        return (index + (targetLength - lengthBefore) / (this.arcLengths[index + 1] - lengthBefore)) / this.len;
+    }
+
+    private function mx(u:float):float { return this.x(this.map(u)); }
+    private function my(u:float):float { return this.y(this.map(u)); }
+    private function mz(u:float):float { return this.z(this.map(u)); }
+
+    public function point(t:float):Vector3{ 
+    	return Vector3(mx(t),my(t),mz(t)); 
+    }
+}
+
+class LTBezierPath{
+	public var pts:Vector3[];
+	public var length:float;
+	public var orientToPath:boolean;
+
+	private var beziers:LTBezier[];
+	private var lengthRatio:float[];
+	private var curveLength:float;
+	
+	public function LTBezierPath( pts_:Vector3[] ){
+		pts = pts_;
+		curveLength = pts.Length / 4;
+
+		var k:int = 0;
+		beziers = new LTBezier[ curveLength ];
+		lengthRatio = new float[ curveLength ];
+		for(var i:int=0; i < pts.Length; i+=4){
+			beziers[k] = new LTBezier(pts[i+0],pts[i+2],pts[i+1],pts[i+3],0.05);
+			length += beziers[k].length;
+			k++;
+		}
+
+		for(i = 0; i < beziers.Length; i++){
+			lengthRatio[i] = beziers[i].length / length;
+		}
+	}
+
+	public function point( ratio:float ):Vector3{
+		var added:float = 0.0;
+		for(var i:int = 0; i < lengthRatio.Length; i++){
+			added += lengthRatio[i];
+			if(added >= ratio)
+				return beziers[i].point( (ratio-(added-lengthRatio[i])) / lengthRatio[i] );
+		}
+		return beziers[lengthRatio.Length-1].point( 1.0 );;
+	}
+
+	public function place( transform:Transform, ratio:float ){
+		transform.position = point( ratio );
+		ratio += 0.00001;
+		if(ratio<=1.0)
+			transform.LookAt( point( ratio ) );
 	}
 }
 
@@ -462,7 +581,7 @@ public static function update() {
 						case TweenAction.MOVE_LOCAL:
 							tween.from = trans.localPosition; break;
 						case TweenAction.MOVE_CURVED:
-							tween.curves[0] = trans.position;
+							tween.path.pts[0] = trans.position;
 							tween.from.x = 0; break;
 						case TweenAction.ROTATE:
 							tween.from = trans.eulerAngles; 
@@ -604,15 +723,11 @@ public static function update() {
 						}else if(tweenAction==TweenAction.MOVE_LOCAL_Z){
 							trans.localPosition.z = val;
 						}else if(tweenAction==TweenAction.MOVE_CURVED){
-							var curveLength:float = tween.curves.Length / 4;
-							var offset:float = Mathf.Floor(val * curveLength);
-							if(val>=1.0)
-								offset = offset - 1.0;
-							var valA:float = (val - 1.0 / curveLength * offset) * curveLength;
-							// print("val:"+val+" valA:"+valA+" offset:"+offset+" curveLength:"+curveLength);
-							offset *= 4;
-							
-							trans.position = calculateBezierPoint(valA, tween.curves[offset+0], tween.curves[offset+1], tween.curves[offset+2], tween.curves[offset+3]);
+							if(tween.path.orientToPath){
+								tween.path.place( trans, val );
+							}else{
+								trans.position = tween.path.point( val );
+							}
 							// Debug.Log("val:"+val+" trans.position:"+trans.position + " 0:"+ tween.curves[0] +" 1:"+tween.curves[1] +" 2:"+tween.curves[2] +" 3:"+tween.curves[3]);
 						}else if(tweenAction==TweenAction.SCALE_X){
 							trans.localScale.x = val;
@@ -914,8 +1029,8 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 				tween.ltRect = optional["rect"];
 				optionsNotUsed++;
 			}
-			if(optional["curves"]!=null){
-				tween.curves = optional["curves"];
+			if(optional["path"]!=null){
+				tween.path = optional["path"];
 				optionsNotUsed++;
 			}
 			if(optional["delay"]!=null){
@@ -1360,13 +1475,13 @@ public static function move(gameObject:GameObject, to:Vector3[], time:float, opt
 }
 
 public static function move(gameObject:GameObject, to:Vector3[], time:float, optional:Hashtable):int{
-	if(to.Length<3){
-		var errorMsg:String = "LeanTween - When passing values for a vector path, you must pass three or more values!";
+	if(to.Length<4){
+		var errorMsg:String = "LeanTween - When passing values for a vector path, you must pass four or more values!";
 		if(throwErrors) Debug.LogError(errorMsg); else Debug.Log(errorMsg);
 		return -1;
 	}
-	if(to.Length%3!=0){
-		var errorMsg2:String = "LeanTween - When passing values for a vector path, they must be in sets of three: controlPoint1, controlPoint2, endPoint2, ...";
+	if(to.Length%4!=0){
+		var errorMsg2:String = "LeanTween - When passing values for a vector path, they must be in sets of four: controlPoint1, controlPoint2, endPoint2, controlPoint2, controlPoint2...";
 		if(throwErrors) Debug.LogError(errorMsg2); else Debug.Log(errorMsg2);
 		return -1;
 	}
@@ -1375,21 +1490,10 @@ public static function move(gameObject:GameObject, to:Vector3[], time:float, opt
 	if( optional == null )
 		optional = new Hashtable();
 
-	var newLen:int = to.Length / 3;
-	newLen = to.Length + newLen;
-	var toAdded:Vector3[] = new Vector3[ newLen ];
-
-	var k:int = 0;
-	for(j = 0; j < toAdded.Length; j++){
-		if(j%4==0){
-			if(k!=0)
-				toAdded[j] = to[k-1];
-		}else{
-			toAdded[j] = to[k];
-			k++;
-		}
-	}
-	optional["curves"] = toAdded;
+	var ltPath:LTBezierPath = new LTBezierPath( to );
+	if(optional["orientToPath"])
+		ltPath.orientToPath = true;
+	optional["path"] = ltPath;
 
 	return pushNewTween( gameObject, Vector3(1.0,0.0,0.0), time, TweenAction.MOVE_CURVED, optional );
 }
