@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 0.99 - http://dentedpixel.com/developer-diary/
+// LeanTween version 1.0 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -277,43 +277,33 @@ class LTBezier{
 	public var length:float;
 
 	private var a:Vector3;
-	private var b:Vector3;
-	private var c:Vector3;
-	private var d:Vector3;
+	private var aa:Vector3;
+	private var bb:Vector3;
+	private var cc:Vector3;
 	private var len:float;
 	private var arcLengths:float[];
 
 	public function LTBezier(a:Vector3, b:Vector3, c:Vector3, d:Vector3, precision:float){
 		this.a = a;
-	    this.b = b;
-	    this.c = c;
-	    this.d = d;
+	    aa = (-a + 3*(b-c) + d);
+	    bb = 3*(a+c) - 6*b;
+	    cc = 3*(b-a);
 
 	    this.len = 1.0 / precision;
-	    this.arcLengths = new float[this.len + 1];
-	    this.arcLengths[0] = 0;
+	    arcLengths = new float[this.len + 1];
+	    arcLengths[0] = 0;
 
-	    var ov:Vector3 = Vector3(x(0),y(0),z(0));
+	    var ov:Vector3 = a;
 	    var v:Vector3;
 	    var clen:float = 0.0;
 	    for(var i:int = 1; i <= this.len; i++) {
-	        v = Vector3(x(i * precision), y(i * precision), z(i * precision));
+	        v = bezierPoint(i * precision);
 	        clen += (ov - v).magnitude;
 	        this.arcLengths[i] = clen;
 	        ov = v;
 	    }
 	    this.length = clen;
 	}
-
-	private function x(t:float):float {
-        return ((1 - t) * (1 - t) * (1 - t)) * this.a.x + 3 * ((1 - t) * (1 - t)) * t * this.b.x + 3 * (1 - t) * (t * t) * this.c.x + (t * t * t) * this.d.x;
-    }
-    private function y(t:float):float {
-        return ((1 - t) * (1 - t) * (1 - t)) * this.a.y + 3 * ((1 - t) * (1 - t)) * t * this.b.y + 3 * (1 - t) * (t * t) * this.c.y + (t * t * t) * this.d.y;
-    }
-    private function z(t:float):float {
-        return ((1 - t) * (1 - t) * (1 - t)) * this.a.z + 3 * ((1 - t) * (1 - t)) * t * this.b.z + 3 * (1 - t) * (t * t) * this.c.z + (t * t * t) * this.d.z;
-    }
 
     private function map(u:float):float {
         var targetLength:float = u * this.arcLengths[this.len];
@@ -333,20 +323,24 @@ class LTBezier{
         if(index<0)
         	index = 0;
 
-        var lengthBefore:float = this.arcLengths[index];
-
-        return (index + (targetLength - lengthBefore) / (this.arcLengths[index + 1] - lengthBefore)) / this.len;
+        return (index + (targetLength - arcLengths[index]) / (arcLengths[index + 1] - arcLengths[index])) / this.len;
     }
 
-    private function mx(u:float):float { return this.x(this.map(u)); }
-    private function my(u:float):float { return this.y(this.map(u)); }
-    private function mz(u:float):float { return this.z(this.map(u)); }
+   	private function bezierPoint(t:float):Vector3{
+	    return ((aa* t + (bb))* t + cc)* t + a;
+	}
 
     public function point(t:float):Vector3{ 
-    	return Vector3(mx(t),my(t),mz(t)); 
+    	return bezierPoint( map(t) ); 
     }
 }
 
+/**
+* Manually animate along a bezier path with this class
+* @class LTBezierPath
+* @constructor
+* @param {float} pts:Vector3[] A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
+*/
 class LTBezierPath{
 	public var pts:Vector3[];
 	public var length:float;
@@ -354,21 +348,19 @@ class LTBezierPath{
 
 	private var beziers:LTBezier[];
 	private var lengthRatio:float[];
-	private var curveLength:float;
 	
 	public function LTBezierPath( pts_:Vector3[] ){
 		pts = pts_;
-		curveLength = pts.Length / 4;
-
+		
 		var k:int = 0;
-		beziers = new LTBezier[ curveLength ];
-		lengthRatio = new float[ curveLength ];
+		beziers = new LTBezier[ pts.Length / 4 ];
+		lengthRatio = new float[ beziers.Length ];
 		for(var i:int=0; i < pts.Length; i+=4){
 			beziers[k] = new LTBezier(pts[i+0],pts[i+2],pts[i+1],pts[i+3],0.05);
 			length += beziers[k].length;
 			k++;
 		}
-
+		// Debug.Log("beziers.Length:"+beziers.Length + " beziers:"+beziers);
 		for(i = 0; i < beziers.Length; i++){
 			lengthRatio[i] = beziers[i].length / length;
 		}
@@ -385,10 +377,14 @@ class LTBezierPath{
 	}
 
 	public function place( transform:Transform, ratio:float ){
+		place( transform, ratio, Vector3.up );
+	}
+
+	public function place( transform:Transform, ratio:float, worldUp:Vector3 ){
 		transform.position = point( ratio );
-		ratio += 0.00001;
+		ratio += 0.001;
 		if(ratio<=1.0)
-			transform.LookAt( point( ratio ) );
+			transform.LookAt( point( ratio ), worldUp );
 	}
 }
 
@@ -432,6 +428,7 @@ private enum TweenAction{
 * <strong>useFrames</strong>: Instead of time passed for both the delay and time value, the amount of frames that have passed is used <i>ex: {"useFrames":true}</i><br>
 * <strong>onCompleteTarget</strong>: In C# if you are passing a String to the "onComplete" parameter, this variable allows you to define target to call the function than the game object you are tweening.<br>
 * <strong>onUpdateTarget</strong>: The same as onCompleteTarget, but for the onUpdate function.<br>
+* <strong>orientToPath</strong>: When moving objects along a bezier curve, this controls whether the object aligns itself with the curve or not
 *
 * @class LeanTween
 */
@@ -1134,19 +1131,19 @@ public static function isTweening( ltRect:LTRect ):boolean{
 	return false;
 }
 
-public static function calculateBezierPoint(t : float, p0 : Vector3, p1 : Vector3 , p2 : Vector3 , p3 : Vector3){
-    var u : float = 1.0 - t;
-    var tt : float = t * t;
-    var uu : float = u * u;
-    var uuu : float = uu * u;
-    var ttt : float = tt * t;
-
-    var p : Vector3 = uuu * p0; //first term
-    p += 3 * uu * t * p1; //second term
-    p += 3 * u * tt * p2; //third term
-    p += ttt * p3; //fourth term
-
-    return p;
+public static function drawBezierPath(a:Vector3, b:Vector3, c:Vector3, d:Vector3){
+    var last:Vector3 = a;
+    var p:Vector3;
+    var aa:Vector3 = (-a + 3*(b-c) + d);
+	var bb:Vector3 = 3*(a+c) - 6*b;
+	var cc:Vector3 = 3*(b-a);
+	var t:float;
+    for(var k:float = 1.0 ; k <= 30.0; k++){
+    	t = k / 30.0;
+    	p = ((aa* t + (bb))* t + cc)* t + a;
+	    Gizmos.DrawLine(last, p);
+	    last = p;
+	}
 }
 
 /**
@@ -1474,6 +1471,24 @@ public static function move(gameObject:GameObject, to:Vector3[], time:float, opt
 	return move( gameObject, to, time, LeanTween.h( optional ) );
 }
 
+/**
+* Move a GameObject along a set of bezier curves
+* 
+* @method LeanTween.move
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle1,Handle2,Point2,...
+* @param {float} time:float The time to complete the tween in
+* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
+* @return {int} Returns an integer id that is used to distinguish this tween
+* @example
+* <i>Javascript:</i><br>
+* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0, {"ease":LeanTween.easeOutQuad,"orientToPath":true});<br><br>
+* <i>C#:</i><br>
+* Hashtable optional = new Hashtable();<br>
+* optional.Add("ease":LeanTweenType.easeOutQuad);<br>
+* optional.Add("orientToPath":true);<br>
+* LeanTween.move(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f, optional);<br>
+*/
 public static function move(gameObject:GameObject, to:Vector3[], time:float, optional:Hashtable):int{
 	if(to.Length<4){
 		var errorMsg:String = "LeanTween - When passing values for a vector path, you must pass four or more values!";
