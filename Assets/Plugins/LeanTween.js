@@ -508,7 +508,7 @@ private static var isTweenFinished:boolean;
 private static var target:GameObject;
 private static var customTarget:GameObject;
 
-public static function update() {
+private static function update() {
 	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
 		init();
 		dtEstimated = Application.targetFrameRate > 0 ? 1.0 / Application.targetFrameRate : 1.0 / 60.0;
@@ -1173,6 +1173,9 @@ public static function value(gameObject:GameObject, callOnUpdate:String, from:fl
 }
 public static function value(gameObject:GameObject, callOnUpdate:String, from:float, to:float, time:float, optional:Object[]):int{
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
+}
+public static function value(gameObject:GameObject, callOnUpdate:String, from:float, to:float, time:float):int{
+	return value(gameObject, callOnUpdate, from, to, time, emptyHash); 
 }
 
 public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float):int{
