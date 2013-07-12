@@ -386,6 +386,17 @@ class LTBezierPath{
 		if(ratio<=1.0)
 			transform.LookAt( point( ratio ), worldUp );
 	}
+
+	public function placeLocal( transform:Transform, ratio:float ){
+		placeLocal( transform, ratio, Vector3.up );
+	}
+
+	public function placeLocal( transform:Transform, ratio:float, worldUp:Vector3 ){
+		transform.localPosition = point( ratio );
+		ratio += 0.001;
+		if(ratio<=1.0)
+			transform.LookAt( point( ratio ), worldUp );
+	}
 }
 
 private enum TweenAction{
@@ -396,6 +407,7 @@ private enum TweenAction{
 	MOVE_LOCAL_Y,
 	MOVE_LOCAL_Z,
 	MOVE_CURVED,
+	MOVE_CURVED_LOCAL,
 	SCALE_X,
 	SCALE_Y,
 	SCALE_Z,
@@ -580,6 +592,9 @@ private static function update() {
 						case TweenAction.MOVE_CURVED:
 							tween.path.pts[0] = trans.position;
 							tween.from.x = 0; break;
+						case TweenAction.MOVE_CURVED_LOCAL:
+							tween.path.pts[0] = trans.localPosition;
+							tween.from.x = 0; break;
 						case TweenAction.ROTATE:
 							tween.from = trans.eulerAngles; 
 							tween.to.x = LeanTween.closestRot( tween.from.x, tween.to.x);
@@ -726,6 +741,13 @@ private static function update() {
 								trans.position = tween.path.point( val );
 							}
 							// Debug.Log("val:"+val+" trans.position:"+trans.position + " 0:"+ tween.curves[0] +" 1:"+tween.curves[1] +" 2:"+tween.curves[2] +" 3:"+tween.curves[3]);
+						}else if(tweenAction==TweenAction.MOVE_CURVED_LOCAL){
+							if(tween.path.orientToPath){
+								tween.path.placeLocal( trans, val );
+							}else{
+								trans.localPosition = tween.path.point( val );
+							}
+							// Debug.Log("val:"+val+" trans.position:"+trans.position);
 						}else if(tweenAction==TweenAction.SCALE_X){
 							trans.localScale.x = val;
 						}else if(tweenAction==TweenAction.SCALE_Y){
@@ -1470,10 +1492,6 @@ public static function move(gameObject:GameObject, to:Vector3, time:float, optio
 	return move( gameObject, to, time, LeanTween.h( optional ) );
 }
 
-public static function move(gameObject:GameObject, to:Vector3[], time:float, optional:Object[]):int{
-	return move( gameObject, to, time, LeanTween.h( optional ) );
-}
-
 /**
 * Move a GameObject along a set of bezier curves
 * 
@@ -1514,6 +1532,55 @@ public static function move(gameObject:GameObject, to:Vector3[], time:float, opt
 	optional["path"] = ltPath;
 
 	return pushNewTween( gameObject, Vector3(1.0,0.0,0.0), time, TweenAction.MOVE_CURVED, optional );
+}
+
+public static function move(gameObject:GameObject, to:Vector3[], time:float, optional:Object[]):int{
+	return move( gameObject, to, time, LeanTween.h( optional ) );
+}
+
+/**
+* Move a GameObject along a set of bezier curves
+* 
+* @method LeanTween.move
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle1,Handle2,Point2,...
+* @param {float} time:float The time to complete the tween in
+* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
+* @return {int} Returns an integer id that is used to distinguish this tween
+* @example
+* <i>Javascript:</i><br>
+* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0, {"ease":LeanTween.easeOutQuad,"orientToPath":true});<br><br>
+* <i>C#:</i><br>
+* Hashtable optional = new Hashtable();<br>
+* optional.Add("ease":LeanTweenType.easeOutQuad);<br>
+* optional.Add("orientToPath":true);<br>
+* LeanTween.move(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f, optional);<br>
+*/
+public static function moveLocal(gameObject:GameObject, to:Vector3[], time:float, optional:Hashtable):int{
+	if(to.Length<4){
+		var errorMsg:String = "LeanTween - When passing values for a vector path, you must pass four or more values!";
+		if(throwErrors) Debug.LogError(errorMsg); else Debug.Log(errorMsg);
+		return -1;
+	}
+	if(to.Length%4!=0){
+		var errorMsg2:String = "LeanTween - When passing values for a vector path, they must be in sets of four: controlPoint1, controlPoint2, endPoint2, controlPoint2, controlPoint2...";
+		if(throwErrors) Debug.LogError(errorMsg2); else Debug.Log(errorMsg2);
+		return -1;
+	}
+
+	init();
+	if( optional == null )
+		optional = new Hashtable();
+
+	var ltPath:LTBezierPath = new LTBezierPath( to );
+	if(optional["orientToPath"])
+		ltPath.orientToPath = true;
+	optional["path"] = ltPath;
+
+	return pushNewTween( gameObject, Vector3(1.0,0.0,0.0), time, TweenAction.MOVE_CURVED_LOCAL, optional );
+}
+public static function moveLocal(gameObject:GameObject, to:Vector3[], time:float, optional:Object[]):int{
+	return moveLocal( gameObject, to, time, LeanTween.h( optional ) );
 }
 
 
@@ -1580,12 +1647,18 @@ public static function moveLocalX(gameObject:GameObject, to:float, time:float, o
 public static function moveLocalX(gameObject:GameObject, to:float, time:float, optional:Object[]):int{
 	return moveLocalX( gameObject, to, time, h(optional) );
 }
+public static function moveLocalX(gameObject:GameObject, to:float, time:float):int{
+	return moveLocalX( gameObject, to, time, emptyHash );
+}
 
 public static function moveLocalY(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
 	return pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.MOVE_LOCAL_Y, optional );
 }
 public static function moveLocalY(gameObject:GameObject, to:float, time:float, optional:Object[]):int{
 	return moveLocalY( gameObject, to, time, h(optional) );
+}
+public static function moveLocalY(gameObject:GameObject, to:float, time:float):int{
+	return moveLocalY( gameObject, to, time, emptyHash );
 }
 
 public static function moveLocalZ(gameObject:GameObject, to:float, time:float, optional:Hashtable):int{
@@ -1594,10 +1667,10 @@ public static function moveLocalZ(gameObject:GameObject, to:float, time:float, o
 public static function moveLocalZ(gameObject:GameObject, to:float, time:float, optional:Object[]):int{
 	return moveLocalZ( gameObject, to, time, h(optional) );
 }
-
-public static function scale(gameObject:GameObject, to:Vector3, time:float):int{
-	return scale( gameObject, to, time, emptyHash );
+public static function moveLocalZ(gameObject:GameObject, to:float, time:float):int{
+	return moveLocalZ( gameObject, to, time, emptyHash );
 }
+
 
 /**
 * Scale a GameObject to a certain size
@@ -1612,9 +1685,11 @@ public static function scale(gameObject:GameObject, to:Vector3, time:float):int{
 public static function scale(gameObject:GameObject, to:Vector3, time:float, optional:Hashtable):int{
 	return pushNewTween( gameObject, to, time, TweenAction.SCALE, optional );
 }
-
 public static function scale(gameObject:GameObject, to:Vector3, time:float, optional:Object[]):int{
 	return scale( gameObject, to, time, h(optional) );
+}
+public static function scale(gameObject:GameObject, to:Vector3, time:float):int{
+	return scale( gameObject, to, time, emptyHash );
 }
 
 /**
