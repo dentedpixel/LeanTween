@@ -395,7 +395,7 @@ class LTBezierPath{
 		transform.localPosition = point( ratio );
 		ratio += 0.001;
 		if(ratio<=1.0)
-			transform.LookAt( point( ratio ), worldUp );
+			transform.LookAt( transform.parent.TransformPoint( point( ratio ) ), worldUp );
 	}
 }
 
@@ -590,10 +590,10 @@ private static function update() {
 						case TweenAction.MOVE_LOCAL:
 							tween.from = trans.localPosition; break;
 						case TweenAction.MOVE_CURVED:
-							tween.path.pts[0] = trans.position;
+							// tween.path.pts[0] = trans.position;
 							tween.from.x = 0; break;
 						case TweenAction.MOVE_CURVED_LOCAL:
-							tween.path.pts[0] = trans.localPosition;
+							// tween.path.pts[0] = trans.localPosition;
 							tween.from.x = 0; break;
 						case TweenAction.ROTATE:
 							tween.from = trans.eulerAngles; 
