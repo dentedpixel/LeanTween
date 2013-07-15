@@ -13,7 +13,7 @@ public class ExampleCSharp : MonoBehaviour {
 	
 	public delegate void NextFunc();
 	private int exampleIter = 0;
-	private string[] exampleFunctions = new string[] { "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample" };
+	private string[] exampleFunctions = new string[] { "updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample" };
 	private bool useEstimatedTime = true;
 	private GameObject ltLogo;
 
@@ -40,6 +40,32 @@ public class ExampleCSharp : MonoBehaviour {
 		exampleIter = exampleIter+1>=exampleFunctions.Length ? 0 : exampleIter + 1;
 		
 		LeanTween.delayedCall( gameObject, 1.05f, "cycleThroughExamples", new object[]{ "useEstimatedTime", useEstimatedTime, "ease", customAnimationCurve } );
+	}
+
+	public void loopTestClamp(){
+		Debug.Log("loopTestClamp");
+		GameObject cube1 = GameObject.Find("Cube1");
+		cube1.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		LeanTween.scaleZ( cube1, 4.0f, 1.0f, new object[]{ "ease",LeanTweenType.easeOutElastic,"useEstimatedTime",useEstimatedTime,"repeat",7});
+	}
+
+	public void loopPause(){
+		GameObject cube1 = GameObject.Find("Cube1");
+		LeanTween.pause(cube1);
+	}
+
+	public void loopResume(){
+		GameObject cube1 = GameObject.Find("Cube1");
+		LeanTween.resume(cube1 );
+	}
+
+	private int loopTestId;
+
+	public void loopTestPingPong(){
+		Debug.Log("loopTestPingPong");
+		GameObject cube2 = GameObject.Find("Cube2");
+		cube2.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		LeanTween.scaleY( cube2, 4.0f, 1.0f, new object[]{ "ease",LeanTweenType.easeOutQuad,"useEstimatedTime",useEstimatedTime,"repeat",8,"loopType",LeanTweenType.pingPong});
 	}
 
 	public void moveOnACurveExample(){
@@ -109,6 +135,15 @@ public class ExampleCSharp : MonoBehaviour {
 		Vector3 tmp = ltLogo.transform.eulerAngles;
 		tmp.y = val;
 		ltLogo.transform.eulerAngles = tmp;
+	}
+
+	public void updateValue3Example(){
+		Debug.Log("updateValue3Example");
+		LeanTween.value( gameObject, "updateValue3ExampleCallback", new Vector3(0.0f, 270.0f, 0.0f), new Vector3(30.0f, 270.0f, 180f), 0.5f, new object[]{"ease",LeanTweenType.easeInBounce,"useEstimatedTime",useEstimatedTime,"repeat",2,"loopType",LeanTweenType.pingPong});
+	}
+
+	public void updateValue3ExampleCallback( Vector3 val ){
+		ltLogo.transform.eulerAngles = val;
 	}
 	
 	public void delayedCallExample(){

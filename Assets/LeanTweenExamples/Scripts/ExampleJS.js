@@ -15,6 +15,11 @@ function Awake(){
 function Start () {
 	ltLogo = GameObject.Find("LeanTweenLogo");
 	cycleThroughExamples();
+	// loopTestClamp();
+	// loopTestPingPong();
+	// LeanTween.delayedCall(2.6, loopPause);
+	// LeanTween.delayedCall(3.5, loopResume);
+	// updateValue3Example();
 }
 
 function OnGUI(){
@@ -22,7 +27,7 @@ function OnGUI(){
 }
 
 private var exampleIter:int = 0;
-private var exampleFunctions = [moveOnACurveExample,punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, alphaExample, moveLocalExample, delayedCallExample];
+private var exampleFunctions = [updateValue3Example,loopTestPingPong,loopTestClamp,moveOnACurveExample,punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, alphaExample, moveLocalExample, delayedCallExample];
 private var useEstimatedTime:boolean = true;
 private var ltLogo:GameObject;
 
@@ -35,6 +40,32 @@ function cycleThroughExamples(){
 	exampleIter = exampleIter+1>=exampleFunctions.length ? 0 : exampleIter + 1;
 	
 	LeanTween.delayedCall( 1.05, cycleThroughExamples, ["useEstimatedTime",useEstimatedTime]);
+}
+
+function loopTestClamp(){
+	Debug.Log("loopTestClamp");
+	var cube1:GameObject = GameObject.Find("Cube1");
+	cube1.transform.localScale.z = 1.0;
+	LeanTween.scaleZ( cube1, 4.0, 1.0, ["ease",LeanTweenType.easeOutElastic,"useEstimatedTime",useEstimatedTime,"repeat",7]);
+}
+
+function loopPause(){
+	var cube1:GameObject = GameObject.Find("Cube1");
+	LeanTween.pause(cube1);
+}
+
+function loopResume(){
+	var cube1:GameObject = GameObject.Find("Cube1");
+	LeanTween.resume(cube1 );
+}
+
+private var loopTestId:int;
+
+function loopTestPingPong(){
+	Debug.Log("loopTestPingPong");
+	var cube2:GameObject = GameObject.Find("Cube2");
+	cube2.transform.localScale.y = 1.0;
+	LeanTween.scaleY( cube2, 4.0, 1.0, ["ease",LeanTweenType.easeOutQuad,"useEstimatedTime",useEstimatedTime,"repeat",8,"loopType",LeanTweenType.pingPong]);
 }
 
 function moveOnACurveExample(){
@@ -76,12 +107,20 @@ function scaleExample(){
 
 function updateValueExample(){
 	Debug.Log("updateValueExample");
-	
 	LeanTween.value( ltLogo, updateValueExampleCallback, ltLogo.transform.eulerAngles.y, 270.0, 1, ["ease",LeanTweenType.easeOutElastic,"useEstimatedTime",useEstimatedTime]);
 }
 
 function updateValueExampleCallback( val:float ){
 	ltLogo.transform.eulerAngles.y = val;
+}
+
+function updateValue3Example(){
+	Debug.Log("updateValue3Example");
+	LeanTween.value( ltLogo, updateValue3ExampleCallback, new Vector3(0.0, 270.0, 0.0), new Vector3(30.0, 270.0, 180), 0.5, ["ease",LeanTweenType.easeInBounce,"useEstimatedTime",useEstimatedTime,"repeat",2,"loopType",LeanTweenType.pingPong]);
+}
+
+function updateValue3ExampleCallback( val:Vector3 ){
+	ltLogo.transform.eulerAngles = val;
 }
 
 function delayedCallExample(){

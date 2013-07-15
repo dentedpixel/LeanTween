@@ -146,7 +146,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
-	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch
+	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong
 }
 
 class TweenDescr{
@@ -168,6 +168,9 @@ class TweenDescr{
 	var tweenType:LeanTweenType;
 	var animationCurve:AnimationCurve;
 	var id:int;
+	var loopType:int;
+	var loopCount:int;
+	var direction:float;
 	
 	public function ToString(){
 		return "gameObject:"+trans.gameObject+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" optional:"+optional;
@@ -422,6 +425,7 @@ private enum TweenAction{
 	ROTATE,
 	ROTATE_LOCAL,
 	SCALE,
+	VALUE3,
 	GUI_MOVE,
 	GUI_SCALE,
 	GUI_ALPHA,
@@ -519,6 +523,8 @@ private static var newVect:Vector3;
 private static var isTweenFinished:boolean;
 private static var target:GameObject;
 private static var customTarget:GameObject;
+private static var onUpdateS:String;
+private static var onUpdateF:Function;
 
 private static function update() {
 	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
@@ -554,11 +560,14 @@ private static function update() {
 				
 				// Check for tween finished
 				isTweenFinished = false;
-				if(tween.passed + dt > timeTotal){
+				if((tween.passed + dt > timeTotal && tween.direction > 0.0 )){
 					isTweenFinished = true;
 					tween.passed = timeTotal; // Set to the exact end time so that it can finish tween exactly on the end value
+				}else if(tween.direction<0.0 && tween.passed - dt < 0.0){
+					isTweenFinished = true;
+					tween.passed = Mathf.Epsilon;
 				}
-				
+
 				if(tween.passed==0.0 && tweens[i].delay==0.0){
 					// Initialize From Values
 					switch(tweenAction){
@@ -897,19 +906,36 @@ private static function update() {
 						var onUpdate = optionalItems["onUpdate"];
 						if(onUpdate!=null){
 							var updateParam:Hashtable = optionalItems["onUpdateParam"];
-							if(onUpdate.GetType() == String){
-								var onUpdateS:String = onUpdate as String;
-								if (optionalItems["onUpdateTarget"]!=null){
-									customTarget = optionalItems["onUpdateTarget"];
-									customTarget.BroadcastMessage( onUpdateS, val );
+							if(tweenAction==TweenAction.VALUE3){
+								if(onUpdate.GetType() == String){
+									onUpdateS = onUpdate as String;
+									if (optionalItems["onUpdateTarget"]!=null){
+										customTarget = optionalItems["onUpdateTarget"];
+										customTarget.BroadcastMessage( onUpdateS, newVect );
+									}else{
+										trans.gameObject.BroadcastMessage( onUpdateS, newVect );
+									}
 								}else{
-									trans.gameObject.BroadcastMessage( onUpdateS, val );
+									onUpdateF = onUpdate as Function;
+									if(updateParam!=null) onUpdateF( newVect, updateParam );
+									else onUpdateF(newVect);
 								}
 							}else{
-								var onUpdateF:Function = onUpdate as Function;
-								if(updateParam!=null) onUpdateF( val, updateParam );
-								else onUpdateF(val);
+								if(onUpdate.GetType() == String){
+									onUpdateS = onUpdate as String;
+									if (optionalItems["onUpdateTarget"]!=null){
+										customTarget = optionalItems["onUpdateTarget"];
+										customTarget.BroadcastMessage( onUpdateS, val );
+									}else{
+										trans.gameObject.BroadcastMessage( onUpdateS, val );
+									}
+								}else{
+									onUpdateF = onUpdate as Function;
+									if(updateParam!=null) onUpdateF( val, updateParam );
+									else onUpdateF(val);
+								}
 							}
+							
 						}
 					}
 				}
@@ -918,35 +944,48 @@ private static function update() {
 					if(tweenAction==TweenAction.GUI_ROTATE){
 						tween.ltRect.rotateFinished = true;
 					}
-					var callback:Function;
-					var callbackS:String;
-					var callbackParam;
-					if(tween.optional!=null && tween.trans!=null){
-						if(optionalItems["onComplete"]!=null){
-							if(optionalItems["onComplete"].GetType()==String){
-								callbackS = optionalItems["onComplete"] as String;
+					// Debug.Log("tween.loopCount:"+tween.loopCount);
+					if(tween.loopType==LeanTweenType.once || tween.loopCount==1){
+						var callback:Function;
+						var callbackS:String;
+						var callbackParam;
+						if(tween.optional!=null && tween.trans!=null){
+							if(optionalItems["onComplete"]!=null){
+								if(optionalItems["onComplete"].GetType()==String){
+									callbackS = optionalItems["onComplete"] as String;
+								}else{
+									callback = optionalItems["onComplete"] as Function;
+								}
+							}
+							callbackParam = optionalItems["onCompleteParam"];
+						}
+						removeTween(i);
+						if(callback!=null){
+							if(callbackParam) callback( callbackParam );
+							else callback();
+						}else if(callbackS!=null){
+							if (optionalItems["onCompleteTarget"]!=null){
+								customTarget = optionalItems["onCompleteTarget"];
+								if(callbackParam!=null) customTarget.BroadcastMessage( callbackS, callbackParam );
+								else customTarget.BroadcastMessage( callbackS );
 							}else{
-								callback = optionalItems["onComplete"] as Function;
+								if(callbackParam!=null) trans.gameObject.BroadcastMessage( callbackS, callbackParam );
+								else trans.gameObject.BroadcastMessage( callbackS );
 							}
 						}
-						callbackParam = optionalItems["onCompleteParam"];
-					}
-					removeTween(i);
-					if(callback!=null){
-						if(callbackParam) callback( callbackParam );
-						else callback();
-					}else if(callbackS!=null){
-						if (optionalItems["onCompleteTarget"]!=null){
-							customTarget = optionalItems["onCompleteTarget"];
-							if(callbackParam!=null) customTarget.BroadcastMessage( callbackS, callbackParam );
-							else customTarget.BroadcastMessage( callbackS );
-						}else{
-							if(callbackParam!=null) trans.gameObject.BroadcastMessage( callbackS, callbackParam );
-							else trans.gameObject.BroadcastMessage( callbackS );
+					}else{
+						if(tween.loopCount>=1){
+							tween.loopCount--;
+						}
+						if(tween.loopType==LeanTweenType.clamp){
+							tween.passed = Mathf.Epsilon;
+							// tween.delay = 0.0;
+						}else if(tween.loopType==LeanTweenType.pingPong){
+							tween.direction = 0.0-(tween.direction);
 						}
 					}
 				}else if(tween.delay<=0){
-					tween.passed += dt;
+					tween.passed += dt*tween.direction;
 				}else{
 					tween.delay -= dt;
 					if(tween.delay<0){
@@ -1021,6 +1060,8 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 	tween.useFrames = false;
 	tween.animationCurve = null;
 	tween.tweenType = LeanTweenType.linear;
+	tween.loopType = LeanTweenType.once;
+	tween.direction = 1.0;
 
 	if(optional!=null && optional!=emptyHash){
 		easeDefinition = optional["ease"];
@@ -1062,6 +1103,16 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 			}
 			if(optional["useFrames"]!=null){
 				tween.useFrames = optional["useFrames"];
+				optionsNotUsed++;
+			}
+			if(optional["loopType"]!=null){
+				tween.loopType = optional["loopType"];
+				optionsNotUsed++;
+			}
+			if(optional["repeat"]!=null){
+				tween.loopCount = optional["repeat"];
+				if(tween.loopType==LeanTweenType.once)
+					tween.loopType = LeanTweenType.clamp;
 				optionsNotUsed++;
 			}
 		}
@@ -1133,6 +1184,74 @@ public static function cancel( gameObject:GameObject, id:int ){
 	for(var i:int = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans===trans && tweens[i].id == id)
 			removeTween(i);
+	}
+}
+
+/**
+* Pause a specific tween for a gameObject
+* 
+* @method LeanTween.pause
+* @param {GameObject} gameObject:GameObject GameObject whose tweens you want to pause
+* @param {int} id:int Id of the tween you want to cancel ex: var id:int = LeanTween.MoveX(gameObject, 5, 1.0);
+*/
+public static function pause( gameObject:GameObject, id:int ){
+	var trans:Transform = gameObject.transform;
+	for(var i:int = 0; i < tweenMaxSearch; i++){
+		if(tweens[i].trans===trans && tweens[i].id == id){
+			if(tweens[i].optional==null || tweens[i].optional==emptyHash){
+				tweens[i].optional = new Hashtable();
+			}
+			tweens[i].optional["directionSaved"] = tweens[i].direction;
+			tweens[i].direction = 0.0;
+		}
+	}
+}
+
+/**
+* Pause a specific tween for a gameObject
+* 
+* @method LeanTween.pause
+* @param {GameObject} gameObject:GameObject GameObject whose tweens you want to pause
+*/
+public static function pause( gameObject:GameObject ){
+	var trans:Transform = gameObject.transform;
+	for(var i:int = 0; i < tweenMaxSearch; i++){
+		if(tweens[i].trans===trans){
+			if(tweens[i].optional==null || tweens[i].optional==emptyHash){
+				tweens[i].optional = new Hashtable();
+			}
+			tweens[i].optional["directionSaved"] = tweens[i].direction;
+			tweens[i].direction = 0.0;
+		}
+	}
+}
+
+/**
+* Pause a specific tween for a gameObject
+* 
+* @method LeanTween.resume
+* @param {GameObject} gameObject:GameObject GameObject whose tweens you want to resume
+* @param {int} id:int Id of the tween you want to resume ex: var id:int = LeanTween.MoveX(gameObject, 5, 1.0);
+*/
+public static function resume( gameObject:GameObject, id:int ){
+	var trans:Transform = gameObject.transform;
+	for(var i:int = 0; i < tweenMaxSearch; i++){
+		if(tweens[i].trans===trans && tweens[i].id == id)
+			tweens[i].direction = tweens[i].optional["directionSaved"];
+	}
+}
+
+/**
+* Pause a specific tween for a gameObject
+* 
+* @method LeanTween.resume
+* @param {GameObject} gameObject:GameObject GameObject whose tweens you want to resume
+*/
+public static function resume( gameObject:GameObject ){
+	var trans:Transform = gameObject.transform;
+	for(var i:int = 0; i < tweenMaxSearch; i++){
+		if(tweens[i].trans===trans)
+			tweens[i].direction = tweens[i].optional["directionSaved"];
 	}
 }
 
@@ -1227,6 +1346,56 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 }
 
 public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float, optional:Object[]):int{
+	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
+}
+
+/**
+* Tween any particular value (Vector3), it does not need to be tied to any particular type or GameObject
+* 
+* @method LeanTween.value
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {Function} callOnUpdate:Function The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( val:Vector3 ){ }
+* @param {float} from:Vector3 The original value to start the tween from
+* @param {Vector3} to:Vector3 The final Vector3 with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
+* @return {int} Returns an integer id that is used to distinguish this tween
+*/
+public static function value(gameObject:GameObject, callOnUpdate:Function, from:Vector3, to:Vector3, time:float, optional:Hashtable):int{
+	if(optional==null || optional==emptyHash)
+		optional = new Hashtable();
+		
+	optional["onUpdate"] = callOnUpdate;
+	var id:int = pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional );
+	tweens[id].from = from;
+	return id;
+}
+public static function value(gameObject:GameObject, callOnUpdate:Function, from:Vector3, to:Vector3, time:float, optional:Object[]):int{
+	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
+}
+
+/**
+* Tween any particular value (Vector3), it does not need to be tied to any particular type or GameObject
+* 
+* @method LeanTween.value
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {String} callOnUpdate:String The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( val:Vector3 ){ }
+* @param {float} from:Vector3 The original value to start the tween from
+* @param {Vector3} to:Vector3 The final Vector3 with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
+* @return {int} Returns an integer id that is used to distinguish this tween
+*/
+public static function value(gameObject:GameObject, callOnUpdate:String, from:Vector3, to:Vector3, time:float, optional:Hashtable):int{
+	if(optional==null || optional==emptyHash)
+		optional = new Hashtable();
+		
+	optional["onUpdate"] = callOnUpdate;
+	var id:int = pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional );
+	tweens[id].from = from;
+	return id;
+}
+public static function value(gameObject:GameObject, callOnUpdate:String, from:Vector3, to:Vector3, time:float, optional:Object[]):int{
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
 }
 
