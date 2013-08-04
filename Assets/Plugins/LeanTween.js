@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 1.0 - http://dentedpixel.com/developer-diary/
+// LeanTween version 1.11 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -149,7 +149,7 @@ public enum LeanTweenType{
 	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong
 }
 
-class TweenDescr{
+class LeanTweenDescr{
 	var toggle:boolean;
 	var trans:Transform;
 	var ltRect:LTRect;
@@ -174,6 +174,16 @@ class TweenDescr{
 	
 	public function ToString(){
 		return "gameObject:"+trans.gameObject+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" optional:"+optional;
+	}
+
+	public function setDelay( delay:float ):LeanTweenDescr{
+		this.delay = delay;
+		return this;
+	}
+
+	public function setEase( easeType:LeanTweenType ):LeanTweenDescr{
+		this.tweenType = easeType;
+		return this;
 	}
 }
 
@@ -445,6 +455,8 @@ private enum TweenAction{
 * <strong>onCompleteTarget</strong>: In C# if you are passing a String to the "onComplete" parameter, this variable allows you to define target to call the function than the game object you are tweening.<br>
 * <strong>onUpdateTarget</strong>: The same as onCompleteTarget, but for the onUpdate function.<br>
 * <strong>orientToPath</strong>: When moving objects along a bezier curve, this controls whether the object aligns itself with the curve or not
+* <strong>repeat</strong>: If you wish the loop to repeat set this value to something other than 1
+* <strong>loopType</strong>: If the loop is repeating you can change how it repeats (clamp by default) set this value to ping-pong: <i>ex: {"repeat":2,"loopType":LeanTweenType.pingPong}</i><br>
 *
 * @class LeanTween
 */
@@ -452,7 +464,7 @@ private enum TweenAction{
 public class LeanTween extends MonoBehaviour {
 
 public static var throwErrors:boolean = true;
-private static var tweens:TweenDescr[];
+private static var tweens:LeanTweenDescr[];
 private static var tweenMaxSearch:int = 0;
 private static var maxTweens:int = 400;
 private static var frameRendered:int = -1;
@@ -460,7 +472,7 @@ private static var tweenEmpty:GameObject;
 private static var dtEstimated:float;
 private static var dt:float;
 private static var dtActual:float;
-private static var tween:TweenDescr;
+private static var tween:LeanTweenDescr;
 private static var i:int;
 private static var j:int;
 private static var punch:AnimationCurve = new AnimationCurve( Keyframe(0, 0 ), Keyframe(0.112586, 0.9976035 ), Keyframe(0.3120486, -0.1720615 ), Keyframe(0.4316337, 0.07030682 ), Keyframe(0.5524869, -0.03141804 ), Keyframe(0.6549395, 0.003909959 ), Keyframe(0.770987, -0.009817753 ), Keyframe(0.8838775, 0.001939224 ), Keyframe(1, 0 ) );
@@ -491,9 +503,9 @@ public static function init(maxSimultaneousTweens:int){
 		tweenEmpty.DontDestroyOnLoad( tweenEmpty );
 		// tweenEmpty.hideFlags = HideFlags.DontSave;
 		
-		tweens = new TweenDescr[maxTweens];
+		tweens = new LeanTweenDescr[maxTweens];
 		for(i = 0; i < maxTweens; i++){
-			tweens[i] = new TweenDescr();
+			tweens[i] = new LeanTweenDescr();
 		}
 	}
 }
@@ -1121,6 +1133,8 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 		}else{
 			tween.optional = optional;
 		}
+	}else{
+		tween.optional = null;
 	}
 	// Debug.Log("pushing new tween["+i+"]:"+tweens[i]);
 	
@@ -1185,6 +1199,17 @@ public static function cancel( gameObject:GameObject, id:int ){
 		if(tweens[i].trans===trans && tweens[i].id == id)
 			removeTween(i);
 	}
+}
+
+
+public static function description( id:int ):LeanTweenDescr{
+	if(tweens[id].id == id)
+		return tweens[i];
+	for(var i:int = 0; i < tweenMaxSearch; i++){
+		if(tweens[i].id == id)
+			return tweens[i];
+	}
+	return null;
 }
 
 /**
@@ -1573,6 +1598,10 @@ public static function rotateLocal(gameObject:GameObject, to:Vector3, time:float
 
 public static function rotateLocal(gameObject:GameObject, to:Vector3, time:float, optional:Object[]):int{
 	return rotateLocal( gameObject, to, time, h(optional) );
+}
+
+public static function rotateLocal(gameObject:GameObject, to:Vector3, time:float):int{
+	return rotateLocal( gameObject, to, time, emptyHash );
 }
 
 /**
@@ -2086,14 +2115,14 @@ public static function alphaVertex(gameObject:GameObject, to:float, time:float):
 
 // Tweening Functions - Thanks to Robert Penner and GFX47
 
-private static function tweenOnCurve( tweenDescr:TweenDescr, ratioPassed:float ):float{
-	return tweenDescr.from.x + (tweenDescr.to.x - tweenDescr.from.x) * tweenDescr.animationCurve.Evaluate(ratioPassed);
+private static function tweenOnCurve( LeanTweenDescr:LeanTweenDescr, ratioPassed:float ):float{
+	return LeanTweenDescr.from.x + (LeanTweenDescr.to.x - LeanTweenDescr.from.x) * LeanTweenDescr.animationCurve.Evaluate(ratioPassed);
 }
 
-private static function tweenOnCurveVector( tweenDescr:TweenDescr, ratioPassed:float ):Vector3{
-	return	new Vector3(tweenDescr.from.x + (tweenDescr.to.x-tweenDescr.from.x) * tweenDescr.animationCurve.Evaluate(ratioPassed),
-						tweenDescr.from.y + (tweenDescr.to.y-tweenDescr.from.y) * tweenDescr.animationCurve.Evaluate(ratioPassed),
-						tweenDescr.from.z + (tweenDescr.to.z-tweenDescr.from.z) * tweenDescr.animationCurve.Evaluate(ratioPassed) );
+private static function tweenOnCurveVector( LeanTweenDescr:LeanTweenDescr, ratioPassed:float ):Vector3{
+	return	new Vector3(LeanTweenDescr.from.x + (LeanTweenDescr.to.x-LeanTweenDescr.from.x) * LeanTweenDescr.animationCurve.Evaluate(ratioPassed),
+						LeanTweenDescr.from.y + (LeanTweenDescr.to.y-LeanTweenDescr.from.y) * LeanTweenDescr.animationCurve.Evaluate(ratioPassed),
+						LeanTweenDescr.from.z + (LeanTweenDescr.to.z-LeanTweenDescr.from.z) * LeanTweenDescr.animationCurve.Evaluate(ratioPassed) );
 }
 
 public static function easeOutQuadOpt( start:float, diff:float, ratioPassed:float ):float{
@@ -2408,4 +2437,68 @@ public static function easeInOutElastic(start:float, end:float, val:float):float
 	return a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
 }
 
+private static var eventListeners:LTListener[,];
+private static var goListeners:GameObject[,];
+private static var maxListenerSearch:int = 0;
+public static var maxListeners:int = 10;
+public static var maxGoListeners:int = 10;
+
+public static function addListener( listener:Component, event:int ){
+	if(eventListeners==null){
+		eventListeners = new LTListener[ maxListeners, maxGoListeners ];
+		goListeners = new GameObject[ maxListeners, maxGoListeners ];
+	}
+	for(i = 0; i < maxGoListeners; i++){
+		if(eventListeners[ event, i ] == null){
+			eventListeners[ event, i ] = listener;
+			goListeners[ event, i] = listener.gameObject;
+			if(i>=maxListenerSearch)
+				maxListenerSearch = i+1;
+
+			return;
+		}
+	}
+
+	Debug.LogError("you ran out of areas to add listeners");
+}
+
+public static function removeListener( listener:LTListener, event:int ):boolean{
+	for(i = 0; i < maxListenerSearch; i++){
+		if(eventListeners[ event, i ] === listener){
+			eventListeners[ event, i ] = null;
+			goListeners[ event, i] = null;
+			return true;
+		}
+	}
+	return false;
+}
+
+public static function dispatchEvent( event:int ){
+	for(i = 0; i < maxListenerSearch; i++){
+		if(eventListeners[ event, i ]){
+			if(goListeners[event, i]){
+				eventListeners[ event, i ].OnEvent( event );
+			}else{
+				eventListeners[ event, i] = null;
+			}
+		}
+	}
+}
+
+// public static function addDispatcher( dispatcherId:int, maxListeners:int ){
+
+// }
+
+// public static function getDispatcher( dispatcherId:int ){
+
+// }
+
+// public static function removeDispatcher( dispatcherId:int){
+
+// }
+
+}
+
+interface LTListener{
+	function OnEvent( event:int );
 }
