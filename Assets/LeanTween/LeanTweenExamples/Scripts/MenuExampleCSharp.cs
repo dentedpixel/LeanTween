@@ -63,14 +63,14 @@ public class MenuExampleCSharp : MonoBehaviour {
 
 		if(GUI.Button(buttonRect3.rect, "Alpha")){
 			LeanTween.alpha( buttonRect3, 0.0f, 1.0f, new object[]{"ease",LeanTweenType.easeOutQuad} );
-			LeanTween.alpha( buttonRect3, 1.0f, 1.0f, new object[]{"ease",LeanTweenType.easeInQuad,"delay",1.0} );
+			LeanTween.alpha( buttonRect3, 1.0f, 1.0f, new object[]{"ease",LeanTweenType.easeInQuad,"delay",1.0f} );
 		}
 		GUI.color = new Color(1.0f,1.0f,1.0f,1.0f); // Reset to normal alpha, otherwise other gui elements will be effected
 
 		
 		if(GUI.Button(buttonRect4.rect, "Rotate")){
 			LeanTween.rotate( buttonRect4, 150.0f, 1.0f, new object[]{"ease",LeanTweenType.easeOutElastic});
-			LeanTween.rotate( buttonRect4, 0.0f, 1.0f, new object[]{"ease",LeanTweenType.easeOutElastic,"delay",1.0});
+			LeanTween.rotate( buttonRect4, 0.0f, 1.0f, new object[]{"ease",LeanTweenType.easeOutElastic,"delay",1.0f});
 		}
 		GUI.matrix = Matrix4x4.identity;
 	}

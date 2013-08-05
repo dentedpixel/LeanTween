@@ -165,7 +165,7 @@ class LeanTweenDescr{
 	var optional:Hashtable;
 	var delay:float;
 	var tweenFunc:Function;
-	var tweenType:LeanTweenType;
+	var easeType:LeanTweenType;
 	var animationCurve:AnimationCurve;
 	var id:int;
 	var loopType:int;
@@ -182,7 +182,7 @@ class LeanTweenDescr{
 	}
 
 	public function setEase( easeType:LeanTweenType ):LeanTweenDescr{
-		this.tweenType = easeType;
+		this.easeType = easeType;
 		return this;
 	}
 }
@@ -670,7 +670,7 @@ private static function update() {
 						if(animationCurve!=null){
 							val = tweenOnCurve(tween, ratioPassed);
 						}else {
-							switch( tween.tweenType ){
+							switch( tween.easeType ){
 								case LeanTweenType.linear:
 									val = tween.from.x + tween.diff.x * ratioPassed; break;
 								case LeanTweenType.easeOutQuad:
@@ -801,12 +801,12 @@ private static function update() {
 						if(animationCurve!=null){
 							newVect = tweenOnCurveVector(tween, ratioPassed);
 						}else{
-							if(tween.tweenType == LeanTweenType.linear){
+							if(tween.easeType == LeanTweenType.linear){
 								newVect.x = tween.from.x + tween.diff.x * ratioPassed;
 								newVect.y = tween.from.y + tween.diff.y * ratioPassed;
 								newVect.z = tween.from.z + tween.diff.z * ratioPassed;
-							}else if(tween.tweenType >= LeanTweenType.linear){
-								switch(tween.tweenType){
+							}else if(tween.easeType >= LeanTweenType.linear){
+								switch(tween.easeType){
 									case LeanTweenType.easeOutQuad:
 										newVect.x = easeOutQuadOpt(tween.from.x, tween.diff.x, ratioPassed);
 										newVect.y = easeOutQuadOpt(tween.from.y, tween.diff.y, ratioPassed);
@@ -1071,7 +1071,7 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 	tween.useEstimatedTime = false;
 	tween.useFrames = false;
 	tween.animationCurve = null;
-	tween.tweenType = LeanTweenType.linear;
+	tween.easeType = LeanTweenType.linear;
 	tween.loopType = LeanTweenType.once;
 	tween.direction = 1.0;
 
@@ -1079,19 +1079,19 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 		easeDefinition = optional["ease"];
 		var optionsNotUsed:int = 0;
 		if(easeDefinition!=null){
-			tween.tweenType = LeanTweenType.notUsed;
+			tween.easeType = LeanTweenType.notUsed;
 			if( easeDefinition.GetType() == LeanTweenType ){
-				tween.tweenType = easeDefinition;
+				tween.easeType = easeDefinition;
 			}else if(easeDefinition.GetType() == AnimationCurve){
 				tween.animationCurve = easeDefinition as AnimationCurve;
 			}else{
 				tween.tweenFunc = easeDefinition as Function;
 				if(tween.tweenFunc==LeanTween.easeOutQuad){
-					tween.tweenType = LeanTweenType.easeOutQuad;
+					tween.easeType = LeanTweenType.easeOutQuad;
 				}else if(tween.tweenFunc==LeanTween.easeInQuad){
-					tween.tweenType = LeanTweenType.easeInQuad;
+					tween.easeType = LeanTweenType.easeInQuad;
 				}else if(tween.tweenFunc==LeanTween.easeInOutQuad){
-					tween.tweenType = LeanTweenType.easeInOutQuad;
+					tween.easeType = LeanTweenType.easeInOutQuad;
 				}
 			}
 			optionsNotUsed++;
@@ -1203,8 +1203,8 @@ public static function cancel( gameObject:GameObject, id:int ){
 
 
 public static function description( id:int ):LeanTweenDescr{
-	if(tweens[id].id == id)
-		return tweens[i];
+	if(tweens[id] && tweens[id].id == id)
+		return tweens[id];
 	for(var i:int = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].id == id)
 			return tweens[i];
