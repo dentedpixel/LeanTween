@@ -32,6 +32,7 @@ private var useEstimatedTime:boolean = true;
 private var ltLogo:GameObject;
 
 function cycleThroughExamples(){
+	
 	if(exampleIter==0){
 		useEstimatedTime = !useEstimatedTime;
 		Time.timeScale = useEstimatedTime ? 0 : 1; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
