@@ -61,8 +61,8 @@ function OnGUI(){
 
 	
 	if(GUI.Button(buttonRect4.rect, "Rotate")){
-		LeanTween.rotate( buttonRect4, 150.0, 1.0, ["ease",LeanTween.easeOutElastic]);
-		LeanTween.rotate( buttonRect4, 0.0, 1.0, ["ease",LeanTween.easeOutElastic,"delay",1.0]);
+		LeanTween.rotate( buttonRect4, 150.0, 1.0, ["ease",LeanTweenType.easeOutElastic]);
+		LeanTween.rotate( buttonRect4, 0.0, 1.0, ["ease",LeanTweenType.easeOutElastic,"delay",1.0]);
 	}
 	GUI.matrix = Matrix4x4.identity; // Reset to normal rotation, otherwise other gui elements will be effected
 
