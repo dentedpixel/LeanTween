@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 1.15 - http://dentedpixel.com/developer-diary/
+// LeanTween version 1.17 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1139,6 +1139,15 @@ private static function pushNewTween( gameObject:GameObject, to:Vector3, time:fl
 	// Debug.Log("pushing new tween["+i+"]:"+tweens[i]);
 	
 	return tweens[i].id;
+}
+
+public static function add(a: Vector3[], b: Vector3): Vector3[]{
+	var c:Vector3[] = new Vector3[ a.Length ];
+	for(i=0; i<a.Length; i++){
+		c[i] = a[i] + b;
+	}
+
+	return c;
 }
 
 public static function h( arr:Object[] ):Hashtable{
