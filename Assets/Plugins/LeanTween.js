@@ -427,6 +427,7 @@ private enum TweenAction{
 	ROTATE_X,
 	ROTATE_Y,
 	ROTATE_Z,
+	ROTATE_AROUND,
 	ALPHA,
 	ALPHA_VERTEX,
 	CALLBACK,
@@ -640,6 +641,10 @@ private static function update() {
 							tween.to.y = LeanTween.closestRot( tween.from.y, tween.to.y);
 							tween.to.z = LeanTween.closestRot( tween.from.z, tween.to.z);
 							break;
+						case TweenAction.ROTATE_AROUND:
+							tween.optional["last"] = 0.0;
+							tween.optional["origRotation"] = trans.eulerAngles;
+							break;
 						case TweenAction.SCALE:
 							tween.from = trans.localScale; break;
 						case TweenAction.GUI_MOVE:
@@ -781,6 +786,18 @@ private static function update() {
 					    	trans.eulerAngles.y = val;
 					    }else if(tweenAction==TweenAction.ROTATE_Z){
 					    	trans.eulerAngles.z = val;
+					    }else if(tweenAction==TweenAction.ROTATE_AROUND){
+					    	var last:float = tween.optional["last"];
+					    	var move:float = val - last;
+					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
+					    	if(isTweenFinished){
+					    		var origRotation:Vector3 = tween.optional["origRotation"];
+					    		trans.eulerAngles = origRotation;
+					    		trans.RotateAround(tween.optional["point"], tween.optional["axis"], tween.to.x);
+					    	}else{
+					    		trans.RotateAround(tween.optional["point"], tween.optional["axis"], move /*tween.to.x * (dt/timeTotal)*/);
+					    		tween.optional["last"] = val;
+					    	}
 					    }else if(tweenAction==TweenAction.ALPHA){
 							trans.gameObject.renderer.material.color.a = val;
 						}else if(tweenAction==TweenAction.ALPHA_VERTEX){
@@ -927,10 +944,14 @@ private static function update() {
 									}else{
 										trans.gameObject.BroadcastMessage( onUpdateS, newVect );
 									}
-								}else{
-									onUpdateF = onUpdate as Function;
-									if(updateParam!=null) onUpdateF( newVect, updateParam );
-									else onUpdateF(newVect);
+								}else {
+									if(updateParam!=null){ 
+										var onUpdateA:System.Action.<Vector3,Hashtable> = onUpdate as System.Action.<Vector3,Hashtable>;
+										onUpdateA( newVect, updateParam );
+									}else {
+										var onUpdateB:System.Action.<Vector3> = onUpdate as System.Action.<Vector3>;
+										onUpdateB(newVect);
+									}
 								}
 							}else{
 								if(onUpdate.GetType() == String){
@@ -941,10 +962,14 @@ private static function update() {
 									}else{
 										trans.gameObject.BroadcastMessage( onUpdateS, val );
 									}
-								}else{
-									onUpdateF = onUpdate as Function;
-									if(updateParam!=null) onUpdateF( val, updateParam );
-									else onUpdateF(val);
+								}else {
+									if(updateParam!=null){ 
+										var onUpdateC:System.Action.<float,Hashtable> = onUpdate as System.Action.<float,Hashtable>;
+										onUpdateC( val, updateParam );
+									}else {
+										var onUpdateD:System.Action.<float> = onUpdate as System.Action.<float>;
+										onUpdateD(val);
+									}
 								}
 							}
 							
@@ -1014,6 +1039,7 @@ private static function update() {
 
 private static function removeTween( i:int ){
 	tweens[i].toggle = false;
+	tweens[i].optional = null;
 	startSearch = i;
 	//Debug.Log("start search reset:"+startSearch + " i:"+i+" tweenMaxSearch:"+tweenMaxSearch);
 	if(i+1>=tweenMaxSearch){
@@ -1232,7 +1258,7 @@ public static function pause( gameObject:GameObject, id:int ){
 	var trans:Transform = gameObject.transform;
 	for(var i:int = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans===trans && tweens[i].id == id){
-			if(tweens[i].optional==null || tweens[i].optional==emptyHash){
+			if(tweens[i].optional==null || tweens[i].optional.Count==0){
 				tweens[i].optional = new Hashtable();
 			}
 			tweens[i].optional["directionSaved"] = tweens[i].direction;
@@ -1251,7 +1277,7 @@ public static function pause( gameObject:GameObject ){
 	var trans:Transform = gameObject.transform;
 	for(var i:int = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans===trans){
-			if(tweens[i].optional==null || tweens[i].optional==emptyHash){
+			if(tweens[i].optional==null || tweens[i].optional.Count==0){
 				tweens[i].optional = new Hashtable();
 			}
 			tweens[i].optional["directionSaved"] = tweens[i].direction;
@@ -1331,14 +1357,23 @@ public static function drawBezierPath(a:Vector3, b:Vector3, c:Vector3, d:Vector3
 * @param {float} time:float The time to complete the tween in
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
-public static function value(callOnUpdate:Function, from:float, to:float, time:float, optional:Hashtable):int{
+public static function value(callOnUpdate:System.Action.<float>, from:float, to:float, time:float, optional:Hashtable):int{
 	return value( tweenEmpty, callOnUpdate, from, to, time, optional );
 }
-public static function value(callOnUpdate:Function, from:float, to:float, time:float, optional:Object[]):int{
+public static function value(callOnUpdate:System.Action.<float>, from:float, to:float, time:float, optional:Object[]):int{
 	return value( tweenEmpty, callOnUpdate, from, to, time, h(optional) );
 }
+public static function value(callOnUpdate:System.Action.<float,Hashtable>, from:float, to:float, time:float, optional:Hashtable):int{
+	return value( tweenEmpty, callOnUpdate, from, to, time, optional );
+}
+public static function value(callOnUpdate:System.Action.<float,Hashtable>, from:float, to:float, time:float, optional:Object[]):int{
+	return value( tweenEmpty, callOnUpdate, from, to, time, h(optional) );
+}
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<float,Hashtable>, from:float, to:float, time:float, optional:Object[]):int{
+	return value( gameObject, callOnUpdate, from, to, time, h(optional) );
+}
 public static function value(gameObject:GameObject, callOnUpdate:String, from:float, to:float, time:float, optional:Hashtable):int{
-	if(optional==null || optional==emptyHash)
+	if(optional==null || optional.Count==0)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -1353,7 +1388,7 @@ public static function value(gameObject:GameObject, callOnUpdate:String, from:fl
 	return value(gameObject, callOnUpdate, from, to, time, emptyHash); 
 }
 
-public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float):int{
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<float>, from:float, to:float, time:float):int{
 	return value(gameObject, callOnUpdate, from, to, time, emptyHash); 
 }
 
@@ -1369,8 +1404,17 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 * @param {Hashtable} time:Hashtable The time to complete the tween in
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
-public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float, optional:Hashtable):int{
-	if(optional==null || optional==emptyHash)
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<float>, from:float, to:float, time:float, optional:Hashtable):int{
+	if(optional==null || optional.Count==0)
+		optional = new Hashtable();
+		
+	optional["onUpdate"] = callOnUpdate;
+	var id:int = pushNewTween( gameObject, Vector3(to,0,0), time, TweenAction.CALLBACK, optional );
+	tweens[id].from = new Vector3(from,0,0);
+	return id;
+}
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<float,Hashtable>, from:float, to:float, time:float, optional:Hashtable):int{
+	if(optional==null || optional.Count==0)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -1379,7 +1423,7 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 	return id;
 }
 
-public static function value(gameObject:GameObject, callOnUpdate:Function, from:float, to:float, time:float, optional:Object[]):int{
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<float>, from:float, to:float, time:float, optional:Object[]):int{
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
 }
 
@@ -1395,8 +1439,8 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 * @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
-public static function value(gameObject:GameObject, callOnUpdate:Function, from:Vector3, to:Vector3, time:float, optional:Hashtable):int{
-	if(optional==null || optional==emptyHash)
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<Vector3>, from:Vector3, to:Vector3, time:float, optional:Hashtable):int{
+	if(optional==null || optional.Count==0)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -1404,7 +1448,19 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 	tweens[id].from = from;
 	return id;
 }
-public static function value(gameObject:GameObject, callOnUpdate:Function, from:Vector3, to:Vector3, time:float, optional:Object[]):int{
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<Vector3,Hashtable>, from:Vector3, to:Vector3, time:float, optional:Hashtable):int{
+	if(optional==null || optional.Count==0)
+		optional = new Hashtable();
+		
+	optional["onUpdate"] = callOnUpdate;
+	var id:int = pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional );
+	tweens[id].from = from;
+	return id;
+}
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<Vector3>, from:Vector3, to:Vector3, time:float, optional:Object[]):int{
+	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
+}
+public static function value(gameObject:GameObject, callOnUpdate:System.Action.<Vector3,Hashtable>, from:Vector3, to:Vector3, time:float, optional:Object[]):int{
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
 }
 
@@ -1421,7 +1477,7 @@ public static function value(gameObject:GameObject, callOnUpdate:Function, from:
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function value(gameObject:GameObject, callOnUpdate:String, from:Vector3, to:Vector3, time:float, optional:Hashtable):int{
-	if(optional==null || optional==emptyHash)
+	if(optional==null || optional.Count==0)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -1461,12 +1517,13 @@ public static function rotate(gameObject:GameObject, to:Vector3, time:float):int
 * @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
 * @return {int} Returns an integer id that is used to distinguish this tween
 * @example <i>Javascript:</i><br>
-* LeanTween.rotate(cube, Vector3(180,30,0), 1.5, {"ease":LeanTween.easeInOutQuad, onComplete":finishedTweening});
+* LeanTween.rotate(cube, Vector3(180,30,0), 1.5, {"ease":LeanTween.easeInOutQuad, "onComplete":finishedTweening});
 * <br><br>
 * <i>C#: </i> <br>
 * Hashtable optional = new Hashtable();<br>
 * optional.Add("ease":LeanTweenType.easeInOutQuad);<br>
 * optional.Add("onComplete":"finishedTweening");<br>
+* optional.Add("onCompleteTarget":gameObject);<br>
 * LeanTween.rotate(cube, Vector3(180f,30f,0f), 1.5f, optional);<br>
 */
 public static function rotate(gameObject:GameObject, to:Vector3, time:float, optional:Hashtable):int{
@@ -1611,6 +1668,24 @@ public static function rotateLocal(gameObject:GameObject, to:Vector3, time:float
 
 public static function rotateLocal(gameObject:GameObject, to:Vector3, time:float):int{
 	return rotateLocal( gameObject, to, time, emptyHash );
+}
+
+/**
+* Rotate a GameObject in the objects local space (on the transforms localEulerAngles object)
+* 
+* @method LeanTween.rotateLocal
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
+* @param {Vector3} to:Vector3 The final rotation with which to rotate to
+* @param {float} time:float The time to complete the rotation in
+* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
+*/
+public static function rotateAround(gameObject:GameObject, point:Vector3, axis:Vector3, add:float, time:float, optional:Hashtable):int{
+	if(optional==null || optional.Count==0)
+		optional = new Hashtable();
+		
+	optional["axis"] = axis;
+	optional["point"] = point;
+	return pushNewTween( gameObject, Vector3(add,0,0), time, TweenAction.ROTATE_AROUND, optional );
 }
 
 /**
@@ -2001,7 +2076,7 @@ public static function scaleZ(gameObject:GameObject, to:float, time:float, optio
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function delayedCall( delayTime:float, callback:Function):int{
-	return delayedCall( tweenEmpty, delayTime, callback, emptyHash );
+	return delayedCall( tweenEmpty, delayTime, callback, new Hashtable() );
 }
 
 public static function delayedCall( delayTime:float, callback:Function, optional:Hashtable ):int{
@@ -2021,7 +2096,7 @@ public static function delayedCall( delayTime:float, callback:Function, optional
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:Function ):int{
-	return delayedCall( gameObject, delayTime, callback, emptyHash );
+	return delayedCall( gameObject, delayTime, callback, new Hashtable() );
 }
 
 /**
@@ -2035,7 +2110,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:Function, optional:Hashtable ):int{
-	if(optional==null || optional==emptyHash)
+	if(optional==null || optional.Count == 0)
 		optional = new Hashtable();
 		
 	optional["onComplete"] = callback;
@@ -2052,7 +2127,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:String):int{
-	return delayedCall( gameObject, delayTime, callback, emptyHash );
+	return delayedCall( gameObject, delayTime, callback, new Hashtable() );
 }
 /**
 * Call a function after a certain amount of time has passed
@@ -2065,7 +2140,7 @@ public static function delayedCall( gameObject:GameObject, delayTime:float, call
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static function delayedCall( gameObject:GameObject, delayTime:float, callback:String, optional:Hashtable):int{
-	if(optional==null || optional==emptyHash)
+	if(optional==null || optional.Count == 0)
 		optional = new Hashtable();
 	optional["onComplete"] = callback;
 
@@ -2446,34 +2521,47 @@ public static function easeInOutElastic(start:float, end:float, val:float):float
 	return a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
 }
 
-private static var eventListeners:LTListener[,];
+private static var eventListeners:System.Action.<LTEvent>[,];
 private static var goListeners:GameObject[,];
 private static var maxListenerSearch:int = 0;
 public static var maxListeners:int = 10;
 public static var maxGoListeners:int = 10;
 
-public static function addListener( listener:Component, event:int ){
+public static function addListener( event:int, callback:System.Action.<LTEvent> ){
+	addListener(tweenEmpty, event, callback);
+}
+
+// event : {id,obj:{},}
+
+public static function addListener( caller:GameObject, event:int, callback:System.Action.<LTEvent> ){
 	if(eventListeners==null){
-		eventListeners = new LTListener[ maxListeners, maxGoListeners ];
+		eventListeners = new System.Action.<LTEvent>[ maxListeners, maxGoListeners ];
 		goListeners = new GameObject[ maxListeners, maxGoListeners ];
 	}
 	for(i = 0; i < maxGoListeners; i++){
-		if(eventListeners[ event, i ] == null){
-			eventListeners[ event, i ] = listener;
-			goListeners[ event, i] = listener.gameObject;
+		if(goListeners[ event, i]==null || eventListeners[ event, i ] == null){
+			eventListeners[ event, i ] = callback;
+			goListeners[ event, i] = caller;
 			if(i>=maxListenerSearch)
 				maxListenerSearch = i+1;
 
 			return;
 		}
+		if(goListeners[ event, i] === caller && eventListeners[ event, i ] === callback){
+			Debug.Log("This event is already being listened for.");
+			return;
+		}
 	}
-
 	Debug.LogError("you ran out of areas to add listeners");
 }
 
-public static function removeListener( listener:LTListener, event:int ):boolean{
+public static function removeListener( event:int, callback:System.Action ):boolean{
+	return removeListener( tweenEmpty, event, callback);
+}
+
+public static function removeListener( caller:GameObject, event:int, callback:System.Action.<LTEvent> ):boolean{
 	for(i = 0; i < maxListenerSearch; i++){
-		if(eventListeners[ event, i ] === listener){
+		if(goListeners[ event, i] === caller && eventListeners[ event, i ] === callback){
 			eventListeners[ event, i ] = null;
 			goListeners[ event, i] = null;
 			return true;
@@ -2483,10 +2571,14 @@ public static function removeListener( listener:LTListener, event:int ):boolean{
 }
 
 public static function dispatchEvent( event:int ){
+	dispatchEvent( event, null);
+}
+
+public static function dispatchEvent( event:int, data:Object ){
 	for(i = 0; i < maxListenerSearch; i++){
 		if(eventListeners[ event, i ]){
 			if(goListeners[event, i]){
-				eventListeners[ event, i ].OnEvent( event );
+				eventListeners[ event, i ]( LTEvent(event, data));
 			}else{
 				eventListeners[ event, i] = null;
 			}
@@ -2506,6 +2598,16 @@ public static function dispatchEvent( event:int ){
 
 // }
 
+}
+
+class LTEvent{
+	public var id:int;
+	public var data:Object;
+
+	public function LTEvent(id:int, data:Object){
+		this.id = id;
+		this.data = data;
+	}
 }
 
 interface LTListener{

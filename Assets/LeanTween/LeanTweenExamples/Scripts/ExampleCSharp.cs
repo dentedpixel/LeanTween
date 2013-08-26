@@ -127,11 +127,13 @@ public class ExampleCSharp : MonoBehaviour {
 	
 	public void updateValueExample(){
 		Debug.Log("updateValueExample");
-		
-		LeanTween.value( gameObject, "updateValueExampleCallback", ltLogo.transform.eulerAngles.y, 270f, 1f, new object[]{ "useEstimatedTime", useEstimatedTime, "ease", LeanTweenType.easeOutElastic });
+		Hashtable pass = new Hashtable();
+		pass.Add("message", "hi");
+		LeanTween.value( gameObject, updateValueExampleCallback, ltLogo.transform.eulerAngles.y, 270f, 1f, new object[]{ "useEstimatedTime", useEstimatedTime, "ease", LeanTweenType.easeOutElastic, "onUpdateParam", pass });
 	}
 	
-	public void updateValueExampleCallback( float val ){
+	public void updateValueExampleCallback( float val, Hashtable hash ){
+		Debug.Log("message:"+hash["message"]);
 		Vector3 tmp = ltLogo.transform.eulerAngles;
 		tmp.y = val;
 		ltLogo.transform.eulerAngles = tmp;
