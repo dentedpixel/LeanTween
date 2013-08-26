@@ -968,7 +968,12 @@ private static function update() {
 										onUpdateC( val, updateParam );
 									}else {
 										var onUpdateD:System.Action.<float> = onUpdate as System.Action.<float>;
-										onUpdateD(val);
+										if(onUpdateD!=null){
+											onUpdateD(val);
+										}else{
+											onUpdateF = onUpdate;
+											onUpdateF(val);
+										}
 									}
 								}
 							}
