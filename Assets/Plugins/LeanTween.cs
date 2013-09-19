@@ -517,6 +517,8 @@ public class LeanTween : MonoBehaviour
     private static Hashtable emptyHash = new Hashtable();
     private static Action onUpdateF;
 
+    private static float previousRatioPassed = 0f;
+
     public static void init()
     {
         init(maxTweens);
@@ -728,46 +730,26 @@ public class LeanTween : MonoBehaviour
                             {
                                 if (HasFlag(tween.tweenType, LeanTweenType.linear))
                                     val = tween.from.x + tween.diff.x * ratioPassed;
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInQuad))
-                                    val = easeInQuadOpt(tween.from.x, tween.diff.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutQuad))
-                                    val = easeOutQuadOpt(tween.from.x, tween.diff.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInCubic))
-                                    val = easeInCubic(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutCubic))
-                                    val = easeOutCubic(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInQuart))
-                                    val = easeInQuart(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutQuart))
-                                    val = easeOutQuart(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInQuint))
-                                    val = easeInQuint(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutQuint))
-                                    val = easeOutQuint(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInSine))
-                                    val = easeInSine(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutSine))
-                                    val = easeOutSine(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInExpo))
-                                    val = easeInExpo(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutExpo))
-                                    val = easeOutExpo(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInCirc))
-                                    val = easeInCirc(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutCirc))
-                                    val = easeOutCirc(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInBounce))
-                                    val = easeInBounce(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutBounce))
-                                    val = easeOutBounce(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInBack))
-                                    val = easeInBack(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutBack))
-                                    val = easeOutBack(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInElastic))
-                                    val = easeInElastic(tween.from.x, tween.to.x, ratioPassed);
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutElastic))
-                                    val = easeOutElastic(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInQuad) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutQuad) && ratioPassed >= 0.5))
+                                    val = easeQuadOpt(tween.from.x, tween.diff.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInCubic) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutCubic) && ratioPassed >= 0.5))
+                                    val = easeCubic(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInQuart) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutQuart) && ratioPassed >= 0.5))
+                                    val = easeQuart(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInQuint) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutQuint) && ratioPassed >= 0.5))
+                                    val = easeQuint(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInSine) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutSine) && ratioPassed >= 0.5))
+                                    val = easeSine(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInExpo) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutExpo) && ratioPassed >= 0.5))
+                                    val = easeExpo(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInCirc) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutCirc) && ratioPassed >= 0.5))
+                                    val = easeCirc(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInBounce) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutBounce) && ratioPassed >= 0.5))
+                                    val = easeBounce(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInBack) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutBack) && ratioPassed >= 0.5))
+                                    val = easeBack(tween.from.x, tween.to.x, ratioPassed);
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInElastic) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutElastic) && ratioPassed >= 0.5))
+                                    val = easeElastic(tween.from.x, tween.to.x, ratioPassed);
                                 else if (HasFlag(tween.tweenType, LeanTweenType.punch))
                                 {
                                     tween.animationCurve = LeanTween.punch;
@@ -882,46 +864,26 @@ public class LeanTween : MonoBehaviour
                                     newVect.y = tween.from.y + tween.diff.y * ratioPassed;
                                     newVect.z = tween.from.z + tween.diff.z * ratioPassed;
                                 }
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInQuad))
-                                    newVect = new Vector3(easeInQuadOpt(tween.from.x, tween.diff.x, ratioPassed), easeInQuadOpt(tween.from.y, tween.diff.y, ratioPassed), easeInQuadOpt(tween.from.z, tween.diff.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutQuad))
-                                    newVect = new Vector3(easeOutQuadOpt(tween.from.x, tween.diff.x, ratioPassed), easeOutQuadOpt(tween.from.y, tween.diff.y, ratioPassed), easeOutQuadOpt(tween.from.z, tween.diff.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInCubic))
-                                    newVect = new Vector3(easeInCubic(tween.from.x, tween.to.x, ratioPassed), easeInCubic(tween.from.y, tween.to.y, ratioPassed), easeInCubic(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutCubic))
-                                    newVect = new Vector3(easeOutCubic(tween.from.x, tween.to.x, ratioPassed), easeOutCubic(tween.from.y, tween.to.y, ratioPassed), easeOutCubic(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInQuart))
-                                    newVect = new Vector3(easeInQuart(tween.from.x, tween.to.x, ratioPassed), easeInQuart(tween.from.y, tween.to.y, ratioPassed), easeInQuart(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutQuart))
-                                    newVect = new Vector3(easeOutQuart(tween.from.x, tween.to.x, ratioPassed), easeOutQuart(tween.from.y, tween.to.y, ratioPassed), easeOutQuart(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInQuint))
-                                    newVect = new Vector3(easeInQuint(tween.from.x, tween.to.x, ratioPassed), easeInQuint(tween.from.y, tween.to.y, ratioPassed), easeInQuint(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutQuint))
-                                    newVect = new Vector3(easeOutQuint(tween.from.x, tween.to.x, ratioPassed), easeOutQuint(tween.from.y, tween.to.y, ratioPassed), easeOutQuint(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInSine))
-                                    newVect = new Vector3(easeInSine(tween.from.x, tween.to.x, ratioPassed), easeInSine(tween.from.y, tween.to.y, ratioPassed), easeInSine(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutSine))
-                                    newVect = new Vector3(easeOutSine(tween.from.x, tween.to.x, ratioPassed), easeOutSine(tween.from.y, tween.to.y, ratioPassed), easeOutSine(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInExpo))
-                                    newVect = new Vector3(easeInExpo(tween.from.x, tween.to.x, ratioPassed), easeInExpo(tween.from.y, tween.to.y, ratioPassed), easeInExpo(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutExpo))
-                                    newVect = new Vector3(easeOutExpo(tween.from.x, tween.to.x, ratioPassed), easeOutExpo(tween.from.y, tween.to.y, ratioPassed), easeOutExpo(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInCirc))
-                                    newVect = new Vector3(easeInCirc(tween.from.x, tween.to.x, ratioPassed), easeInCirc(tween.from.y, tween.to.y, ratioPassed), easeInCirc(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutCirc))
-                                    newVect = new Vector3(easeOutCirc(tween.from.x, tween.to.x, ratioPassed), easeOutCirc(tween.from.y, tween.to.y, ratioPassed), easeOutCirc(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInBounce))
-                                    newVect = new Vector3(easeInBounce(tween.from.x, tween.to.x, ratioPassed), easeInBounce(tween.from.y, tween.to.y, ratioPassed), easeInBounce(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutBounce))
-                                    newVect = new Vector3(easeOutBounce(tween.from.x, tween.to.x, ratioPassed), easeOutBounce(tween.from.y, tween.to.y, ratioPassed), easeOutBounce(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInBack))
-                                    newVect = new Vector3(easeInBack(tween.from.x, tween.to.x, ratioPassed), easeInBack(tween.from.y, tween.to.y, ratioPassed), easeInBack(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutBack))
-                                    newVect = new Vector3(easeOutBack(tween.from.x, tween.to.x, ratioPassed), easeOutBack(tween.from.y, tween.to.y, ratioPassed), easeOutBack(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed < 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeInElastic))
-                                    newVect = new Vector3(easeInElastic(tween.from.x, tween.to.x, ratioPassed), easeInElastic(tween.from.y, tween.to.y, ratioPassed), easeInElastic(tween.from.z, tween.to.z, ratioPassed));
-                                else if (ratioPassed > 0.5 && HasFlag(tween.tweenType, LeanTweenType.easeOutElastic))
-                                    newVect = new Vector3(easeOutElastic(tween.from.x, tween.to.x, ratioPassed), easeOutElastic(tween.from.y, tween.to.y, ratioPassed), easeOutElastic(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInQuad) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutQuad) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeQuadOpt(tween.from.x, tween.diff.x, ratioPassed), easeQuadOpt(tween.from.y, tween.diff.y, ratioPassed), easeQuadOpt(tween.from.z, tween.diff.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInCubic) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutCubic) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeCubic(tween.from.x, tween.to.x, ratioPassed), easeCubic(tween.from.y, tween.to.y, ratioPassed), easeCubic(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInQuart) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutQuart) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeQuart(tween.from.x, tween.to.x, ratioPassed), easeQuart(tween.from.y, tween.to.y, ratioPassed), easeQuart(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInQuint) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutQuint) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeQuint(tween.from.x, tween.to.x, ratioPassed), easeInQuint(tween.from.y, tween.to.y, ratioPassed), easeInQuint(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInSine) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutSine) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeSine(tween.from.x, tween.to.x, ratioPassed), easeSine(tween.from.y, tween.to.y, ratioPassed), easeSine(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInExpo) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutExpo) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeExpo(tween.from.x, tween.to.x, ratioPassed), easeExpo(tween.from.y, tween.to.y, ratioPassed), easeExpo(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInCirc) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutCirc) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeCirc(tween.from.x, tween.to.x, ratioPassed), easeCirc(tween.from.y, tween.to.y, ratioPassed), easeCirc(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInBounce) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutBounce) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeBounce(tween.from.x, tween.to.x, ratioPassed), easeBounce(tween.from.y, tween.to.y, ratioPassed), easeBounce(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInBack) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutBack) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeBack(tween.from.x, tween.to.x, ratioPassed), easeBack(tween.from.y, tween.to.y, ratioPassed), easeBack(tween.from.z, tween.to.z, ratioPassed));
+                                else if ((HasFlag(tween.tweenType, LeanTweenType.easeInElastic) && ratioPassed < 0.5) || (HasFlag(tween.tweenType, LeanTweenType.easeOutElastic) && ratioPassed >= 0.5))
+                                    newVect = new Vector3(easeElastic(tween.from.x, tween.to.x, ratioPassed), easeElastic(tween.from.y, tween.to.y, ratioPassed), easeElastic(tween.from.z, tween.to.z, ratioPassed));
                                 else if (HasFlag(tween.tweenType, LeanTweenType.punch))
                                 {
                                     tween.animationCurve = LeanTween.punch;
@@ -2363,15 +2325,21 @@ public class LeanTween : MonoBehaviour
 
     public static float easeOutQuadOpt(float start, float diff, float ratioPassed)
     {
-        return -diff * ratioPassed * (ratioPassed - 2) + start;
+        ratioPassed /= .5f;
+        if (ratioPassed < 1) return diff / 2 * ratioPassed * ratioPassed + start;
+        ratioPassed--;
+        return -diff / 2 * (ratioPassed * (ratioPassed - 2) - 1) + start;
     }
 
     public static float easeInQuadOpt(float start, float diff, float ratioPassed)
     {
-        return diff * ratioPassed * ratioPassed + start;
+        ratioPassed /= .5f;
+        if (ratioPassed < 1) return diff / 2 * ratioPassed * ratioPassed + start;
+        ratioPassed--;
+        return -diff / 2 * (ratioPassed * (ratioPassed - 2) - 1) + start;
     }
 
-    public static float easeInOutQuadOpt(float start, float diff, float ratioPassed)
+    public static float easeQuadOpt(float start, float diff, float ratioPassed)
     {
         ratioPassed /= .5f;
         if (ratioPassed < 1) return diff / 2 * ratioPassed * ratioPassed + start;
@@ -2424,7 +2392,7 @@ public class LeanTween : MonoBehaviour
         return -end * val * (val - 2) + start;
     }
 
-    public static float easeInOutQuad(float start, float end, float val)
+    public static float easeQuad(float start, float end, float val)
     {
         val /= .5f;
         end -= start;
@@ -2446,7 +2414,7 @@ public class LeanTween : MonoBehaviour
         return end * (val * val * val + 1) + start;
     }
 
-    public static float easeInOutCubic(float start, float end, float val)
+    public static float easeCubic(float start, float end, float val)
     {
         val /= .5f;
         end -= start;
@@ -2468,7 +2436,7 @@ public class LeanTween : MonoBehaviour
         return -end * (val * val * val * val - 1) + start;
     }
 
-    public static float easeInOutQuart(float start, float end, float val)
+    public static float easeQuart(float start, float end, float val)
     {
         val /= .5f;
         end -= start;
@@ -2490,7 +2458,7 @@ public class LeanTween : MonoBehaviour
         return end * (val * val * val * val * val + 1) + start;
     }
 
-    public static float easeInOutQuint(float start, float end, float val)
+    public static float easeQuint(float start, float end, float val)
     {
         val /= .5f;
         end -= start;
@@ -2511,7 +2479,7 @@ public class LeanTween : MonoBehaviour
         return end * Mathf.Sin(val / 1 * (Mathf.PI / 2)) + start;
     }
 
-    public static float easeInOutSine(float start, float end, float val)
+    public static float easeSine(float start, float end, float val)
     {
         end -= start;
         return -end / 2 * (Mathf.Cos(Mathf.PI * val / 1) - 1) + start;
@@ -2529,7 +2497,7 @@ public class LeanTween : MonoBehaviour
         return end * (-Mathf.Pow(2, -10 * val / 1) + 1) + start;
     }
 
-    public static float easeInOutExpo(float start, float end, float val)
+    public static float easeExpo(float start, float end, float val)
     {
         val /= .5f;
         end -= start;
@@ -2551,7 +2519,7 @@ public class LeanTween : MonoBehaviour
         return end * Mathf.Sqrt(1 - val * val) + start;
     }
 
-    public static float easeInOutCirc(float start, float end, float val)
+    public static float easeCirc(float start, float end, float val)
     {
         val /= .5f;
         end -= start;
@@ -2598,7 +2566,7 @@ public class LeanTween : MonoBehaviour
     /* GFX47 MOD END */
 
     /* GFX47 MOD START */
-    public static float easeInOutBounce(float start, float end, float val)
+    public static float easeBounce(float start, float end, float val)
     {
         end -= start;
         float d = 1f;
@@ -2623,7 +2591,7 @@ public class LeanTween : MonoBehaviour
         return end * ((val) * val * ((s + 1) * val + s) + 1) + start;
     }
 
-    public static float easeInOutBack(float start, float end, float val)
+    public static float easeBack(float start, float end, float val)
     {
         float s = 1.70158f;
         end -= start;
@@ -2698,7 +2666,7 @@ public class LeanTween : MonoBehaviour
     }
 
     /* GFX47 MOD START */
-    public static float easeInOutElastic(float start, float end, float val)
+    public static float easeElastic(float start, float end, float val)
     {
         end -= start;
 
