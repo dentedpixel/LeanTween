@@ -1212,6 +1212,13 @@ public static void cancel( GameObject gameObject, int id ){
 	}
 }
 
+public static void cancel( LTRect ltRect, int id ){
+	for(int i = 0; i < tweenMaxSearch; i++){
+		if(tweens[i].id == id && tweens[i].ltRect==ltRect)
+			removeTween(i);
+	}
+}
+
 public static LeanTweenDescr description( int id ){
 	if(tweens[id]!=null && tweens[id].id == id)
 		return tweens[id];
@@ -1370,7 +1377,7 @@ public static int value(GameObject gameObject, Action<float,Hashtable> callOnUpd
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static int value(GameObject gameObject,string callOnUpdate, float from, float to, float time, Hashtable optional){
-	if(optional==null)
+	if(optional==null || optional.Count == 0)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -1380,7 +1387,7 @@ public static int value(GameObject gameObject,string callOnUpdate, float from, f
 }
 
 public static int value(GameObject gameObject,Action<float> callOnUpdate, float from, float to, float time, Hashtable optional){
-	if(optional==null)
+	if(optional==null || optional.Count == 0)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -1390,7 +1397,7 @@ public static int value(GameObject gameObject,Action<float> callOnUpdate, float 
 }
 
 public static int value(GameObject gameObject,Action<float,Hashtable> callOnUpdate, float from, float to, float time, Hashtable optional){
-	if(optional==null)
+	if(optional==null || optional.Count == 0)
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
@@ -1496,7 +1503,7 @@ public static int rotate(GameObject gameObject, Vector3 to, float time, object[]
 
 public static int rotate(LTRect ltRect, float to, float time, Hashtable optional){
 	init();
-	if( optional == null )
+	if( optional==null || optional.Count == 0 )
 		optional = new Hashtable();
 
 	optional["rect"] = ltRect;
@@ -1757,7 +1764,7 @@ public static int move(GameObject gameObject, Vector3[] to, float time, Hashtabl
 	}
 
 	init();
-	if( optional == null )
+	if( optional==null || optional.Count == 0 )
 		optional = new Hashtable();
 
 	LTBezierPath ltPath = new LTBezierPath( to );
@@ -1784,7 +1791,7 @@ public static int move(GameObject gameObject, Vector3[] to, float time, object[]
 */
 public static int move(LTRect ltRect, Vector2 to, float time, Hashtable optional){
 	init();
-	if( optional == null )
+	if( optional==null || optional.Count == 0 )
 		optional = new Hashtable();
 
 	optional["rect"] = ltRect;
@@ -1929,7 +1936,7 @@ public static int scale(GameObject gameObject, Vector3 to, float time, object[] 
 public static int scale(LTRect ltRect,Vector2 to, float time, Hashtable optional)
 {
 	init();
-	if( optional == null )
+	if( optional==null || optional.Count == 0 )
 		optional = new Hashtable();
 
 	optional["rect"] = ltRect;
@@ -1967,7 +1974,7 @@ public static int scale(LTRect ltRect, Vector2 to, float time){
 }
 public static int alpha(LTRect ltRect, float to, float time, Hashtable optional){
 	init();
-	if( optional == null )
+	if( optional==null || optional.Count == 0 )
 		optional = new Hashtable();
 
 	ltRect.alphaEnabled = true;
