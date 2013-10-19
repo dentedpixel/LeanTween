@@ -13,7 +13,7 @@ public class ExampleCSharp : MonoBehaviour {
 	
 	public delegate void NextFunc();
 	private int exampleIter = 0;
-	private string[] exampleFunctions = new string[] { "updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample" };
+	private string[] exampleFunctions = new string[] { "updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample" };
 	private bool useEstimatedTime = true;
 	private GameObject ltLogo;
 
@@ -33,7 +33,7 @@ public class ExampleCSharp : MonoBehaviour {
 	void cycleThroughExamples(){
 		if(exampleIter==0){
 			useEstimatedTime = !useEstimatedTime;
-			Time.timeScale = useEstimatedTime ? 0 : 2.0f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
+			Time.timeScale = useEstimatedTime ? 0 : 1.0f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
 		}
 		gameObject.BroadcastMessage( exampleFunctions[ exampleIter ] );
 		
@@ -176,6 +176,13 @@ public class ExampleCSharp : MonoBehaviour {
 		Vector3 origPos = cube.transform.localPosition;
 		LeanTween.moveLocal( cube, new Vector3(0.0f,2.0f,0.0f), 0.5f, new object[]{ "useEstimatedTime",useEstimatedTime});
 		LeanTween.moveLocal( cube, origPos, 0.5f, new object[]{ "delay",0.5f,"useEstimatedTime",useEstimatedTime});
+	}
+
+	public void rotateAroundExample(){
+		Debug.Log("rotateAroundExample");
+		
+		GameObject cube = GameObject.Find ("LCharacter");
+		LeanTween.rotateAround( cube, Vector3.up, 360.0f, 1.0f, new object[]{"useEstimatedTime",useEstimatedTime} );
 	}
 
 }

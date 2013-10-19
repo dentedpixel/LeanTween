@@ -30,6 +30,10 @@ public class MenuExampleCSharp : MonoBehaviour {
 
 		LeanTween.move( buttonRect2, new Vector2(0.55f*w, buttonRect2.rect.y), 0.7f, new object[]{"ease",LeanTweenType.easeOutQuad} );
 	}
+
+	public void catMoved(){
+		Debug.Log("cat moved...");
+	}
 	
 	// Update is called once per frame
 	void OnGUI () {
@@ -39,7 +43,7 @@ public class MenuExampleCSharp : MonoBehaviour {
 		if(GUI.Button( staticRect, "Move Cat")){
 			if(LeanTween.isTweening(grumpyRect)==false){ // Check to see if the cat is already tweening, so it doesn't freak out
 				Vector2 orig = new Vector2( grumpyRect.rect.x, grumpyRect.rect.y );
-				LeanTween.move( grumpyRect, new Vector2( 1.0f*Screen.width - grumpy.width, 0.0f*Screen.height ), 1.0f, new object[]{ "ease", LeanTweenType.easeOutBounce } );
+				LeanTween.move( grumpyRect, new Vector2( 1.0f*Screen.width - grumpy.width, 0.0f*Screen.height ), 1.0f, new object[]{ "ease", LeanTweenType.easeOutBounce, "onComplete","catMoved", "onCompleteTarget",gameObject } );
 				LeanTween.move( grumpyRect, orig, 1.0f, new object[]{ "delay", 1.0f, "ease", LeanTweenType.easeOutBounce } );
 			}
 		}

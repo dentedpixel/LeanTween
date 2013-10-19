@@ -1,6 +1,7 @@
 #pragma strict
 
 public var customAnimationCurve:AnimationCurve;
+public var shakeCurve:AnimationCurve;
 
 public var pt1:Transform;
 public var pt2:Transform;
@@ -27,7 +28,7 @@ function OnGUI(){
 }
 
 private var exampleIter:int = 0;
-private var exampleFunctions = [updateValue3Example,loopTestPingPong,loopTestClamp,moveOnACurveExample,punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, alphaExample, moveLocalExample, delayedCallExample];
+private var exampleFunctions = [updateValue3Example,loopTestPingPong,loopTestClamp,moveOnACurveExample,punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, alphaExample, moveLocalExample, delayedCallExample, rotateAroundExample];
 private var useEstimatedTime:boolean = true;
 private var ltLogo:GameObject;
 
@@ -152,6 +153,13 @@ function moveLocalExample(){
 	var origPos:Vector3 = cube.transform.localPosition;
 	LeanTween.moveLocal( cube, new Vector3(0.0f,2.0f,0.0f), 0.5f, ["useEstimatedTime",useEstimatedTime]);
 	LeanTween.moveLocal( cube, origPos, 0.5f, ["delay",0.5f,"useEstimatedTime",useEstimatedTime]);
+}
+
+function rotateAroundExample(){
+	Debug.Log("rotateAroundExample");
+	
+	var cube:GameObject = GameObject.Find ("LCharacter");
+	LeanTween.rotateAround( cube, Vector3.up, 360.0f, 1.0f, ["useEstimatedTime",useEstimatedTime] );
 }
 
 function moveXExample(){

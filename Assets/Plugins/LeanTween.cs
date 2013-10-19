@@ -780,11 +780,12 @@ public static void update() {
 					    	if(isTweenFinished){
 					    		Vector3 origRotation = (Vector3)tween.optional["origRotation"];
 					    		trans.eulerAngles = origRotation;
-					    		trans.RotateAround((Vector3)tween.optional["point"], (Vector3)tween.optional["axis"], tween.to.x);
+					    		trans.RotateAround((Vector3)trans.TransformPoint( (Vector3)tween.optional["point"] ), (Vector3)tween.optional["axis"], tween.to.x);
 					    	}else{
-					    		trans.RotateAround((Vector3)tween.optional["point"], (Vector3)tween.optional["axis"], move /*tween.to.x * (dt/timeTotal)*/);
+					    		trans.RotateAround((Vector3)trans.TransformPoint( (Vector3)tween.optional["point"] ), (Vector3)tween.optional["axis"], move /*tween.to.x * (dt/timeTotal)*/);
 					    		tween.optional["last"] = val;
 					    	}
+
 					    }else if((TweenAction)tweenAction==TweenAction.ALPHA){
 							foreach(Material mat in trans.gameObject.renderer.materials){
         						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
@@ -1645,6 +1646,14 @@ public static int rotateAround(GameObject gameObject, Vector3 point, Vector3 axi
 	optional["axis"] = axis;
 	optional["point"] = point;
 	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND, optional );
+}
+
+public static int rotateAround(GameObject gameObject, Vector3 axis, float add, float time, Hashtable optional){
+	return rotateAround(gameObject, Vector3.zero, axis, add, time, optional);
+}
+
+public static int rotateAround(GameObject gameObject, Vector3 axis, float add, float time, object[] optional){
+	return rotateAround(gameObject, Vector3.zero, axis, add, time, h(optional));
 }
 
 /**
