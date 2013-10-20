@@ -1639,21 +1639,29 @@ public static int rotateLocal(GameObject gameObject, Vector3 to, float time, obj
 * @param {float} time:float The time to complete the rotation in
 * @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
 */
-public static int rotateAround(GameObject gameObject, Vector3 point, Vector3 axis, float add, float time, Hashtable optional){
+/*public static int rotateAround(GameObject gameObject, Vector3 point, Vector3 axis, float add, float time, Hashtable optional){
 	if(optional==null || optional.Count==0)
 		optional = new Hashtable();
 		
 	optional["axis"] = axis;
-	optional["point"] = point;
+	if(optional["point"]!=null)
+		optional["point"] = Vector3.zero;
+	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND, optional );
+}*/
+
+public static int rotateAround(GameObject gameObject, Vector3 axis, float add, float time, Hashtable optional){
+	if(optional==null || optional.Count==0)
+		optional = new Hashtable();
+		
+	optional["axis"] = axis;
+	if(optional["point"]!=null)
+		optional["point"] = Vector3.zero;
+
 	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND, optional );
 }
 
-public static int rotateAround(GameObject gameObject, Vector3 axis, float add, float time, Hashtable optional){
-	return rotateAround(gameObject, Vector3.zero, axis, add, time, optional);
-}
-
 public static int rotateAround(GameObject gameObject, Vector3 axis, float add, float time, object[] optional){
-	return rotateAround(gameObject, Vector3.zero, axis, add, time, h(optional));
+	return rotateAround(gameObject, axis, add, time, h(optional));
 }
 
 /**
