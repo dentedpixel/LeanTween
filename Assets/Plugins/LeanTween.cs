@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 1.17 - http://dentedpixel.com/developer-diary/
+// LeanTween version 1.18 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1654,7 +1654,7 @@ public static int rotateAround(GameObject gameObject, Vector3 axis, float add, f
 		optional = new Hashtable();
 		
 	optional["axis"] = axis;
-	if(optional["point"]!=null)
+	if(optional["point"]==null)
 		optional["point"] = Vector3.zero;
 
 	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND, optional );
