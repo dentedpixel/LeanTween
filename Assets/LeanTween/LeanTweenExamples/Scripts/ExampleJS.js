@@ -16,6 +16,7 @@ function Awake(){
 function Start () {
 	ltLogo = GameObject.Find("LeanTweenLogo");
 	cycleThroughExamples();
+	//LeanTween.delayedCall(1.0f, cycleThroughExamples);
 	// loopTestClamp();
 	// loopTestPingPong();
 	// LeanTween.delayedCall(2.6, loopPause);

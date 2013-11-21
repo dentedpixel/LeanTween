@@ -466,6 +466,7 @@ private static int maxTweens = 400;
 private static int frameRendered= -1;
 private static GameObject tweenEmpty;
 private static float dtEstimated;
+private static float previousRealTime;
 private static float dt;
 private static float dtActual;
 private static LeanTweenDescr tween;
@@ -529,7 +530,8 @@ private static GameObject customTarget;
 public static void update() {
 	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
 		init();
-		dtEstimated = (Application.targetFrameRate > 0 )? (1.0f/ Application.targetFrameRate ): (1.0f / 60.0f);
+		dtEstimated = Time.realtimeSinceStartup - previousRealTime;
+		previousRealTime = Time.realtimeSinceStartup;
 		dtActual = Time.deltaTime*Time.timeScale;
 		// if(tweenMaxSearch>1500)
 		// 	Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" maxTweens:"+maxTweens);
@@ -2041,17 +2043,21 @@ public static int scaleZ(GameObject gameObject, float to, float time, object[] o
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static int delayedCall( float delayTime, string callback){
+	init();
 	return delayedCall( tweenEmpty, delayTime, callback, new Hashtable() );
 }
 
 public static int delayedCall( float delayTime, Action callback){
+	init();
 	return delayedCall( tweenEmpty, delayTime, callback );
 }
 
 public static int delayedCall( float delayTime, string callback, Hashtable optional ){
+	init();
 	return delayedCall( tweenEmpty, delayTime, callback, optional );
 }
 public static int delayedCall( float delayTime, Action callback, object[] optional){
+	init();
 	return delayedCall( tweenEmpty, delayTime, callback, h(optional) );
 }
 
@@ -2128,7 +2134,6 @@ public static int delayedCall( GameObject gameObject, float delayTime, Action ca
 public static int delayedCall( GameObject gameObject, float delayTime, Action callback){
 	Hashtable optional = new Hashtable();
 	optional["onComplete"] = callback;
-	Debug.Log("callback:"+callback);
 
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, optional );
 }

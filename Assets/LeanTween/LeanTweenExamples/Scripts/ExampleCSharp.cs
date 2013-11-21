@@ -18,12 +18,13 @@ public class ExampleCSharp : MonoBehaviour {
 	private GameObject ltLogo;
 
 	void Awake(){
-		LeanTween.init(400); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
+		// LeanTween.init(400); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
 	}
 
 	void Start () {
 		ltLogo = GameObject.Find("LeanTweenLogo");
 		cycleThroughExamples();
+		//LeanTween.delayedCall(1.0f, cycleThroughExamples);
 	}
 
 	void OnGUI(){
