@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 
 /*
-TERMS OF USE - EASING EQUATIONS
+TERMS OF USE - EASING EQUATIONS#
 Open source under the BSD License.
 Copyright (c)2001 Robert Penner
 All rights reserved.
@@ -140,7 +140,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using UnityEngine;
 using System.Collections;
 using System;
-using System.Reflection;
+//using System.Reflection;
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
@@ -154,29 +154,186 @@ public class LeanTweenDescr{
 	public Vector3 from;
 	public Vector3 to;
 	public Vector3 diff;
+	public Vector3 point;
+	public Vector3 axis;
+	public Vector3 origRotation;
 	public LTBezierPath path;
 	public float time;
+	public float lastVal;
 	public bool useEstimatedTime;
 	public bool useFrames;
 	public bool hasInitiliazed;
 	public bool hasPhysics;
 	public float passed;
 	public TweenAction type;
+	#if !NETFX_CORE
 	public Hashtable optional;
+	#endif
 	public float delay;
-	//var tweenFunc:Function;
-    public string tweenFunc;
 	public LeanTweenType tweenType;
 	public AnimationCurve animationCurve;
 	public int id;
 	public LeanTweenType loopType;
 	public int loopCount;
 	public float direction;
+	public Action<float> onUpdateFloat;
+	public Action<float,object> onUpdateFloatObject;
+	public Action<Vector3> onUpdateVector3;
+	public Action onComplete;
+	public Action<object> onCompleteObject;
+	public string onCompleteString;
+	public object onCompleteParam;
+	public object onUpdateParam;
 
-    public string TweenToString()
-    {
-		return "gameObject:"+trans.gameObject+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id;
+    public override string ToString(){
+		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id;
 	}
+
+	public LeanTweenDescr(){
+
+	}
+
+	public void reset(){
+		this.toggle = true;
+		#if !NETFX_CORE
+		this.optional = null;
+		#endif
+		this.passed = this.delay = 0.0f;
+		this.useEstimatedTime = this.useFrames = this.hasInitiliazed = false;
+		this.animationCurve = null;
+		this.tweenType = LeanTweenType.linear;
+		this.loopType = LeanTweenType.once;
+		this.direction = 1.0f;
+		this.onUpdateFloat = null;
+		this.onUpdateVector3 = null;
+		this.onUpdateFloatObject = null;
+		this.onComplete = null;
+		this.onCompleteObject = null;
+		this.onCompleteParam = null;
+		this.point = Vector3.zero;
+	}
+
+	public LeanTweenDescr setAxis( Vector3 axis ){
+		this.axis = axis;
+		return this;
+	}
+	
+	public LeanTweenDescr setDelay( float delay ){
+		this.delay = delay;
+		return this;
+	}
+
+	public LeanTweenDescr setEase( LeanTweenType easeType ){
+		this.tweenType = easeType;
+		return this;
+	}
+
+	public LeanTweenDescr setEase( AnimationCurve easeCurve ){
+		this.animationCurve = easeCurve;
+		return this;
+	}
+
+	public LeanTweenDescr setFrom( Vector3 from ){
+		this.from = from;
+		return this;
+	}
+
+	public LeanTweenDescr setRepeat( int repeat ){
+		this.loopCount = repeat;
+		return this;
+	}
+
+	public LeanTweenDescr setLoopType( LeanTweenType loopType ){
+		this.loopType = loopType;
+		return this;
+	}
+
+	public LeanTweenDescr setUseEstimatedTime( bool useEstimatedTime ){
+		this.useEstimatedTime = useEstimatedTime;
+		return this;
+	}
+
+	public LeanTweenDescr setUseFrames( bool useFrames ){
+		this.useFrames = useFrames;
+		return this;
+	}
+
+	public LeanTweenDescr setLoopCount( int loopCount ){
+		this.loopCount = loopCount;
+		return this;
+	}
+
+	public LeanTweenDescr setLoopOnce(){ this.loopType = LeanTweenType.once; return this; }
+	public LeanTweenDescr setLoopClamp(){ this.loopType = LeanTweenType.clamp; return this; }
+	public LeanTweenDescr setLoopPingPong(){ this.loopType = LeanTweenType.pingPong; return this; }
+
+	public LeanTweenDescr setOnComplete( Action onComplete ){
+		this.onComplete = onComplete;
+		return this;
+	}
+
+	public LeanTweenDescr setOnComplete( Action<object> onComplete ){
+		this.onCompleteObject = onComplete;
+		return this;
+	}
+
+	public LeanTweenDescr setOnComplete( string onComplete ){
+		this.onCompleteString = onComplete;
+		return this;
+	}
+
+	public LeanTweenDescr setOnCompleteParam( object onCompleteParam ){
+		this.onCompleteParam = onCompleteParam;
+		return this;
+	}
+
+	public LeanTweenDescr setOnUpdate( Action<float> onUpdate ){
+		this.onUpdateFloat = onUpdate;
+		return this;
+	}
+
+	public LeanTweenDescr setOnUpdate( Action<float,object> onUpdate ){
+		this.onUpdateFloatObject = onUpdate;
+		return this;
+	}
+
+	public LeanTweenDescr setOnUpdate( Action<Vector3> onUpdate ){
+		this.onUpdateVector3 = onUpdate;
+		return this;
+	}
+
+	public LeanTweenDescr setOnUpdateParam( object onUpdateParam ){
+		this.onUpdateParam = onUpdateParam;
+		return this;
+	}
+
+	public LeanTweenDescr setOrientToPath( bool doesOrient ){
+		if(this.path==null)
+			this.path = new LTBezierPath();
+		this.path.orientToPath = doesOrient;
+		return this;
+	}
+
+	public LeanTweenDescr setRect( LTRect rect ){
+		this.ltRect = rect;
+		return this;
+	}
+
+	public LeanTweenDescr setRect( Rect rect ){
+		this.ltRect = new LTRect(rect);
+		return this;
+	}
+
+	public LeanTweenDescr setPath(LTBezierPath path){
+		this.path = path;
+		return this;
+	}
+
+	public LeanTweenDescr setPoint( Vector3 point ){
+		this.point = point;
+		return this;
+	}
+	
 }
 
 /**
@@ -202,7 +359,8 @@ public class LeanTweenDescr{
 * @param {float} height:float Height
 */
 
-public class LTRect{
+[System.Serializable]
+public class LTRect : System.Object{
 	/**
 	* Pass this value to the GUI Methods
 	* 
@@ -215,8 +373,22 @@ public class LTRect{
 	public Vector2 pivot;
 
 	public bool rotateEnabled;
+	[HideInInspector]
 	public bool rotateFinished;
 	public bool alphaEnabled;
+
+	public static bool colorTouched;
+
+	public LTRect(){
+		reset();
+		this.rotateEnabled = this.alphaEnabled = true;
+		_rect = new Rect(0f,0f,1f,1f);
+	}
+
+	public LTRect(Rect rect){
+		_rect = rect;
+		reset();
+	}
 
 	public LTRect(float x, float y, float width, float height){
 		_rect = new Rect(x,y,width,height);
@@ -243,6 +415,12 @@ public class LTRect{
 		}
 	}
 
+	public void reset(){
+		this.alpha = 1.0f;
+		this.rotation = 0.0f;
+		this.rotateEnabled = this.alphaEnabled = false;
+	}
+
 	public void resetForRotation(){
 		if(pivot==Vector2.zero){
 			pivot = new Vector2(_rect.x+_rect.width*0.5f, _rect.y+_rect.height*0.5f);
@@ -251,9 +429,23 @@ public class LTRect{
 		}
 	}
 
+	public float x{
+		get{ return _rect.x; }
+		set{ _rect.x = value; }
+	}
+
+	public float y{
+		get{ return _rect.y; }
+		set{ _rect.y = value; }
+	}
+
 	public Rect rect{
 
 		get{
+			if(colorTouched){
+				colorTouched = false;
+				GUI.color = new Color(GUI.color.r,GUI.color.g,GUI.color.b,1.0f);
+			}
 			if(rotateEnabled){
 				if(rotateFinished){
 					rotateFinished = false;
@@ -267,8 +459,10 @@ public class LTRect{
 					trsMatrix.SetTRS(pivot, Quaternion.Euler(0f,0f,rotation), Vector3.one);
 					GUI.matrix = trsMatrix;
 				}
-			}else if(alphaEnabled){
+			}
+			if(alphaEnabled){
 				GUI.color = new Color(GUI.color.r,GUI.color.g,GUI.color.b,alpha);
+				colorTouched = true;
 			}
 			return _rect;
 		}
@@ -355,8 +549,13 @@ public class LTBezierPath{
 
 	private LTBezier[] beziers;
 	private float[] lengthRatio;
-	
+
+	public LTBezierPath(){ }
 	public LTBezierPath( Vector3[] pts_ ){
+		setPoints( pts_ );
+	}
+
+	public void setPoints( Vector3[] pts_ ){
 		pts = pts_;
 		
 		int k = 0;
@@ -381,7 +580,7 @@ public class LTBezierPath{
 			if(added >= ratio)
 				return beziers[i].point( (ratio-(added-lengthRatio[i])) / lengthRatio[i] );
 		}
-		return beziers[lengthRatio.Length-1].point( 1.0f );;
+		return beziers[lengthRatio.Length-1].point( 1.0f );
 	}
 
 	public void place( Transform transform, float ratio ){
@@ -454,17 +653,13 @@ public enum TweenAction{
 
 public class LeanTween: MonoBehaviour {
 
-   //Added By Azade
-   
-    public delegate float DelFunc(float fromVect, float toVect, float ratioPassed);
-   //End
-public static bool throwErrors= true;
+public static bool throwErrors = true;
 
 private static LeanTweenDescr[] tweens;
 private static int tweenMaxSearch = 0;
 private static int maxTweens = 400;
 private static int frameRendered= -1;
-private static GameObject tweenEmpty;
+private static GameObject _tweenEmpty;
 private static float dtEstimated;
 private static float previousRealTime;
 private static float dt;
@@ -473,8 +668,6 @@ private static LeanTweenDescr tween;
 private static int i;
 private static int j;
 private static AnimationCurve punch = new AnimationCurve( new Keyframe(0.0f, 0.0f ), new Keyframe(0.112586f, 0.9976035f ), new Keyframe(0.3120486f, -0.1720615f ), new Keyframe(0.4316337f, 0.07030682f ), new Keyframe(0.5524869f, -0.03141804f ), new Keyframe(0.6549395f, 0.003909959f ), new Keyframe(0.770987f, -0.009817753f ), new Keyframe(0.8838775f, 0.001939224f ), new Keyframe(1.0f, 0.0f ) );
-private static Hashtable emptyHash = new Hashtable();
-private static Action onUpdateF;
 
 public static void init(){
 	init(maxTweens);
@@ -492,11 +685,11 @@ public static void init(int maxSimultaneousTweens){
 	if(tweens==null){
 		maxTweens = maxSimultaneousTweens;
 		tweens = new LeanTweenDescr[maxTweens];
-		tweenEmpty = new GameObject();
-		tweenEmpty.name = "~LeanTween";
-		tweenEmpty.AddComponent(typeof(LeanTween));
-		tweenEmpty.isStatic = true;
-		DontDestroyOnLoad( tweenEmpty );
+		_tweenEmpty = new GameObject();
+		_tweenEmpty.name = "~LeanTween";
+		_tweenEmpty.AddComponent(typeof(LeanTween));
+		_tweenEmpty.isStatic = true;
+		DontDestroyOnLoad( _tweenEmpty );
 		for(int i = 0; i < maxTweens; i++){
 			tweens[i] = new LeanTweenDescr();
 		}
@@ -513,11 +706,7 @@ public void Update(){
 
 private static Transform trans;
 private static float timeTotal;
-private static int tweenAction;
-private static Hashtable optionalItems;
-//private static var tweenFunc:Function;
-//private static string tweenFunc;
-private static AnimationCurve animationCurve;
+private static TweenAction tweenAction;
 private static float ratioPassed;
 private static float from;
 private static float to;
@@ -540,11 +729,9 @@ public static void update() {
 			//Debug.Log("tweens["+i+"].toggle:"+tweens[i].toggle);
 			if(tweens[i].toggle){
 				tween = tweens[i];
-				trans = tween.trans as Transform;
+				trans = tween.trans;
 				timeTotal = tween.time;
-				tweenAction = (int)tween.type;
-				animationCurve = tween.animationCurve;
-				optionalItems = tween.optional;
+				tweenAction = tween.type;
 				//Debug.Log("type:"+tweens[i].type+" animationCurve:"+animationCurve);
 				dt = dtActual;
 				if( tween.useEstimatedTime ){
@@ -572,7 +759,7 @@ public static void update() {
 				if( (tween.passed==0.0 && tweens[i].delay==0.0) || (tween.passed>0.0 && !tween.hasInitiliazed) ){
 					tween.hasInitiliazed = true;
 					// Initialize From Values
-					switch((TweenAction)tweenAction){
+					switch(tweenAction){
 						case TweenAction.MOVE:
 							tween.from = trans.position; break;
 						case TweenAction.MOVE_X:
@@ -622,8 +809,8 @@ public static void update() {
 							tween.to.x = LeanTween.closestRot( tween.from.x, tween.to.x);
 							break;
 						case TweenAction.ROTATE_AROUND:
-							tween.optional["last"] = 0.0f;
-							tween.optional["origRotation"] = trans.eulerAngles;
+							tween.lastVal = 0.0f; // optional["last"]
+							tween.origRotation = trans.eulerAngles; // optional["origRotation"
 							break;
 						case TweenAction.ROTATE_LOCAL:
 							tween.from = trans.localEulerAngles; 
@@ -657,8 +844,8 @@ public static void update() {
 					if(ratioPassed>1.0)
 						ratioPassed = 1.0f;
 					
-					if(tweenAction>=(int)TweenAction.MOVE_X && tweenAction<=(int)TweenAction.CALLBACK){
-						if(animationCurve!=null){
+					if(tweenAction>=TweenAction.MOVE_X && tweenAction<=TweenAction.CALLBACK){
+						if(tween.animationCurve!=null){
 							val = tweenOnCurve(tween, ratioPassed);
 						}else {
 							switch( tween.tweenType ){
@@ -737,19 +924,19 @@ public static void update() {
 						
 						}
 						//Debug.Log("from:"+from+" to:"+to+" val:"+val+" ratioPassed:"+ratioPassed);
-						if((TweenAction)tweenAction==TweenAction.MOVE_X){
+						if(tweenAction==TweenAction.MOVE_X){
 							trans.position=new Vector3( val,trans.position.y,trans.position.z);
-						}else if((TweenAction)tweenAction==TweenAction.MOVE_Y){
+						}else if(tweenAction==TweenAction.MOVE_Y){
 							trans.position =new Vector3( trans.position.x,val,trans.position.z);
-						}else if((TweenAction)tweenAction==TweenAction.MOVE_Z){
+						}else if(tweenAction==TweenAction.MOVE_Z){
 							trans.position=new Vector3( trans.position.x,trans.position.y,val);
-						}if((TweenAction)tweenAction==TweenAction.MOVE_LOCAL_X){
+						}if(tweenAction==TweenAction.MOVE_LOCAL_X){
 							trans.localPosition=new Vector3( val,trans.localPosition.y,trans.localPosition.z);
-						}else if((TweenAction)tweenAction==TweenAction.MOVE_LOCAL_Y){
+						}else if(tweenAction==TweenAction.MOVE_LOCAL_Y){
 							trans.localPosition=new Vector3( trans.localPosition.x,val,trans.localPosition.z);
-						}else if((TweenAction)tweenAction==TweenAction.MOVE_LOCAL_Z){
+						}else if(tweenAction==TweenAction.MOVE_LOCAL_Z){
 							trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,val);
-						}else if((TweenAction)tweenAction==TweenAction.MOVE_CURVED){
+						}else if(tweenAction==TweenAction.MOVE_CURVED){
 							if(tween.path.orientToPath){
 								tween.path.place( trans, val );
 							}else{
@@ -763,41 +950,40 @@ public static void update() {
 								trans.localPosition = tween.path.point( val );
 							}
 							// Debug.Log("val:"+val+" trans.position:"+trans.position);
-						}else if((TweenAction)tweenAction==TweenAction.SCALE_X){
+						}else if(tweenAction==TweenAction.SCALE_X){
 							trans.localScale=new Vector3(val, trans.localScale.y,trans.localScale.z);
-						}else if((TweenAction)tweenAction==TweenAction.SCALE_Y){
+						}else if(tweenAction==TweenAction.SCALE_Y){
 							trans.localScale=new Vector3( trans.localScale.x,val,trans.localScale.z);
-						}else if((TweenAction)tweenAction==TweenAction.SCALE_Z){
+						}else if(tweenAction==TweenAction.SCALE_Z){
 							trans.localScale=new Vector3(trans.localScale.x,trans.localScale.y,val);
-						}else if((TweenAction)tweenAction==TweenAction.ROTATE_X){
+						}else if(tweenAction==TweenAction.ROTATE_X){
 					    	trans.eulerAngles=new Vector3(val, trans.eulerAngles.y,trans.eulerAngles.z);
-					    }else if((TweenAction)tweenAction==TweenAction.ROTATE_Y){
+					    }else if(tweenAction==TweenAction.ROTATE_Y){
 					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,val,trans.eulerAngles.z);
-					    }else if((TweenAction)tweenAction==TweenAction.ROTATE_Z){
+					    }else if(tweenAction==TweenAction.ROTATE_Z){
 					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,val);
-					    }else if((TweenAction)tweenAction==TweenAction.ROTATE_AROUND){
-					    	float last = (float)tween.optional["last"];
-					    	float move = val - last;
+					    }else if(tweenAction==TweenAction.ROTATE_AROUND){
+							
+							float move = val -  tween.lastVal;
 					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
 					    	if(isTweenFinished){
-					    		Vector3 origRotation = (Vector3)tween.optional["origRotation"];
-					    		trans.eulerAngles = origRotation;
-					    		trans.RotateAround((Vector3)trans.TransformPoint( (Vector3)tween.optional["point"] ), (Vector3)tween.optional["axis"], tween.to.x);
+					    		trans.eulerAngles = tween.origRotation;
+					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
 					    	}else{
-					    		trans.RotateAround((Vector3)trans.TransformPoint( (Vector3)tween.optional["point"] ), (Vector3)tween.optional["axis"], move /*tween.to.x * (dt/timeTotal)*/);
-					    		tween.optional["last"] = val;
+					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, move /*tween.to.x * (dt/timeTotal)*/);
+								tween.lastVal = val;
 					    	}
 
-					    }else if((TweenAction)tweenAction==TweenAction.ALPHA){
+					    }else if(tweenAction==TweenAction.ALPHA){
 							foreach(Material mat in trans.gameObject.renderer.materials){
         						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
     						}
 						}
 						
-					}else if((TweenAction) tweenAction>=TweenAction.MOVE){
+					}else if(tweenAction>=TweenAction.MOVE){
 						//
 						
-						if(animationCurve!=null){
+						if(tween.animationCurve!=null){
 							newVect = tweenOnCurveVector(tween, ratioPassed);
 						}else{
 							if(tween.tweenType == LeanTweenType.linear){
@@ -885,39 +1071,48 @@ public static void update() {
 							}
 						}
 						 
-						if((TweenAction) tweenAction==TweenAction.MOVE){
+						if(tweenAction==TweenAction.MOVE){
 							trans.position = newVect;
-					    }else if((TweenAction) tweenAction==TweenAction.MOVE_LOCAL){
+					    }else if(tweenAction==TweenAction.MOVE_LOCAL){
 							trans.localPosition = newVect;
-					    }else if((TweenAction) tweenAction==TweenAction.ROTATE){
+					    }else if(tweenAction==TweenAction.ROTATE){
 					    	if(tween.hasPhysics){
 					    		trans.gameObject.rigidbody.MoveRotation(Quaternion.Euler( newVect ));
 				    		}else{
 				    			trans.eulerAngles = newVect;
 				    		}
-					    }else if((TweenAction) tweenAction==TweenAction.ROTATE_LOCAL){
+					    }else if(tweenAction==TweenAction.ROTATE_LOCAL){
 					    	trans.localEulerAngles = newVect;
-					    }else if((TweenAction) tweenAction==TweenAction.SCALE){
+					    }else if(tweenAction==TweenAction.SCALE){
 					    	trans.localScale = newVect;
-					    }else if((TweenAction) tweenAction==TweenAction.GUI_MOVE){
+					    }else if(tweenAction==TweenAction.GUI_MOVE){
 					    	tween.ltRect.rect = new Rect( newVect.x, newVect.y, tween.ltRect.rect.width, tween.ltRect.rect.height);
-					    }else if((TweenAction) tweenAction==TweenAction.GUI_SCALE){
+					    }else if(tweenAction==TweenAction.GUI_SCALE){
 					    	tween.ltRect.rect = new Rect( tween.ltRect.rect.x, tween.ltRect.rect.y, newVect.x, newVect.y);
-					    }else if((TweenAction) tweenAction==TweenAction.GUI_ALPHA){
+					    }else if(tweenAction==TweenAction.GUI_ALPHA){
 					    	tween.ltRect.alpha = newVect.x;
-					    }else if((TweenAction) tweenAction==TweenAction.GUI_ROTATE){
+					    }else if(tweenAction==TweenAction.GUI_ROTATE){
 					    	tween.ltRect.rotation = newVect.x;
 					    }
 					}
 
-					if(tween.optional!=null){
-						var onUpdate = optionalItems["onUpdate"];
+					if(tween.onUpdateFloat!=null){
+						tween.onUpdateFloat(val);
+					}else if(tween.onUpdateFloatObject!=null){
+						tween.onUpdateFloatObject(val, tween.onUpdateParam);
+					}else if(tween.onUpdateVector3!=null){
+						tween.onUpdateVector3(newVect);
+					}
+					#if !NETFX_CORE
+					else if(tween.optional!=null){ // LeanTween 1.x legacy stuff
+						
+						var onUpdate = tween.optional["onUpdate"];
 						if(onUpdate!=null){
-							Hashtable updateParam = (Hashtable)optionalItems["onUpdateParam"];
+							Hashtable updateParam = (Hashtable)tween.optional["onUpdateParam"];
 							if((TweenAction)tweenAction==TweenAction.VALUE3){
 								if(onUpdate.GetType() == typeof(string)){
 									string onUpdateS = onUpdate as string;
-									customTarget = optionalItems["onUpdateTarget"]!=null ? optionalItems["onUpdateTarget"] as GameObject : trans.gameObject;
+									customTarget = tween.optional["onUpdateTarget"]!=null ? tween.optional["onUpdateTarget"] as GameObject : trans.gameObject;
 									customTarget.BroadcastMessage( onUpdateS, newVect );
 								}else if(onUpdate.GetType() == typeof(System.Action<Vector3, Hashtable>)){
 									System.Action<Vector3, Hashtable> onUpdateA = (System.Action<Vector3, Hashtable>)onUpdate;
@@ -929,8 +1124,8 @@ public static void update() {
 							}else{
 								if(onUpdate.GetType() == typeof(string)){
 									string onUpdateS = onUpdate as string;
-									if (optionalItems["onUpdateTarget"]!=null){
-										customTarget = optionalItems["onUpdateTarget"] as GameObject;
+									if (tween.optional["onUpdateTarget"]!=null){
+										customTarget = tween.optional["onUpdateTarget"] as GameObject;
 										customTarget.BroadcastMessage( onUpdateS, val );
 									}else{
 										trans.gameObject.BroadcastMessage( onUpdateS, val );
@@ -938,53 +1133,79 @@ public static void update() {
 								}else if(onUpdate.GetType() == typeof(System.Action<float, Hashtable>)){
 									System.Action<float, Hashtable> onUpdateA = (System.Action<float, Hashtable>)onUpdate;
 									onUpdateA(val, updateParam);
+								}else if(onUpdate.GetType() == typeof(System.Action<Vector3>)){
+									System.Action<Vector3> onUpdateA = (System.Action<Vector3>)onUpdate;
+									onUpdateA( newVect );
 								}else{
 									System.Action<float> onUpdateA = (System.Action<float>)onUpdate;
 									onUpdateA(val);
-	                                //onUpdateF = (System.Action)onUpdate;
-	                                //if(updateParam) onUpdateF( val, updateParam );
-	                                //else onUpdateF(val);
 								}
 							}
 						}
 					}
+					#endif
 				}
 				
 				if(isTweenFinished){
-					Action callback=null;
-					if((TweenAction)tweenAction==TweenAction.GUI_ROTATE){
+					if((TweenAction)tweenAction==TweenAction.GUI_ROTATE)
 						tween.ltRect.rotateFinished = true;
-					}
+					
 					if(tween.loopType==LeanTweenType.once || tween.loopCount==1){
-						string callbackS=string.Empty;
-						object callbackParam=null;
-						if(tween.optional!=null && tween.trans){
-							if(optionalItems["onComplete"]!=null){
-								if(optionalItems["onComplete"].GetType()==typeof(string)){
-									callbackS = optionalItems["onComplete"] as string;
-								}else{
-									callback = (System.Action)optionalItems["onComplete"];
+						if(tween.onComplete!=null){
+							removeTween(i);
+							tween.onComplete();
+
+						}else if(tween.onCompleteObject!=null){
+							removeTween(i);
+							tween.onCompleteObject(tween.onCompleteParam);
+						}else if(tween.onCompleteString!=null){
+							removeTween(i);
+							if(tween.onCompleteParam!=null) tween.trans.gameObject.BroadcastMessage ( tween.onCompleteString, tween.onCompleteParam );
+							else tween.trans.gameObject.BroadcastMessage( tween.onCompleteString );
+						}
+						#if !NETFX_CORE
+						else if(tween.optional!=null){
+							System.Action callback=null;
+							System.Action<object> callbackWithParam = null;
+							string callbackS=string.Empty;
+							object callbackParam=null;
+							if(tween.optional!=null && tween.trans){
+								if(tween.optional["onComplete"]!=null){
+									callbackParam = tween.optional["onCompleteParam"];
+									if(tween.optional["onComplete"].GetType()==typeof(string)){
+										callbackS = tween.optional["onComplete"] as string;
+									}else{
+										if(callbackParam!=null){
+											callbackWithParam = (System.Action<object>)tween.optional["onComplete"];
+										}else{
+											callback = (System.Action)tween.optional["onComplete"];	
+											if(callback==null)
+												Debug.LogWarning("callback was not converted");
+										}
+									}
 								}
 							}
-							callbackParam = optionalItems["onCompleteParam"];
-						}
-						removeTween(i);
-						if(callback!=null){
-							callback();
-							///if(callbackParam!=null) callback( callbackParam );
-							//else callback();
-						}else
-	                    if(callbackS!=string.Empty){
-							if (optionalItems["onCompleteTarget"]!=null){
-								customTarget = optionalItems["onCompleteTarget"] as GameObject;
-								if(callbackParam!=null) customTarget.BroadcastMessage ( callbackS, callbackParam );
-								else customTarget.BroadcastMessage( callbackS );
-							}else{
-								if(callbackParam!=null) trans.gameObject.BroadcastMessage ( callbackS, callbackParam );
-								else trans.gameObject.BroadcastMessage( callbackS );
+							removeTween(i);
+							if(callbackWithParam!=null){
+								callbackWithParam( callbackParam );
+							}else if(callback!=null){
+								callback();
+							}else if(callbackS!=string.Empty){
+								if (tween.optional["onCompleteTarget"]!=null){
+									customTarget = tween.optional["onCompleteTarget"] as GameObject;
+									if(callbackParam!=null) customTarget.BroadcastMessage ( callbackS, callbackParam );
+									else customTarget.BroadcastMessage( callbackS );
+								}else{
+									if(callbackParam!=null) trans.gameObject.BroadcastMessage ( callbackS, callbackParam );
+									else trans.gameObject.BroadcastMessage( callbackS );
+								}
 							}
+						}else{
+							removeTween(i);
 						}
-					}else{
+					}
+					#endif
+					else{
 						if(tween.loopCount>=1){
 							tween.loopCount--;
 						}
@@ -1013,7 +1234,7 @@ public static void update() {
 
 private static void removeTween( int i ){
 	tweens[i].toggle = false;
-	tweens[i].optional = null;
+	//tweens[i].optional = null;
 	startSearch = i;
 	//Debug.Log("start search reset:"+startSearch + " i:"+i+" tweenMaxSearch:"+tweenMaxSearch);
 	if(i+1>=tweenMaxSearch){
@@ -1023,129 +1244,6 @@ private static void removeTween( int i ){
 	}
 }
 
-public static int startSearch = 0;
-public static int lastMax= 0;
-
-private static int pushNewTween( GameObject gameObject, Vector3 to, float time, TweenAction tweenAction, Hashtable optional ){
-	init(maxTweens);
-	if(gameObject==null)
-		return -1;
-	
-	// Debug.Log("start search reset:"+startSearch+" tweenMaxSearch:"+tweenMaxSearch);
-	j = 0;
-	for(i = startSearch; j < maxTweens; i++){
-		if(i>=maxTweens-1){
-			i = 0;
-		}
-		//Debug.Log("tweens["+i+"]:"+tweens[i].toggle);
-		if(tweens[i].toggle==false){
-			if(i+1>tweenMaxSearch){
-				tweenMaxSearch = i+1;
-				//Debug.Log("tweenMaxSearch:"+tweenMaxSearch);
-			}
-			startSearch = i + 1;
-			break;
-		}
-		
-		j++;
-		if(j>=maxTweens){
-			string errorMsg = "LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );";
-			if(throwErrors) Debug.LogError(errorMsg); else Debug.Log(errorMsg);
-			return -1;
-		}
-	}
-	// if(tweenMaxSearch>lastMax){
-	// 	lastMax = tweenMaxSearch;
-	// 	Debug.Log("tweenMaxSearch:"+tweenMaxSearch);
-	// }
-
-	tween = tweens[i];
-	tween.toggle = true;
-	tween.trans = gameObject.transform;
-	tween.to = to;
-	tween.time = time;
-	tween.passed = 0.0f;
-	tween.type = tweenAction;
-	tween.optional = optional;
-	tween.delay = 0.0f;
-	tween.id = i;
-	tween.useEstimatedTime = false;
-	tween.useFrames = false;
-	tween.animationCurve = null;
-	tween.tweenType = LeanTweenType.linear;
-	tween.loopType = LeanTweenType.once;
-	tween.direction = 1.0f;
-	tween.hasInitiliazed = false;
-	tween.hasPhysics = gameObject.rigidbody!=null;
-
-	if(optional!=null){
-        var ease =optional["ease"];
-        //LeanTweenType ease;
-		var optionsNotUsed = 0;
-		if(ease!=null)
-        {
-            //ease = (LeanTweenType)Enum.Parse(typeof(LeanTweenType), optional["ease"].ToString());
-			tween.tweenType = LeanTweenType.notUsed;
-			if( ease.GetType() ==typeof( LeanTweenType) )
-            {
-                tween.tweenType = (LeanTweenType)ease;// Enum.Parse(typeof(LeanTweenType), optional["ease"].ToString());
-			}
-            else if(ease.GetType() == typeof(AnimationCurve))
-            {
-				tween.animationCurve = optional["ease"] as AnimationCurve;
-			}
-            else{
-				tween.tweenFunc = optional["ease"].ToString();
-				if(tween.tweenFunc.Equals("easeOutQuad")){
-					tween.tweenType = LeanTweenType.easeOutQuad;
-				}else if(tween.tweenFunc.Equals("easeInQuad")){
-					tween.tweenType = LeanTweenType.easeInQuad;
-				}else if(tween.tweenFunc.Equals("easeInOutQuad")){
-					tween.tweenType = LeanTweenType.easeInOutQuad;
-				}
-			}
-			optionsNotUsed++;
-		}
-		if(optional["rect"]!=null){
-			tween.ltRect = (LTRect)optional["rect"];
-			optionsNotUsed++;
-		}
-		if(optional["path"]!=null){
-			tween.path = (LTBezierPath)optional["path"];
-			optionsNotUsed++;
-		}
-		if(optional["delay"]!=null){
-			tween.delay = (float)optional["delay"];
-			optionsNotUsed++;
-		}
-		if(optional["useEstimatedTime"]!=null){
-			tween.useEstimatedTime =(bool) optional["useEstimatedTime"];
-			optionsNotUsed++;
-		}
-		if(optional["useFrames"]!=null){
-			tween.useFrames =(bool) optional["useFrames"];
-			optionsNotUsed++;
-		}
-		if(optional["loopType"]!=null){
-			tween.loopType = (LeanTweenType)optional["loopType"];
-			optionsNotUsed++;
-		}
-		if(optional["repeat"]!=null){
-			tween.loopCount = (int)optional["repeat"];
-			if(tween.loopType==LeanTweenType.once)
-				tween.loopType = LeanTweenType.clamp;
-			optionsNotUsed++;
-		}
-		if(optional.Count <= optionsNotUsed)
-			tween.optional = null;  // nothing else is used with the extra piece, so set to null
-	}else{
-		tween.optional = null;
-	}
-	//Debug.Log("pushing new tween["+i+"]:"+tweens[i]);
-	
-	return tweens[i].id;
-}
-
 public static Vector3[] add(Vector3[] a, Vector3 b){
 	Vector3[] c = new Vector3[ a.Length ];
 	for(i=0; i<a.Length; i++){
@@ -1153,20 +1251,6 @@ public static Vector3[] add(Vector3[] a, Vector3 b){
 	}
 
 	return c;
-}
-
-public static Hashtable h( object[] arr ){
-	if(arr.Length%2==1){
-		string errorMsg = "LeanTween - You have attempted to create a Hashtable with an odd number of values.";
-		if(throwErrors) Debug.LogError( errorMsg ); else Debug.Log( errorMsg );
-		return null;
-	}
-	Hashtable hash = new Hashtable();
-	for(i = 0; i < arr.Length; i += 2){
-		hash.Add(arr[i] as string, arr[i+1]);
-	}
-
-	return hash;
 }
 
 public static float closestRot( float from, float to ){
@@ -1243,10 +1327,7 @@ public static void pause( GameObject gameObject, int id ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans && tweens[i].id == id){
-			if(tweens[i].optional==null || tweens[i].optional.Count==0){
-				tweens[i].optional = new Hashtable();
-			}
-			tweens[i].optional["directionSaved"] = tweens[i].direction;
+			tweens[i].lastVal = tweens[i].direction;
 			tweens[i].direction = 0.0f;
 		}
 	}
@@ -1262,10 +1343,7 @@ public static void pause( GameObject gameObject ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans){
-			if(tweens[i].optional==null || tweens[i].optional.Count==0){
-				tweens[i].optional = new Hashtable();
-			}
-			tweens[i].optional["directionSaved"] = tweens[i].direction;
+			tweens[i].lastVal = tweens[i].direction;
 			tweens[i].direction = 0.0f;
 		}
 	}
@@ -1282,7 +1360,7 @@ public static void resume( GameObject gameObject, int id ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans && tweens[i].id == id)
-			tweens[i].direction = (float)tweens[i].optional["directionSaved"];
+			tweens[i].direction = tweens[i].lastVal;
 	}
 }
 
@@ -1296,7 +1374,7 @@ public static void resume( GameObject gameObject ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans)
-			tweens[i].direction = (float)tweens[i].optional["directionSaved"];
+			tweens[i].direction = tweens[i].lastVal;
 	}
 }
 
@@ -1332,10 +1410,295 @@ public static void drawBezierPath(Vector3 a, Vector3 b, Vector3 c, Vector3 d){
 	}
 }
 
+private static object logError( string error ){
+	if(throwErrors) Debug.LogError(error); else Debug.Log(error);
+	return null;
+}
 
-//////public int play( GameObject gameObject, toFrame:int, columns:int, rows:int, Hashtable optional ){
+// LeanTween 2.0 Methods
+
+public static LeanTweenDescr options(LeanTweenDescr seed){ Debug.LogError("error this function is no longer used"); return null; }
+public static LeanTweenDescr options(){
+	init();
 	
-//////}
+	for(j=0, i = startSearch; j < maxTweens; i++){
+		if(i>=maxTweens-1)
+			i = 0;
+		if(tweens[i].toggle==false){
+			if(i+1>tweenMaxSearch)
+				tweenMaxSearch = i+1;
+			startSearch = i + 1;
+			break;
+		}
+		
+		j++;
+		if(j>=maxTweens)
+			return logError("LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );") as LeanTweenDescr;
+	}
+	tween = tweens[i];
+	tween.reset();
+	tween.id = i;
+
+	return tween;
+}
+
+public static GameObject tweenEmpty{
+	get{
+		init(maxTweens);
+		return _tweenEmpty;
+	}
+}
+
+public static int startSearch = 0;
+public static LeanTweenDescr descr;
+
+private static LeanTweenDescr pushNewTween( GameObject gameObject, Vector3 to, float time, TweenAction tweenAction, LeanTweenDescr tween ){
+	init(maxTweens);
+	if(gameObject==null)
+		return null;
+	tween.trans = gameObject.transform;
+	tween.to = to;
+	tween.time = time;
+	tween.type = tweenAction;
+	tween.hasPhysics = gameObject.rigidbody!=null;
+	
+	return tween;
+}
+	
+public static LeanTweenDescr alpha(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ALPHA, options() );
+}
+	
+public static LeanTweenDescr alpha(LTRect ltRect, float to, float time){
+	ltRect.alphaEnabled = true;
+	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ALPHA, options().setRect( ltRect ) );
+}
+
+public static LeanTweenDescr delayedCall( float delayTime, Action callback){
+	return pushNewTween( tweenEmpty, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
+}
+
+public static LeanTweenDescr delayedCall( GameObject gameObject, float delayTime, Action callback){
+	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
+}
+
+public static LeanTweenDescr delayedCall(GameObject gameObject, float delayTime, string callback){
+	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete( callback ) );
+}
+
+public static LeanTweenDescr move(GameObject gameObject, Vector3 to, float time){
+	return pushNewTween( gameObject, to, time, TweenAction.MOVE, options() );
+}
+	
+public static LeanTweenDescr move(GameObject gameObject, Vector3[] to, float time){
+	if(to.Length<4)
+		return logError( "LeanTween - When passing values for a vector path, you must pass four or more values!" ) as LeanTweenDescr;
+	if(to.Length%4!=0)
+		return logError( "LeanTween - When passing values for a vector path, they must be in sets of four: controlPoint1, controlPoint2, endPoint2, controlPoint2, controlPoint2..." ) as LeanTweenDescr;
+
+	descr = options();
+	if(descr.path==null)
+		descr.path = new LTBezierPath( to );
+	else 
+		descr.path.setPoints( to );
+
+	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED, descr );
+}
+	
+public static LeanTweenDescr move(LTRect ltRect, Vector2 to, float time){
+	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_MOVE, options().setRect( ltRect ) );
+}
+
+public static LeanTweenDescr moveX(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_X, options() );
+}
+
+public static LeanTweenDescr moveY(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_Y, options() );
+}
+
+public static LeanTweenDescr moveZ(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_Z, options() );
+}
+
+public static LeanTweenDescr moveLocal(GameObject gameObject, Vector3 to, float time){
+	return pushNewTween( gameObject, to, time, TweenAction.MOVE_LOCAL, options() );
+}
+
+public static LeanTweenDescr rotate(GameObject gameObject, Vector3 to, float time){
+	return pushNewTween( gameObject, to, time, TweenAction.ROTATE, options() );
+}
+
+public static LeanTweenDescr rotate(LTRect ltRect, float to, float time){
+	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ROTATE, options().setRect( ltRect ) );
+}
+
+public static LeanTweenDescr rotateX(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_X, options() );
+}
+
+public static LeanTweenDescr rotateY(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_Y, options() );
+}
+
+public static LeanTweenDescr rotateZ(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_Z, options() );
+}
+
+public static LeanTweenDescr rotateAround(GameObject gameObject, Vector3 axis, float add, float time){
+	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND, options().setAxis(axis) );
+}
+
+public static LeanTweenDescr scale(GameObject gameObject, Vector3 to, float time){
+	return pushNewTween( gameObject, to, time, TweenAction.SCALE, options() );
+}
+	
+public static LeanTweenDescr scale(LTRect ltRect, Vector2 to, float time){
+	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_SCALE, options().setRect( ltRect ) );
+}
+
+public static LeanTweenDescr scaleX(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_X, options() );
+}
+
+public static LeanTweenDescr scaleY(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_Y, options() );
+}
+
+public static LeanTweenDescr scaleZ(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_Z, options());
+}
+
+public static LeanTweenDescr value(GameObject gameObject, Action<float> callOnUpdate, float from, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
+}
+
+public static LeanTweenDescr value(GameObject gameObject, System.Action<Vector3> callOnUpdate, Vector3 from, Vector3 to, float time){
+	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setFrom( from ).setOnUpdate(callOnUpdate) );
+}
+	
+public static LeanTweenDescr value(GameObject gameObject, Action<float,object> callOnUpdate, float from, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
+}
+
+#if !NETFX_CORE
+// LeanTween 1.x Methods
+
+public static Hashtable h( object[] arr ){
+	if(arr.Length%2==1){
+		logError("LeanTween - You have attempted to create a Hashtable with an odd number of values.");
+		return null;
+	}
+	Hashtable hash = new Hashtable();
+	for(i = 0; i < arr.Length; i += 2){
+		hash.Add(arr[i] as string, arr[i+1]);
+	}
+	
+	return hash;
+}
+
+private static int pushNewTween( GameObject gameObject, Vector3 to, float time, TweenAction tweenAction, Hashtable optional ){
+	init(maxTweens);
+	if(gameObject==null)
+		return -1;
+	
+	j = 0;
+	for(i = startSearch; j < maxTweens; i++){
+		if(i>=maxTweens-1)
+			i = 0;
+		if(tweens[i].toggle==false){
+			if(i+1>tweenMaxSearch)
+				tweenMaxSearch = i+1;
+			startSearch = i + 1;
+			break;
+		}
+		
+		j++;
+		if(j>=maxTweens){
+			logError("LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );");
+			return -1;
+		}
+	}
+	tween = tweens[i];
+	tween.toggle = true;
+	tween.reset();
+	tween.trans = gameObject.transform;
+	tween.to = to;
+	tween.time = time;
+	tween.type = tweenAction;
+	tween.optional = optional;
+	tween.id = i;
+	tween.hasPhysics = gameObject.rigidbody!=null;
+
+	if(optional!=null){
+        var ease = optional["ease"];
+        //LeanTweenType ease;
+		var optionsNotUsed = 0;
+		if(ease!=null) {
+            tween.tweenType = LeanTweenType.linear;
+			if( ease.GetType() ==typeof( LeanTweenType) ){
+                tween.tweenType = (LeanTweenType)ease;// Enum.Parse(typeof(LeanTweenType), optional["ease"].ToString());
+			} else if(ease.GetType() == typeof(AnimationCurve)){
+				tween.animationCurve = optional["ease"] as AnimationCurve;
+			} else{
+				string func = optional["ease"].ToString();
+				if(func.Equals("easeOutQuad")){
+					tween.tweenType = LeanTweenType.easeOutQuad;
+				}else if(func.Equals("easeInQuad")){
+					tween.tweenType = LeanTweenType.easeInQuad;
+				}else if(func.Equals("easeInOutQuad")){
+					tween.tweenType = LeanTweenType.easeInOutQuad;
+				}
+			}
+			optionsNotUsed++;
+		}
+		if(optional["rect"]!=null){
+			tween.ltRect = (LTRect)optional["rect"];
+			optionsNotUsed++;
+		}
+		if(optional["path"]!=null){
+			tween.path = (LTBezierPath)optional["path"];
+			optionsNotUsed++;
+		}
+		if(optional["delay"]!=null){
+			tween.delay = (float)optional["delay"];
+			optionsNotUsed++;
+		}
+		if(optional["useEstimatedTime"]!=null){
+			tween.useEstimatedTime =(bool) optional["useEstimatedTime"];
+			optionsNotUsed++;
+		}
+		if(optional["useFrames"]!=null){
+			tween.useFrames =(bool) optional["useFrames"];
+			optionsNotUsed++;
+		}
+		if(optional["loopType"]!=null){
+			tween.loopType = (LeanTweenType)optional["loopType"];
+			optionsNotUsed++;
+		}
+		if(optional["repeat"]!=null){
+			tween.loopCount = (int)optional["repeat"];
+			if(tween.loopType==LeanTweenType.once)
+				tween.loopType = LeanTweenType.clamp;
+			optionsNotUsed++;
+		}
+		if(optional["point"]!=null){
+			tween.point = (Vector3)optional["point"];
+			optionsNotUsed++;
+		}
+		if(optional["axis"]!=null){
+			tween.axis = (Vector3)optional["axis"];
+			optionsNotUsed++;
+		}
+		if(optional.Count <= optionsNotUsed)
+			tween.optional = null;  // nothing else is used with the extra piece, so set to null
+	}else{
+		tween.optional = null;
+	}
+	//Debug.Log("pushing new tween["+i+"]:"+tweens[i]);
+	
+	return tweens[i].id;
+}
 
 /**
 * Tween any particular value, it does not need to be tied to any particular type or GameObject
@@ -1357,10 +1720,7 @@ public static int value(GameObject gameObject, string callOnUpdate, float from, 
 public static int value(GameObject gameObject, string callOnUpdate, float from, float to, float time, object[] optional){
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
 }
-
-public static int value(GameObject gameObject, Action<float> callOnUpdate, float from, float to, float time){
-	return value(gameObject, callOnUpdate, from, to, time, new Hashtable()); 
-}
+	
 public static int value(GameObject gameObject, Action<float> callOnUpdate, float from, float to, float time, object[] optional){
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
 }
@@ -1475,9 +1835,7 @@ public static int value(GameObject gameObject, System.Action<Vector3,Hashtable> 
 * <i>C#: </i> <br>
 * LeanTween.rotate(cube, Vector3(180f,30f,0f), 1.5f);<br>
 */
-public static int rotate(GameObject gameObject, Vector3 to, float time){
-	return rotate( gameObject, to, time, emptyHash );
-}
+
 /**
 * Rotate a GameObject, to values that are in passed in degrees
 * 
@@ -1543,9 +1901,9 @@ public static int rotate(LTRect ltRect, float to, float time, object[] optional)
 * @param {float} float to The final x-axis rotation with which to rotate
 * @param {float} float time The time to complete the rotation in
 */
-public static int rotateX(GameObject gameObject, float to, float time){
-	return rotateX( gameObject, to, time, emptyHash );
-}
+
+
+
 /**
 * Rotate a GameObject only on the X axis
 * 
@@ -1570,9 +1928,9 @@ public static int rotateX(GameObject gameObject, float to, float time, object[] 
 * @param {float} float to The final y-axis rotation with which to rotate
 * @param {float} float time The time to complete the rotation in
 */
-public static int rotateY(GameObject gameObject, float to, float time){
-	return rotateY( gameObject, to, time, emptyHash );
-}
+
+
+
 /**
 * Rotate a GameObject only on the Y axis
 * 
@@ -1588,18 +1946,7 @@ public static int rotateY(GameObject gameObject, float to, float time, Hashtable
 public static int rotateY(GameObject gameObject, float to, float time, object[] optional){
 	return rotateY( gameObject, to, time, h(optional) );
 }
-
-/**
-* Rotate a GameObject only on the Z axis
-* 
-* @method LeanTween.rotateZ
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {float} float to The final z-axis rotation with which to rotate
-* @param {float} float time The time to complete the rotation in
-*/
-public static int rotateZ(GameObject gameObject, float to, float time){
-	return rotateZ( gameObject, to, time, emptyHash );
-}
+	
 /**
 * Rotate a GameObject only on the Z axis
 * 
@@ -1681,9 +2028,6 @@ public static int moveX(GameObject gameObject, float to, float time, Hashtable o
 public static int moveX(GameObject gameObject, float to, float time, object[] optional){
 	return moveX( gameObject, to, time, h(optional) );
 }
-public static int moveX(GameObject gameObject, float to, float time){
-	return moveX( gameObject, to, time, emptyHash );
-}
 
 /**
 * Move a GameObject along the y-axis
@@ -1700,9 +2044,6 @@ public static int moveY(GameObject gameObject, float to, float time, Hashtable o
 public static int moveY(GameObject gameObject, float to, float time, object[] optional){
 	return moveY( gameObject, to, time, h(optional) );
 }
-public static int moveY(GameObject gameObject, float to, float time){
-	return moveY( gameObject, to, time, emptyHash );
-}
 /**
 * Move a GameObject along the z-axis
 * 
@@ -1712,18 +2053,11 @@ public static int moveY(GameObject gameObject, float to, float time){
 * @param {float} float time The time to complete the move in
 * @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
 */
-public static int moveZ(GameObject gameObject, float to, float time){
-	return moveZ( gameObject, to, time, emptyHash );
-}
 public static int moveZ(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_Z, optional );
 }
 public static int moveZ(GameObject gameObject, float to, float time, object[] optional){
 	return moveZ( gameObject, to, time, h(optional) );
-}
-
-public static int move(GameObject gameObject, Vector3 to, float time){
-	return move( gameObject, to, time, emptyHash );
 }
 
 /**
@@ -1819,23 +2153,7 @@ public static int move(LTRect ltRect, Vector2 to, float time, Hashtable optional
 public static int move(LTRect ltRect, Vector3 to, float time, object[] optional){
 	return move( ltRect, to, time, LeanTween.h( optional ) );
 }
-
-/**
-* Move a GUI Element to a certain location
-* 
-* @method LeanTween.move (GUI)
-* @param {LTRect} LTRect ltRect LTRect object that you wish to move
-* @param {Vector2} Vector2 to The final position with which to move to (pixel coordinates)
-* @param {float} float time The time to complete the tween in
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
-public static int move(LTRect ltRect, Vector2 to, float time){
-	return move( ltRect, to, time, null );
-}
-
-public static int moveLocal(GameObject gameObject, Vector3 to, float time){
-	return moveLocal( gameObject, to, time, emptyHash );
-}
+	
 
 /**
 * Move a GameObject to a certain location relative to the parent transform. 
@@ -1920,10 +2238,7 @@ public static int moveLocalZ(GameObject gameObject, float to, float time, Hashta
 public static int moveLocalZ(GameObject gameObject, float to, float time, object[] optional){
 	return moveLocalZ( gameObject, to, time, h(optional) );
 }
-
-public static int scale(GameObject gameObject, Vector3 to, float time){
-	return scale( gameObject, to, time, emptyHash );
-}
+	
 
 /**
 * Scale a GameObject to a certain size
@@ -1953,7 +2268,7 @@ public static int scale(GameObject gameObject, Vector3 to, float time, object[] 
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
 public static int scale(LTRect ltRect,Vector2 to, float time, Hashtable optional)
-{
+{ 
 	init();
 	if( optional==null || optional.Count == 0 )
 		optional = new Hashtable();
@@ -1988,9 +2303,6 @@ public static int scale(LTRect ltRect, Vector2 to, float time, object[] optional
 * &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br>
 * }<br>
 */
-public static int scale(LTRect ltRect, Vector2 to, float time){
-	return scale( ltRect, to, time, emptyHash );
-}
 public static int alpha(LTRect ltRect, float to, float time, Hashtable optional){
 	init();
 	if( optional==null || optional.Count == 0 )
@@ -2003,20 +2315,14 @@ public static int alpha(LTRect ltRect, float to, float time, Hashtable optional)
 public static int alpha(LTRect ltRect, float to, float time, object[] optional){
 	return alpha( ltRect, to, time, h(optional) );
 }
-
-public static int scaleX(GameObject gameObject, float to, float time){
-	return scaleX( gameObject, to, time, emptyHash );
-}
+	
 public static int scaleX(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_X, optional );
 }
 public static int scaleX(GameObject gameObject, float to, float time, object[] optional){
 	return scaleX( gameObject, to, time, h(optional) );
 }
-
-public static int scaleY(GameObject gameObject, float to, float time){
-	return scaleY( gameObject, to, time, emptyHash );
-}
+	
 public static int scaleY(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_Y, optional );
 }
@@ -2024,9 +2330,6 @@ public static int scaleY(GameObject gameObject, float to, float time, object[] o
 	return scaleY( gameObject, to, time, h(optional) );
 }
 
-public static int scaleZ(GameObject gameObject, float to, float time){
-	return scaleZ( gameObject, to, time, emptyHash );
-}
 public static int scaleZ(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_Z, optional );
 }
@@ -2042,15 +2345,6 @@ public static int scaleZ(GameObject gameObject, float to, float time, object[] o
 * @param {Function} callback:Function Function that is called after the certain amount of time.
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
-public static int delayedCall( float delayTime, string callback){
-	init();
-	return delayedCall( tweenEmpty, delayTime, callback, new Hashtable() );
-}
-
-public static int delayedCall( float delayTime, Action callback){
-	init();
-	return delayedCall( tweenEmpty, delayTime, callback );
-}
 
 public static int delayedCall( float delayTime, string callback, Hashtable optional ){
 	init();
@@ -2101,10 +2395,8 @@ public static int delayedCall( GameObject gameObject, float delayTime, Action ca
 * @param {String} callback:String Function that is called after the certain amount of time.
 * @return {int} Returns an integer id that is used to distinguish this tween
 */
-public static int delayedCall(GameObject gameObject, float delayTime, string callback)
-{
-	return delayedCall( gameObject, delayTime, callback, new Hashtable() );
-}
+
+
 /**
 * Call a function after a certain amount of time has passed
 * 
@@ -2131,8 +2423,9 @@ public static int delayedCall( GameObject gameObject, float delayTime, Action ca
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, optional );
 }
 
-public static int delayedCall( GameObject gameObject, float delayTime, Action callback){
-	Hashtable optional = new Hashtable();
+public static int delayedCall( GameObject gameObject, float delayTime, Action<object> callback, Hashtable optional){
+	if(optional==null)
+		optional = new Hashtable();
 	optional["onComplete"] = callback;
 
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, optional );
@@ -2154,10 +2447,7 @@ public static int alpha(GameObject gameObject, float to, float time, Hashtable o
 public static int alpha(GameObject gameObject, float to, float time, object[] optional){
 	return alpha(gameObject, to, time, h(optional)); 
 }
-
-public static int alpha(GameObject gameObject, float to, float time){ 
-	return alpha(gameObject,to,time,emptyHash); 
-}
+#endif
 
 // Tweening Functions - Thanks to Robert Penner and GFX47
 
@@ -2171,26 +2461,26 @@ private static Vector3 tweenOnCurveVector( LeanTweenDescr tweenDescr, float rati
 						tweenDescr.from.z + (tweenDescr.to.z-tweenDescr.from.z) * tweenDescr.animationCurve.Evaluate(ratioPassed) );
 }
 
-public static float easeOutQuadOpt( float start, float diff, float ratioPassed ){
+private static float easeOutQuadOpt( float start, float diff, float ratioPassed ){
 	return -diff * ratioPassed * (ratioPassed - 2) + start;
 }
 
-public static float easeInQuadOpt( float start, float diff, float ratioPassed ){
+private static float easeInQuadOpt( float start, float diff, float ratioPassed ){
 	return diff * ratioPassed * ratioPassed + start;
 }
 
-public static float easeInOutQuadOpt( float start, float diff, float ratioPassed ){
+private static float easeInOutQuadOpt( float start, float diff, float ratioPassed ){
 	ratioPassed /= .5f;
 	if (ratioPassed < 1) return diff / 2 * ratioPassed * ratioPassed + start;
 	ratioPassed--;
 	return -diff / 2 * (ratioPassed * (ratioPassed - 2) - 1) + start;
 }
 
-public static float linear(float start, float end, float val){
+private static float linear(float start, float end, float val){
 	return Mathf.Lerp(start, end, val);
 }
 
-public static float clerp(float start, float end, float val){
+private static float clerp(float start, float end, float val){
 	float min = 0.0f;
 	float max = 360.0f;
 	float half = Mathf.Abs((max - min) / 2.0f);
@@ -2206,23 +2496,23 @@ public static float clerp(float start, float end, float val){
 	return retval;
 }
 
-public static float spring(float start, float end, float val){
+private static float spring(float start, float end, float val){
 	val = Mathf.Clamp01(val);
 	val = (Mathf.Sin(val * Mathf.PI * (0.2f + 2.5f * val * val * val)) * Mathf.Pow(1f - val, 2.2f) + val) * (1f + (1.2f * (1f - val)));
 	return start + (end - start) * val;
 }
 
-public static float easeInQuad(float start, float end, float val){
+private static float easeInQuad(float start, float end, float val){
 	end -= start;
 	return end * val * val + start;
 }
 
-public static float easeOutQuad(float start, float end, float val){
+private static float easeOutQuad(float start, float end, float val){
 	end -= start;
 	return -end * val * (val - 2) + start;
 }
 
-public static float easeInOutQuad(float start, float end, float val){
+private static float easeInOutQuad(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val + start;
@@ -2230,18 +2520,18 @@ public static float easeInOutQuad(float start, float end, float val){
 	return -end / 2 * (val * (val - 2) - 1) + start;
 }
 
-public static float easeInCubic(float start, float end, float val){
+private static float easeInCubic(float start, float end, float val){
 	end -= start;
 	return end * val * val * val + start;
 }
 
-public static float easeOutCubic(float start, float end, float val){
+private static float easeOutCubic(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * (val * val * val + 1) + start;
 }
 
-public static float easeInOutCubic(float start, float end, float val){
+private static float easeInOutCubic(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val + start;
@@ -2249,18 +2539,18 @@ public static float easeInOutCubic(float start, float end, float val){
 	return end / 2 * (val * val * val + 2) + start;
 }
 
-public static float easeInQuart(float start, float end, float val){
+private static float easeInQuart(float start, float end, float val){
 	end -= start;
 	return end * val * val * val * val + start;
 }
 
-public static float easeOutQuart(float start, float end, float val){
+private static float easeOutQuart(float start, float end, float val){
 	val--;
 	end -= start;
 	return -end * (val * val * val * val - 1) + start;
 }
 
-public static float easeInOutQuart(float start, float end, float val){
+private static float easeInOutQuart(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val * val + start;
@@ -2268,18 +2558,18 @@ public static float easeInOutQuart(float start, float end, float val){
 	return -end / 2 * (val * val * val * val - 2) + start;
 }
 
-public static float easeInQuint(float start, float end, float val){
+private static float easeInQuint(float start, float end, float val){
 	end -= start;
 	return end * val * val * val * val * val + start;
 }
 
-public static float easeOutQuint(float start, float end, float val){
+private static float easeOutQuint(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * (val * val * val * val * val + 1) + start;
 }
 
-public static float easeInOutQuint(float start, float end, float val){
+private static float easeInOutQuint(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val * val * val + start;
@@ -2287,32 +2577,32 @@ public static float easeInOutQuint(float start, float end, float val){
 	return end / 2 * (val * val * val * val * val + 2) + start;
 }
 
-public static float easeInSine(float start, float end, float val){
+private static float easeInSine(float start, float end, float val){
 	end -= start;
 	return -end * Mathf.Cos(val / 1 * (Mathf.PI / 2)) + end + start;
 }
 
-public static float easeOutSine(float start, float end, float val){
+private static float easeOutSine(float start, float end, float val){
 	end -= start;
 	return end * Mathf.Sin(val / 1 * (Mathf.PI / 2)) + start;
 }
 
-public static float easeInOutSine(float start, float end, float val){
+private static float easeInOutSine(float start, float end, float val){
 	end -= start;
 	return -end / 2 * (Mathf.Cos(Mathf.PI * val / 1) - 1) + start;
 }
 
-public static float easeInExpo(float start, float end, float val){
+private static float easeInExpo(float start, float end, float val){
 	end -= start;
 	return end * Mathf.Pow(2, 10 * (val / 1 - 1)) + start;
 }
 
-public static float easeOutExpo(float start, float end, float val){
+private static float easeOutExpo(float start, float end, float val){
 	end -= start;
 	return end * (-Mathf.Pow(2, -10 * val / 1) + 1) + start;
 }
 
-public static float easeInOutExpo(float start, float end, float val){
+private static float easeInOutExpo(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * Mathf.Pow(2, 10 * (val - 1)) + start;
@@ -2320,18 +2610,18 @@ public static float easeInOutExpo(float start, float end, float val){
 	return end / 2 * (-Mathf.Pow(2, -10 * val) + 2) + start;
 }
 
-public static float easeInCirc(float start, float end, float val){
+private static float easeInCirc(float start, float end, float val){
 	end -= start;
 	return -end * (Mathf.Sqrt(1 - val * val) - 1) + start;
 }
 
-public static float easeOutCirc(float start, float end, float val){
+private static float easeOutCirc(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * Mathf.Sqrt(1 - val * val) + start;
 }
 
-public static float easeInOutCirc(float start, float end, float val){
+private static float easeInOutCirc(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return -end / 2 * (Mathf.Sqrt(1 - val * val) - 1) + start;
@@ -2340,7 +2630,7 @@ public static float easeInOutCirc(float start, float end, float val){
 }
 
 /* GFX47 MOD START */
-public static float easeInBounce(float start, float end, float val){
+private static float easeInBounce(float start, float end, float val){
 	end -= start;
 	float d = 1f;
 	return end - easeOutBounce(0, end, d-val) + start;
@@ -2349,7 +2639,7 @@ public static float easeInBounce(float start, float end, float val){
 
 /* GFX47 MOD START */
 //public static function bounce(float start, float end, float val){
-public static float easeOutBounce(float start, float end, float val){
+private static float easeOutBounce(float start, float end, float val){
 	val /= 1f;
 	end -= start;
 	if (val < (1 / 2.75f)){
@@ -2368,7 +2658,7 @@ public static float easeOutBounce(float start, float end, float val){
 /* GFX47 MOD END */
 
 /* GFX47 MOD START */
-public static float easeInOutBounce(float start, float end, float val){
+private static float easeInOutBounce(float start, float end, float val){
 	end -= start;
 	float d= 1f;
 	if (val < d/2) return easeInBounce(0, end, val*2) * 0.5f + start;
@@ -2376,21 +2666,21 @@ public static float easeInOutBounce(float start, float end, float val){
 }
 /* GFX47 MOD END */
 
-public static float easeInBack(float start, float end, float val){
+private static float easeInBack(float start, float end, float val){
 	end -= start;
 	val /= 1;
 	float s= 1.70158f;
 	return end * (val) * val * ((s + 1) * val - s) + start;
 }
 
-public static float easeOutBack(float start, float end, float val){
+private static float easeOutBack(float start, float end, float val){
 	float s= 1.70158f;
 	end -= start;
 	val = (val / 1) - 1;
 	return end * ((val) * val * ((s + 1) * val + s) + 1) + start;
 }
 
-public static float easeInOutBack(float start, float end, float val){
+private static float easeInOutBack(float start, float end, float val){
 	float s= 1.70158f;
 	end -= start;
 	val /= .5f;
@@ -2404,7 +2694,7 @@ public static float easeInOutBack(float start, float end, float val){
 }
 
 /* GFX47 MOD START */
-public static float easeInElastic(float start, float end, float val){
+private static float easeInElastic(float start, float end, float val){
 	end -= start;
 	
 	float d = 1f;
@@ -2429,7 +2719,7 @@ public static float easeInElastic(float start, float end, float val){
 
 /* GFX47 MOD START */
 //public static function elastic(float start, float end, float val){
-public static float easeOutElastic(float start, float end, float val){
+private static float easeOutElastic(float start, float end, float val){
 /* GFX47 MOD END */
 	//Thank you to rafael.marteleto for fixing this as a port over from Pedro's UnityTween
 	end -= start;
@@ -2455,7 +2745,7 @@ public static float easeOutElastic(float start, float end, float val){
 }		
 
 /* GFX47 MOD START */
-public static float easeInOutElastic(float start, float end, float val)
+private static float easeInOutElastic(float start, float end, float val)
 {
 	end -= start;
 	
@@ -2484,4 +2774,84 @@ public static float easeInOutElastic(float start, float end, float val)
 	return a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
 }
 
+// LeanTween Listening/Dispatch
+
+private static System.Action<LTEvent>[] eventListeners;
+private static GameObject[] goListeners;
+private static int eventsMaxSearch = 0;
+public static int EVENTS_MAX = 10;
+public static int LISTENERS_MAX = 10;
+
+public static void addListener( int eventId, System.Action<LTEvent> callback ){
+	addListener(tweenEmpty, eventId, callback);
+}
+
+public static void addListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
+	if(eventListeners==null){
+		eventListeners = new System.Action<LTEvent>[ EVENTS_MAX * LISTENERS_MAX ];
+		goListeners = new GameObject[ EVENTS_MAX * LISTENERS_MAX ];
+	}
+	// Debug.Log("searching for an empty space for:"+caller + " eventid:"+event);
+	for(i = 0; i < LISTENERS_MAX; i++){
+		int point = eventId*LISTENERS_MAX + i;
+		if(goListeners[ point ]==null || eventListeners[ point ]==null){
+			eventListeners[ point ] = callback;
+			goListeners[ point ] = caller;
+			if(i>=eventsMaxSearch)
+				eventsMaxSearch = i+1;
+			// Debug.Log("adding event for:"+caller.name);
+
+			return;
+		}
+		if(goListeners[ point ] == caller && eventListeners[ point ] == callback){
+			// Debug.Log("This event is already being listened for.");
+			return;
+		}
+	}
+	Debug.LogError("You ran out of areas to add listeners, consider increasing LISTENERS_MAX, ex: LeanTween.LISTENERS_MAX = "+(LISTENERS_MAX*2));
+}
+
+public static bool removeListener( int eventId, System.Action<LTEvent> callback ){
+	return removeListener( tweenEmpty, eventId, callback);
+}
+
+public static bool removeListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
+	for(i = 0; i < eventsMaxSearch; i++){
+		int point = eventId*LISTENERS_MAX + i;
+		if(goListeners[ point ] == caller && eventListeners[ point ] == callback){
+			eventListeners[ point ] = null;
+			goListeners[ point ] = null;
+			return true;
+		}
+	}
+	return false;
+}
+
+public static void dispatchEvent( int eventId ){
+	dispatchEvent( eventId, null);
+}
+
+public static void dispatchEvent( int eventId, object data ){
+	for(int k = 0; k < eventsMaxSearch; k++){
+		int point = eventId*LISTENERS_MAX + k;
+		if(eventListeners[ point ]!=null){
+			if(goListeners[point]){
+				eventListeners[ point ]( new LTEvent(eventId, data) );
+			}else{
+				eventListeners[ point ] = null;
+			}
+		}
+	}
+}
+
+}
+
+public class LTEvent{
+	public int id;
+	public object data;
+
+	public LTEvent(int id, object data){
+		this.id = id;
+		this.data = data;
+	}
 }
