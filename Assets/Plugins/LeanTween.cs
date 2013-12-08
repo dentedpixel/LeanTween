@@ -166,7 +166,7 @@ public class LeanTweenDescr{
 	public bool hasPhysics;
 	public float passed;
 	public TweenAction type;
-	#if !NETFX_CORE
+	#if !UNITY_METRO
 	public Hashtable optional;
 	#endif
 	public float delay;
@@ -195,7 +195,7 @@ public class LeanTweenDescr{
 
 	public void reset(){
 		this.toggle = true;
-		#if !NETFX_CORE
+		#if !UNITY_METRO
 		this.optional = null;
 		#endif
 		this.passed = this.delay = 0.0f;
@@ -1103,7 +1103,7 @@ public static void update() {
 					}else if(tween.onUpdateVector3!=null){
 						tween.onUpdateVector3(newVect);
 					}
-					#if !NETFX_CORE
+					#if !UNITY_METRO
 					else if(tween.optional!=null){ // LeanTween 1.x legacy stuff
 						
 						var onUpdate = tween.optional["onUpdate"];
@@ -1163,7 +1163,7 @@ public static void update() {
 							if(tween.onCompleteParam!=null) tween.trans.gameObject.BroadcastMessage ( tween.onCompleteString, tween.onCompleteParam );
 							else tween.trans.gameObject.BroadcastMessage( tween.onCompleteString );
 						}
-						#if !NETFX_CORE
+						#if !UNITY_METRO
 						else if(tween.optional!=null){
 							System.Action callback=null;
 							System.Action<object> callbackWithParam = null;
@@ -1581,7 +1581,7 @@ public static LeanTweenDescr value(GameObject gameObject, Action<float,object> c
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
 }
 
-#if !NETFX_CORE
+#if !UNITY_METRO
 // LeanTween 1.x Methods
 
 public static Hashtable h( object[] arr ){
