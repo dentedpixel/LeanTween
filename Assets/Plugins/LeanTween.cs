@@ -966,13 +966,13 @@ public static void update() {
 							
 							float move = val -  tween.lastVal;
 					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
-					    	if(isTweenFinished){
+					    	/*if(isTweenFinished){
 					    		trans.eulerAngles = tween.origRotation;
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
-					    	}else{
+					    	}else{*/
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, move /*tween.to.x * (dt/timeTotal)*/);
 								tween.lastVal = val;
-					    	}
+					    	//}
 
 					    }else if(tweenAction==TweenAction.ALPHA){
 							foreach(Material mat in trans.gameObject.renderer.materials){
@@ -2452,13 +2452,14 @@ public static int alpha(GameObject gameObject, float to, float time, object[] op
 // Tweening Functions - Thanks to Robert Penner and GFX47
 
 private static float tweenOnCurve( LeanTweenDescr tweenDescr, float ratioPassed ){
-	return tweenDescr.from.x + (tweenDescr.to.x - tweenDescr.from.x) * tweenDescr.animationCurve.Evaluate(ratioPassed);
+	// Debug.Log("single ratio:"+ratioPassed+" tweenDescr.animationCurve.Evaluate(ratioPassed):"+tweenDescr.animationCurve.Evaluate(ratioPassed));
+	return tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.animationCurve.Evaluate(ratioPassed);
 }
 
 private static Vector3 tweenOnCurveVector( LeanTweenDescr tweenDescr, float ratioPassed ){
-	return	new Vector3(tweenDescr.from.x + (tweenDescr.to.x-tweenDescr.from.x) * tweenDescr.animationCurve.Evaluate(ratioPassed),
-						tweenDescr.from.y + (tweenDescr.to.y-tweenDescr.from.y) * tweenDescr.animationCurve.Evaluate(ratioPassed),
-						tweenDescr.from.z + (tweenDescr.to.z-tweenDescr.from.z) * tweenDescr.animationCurve.Evaluate(ratioPassed) );
+	return	new Vector3(tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.animationCurve.Evaluate(ratioPassed),
+						tweenDescr.from.y + (tweenDescr.diff.y) * tweenDescr.animationCurve.Evaluate(ratioPassed),
+						tweenDescr.from.z + (tweenDescr.diff.z) * tweenDescr.animationCurve.Evaluate(ratioPassed) );
 }
 
 private static float easeOutQuadOpt( float start, float diff, float ratioPassed ){
