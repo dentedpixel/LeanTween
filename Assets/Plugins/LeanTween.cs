@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 1.18 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.0 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -719,7 +719,10 @@ private static GameObject customTarget;
 public static void update() {
 	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
 		init();
+
 		dtEstimated = Time.realtimeSinceStartup - previousRealTime;
+		if(dtEstimated>0.2f) // a catch put in, when at the start sometimes this number can grow unrealistically large
+			dtEstimated = 0.2f;
 		previousRealTime = Time.realtimeSinceStartup;
 		dtActual = Time.deltaTime*Time.timeScale;
 		// if(tweenMaxSearch>1500)
@@ -730,16 +733,16 @@ public static void update() {
 			if(tweens[i].toggle){
 				tween = tweens[i];
 				trans = tween.trans;
-				timeTotal = tween.time;
+				timeTotal = tween.time*Time.timeScale;
 				tweenAction = tween.type;
-				//Debug.Log("type:"+tweens[i].type+" animationCurve:"+animationCurve);
+				
 				dt = dtActual;
 				if( tween.useEstimatedTime ){
 					dt = dtEstimated;
+					timeTotal = tween.time;
 				}else if( tween.useFrames ){
 					dt = 1;
 				}
-				//Debug.Log("tweens["+i+"]:"+tweens[i] + " dt:"+Time.deltaTime);
 				
 				if(trans==null){
 					removeTween(i);
@@ -756,7 +759,7 @@ public static void update() {
 					tween.passed = Mathf.Epsilon;
 				}
 				
-				if( (tween.passed==0.0 && tweens[i].delay==0.0) || (tween.passed>0.0 && !tween.hasInitiliazed) ){
+				if( (tween.passed==0.0 && tweens[i].delay==0.0) || (!tween.hasInitiliazed && tween.passed>0.0) ){
 					tween.hasInitiliazed = true;
 					// Initialize From Values
 					switch(tweenAction){
@@ -840,7 +843,13 @@ public static void update() {
 				}
 				if(tween.delay<=0){
 					// Move Values
-					ratioPassed = tween.passed / timeTotal;
+					if(timeTotal<=0f){
+						//Debug.LogError("time total is zero Time.timeScale:"+Time.timeScale+" useEstimatedTime:"+tween.useEstimatedTime);
+						ratioPassed = 0f;
+					}else{
+						ratioPassed = tween.passed / timeTotal;
+					}
+					
 					if(ratioPassed>1.0)
 						ratioPassed = 1.0f;
 					
@@ -923,6 +932,7 @@ public static void update() {
 							}
 						
 						}
+						
 						//Debug.Log("from:"+from+" to:"+to+" val:"+val+" ratioPassed:"+ratioPassed);
 						if(tweenAction==TweenAction.MOVE_X){
 							trans.position=new Vector3( val,trans.position.y,trans.position.z);
@@ -1095,6 +1105,7 @@ public static void update() {
 					    	tween.ltRect.rotation = newVect.x;
 					    }
 					}
+					//Debug.Log("tween.delay:"+tween.delay + " tween.passed:"+tween.passed + " tweenAction:"+tweenAction + " from:"+newVect);
 
 					if(tween.onUpdateFloat!=null){
 						tween.onUpdateFloat(val);
@@ -1147,7 +1158,8 @@ public static void update() {
 				}
 				
 				if(isTweenFinished){
-					if((TweenAction)tweenAction==TweenAction.GUI_ROTATE)
+					// Debug.Log("fininished tween:"+tween.id);
+					if(tweenAction==TweenAction.GUI_ROTATE)
 						tween.ltRect.rotateFinished = true;
 					
 					if(tween.loopType==LeanTweenType.once || tween.loopCount==1){
@@ -1200,12 +1212,12 @@ public static void update() {
 									else trans.gameObject.BroadcastMessage( callbackS );
 								}
 							}
-						}else{
+						}
+						#endif
+						else{
 							removeTween(i);
 						}
-					}
-					#endif
-					else{
+					}else{
 						if(tween.loopCount>=1){
 							tween.loopCount--;
 						}
@@ -1525,12 +1537,28 @@ public static LeanTweenDescr moveLocal(GameObject gameObject, Vector3 to, float 
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE_LOCAL, options() );
 }
 
+public static LeanTweenDescr moveLocalX(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_LOCAL_X, options() );
+}
+
+public static LeanTweenDescr moveLocalY(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_LOCAL_Y, options() );
+}
+
+public static LeanTweenDescr moveLocalZ(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_LOCAL_Z, options() );
+}
+
 public static LeanTweenDescr rotate(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.ROTATE, options() );
 }
 
 public static LeanTweenDescr rotate(LTRect ltRect, float to, float time){
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ROTATE, options().setRect( ltRect ) );
+}
+
+public static LeanTweenDescr rotateLocal(GameObject gameObject, Vector3 to, float time){
+	return pushNewTween( gameObject, to, time, TweenAction.ROTATE_LOCAL, options() );
 }
 
 public static LeanTweenDescr rotateX(GameObject gameObject, float to, float time){

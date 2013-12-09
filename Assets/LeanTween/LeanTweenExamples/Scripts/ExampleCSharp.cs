@@ -13,12 +13,12 @@ public class ExampleCSharp : MonoBehaviour {
 	
 	public delegate void NextFunc();
 	private int exampleIter = 0;
-	private string[] exampleFunctions = new string[] { "updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample" };
+	private string[] exampleFunctions = new string[] { "punchExample"};//,"updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample" };
 	private bool useEstimatedTime = true;
 	private GameObject ltLogo;
 
 	void Awake(){
-		// LeanTween.init(400); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
+		// LeanTween.init(3200); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
 	}
 
 	void Start () {
@@ -33,7 +33,7 @@ public class ExampleCSharp : MonoBehaviour {
 	void cycleThroughExamples(){
 		if(exampleIter==0){
 			useEstimatedTime = !useEstimatedTime;
-			Time.timeScale = useEstimatedTime ? 0 : 1.5f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
+			Time.timeScale = useEstimatedTime ? 0 : 1f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
 		}
 		gameObject.BroadcastMessage( exampleFunctions[ exampleIter ] );
 		
@@ -42,15 +42,30 @@ public class ExampleCSharp : MonoBehaviour {
 		LeanTween.delayedCall( gameObject, 1.05f, cycleThroughExamples).setUseEstimatedTime(useEstimatedTime);
 	}
 
+	public void punchExample(){
+		Debug.Log("punchExample Time:"+Time.time);
+		LeanTween.moveX( gameObject, transform.position.x+30, 1f).setEase(LeanTweenType.punch).setUseEstimatedTime(useEstimatedTime);
+	}
+
+	public void updateValue3Example(){
+		Debug.Log("updateValue3Example Time:"+Time.time);
+		LeanTween.value( gameObject, updateValue3ExampleCallback, new Vector3(0.0f, 270.0f, 0.0f), new Vector3(30.0f, 270.0f, 180f), 0.5f ).setEase(LeanTweenType.easeInBounce).setRepeat(2).setLoopPingPong().setUseEstimatedTime(useEstimatedTime);
+	}
+
+	public void updateValue3ExampleCallback( Vector3 val ){
+		ltLogo.transform.eulerAngles = val;
+		// Debug.Log("updateValue3ExampleCallback:"+val);
+	}
+
 	public void loopTestClamp(){
-		Debug.Log("loopTestClamp");
+		Debug.Log("loopTestClamp Time:"+Time.time);
 		GameObject cube1 = GameObject.Find("Cube1");
 		cube1.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 		LeanTween.scaleZ( cube1, 4.0f, 1.0f).setEase(LeanTweenType.easeOutElastic).setRepeat(7).setLoopClamp().setUseEstimatedTime(useEstimatedTime);;//
 	}
 
 	public void loopTestPingPong(){
-		Debug.Log("loopTestPingPong");
+		Debug.Log("loopTestPingPong Time:"+Time.time);
 		GameObject cube2 = GameObject.Find("Cube2");
 		cube2.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 		LeanTween.scaleY( cube2, 4.0f, 1.0f ).setEase(LeanTweenType.easeOutQuad).setLoopPingPong().setRepeat(8).setUseEstimatedTime(useEstimatedTime);
@@ -58,14 +73,10 @@ public class ExampleCSharp : MonoBehaviour {
 	}
 
 	public void moveOnACurveExample(){
-		Debug.Log("moveOnACurveExample");
+		Debug.Log("moveOnACurveExample Time:"+Time.time);
 
 		Vector3[] path = new Vector3[] { ltLogo.transform.position,pt1.position,pt2.position,pt3.position,pt3.position,pt4.position,pt5.position,ltLogo.transform.position};
 		LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true).setUseEstimatedTime(useEstimatedTime);
-	}
-
-	public void punchTest(){
-		LeanTween.moveX( ltLogo, 7.0f, 1.0f ).setEase(LeanTweenType.punch).setUseEstimatedTime(useEstimatedTime);
 	}
 	
 	public void customTweenExample(){
@@ -121,21 +132,11 @@ public class ExampleCSharp : MonoBehaviour {
 		tmp.y = val;
 		ltLogo.transform.eulerAngles = tmp;
 	}
-
-	public void updateValue3Example(){
-		Debug.Log("updateValue3Example");
-		LeanTween.value( gameObject, updateValue3ExampleCallback, new Vector3(0.0f, 270.0f, 0.0f), new Vector3(30.0f, 270.0f, 180f), 0.5f ).setEase(LeanTweenType.easeInBounce).setRepeat(2).setLoopPingPong().setUseEstimatedTime(useEstimatedTime);
-	}
-
-	public void updateValue3ExampleCallback( Vector3 val ){
-		ltLogo.transform.eulerAngles = val;
-		//Debug.Log("updateValue3ExampleCallback:"+val);
-	}
 	
 	public void delayedCallExample(){
 		Debug.Log("delayedCallExample");
 		
-		LeanTween.delayedCall(0.5f, delayedCallExampleCallback);
+		LeanTween.delayedCall(0.5f, delayedCallExampleCallback).setUseEstimatedTime(useEstimatedTime);
 	}
 	
 	public void delayedCallExampleCallback(){
@@ -177,5 +178,9 @@ public class ExampleCSharp : MonoBehaviour {
 	public void loopResume(){
 		GameObject cube1 = GameObject.Find("Cube1");
 		LeanTween.resume(cube1 );
+	}
+
+	public void punchTest(){
+		LeanTween.moveX( ltLogo, 7.0f, 1.0f ).setEase(LeanTweenType.punch).setUseEstimatedTime(useEstimatedTime);
 	}
 }
