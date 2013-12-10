@@ -42,11 +42,6 @@ public class ExampleCSharp : MonoBehaviour {
 		LeanTween.delayedCall( gameObject, 1.05f, cycleThroughExamples).setUseEstimatedTime(useEstimatedTime);
 	}
 
-	public void punchExample(){
-		Debug.Log("punchExample Time:"+Time.time);
-		LeanTween.moveX( gameObject, transform.position.x+30, 1f).setEase(LeanTweenType.punch).setUseEstimatedTime(useEstimatedTime);
-	}
-
 	public void updateValue3Example(){
 		Debug.Log("updateValue3Example Time:"+Time.time);
 		LeanTween.value( gameObject, updateValue3ExampleCallback, new Vector3(0.0f, 270.0f, 0.0f), new Vector3(30.0f, 270.0f, 180f), 0.5f ).setEase(LeanTweenType.easeInBounce).setRepeat(2).setLoopPingPong().setUseEstimatedTime(useEstimatedTime);

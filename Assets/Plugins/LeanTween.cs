@@ -172,7 +172,7 @@ public class LeanTweenDescr{
 	public float delay;
 	public LeanTweenType tweenType;
 	public AnimationCurve animationCurve;
-	public int id;
+	private int _id;
 	public LeanTweenType loopType;
 	public int loopCount;
 	public float direction;
@@ -181,7 +181,6 @@ public class LeanTweenDescr{
 	public Action<Vector3> onUpdateVector3;
 	public Action onComplete;
 	public Action<object> onCompleteObject;
-	public string onCompleteString;
 	public object onCompleteParam;
 	public object onUpdateParam;
 
@@ -191,6 +190,32 @@ public class LeanTweenDescr{
 
 	public LeanTweenDescr(){
 
+	}
+
+	public LeanTweenDescr cancel(){
+		LeanTween.removeTween(this._id);
+		return this;
+	}
+
+	public int uniqueId{
+		get{ 
+			int toId = (int)type | (_id << 24);
+
+			/*Debug.Log("toId:"+_id+" toType:"+(TweenAction)type);
+
+			int backId = (toId >> 24) & 0xFFFFFF;
+			int backType = toId & 0xFFFFFF;
+			
+			Debug.Log("backId:"+backId+" backType:"+(TweenAction)backType);*/
+
+			return toId;
+		}
+	}
+
+	public int id{
+		get{ 
+			return uniqueId;
+		}
 	}
 
 	public void reset(){
@@ -211,6 +236,17 @@ public class LeanTweenDescr{
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
 		this.point = Vector3.zero;
+	}
+
+	public LeanTweenDescr pause(){
+		this.lastVal =  this.direction;
+		this.direction = 0.0f;
+		return this;
+	}
+
+	public LeanTweenDescr resume(){
+		this.direction = this.lastVal;
+		return this;
 	}
 
 	public LeanTweenDescr setAxis( Vector3 axis ){
@@ -238,8 +274,16 @@ public class LeanTweenDescr{
 		return this;
 	}
 
+	public LeanTweenDescr setId( int id ){
+		this._id = id;
+		return this;
+	}
+
 	public LeanTweenDescr setRepeat( int repeat ){
 		this.loopCount = repeat;
+		if(repeat>1 && this.loopType == LeanTweenType.once){
+			this.loopType = LeanTweenType.clamp;
+		}
 		return this;
 	}
 
@@ -274,11 +318,6 @@ public class LeanTweenDescr{
 
 	public LeanTweenDescr setOnComplete( Action<object> onComplete ){
 		this.onCompleteObject = onComplete;
-		return this;
-	}
-
-	public LeanTweenDescr setOnComplete( string onComplete ){
-		this.onCompleteString = onComplete;
 		return this;
 	}
 
@@ -1067,7 +1106,7 @@ public static void update() {
 										tween.to.x = tween.from.x + tween.to.x;
 										tween.to.y = tween.from.y + tween.to.y;
 										tween.to.z = tween.from.z + tween.to.z;
-										if((TweenAction) tweenAction==TweenAction.ROTATE || (TweenAction) tweenAction==TweenAction.ROTATE_LOCAL){
+										if(tweenAction==TweenAction.ROTATE || tweenAction==TweenAction.ROTATE_LOCAL){
 											tween.to.x = closestRot(tween.from.x, tween.to.x);
 											tween.to.y = closestRot(tween.from.y, tween.to.y);
 											tween.to.z = closestRot(tween.from.z, tween.to.z);
@@ -1170,10 +1209,6 @@ public static void update() {
 						}else if(tween.onCompleteObject!=null){
 							removeTween(i);
 							tween.onCompleteObject(tween.onCompleteParam);
-						}else if(tween.onCompleteString!=null){
-							removeTween(i);
-							if(tween.onCompleteParam!=null) tween.trans.gameObject.BroadcastMessage ( tween.onCompleteString, tween.onCompleteParam );
-							else tween.trans.gameObject.BroadcastMessage( tween.onCompleteString );
 						}
 						#if !UNITY_METRO
 						else if(tween.optional!=null){
@@ -1244,15 +1279,17 @@ public static void update() {
 	}
 }
 
-private static void removeTween( int i ){
-	tweens[i].toggle = false;
-	//tweens[i].optional = null;
-	startSearch = i;
-	//Debug.Log("start search reset:"+startSearch + " i:"+i+" tweenMaxSearch:"+tweenMaxSearch);
-	if(i+1>=tweenMaxSearch){
-		//Debug.Log("reset to zero");
-		startSearch = 0;
-		tweenMaxSearch--;
+public static void removeTween( int i ){
+	if(tweens[i].toggle){
+		tweens[i].toggle = false;
+		//tweens[i].optional = null;
+		startSearch = i;
+		//Debug.Log("start search reset:"+startSearch + " i:"+i+" tweenMaxSearch:"+tweenMaxSearch);
+		if(i+1>=tweenMaxSearch){
+			//Debug.Log("reset to zero");
+			startSearch = 0;
+			tweenMaxSearch--;
+		}
 	}
 }
 
@@ -1288,7 +1325,7 @@ public static float closestRot( float from, float to ){
 * @method LeanTween.cancel
 * @param {GameObject} GameObject gameObject whose tweens you want to cancel
 */
-public static void cancel( GameObject gameObject ){
+/*public static void cancel( GameObject gameObject ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans)
@@ -1296,13 +1333,6 @@ public static void cancel( GameObject gameObject ){
 	}
 }
 
-/**
-* Cancel a specific tween for a gameObject
-* 
-* @method LeanTween.cancel
-* @param {GameObject} GameObject gameObject GameObject whose tweens you want to cancel
-* @param {int} int id Id of the tween you want to cancel ex: int id = LeanTween.MoveX(gameObject, 5, 1.0);
-*/
 public static void cancel( GameObject gameObject, int id ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
@@ -1316,13 +1346,24 @@ public static void cancel( LTRect ltRect, int id ){
 		if(tweens[i].id == id && tweens[i].ltRect==ltRect)
 			removeTween(i);
 	}
+}*/
+
+public static void cancel( int uniqueId ){
+	int backId = (uniqueId >> 24) & 0xFFFFFF;
+	int backType = uniqueId & 0xFFFFFF;
+	Debug.Log("id:"+backId+" action:"+backType + " tweens[id].type:"+tweens[backId].type +" action:"+(TweenAction)backType);
+	if(tweens[backId].type==(TweenAction)backType)
+		removeTween(backId);
 }
 
-public static LeanTweenDescr description( int id ){
-	if(tweens[id]!=null && tweens[id].id == id)
-		return tweens[id];
+public static LeanTweenDescr description( int uniqueId ){
+	int backId = (uniqueId >> 24) & 0xFFFFFF;
+	int backType = uniqueId & 0xFFFFFF;
+
+	if(tweens[backId]!=null && tweens[backId].uniqueId == uniqueId && tweens[backId].type==(TweenAction)backType)
+		return tweens[backId];
 	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].id == id)
+		if(tweens[i].uniqueId == uniqueId && tweens[i].type==(TweenAction)backType)
 			return tweens[i];
 	}
 	return null;
@@ -1335,10 +1376,10 @@ public static LeanTweenDescr description( int id ){
 * @param {GameObject} gameObject:GameObject GameObject whose tweens you want to pause
 * @param {int} id:int Id of the tween you want to cancel ex: var id:int = LeanTween.MoveX(gameObject, 5, 1.0);
 */
-public static void pause( GameObject gameObject, int id ){
+public static void pause( GameObject gameObject, int uniqueId ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].trans==trans && tweens[i].id == id){
+		if(tweens[i].trans==trans && tweens[i].uniqueId == uniqueId){
 			tweens[i].lastVal = tweens[i].direction;
 			tweens[i].direction = 0.0f;
 		}
@@ -1368,10 +1409,10 @@ public static void pause( GameObject gameObject ){
 * @param {GameObject} gameObject:GameObject GameObject whose tweens you want to resume
 * @param {int} id:int Id of the tween you want to resume ex: var id:int = LeanTween.MoveX(gameObject, 5, 1.0);
 */
-public static void resume( GameObject gameObject, int id ){
+public static void resume( GameObject gameObject, int uniqueId ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].trans==trans && tweens[i].id == id)
+		if(tweens[i].trans==trans && tweens[i].uniqueId == uniqueId)
 			tweens[i].direction = tweens[i].lastVal;
 	}
 }
@@ -1449,7 +1490,7 @@ public static LeanTweenDescr options(){
 	}
 	tween = tweens[i];
 	tween.reset();
-	tween.id = i;
+	tween.setId( i );
 
 	return tween;
 }
@@ -1494,9 +1535,9 @@ public static LeanTweenDescr delayedCall( GameObject gameObject, float delayTime
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
 }
 
-public static LeanTweenDescr delayedCall(GameObject gameObject, float delayTime, string callback){
+/*public static LeanTweenDescr delayedCall(GameObject gameObject, float delayTime, string callback){
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete( callback ) );
-}
+}*/
 
 public static LeanTweenDescr move(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE, options() );
@@ -1655,7 +1696,7 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	tween.time = time;
 	tween.type = tweenAction;
 	tween.optional = optional;
-	tween.id = i;
+	tween.setId( i );
 	tween.hasPhysics = gameObject.rigidbody!=null;
 
 	if(optional!=null){
@@ -1725,7 +1766,7 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	}
 	//Debug.Log("pushing new tween["+i+"]:"+tweens[i]);
 	
-	return tweens[i].id;
+	return tweens[i].uniqueId;
 }
 
 /**
