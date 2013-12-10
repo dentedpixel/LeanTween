@@ -1325,7 +1325,7 @@ public static float closestRot( float from, float to ){
 * @method LeanTween.cancel
 * @param {GameObject} GameObject gameObject whose tweens you want to cancel
 */
-/*public static void cancel( GameObject gameObject ){
+public static void cancel( GameObject gameObject ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans)
@@ -1334,19 +1334,12 @@ public static float closestRot( float from, float to ){
 }
 
 public static void cancel( GameObject gameObject, int id ){
-	Transform trans = gameObject.transform;
-	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].trans==trans && tweens[i].id == id)
-			removeTween(i);
-	}
+	cancel( id );
 }
 
 public static void cancel( LTRect ltRect, int id ){
-	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].id == id && tweens[i].ltRect==ltRect)
-			removeTween(i);
-	}
-}*/
+	cancel( id );
+}
 
 public static void cancel( int uniqueId ){
 	int backId = (uniqueId >> 24) & 0xFFFFFF;
