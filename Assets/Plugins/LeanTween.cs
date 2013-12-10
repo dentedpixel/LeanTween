@@ -1659,6 +1659,10 @@ public static Hashtable h( object[] arr ){
 	return hash;
 }
 
+private static int idFromUnique( int uniqueId ){
+	return (uniqueId >> 24) & 0xFFFFFF;
+}
+
 private static int pushNewTween( GameObject gameObject, Vector3 to, float time, TweenAction tweenAction, Hashtable optional ){
 	init(maxTweens);
 	if(gameObject==null)
@@ -1806,7 +1810,7 @@ public static int value(GameObject gameObject,string callOnUpdate, float from, f
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
-	int id = pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, optional );
+	int id = idFromUnique( pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, optional ) );
 	tweens[id].from = new Vector3(from,0,0);
 	return id;
 }
@@ -1816,7 +1820,7 @@ public static int value(GameObject gameObject,Action<float> callOnUpdate, float 
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
-	int id = pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, optional );
+	int id = idFromUnique( pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, optional ) );
 	tweens[id].from = new Vector3(from,0,0);
 	return id;
 }
@@ -1826,7 +1830,7 @@ public static int value(GameObject gameObject,Action<float,Hashtable> callOnUpda
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
-	int id = pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, optional );
+	int id = idFromUnique( pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, optional ) );
 	tweens[id].from = new Vector3(from,0,0);
 	return id;
 }
@@ -1848,7 +1852,7 @@ public static int value(GameObject gameObject, String callOnUpdate, Vector3 from
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
-	int id = pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional );
+	int id = idFromUnique( pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional ) );
 	tweens[id].from = from;
 	return id;
 }
@@ -1861,7 +1865,7 @@ public static int value(GameObject gameObject, System.Action<Vector3> callOnUpda
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
-	int id = pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional );
+	int id = idFromUnique( pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional ) );
 	tweens[id].from = from;
 	return id;
 }
@@ -1870,7 +1874,7 @@ public static int value(GameObject gameObject, System.Action<Vector3,Hashtable> 
 		optional = new Hashtable();
 		
 	optional["onUpdate"] = callOnUpdate;
-	int id = pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional );
+	int id = idFromUnique( pushNewTween( gameObject, to, time, TweenAction.VALUE3, optional ) );
 	tweens[id].from = from;
 	return id;
 }
