@@ -47,5 +47,5 @@ function cycleThroughExamples(){
 function moveOnACurveExample(){
 	Debug.Log("moveOnACurveExample");
 	var path:Vector3[] = [ltLogo.transform.localPosition,pt1.position,pt2.position,pt3.position,pt3.position,pt4.position,pt5.position,ltLogo.transform.localPosition];
-	LeanTween.moveLocal( ltLogo, path, 3.0, ["ease",LeanTweenType.easeInQuad,"useEstimatedTime",useEstimatedTime,"orientToPath",true]);
+	LeanTween.moveLocal( ltLogo, path, 3.0 ).setEase(LeanTweenType.easeInQuad).setOrientToPath(true).setUseEstimatedTime(useEstimatedTime);
 }

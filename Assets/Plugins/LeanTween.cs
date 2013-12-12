@@ -34,12 +34,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 /**
 * Pass this to the "ease" parameter in the optional hashtable, to get a different easing behavior<br><br>
-* <strong>Example Javascript: </strong><br>LeanTween.rotateX(gameObject, 270.0f, 1.5f, {"ease":LeanTweenType.easeInBack});<br>
-* <br>
-* <strong>Example C#: </strong> <br>
-* Hashtable optional = new Hashtable();<br>
-* optional.Add("ease":LeanTweenType.easeInBack);<br>
-* LeanTween.rotateX(gameObject, 270.0f, 1.5f, optional);<br>
+* <strong>Example: </strong><br>LeanTween.rotateX(gameObject, 270.0f, 1.5f).setEase(LeanTweenType.easeInBack);
 *
 * @class LeanTweenType
 */
@@ -137,16 +132,37 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 /**
 * @property {integer} easeInOutElastic
 */
+/**
+* @property {integer} punch
+*/
 using UnityEngine;
 using System.Collections;
 using System;
-//using System.Reflection;
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
 	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong
 }
 
+/**
+* Internal Representation of a Tween<br>
+* <br>
+* This class represents all of the optional parameters you can pass to a method (it also represents the internal representation of the tween).<br><br>
+* <strong id='optional'>Optional Parameters</strong> are passed at the end of every method:<br> 
+* <br>
+* <i>Example:</i><br>
+* LeanTween.moveX( gameObject, 1f, 1f).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInQuad ).setDelay(1f);<br>
+* <br>
+* You can pass the optional parameters in any order, and chain on as many as you wish.<br>
+* You can also pass parameters at a later time by saving a reference to what is returned.<br>
+* <br>
+* <i>Example:</i><br>
+* <a href="LeanTweenDescr.html">LeanTweenDescr</a> d = LeanTween.moveX(gameObject, 1f, 1f);<br>
+*  &nbsp; ...later set some parameters<br>
+* d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br>
+*
+* @class LeanTweenDescr
+*/
 public class LeanTweenDescr{
 	public bool toggle;
 	public Transform trans;
@@ -192,6 +208,12 @@ public class LeanTweenDescr{
 
 	}
 
+	/**
+	* Cancel a tween
+	* 
+	* @method cancel
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	*/
 	public LeanTweenDescr cancel(){
 		LeanTween.removeTween(this._id);
 		return this;
@@ -199,12 +221,12 @@ public class LeanTweenDescr{
 
 	public int uniqueId{
 		get{ 
-			int toId = (int)type | (_id << 24);
+			int toId = _id | ((int)type << 24);
 
 			/*Debug.Log("toId:"+_id+" toType:"+(TweenAction)type);
 
-			int backId = (toId >> 24) & 0xFFFFFF;
-			int backType = toId & 0xFFFFFF;
+			int backId = toId & 0xFFFFFF;
+			int backType = toId >> 24;
 			
 			Debug.Log("backId:"+backId+" backType:"+(TweenAction)backType);*/
 
@@ -212,6 +234,11 @@ public class LeanTweenDescr{
 		}
 	}
 
+	/**
+	* A unique id with which to reference the id later. You can pass this to LeanTween.pause, LeanTween.resume, LeanTween.cancel methods
+	* 
+	* @property {integer} id
+	*/
 	public int id{
 		get{ 
 			return uniqueId;
@@ -238,12 +265,24 @@ public class LeanTweenDescr{
 		this.point = Vector3.zero;
 	}
 
+	/**
+	* Pause a tween
+	* 
+	* @method pause
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	*/
 	public LeanTweenDescr pause(){
 		this.lastVal =  this.direction;
 		this.direction = 0.0f;
 		return this;
 	}
 
+	/**
+	* Resume a paused tween
+	* 
+	* @method resume
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	*/
 	public LeanTweenDescr resume(){
 		this.direction = this.lastVal;
 		return this;
@@ -254,16 +293,45 @@ public class LeanTweenDescr{
 		return this;
 	}
 	
+	/**
+	* Delay the start of a tween
+	* 
+	* @method setDelay
+	* @param {float} float time The time to complete the tween in
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f );
+	*/
 	public LeanTweenDescr setDelay( float delay ){
 		this.delay = delay;
 		return this;
 	}
 
+	/**
+	* Set the type of easing used for the tween. <br>
+	* <ul><li><a href="LeanTweenType.html">List of all the ease types</a>.</li>
+	* <li><a href="http://www.robertpenner.com/easing/easing_demo.html">This page helps visualize the different easing equations</a></li>
+	* </ul>
+	* 
+	* @method setEase
+	* @param {LeanTweenType} easeType:LeanTweenType the easing type to use
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.easeInBounce );
+	*/
 	public LeanTweenDescr setEase( LeanTweenType easeType ){
 		this.tweenType = easeType;
 		return this;
 	}
 
+	/**
+	* Set the type of easing used for the tween with a custom curve. <br>
+	* @method setEase (AnimationCurve)
+	* @param {AnimationCurve} easeDefinition:AnimationCurve an <a href="http://docs.unity3d.com/Documentation/ScriptReference/AnimationCurve.html" target="_blank">AnimationCure</a> that describes the type of easing you want, this is great for when you want a unique type of movement
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.easeInBounce );
+	*/
 	public LeanTweenDescr setEase( AnimationCurve easeCurve ){
 		this.animationCurve = easeCurve;
 		return this;
@@ -279,6 +347,14 @@ public class LeanTweenDescr{
 		return this;
 	}
 
+	/**
+	* Set the tween to repeat a number of times.
+	* @method setRepeat
+	* @param {int} repeatNum:int the number of times to repeat the tween. -1 to repeat infinite times
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 10 ).setLoopPingPong();
+	*/
 	public LeanTweenDescr setRepeat( int repeat ){
 		this.loopCount = repeat;
 		if(repeat>1 && this.loopType == LeanTweenType.once){
@@ -292,11 +368,27 @@ public class LeanTweenDescr{
 		return this;
 	}
 
+	/**
+	* Use estimated time when tweening an object. Great for pause screens, when you want all other action to be stopped (or slowed down)
+	* @method setUseEstimatedTime
+	* @param {bool} useEstimatedTime:bool whether to use estimated time or not
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 2 ).setUseEstimatedTime( true );
+	*/
 	public LeanTweenDescr setUseEstimatedTime( bool useEstimatedTime ){
 		this.useEstimatedTime = useEstimatedTime;
 		return this;
 	}
 
+	/**
+	* Use frames when tweening an object, when you don't want the animation to be time-frame independent...
+	* @method setUseFrames
+	* @param {bool} useFrames:bool whether to use estimated time or not
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 2 ).setUseFrames( true );
+	*/
 	public LeanTweenDescr setUseFrames( bool useFrames ){
 		this.useFrames = useFrames;
 		return this;
@@ -307,45 +399,140 @@ public class LeanTweenDescr{
 		return this;
 	}
 
+	/**
+	* No looping involved, just run once (the default)
+	* @method setLoopOnce
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setLoopOnce();
+	*/
 	public LeanTweenDescr setLoopOnce(){ this.loopType = LeanTweenType.once; return this; }
+
+	/**
+	* When the animation gets to the end it starts back at where it began
+	* @method setLoopClamp
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopClamp();
+	*/
 	public LeanTweenDescr setLoopClamp(){ this.loopType = LeanTweenType.clamp; return this; }
+
+	/**
+	* When the animation gets to the end it then tweens back to where it started (and on, and on)
+	* @method setLoopPingPong
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopClamp();
+	*/
 	public LeanTweenDescr setLoopPingPong(){ this.loopType = LeanTweenType.pingPong; return this; }
 
+	/**
+	* Have a method called when the tween finishes
+	* @method setOnComplete
+	* @param {Action} onComplete:Action the method that should be called when the tween is finished ex: tweenFinished(){ }
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );
+	*/
 	public LeanTweenDescr setOnComplete( Action onComplete ){
 		this.onComplete = onComplete;
 		return this;
 	}
 
+	/**
+	* Have a method called when the tween finishes
+	* @method setOnComplete (object)
+	* @param {Action<object>} onComplete:Action<object> the method that should be called when the tween is finished ex: tweenFinished( object myObj ){ }
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );
+	*/
 	public LeanTweenDescr setOnComplete( Action<object> onComplete ){
 		this.onCompleteObject = onComplete;
 		return this;
 	}
 
+	/**
+	* Pass an object to along with the onComplete Function
+	* @method setOnCompleteParam
+	* @param {object} onComplete:object an object that 
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );
+	*/
 	public LeanTweenDescr setOnCompleteParam( object onCompleteParam ){
 		this.onCompleteParam = onCompleteParam;
 		return this;
 	}
 
+	/**
+	* Have a method called on each frame that the tween is being animated (passes a float value)
+	* @method setOnUpdate
+	* @param {Action<float>} onUpdate:Action<float> a method that will be called on every frame with the float value of the tweened object
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnUpdate( tweenMoved );<br>
+	* <br>
+	* void tweenMoved( float val ){ }<br>
+	*/
 	public LeanTweenDescr setOnUpdate( Action<float> onUpdate ){
 		this.onUpdateFloat = onUpdate;
 		return this;
 	}
 
+	/**
+	* Have a method called on each frame that the tween is being animated (passes a float value and a object)
+	* @method setOnUpdate (object)
+	* @param {Action<float,object>} onUpdate:Action<float,object> a method that will be called on every frame with the float value of the tweened object, and an object of the person's choosing
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnUpdate( tweenMoved ).setOnUpdateParam( myObject );<br>
+	* <br>
+	* void tweenMoved( float val, object obj ){ }<br>
+	*/
 	public LeanTweenDescr setOnUpdate( Action<float,object> onUpdate ){
 		this.onUpdateFloatObject = onUpdate;
 		return this;
 	}
 
+	/**
+	* Have a method called on each frame that the tween is being animated (passes a float value)
+	* @method setOnUpdate (Vector3)
+	* @param {Action<Vector3>} onUpdate:Action<Vector3> a method that will be called on every frame with the float value of the tweened object
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnUpdate( tweenMoved );<br>
+	* <br>
+	* void tweenMoved( Vector3 val ){ }<br>
+	*/
 	public LeanTweenDescr setOnUpdate( Action<Vector3> onUpdate ){
 		this.onUpdateVector3 = onUpdate;
 		return this;
 	}
 
+	/**
+	* Have an object passed along with the onUpdate method
+	* @method setOnUpdateParam
+	* @param {object} onUpdateParam:object an object that will be passed along with the onUpdate method
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnUpdate( tweenMoved ).setOnUpdateParam( myObject );<br>
+	* <br>
+	* void tweenMoved( float val, object obj ){ }<br>
+	*/
 	public LeanTweenDescr setOnUpdateParam( object onUpdateParam ){
 		this.onUpdateParam = onUpdateParam;
 		return this;
 	}
 
+	/**
+	* While tweening along a curve, set this property to true, to be perpendicalur to the path it is moving upon
+	* @method setOrientToPath
+	* @param {bool} doesOrient:bool whether the gameobject will orient to the path it is animating along
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
+	*/
 	public LeanTweenDescr setOrientToPath( bool doesOrient ){
 		if(this.path==null)
 			this.path = new LTBezierPath();
@@ -363,11 +550,19 @@ public class LeanTweenDescr{
 		return this;
 	}
 
-	public LeanTweenDescr setPath(LTBezierPath path){
+	public LeanTweenDescr setPath( LTBezierPath path ){
 		this.path = path;
 		return this;
 	}
 
+	/**
+	* Set the point at which the GameObject will be rotated around
+	* @method setPoint
+	* @param {Vector3} point:Vector3 point at which you want the object to rotate around (local space)
+	* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.rotateAround( cube, Vector3.up, 360.0f, 1.0f ) .setPoint( new Vector3(1f,0f,0f) ) .setEase( LeanTweenType.easeInOutBounce );<br>
+	*/
 	public LeanTweenDescr setPoint( Vector3 point ){
 		this.point = point;
 		return this;
@@ -595,6 +790,11 @@ public class LTBezierPath{
 	}
 
 	public void setPoints( Vector3[] pts_ ){
+		if(pts_.Length<4)
+			LeanTween.logError( "LeanTween - When passing values for a vector path, you must pass four or more values!" );
+		if(pts_.Length%4!=0)
+			LeanTween.logError( "LeanTween - When passing values for a vector path, they must be in sets of four: controlPoint1, controlPoint2, endPoint2, controlPoint2, controlPoint2..." );
+
 		pts = pts_;
 		
 		int k = 0;
@@ -678,14 +878,19 @@ public enum TweenAction{
 
 /**
 * LeanTween is an efficient tweening engine for Unity3d<br><br>
-* <strong id='optional'>Optional Parameters</strong> are passed in a hastable variable that is accepted at the end of every tweening function.<br>
-* Values you can pass:<br>
-* <strong>delay</strong>: time (or frames if you are using "useFrames") before the tween starts<br>
-* <strong>ease</strong>: Function that desribes the easing you want to be used, you can pass your own or use many of the included tweens. ex: <i>{"ease":LeanTween.easeOutQuad}</i><br> 
-* <strong>onComplete</strong>: Function to call at the end of the tween ex: <i>{"onComplete":functionToCallOnComplete}</i> or <i>{"onComplete":functionToCallOnComplete,"onCompleteParam":hashTableToPassToOnComplete}</i><br>
-* <strong>onUpdate</strong>: Function to call on every update ex: <i>{"onUpdate":functionToCallOnUpdate}</i> or <i>{"onUpdate":functionToCallOnUpdate,"onUpdateParam":hashTableToPassToOnUpdate}</i><br>
-* <strong>useEstimatedTime</strong>: This is useful if the Time.timeScale is set to zero (such as when the game is paused) or some other value and you still want the tween to move at a normal pace ex: <i>{"useEstimatedTime":true}</i><br>
-* <strong>useFrames</strong>: Instead of time passed for both the delay and time value, the amount of frames that have passed is used <i>ex: {"useFrames":true}</i><br>
+* <a href="#index">Index of All Methods</a> | <a href="LeanTweenDescr.html">Optional Paramaters that can be passed</a><br><br>
+* <strong id='optional'>Optional Parameters</strong> are passed at the end of every method<br> 
+* <br>
+* <i>Example:</i><br>
+* LeanTween.moveX( gameObject, 1f, 1f).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInQuad ).setDelay(1f);<br>
+* <br>
+* You can pass the optional parameters in any order, and chain on as many as you wish.<br>
+* You can also pass parameters at a later time by saving a reference to what is returned.<br>
+* <br>
+* <i>Example:</i><br>
+* <a href="LeanTweenDescr.html">LeanTweenDescr</a> d = LeanTween.moveX(gameObject, 1f, 1f);<br>
+*  &nbsp; ...later set some parameters<br>
+* d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br>
 *
 * @class LeanTween
 */
@@ -875,6 +1080,9 @@ public static void update() {
 							}
 							
 							tween.from.x = tween.ltRect.rotation; break;
+						case TweenAction.ALPHA_VERTEX:
+							tween.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
+							break;
 					}
 					tween.diff.x = tween.to.x - tween.from.x;
 					tween.diff.y = tween.to.y - tween.from.y;
@@ -1027,6 +1235,16 @@ public static void update() {
 							foreach(Material mat in trans.gameObject.renderer.materials){
         						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
     						}
+						}else if(tweenAction==TweenAction.ALPHA_VERTEX){
+							Mesh mesh = trans.GetComponent<MeshFilter>().mesh;
+							Vector3[] vertices = mesh.vertices;
+							Color32[] colors = new Color32[vertices.Length];
+							Color32 c = mesh.colors32[0];
+							c = new Color( c.r, c.g, c.b, val);
+							for (int k= 0; k < vertices.Length; k++) {
+								colors[k] = c;
+							}
+							mesh.colors32 = colors;
 						}
 						
 					}else if(tweenAction>=TweenAction.MOVE){
@@ -1323,7 +1541,7 @@ public static float closestRot( float from, float to ){
 * Cancel all tweens that are currently targeting the gameObject
 * 
 * @method LeanTween.cancel
-* @param {GameObject} GameObject gameObject whose tweens you want to cancel
+* @param {GameObject} gameObject:GameObject gameObject whose tweens you want to cancel
 */
 public static void cancel( GameObject gameObject ){
 	Transform trans = gameObject.transform;
@@ -1333,25 +1551,36 @@ public static void cancel( GameObject gameObject ){
 	}
 }
 
+// Deprecated use cancel( id )
 public static void cancel( GameObject gameObject, int id ){
 	cancel( id );
 }
 
+// Deprecated use cancel( id )
 public static void cancel( LTRect ltRect, int id ){
 	cancel( id );
 }
 
+/**
+* Cancel all tweens that are currently targeting the gameObject
+* 
+* @method LeanTween.cancel
+* @param {int} id:int id of the tween you want to cancel
+* @example int tweenIDMove = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
+* LeanTween.cancel( tweenIDMove );
+*/
 public static void cancel( int uniqueId ){
-	int backId = (uniqueId >> 24) & 0xFFFFFF;
-	int backType = uniqueId & 0xFFFFFF;
-	Debug.Log("id:"+backId+" action:"+backType + " tweens[id].type:"+tweens[backId].type +" action:"+(TweenAction)backType);
+	int backId = uniqueId & 0xFFFFFF;
+	int backType = uniqueId >> 24;
+	// Debug.Log("id:"+backId+" action:"+backType + " tweens[id].type:"+tweens[backId].type +" action:"+(TweenAction)backType);
 	if(tweens[backId].type==(TweenAction)backType)
 		removeTween(backId);
 }
 
+// Deprecated
 public static LeanTweenDescr description( int uniqueId ){
-	int backId = (uniqueId >> 24) & 0xFFFFFF;
-	int backType = uniqueId & 0xFFFFFF;
+	int backId = uniqueId & 0xFFFFFF;
+	int backType = uniqueId >> 24;
 
 	if(tweens[backId]!=null && tweens[backId].uniqueId == uniqueId && tweens[backId].type==(TweenAction)backType)
 		return tweens[backId];
@@ -1362,25 +1591,22 @@ public static LeanTweenDescr description( int uniqueId ){
 	return null;
 }
 
-/**
-* Pause a specific tween for a gameObject
-* 
-* @method LeanTween.pause
-* @param {GameObject} gameObject:GameObject GameObject whose tweens you want to pause
-* @param {int} id:int Id of the tween you want to cancel ex: var id:int = LeanTween.MoveX(gameObject, 5, 1.0);
-*/
+// Deprecated use pause( id )
 public static void pause( GameObject gameObject, int uniqueId ){
-	Transform trans = gameObject.transform;
-	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].trans==trans && tweens[i].uniqueId == uniqueId){
-			tweens[i].lastVal = tweens[i].direction;
-			tweens[i].direction = 0.0f;
-		}
+	pause( uniqueId );
+}
+
+public static void pause( int uniqueId ){
+	int backId = uniqueId & 0xFFFFFF;
+	int backType = uniqueId >> 24;
+	if(tweens[backId].type==(TweenAction)backType){
+		tweens[backId].lastVal = tweens[backId].direction;
+		tweens[backId].direction = 0.0f;
 	}
 }
 
 /**
-* Pause a specific tween for a gameObject
+* Pause all tweens for a GameObject
 * 
 * @method LeanTween.pause
 * @param {GameObject} gameObject:GameObject GameObject whose tweens you want to pause
@@ -1395,23 +1621,27 @@ public static void pause( GameObject gameObject ){
 	}
 }
 
+// Deprecated
+public static void resume( GameObject gameObject, int uniqueId ){
+	resume( uniqueId );
+}
+
 /**
-* Pause a specific tween for a gameObject
+* Resume a specific tween
 * 
 * @method LeanTween.resume
-* @param {GameObject} gameObject:GameObject GameObject whose tweens you want to resume
-* @param {int} id:int Id of the tween you want to resume ex: var id:int = LeanTween.MoveX(gameObject, 5, 1.0);
+* @param {int} id:int Id of the tween you want to resume ex: int id = LeanTween.MoveX(gameObject, 5, 1.0).id;
 */
-public static void resume( GameObject gameObject, int uniqueId ){
-	Transform trans = gameObject.transform;
-	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].trans==trans && tweens[i].uniqueId == uniqueId)
-			tweens[i].direction = tweens[i].lastVal;
+public static void resume( int uniqueId ){
+	int backId = uniqueId & 0xFFFFFF;
+	int backType = uniqueId >> 24;
+	if(tweens[backId].type==(TweenAction)backType){
+		tweens[backId].direction = tweens[backId].lastVal;
 	}
 }
 
 /**
-* Pause a specific tween for a gameObject
+* Resume all the tweens on a GameObject
 * 
 * @method LeanTween.resume
 * @param {GameObject} gameObject:GameObject GameObject whose tweens you want to resume
@@ -1424,6 +1654,12 @@ public static void resume( GameObject gameObject ){
 	}
 }
 
+/**
+* Test whether or not a tween is active on a GameObject
+* 
+* @method LeanTween.isTweening
+* @param {GameObject} gameObject:GameObject GameObject that you want to test if it is tweening
+*/
 public static bool isTweening( GameObject gameObject ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
@@ -1433,6 +1669,12 @@ public static bool isTweening( GameObject gameObject ){
 	return false;
 }
 
+/**
+* Test whether or not a tween is active on a LTRect
+* 
+* @method LeanTween.isTweening
+* @param {LTRect} ltRect:LTRect LTRect that you want to test if it is tweening
+*/
 public static bool isTweening( LTRect ltRect ){
 	for( int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].ltRect==ltRect)
@@ -1456,7 +1698,7 @@ public static void drawBezierPath(Vector3 a, Vector3 b, Vector3 c, Vector3 d){
 	}
 }
 
-private static object logError( string error ){
+public static object logError( string error ){
 	if(throwErrors) Debug.LogError(error); else Debug.Log(error);
 	return null;
 }
@@ -1510,14 +1752,55 @@ private static LeanTweenDescr pushNewTween( GameObject gameObject, Vector3 to, f
 	
 	return tween;
 }
-	
+
+/**
+* Fade a gameobject's material to a certain alpha value. The material's shader needs to support alpha. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>.
+* 
+* @method LeanTween.alpha
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to fade
+* @param {float} to:float the final alpha value (0-1)
+* @param {float} time:float The time with which to fade the object
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+* @example
+* LeanTween.alpha(gameObject, 1f, 1f) .setDelay(1f);
+*/
 public static LeanTweenDescr alpha(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ALPHA, options() );
 }
-	
+
+/**
+* Fade a GUI Object
+* 
+* @method LeanTween.alpha
+* @param {LTRect} ltRect:LTRect LTRect that you wish to fade
+* @param {float} to:float the final alpha value (0-1)
+* @param {float} time:float The time with which to fade the object
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+* @example
+* LeanTween.alpha(ltRect, 1f, 1f) .setEase(LeanTweenType.easeInCirc);
+*/	
 public static LeanTweenDescr alpha(LTRect ltRect, float to, float time){
 	ltRect.alphaEnabled = true;
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ALPHA, options().setRect( ltRect ) );
+}
+
+/**
+* This works by tweening the vertex colors directly.<br>
+<br>
+Vertex-based coloring is useful because you avoid making a copy of your
+object's material for each instance that needs a different color.<br>
+<br>
+A shader that supports vertex colors is required for it to work
+(for example the shaders in Mobile/Particles/)
+* 
+* @method LeanTween.alphaVertex
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to alpha
+* @param {float} to:float The alpha value you wish to tween to
+* @param {float} time:float The time with which to delay before calling the function
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
+public static LeanTweenDescr alphaVertex(GameObject gameObject, float to, float time){
+	return pushNewTween( gameObject, new Vector3(to,0f,0f), time, TweenAction.ALPHA_VERTEX, options() );
 }
 
 public static LeanTweenDescr delayedCall( float delayTime, Action callback){
@@ -1532,16 +1815,35 @@ public static LeanTweenDescr delayedCall( GameObject gameObject, float delayTime
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete( callback ) );
 }*/
 
+/**
+* Move a GameObject to a certain location
+* 
+* @method LeanTween.move
+* @param {GameObject} GameObject gameObject Gameobject that you wish to move
+* @param {Vector3} vec:Vector3 to The final positin with which to move to
+* @param {float} time:float time The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+* @example LeanTween.move(gameObject, new Vector3(0f,-3f,5f), 2.0f) .setEase( LeanTween.easeOutQuad );
+*/
 public static LeanTweenDescr move(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE, options() );
 }
-	
-public static LeanTweenDescr move(GameObject gameObject, Vector3[] to, float time){
-	if(to.Length<4)
-		return logError( "LeanTween - When passing values for a vector path, you must pass four or more values!" ) as LeanTweenDescr;
-	if(to.Length%4!=0)
-		return logError( "LeanTween - When passing values for a vector path, they must be in sets of four: controlPoint1, controlPoint2, endPoint2, controlPoint2, controlPoint2..." ) as LeanTweenDescr;
 
+/**
+* Move a GameObject along a set of bezier curves
+* 
+* @method LeanTween.move
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle1,Handle2,Point2,...
+* @param {float} time:float The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+* @example
+* <i>Javascript:</i><br>
+* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br><br>
+* <i>C#:</i><br>
+* LeanTween.move(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f) .setEase(LeanTween.easeOutQuad).setOrientToPath(true);;<br>
+*/	
+public static LeanTweenDescr move(GameObject gameObject, Vector3[] to, float time){
 	descr = options();
 	if(descr.path==null)
 		descr.path = new LTBezierPath( to );
@@ -1550,25 +1852,95 @@ public static LeanTweenDescr move(GameObject gameObject, Vector3[] to, float tim
 
 	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED, descr );
 }
-	
+
+/**
+* Move a GUI Element to a certain location
+* 
+* @method LeanTween.move (GUI)
+* @param {LTRect} ltRect:LTRect ltRect LTRect object that you wish to move
+* @param {Vector2} vec:Vector2 to The final position with which to move to (pixel coordinates)
+* @param {float} time:float time The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr move(LTRect ltRect, Vector2 to, float time){
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_MOVE, options().setRect( ltRect ) );
 }
 
+/**
+* Move a GameObject along the x-axis
+* 
+* @method LeanTween.moveX
+* @param {GameObject} gameObject:GameObject gameObject Gameobject that you wish to move
+* @param {float} to:float to The final position with which to move to
+* @param {float} time:float time The time to complete the move in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr moveX(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_X, options() );
 }
 
+/**
+* Move a GameObject along the y-axis
+* 
+* @method LeanTween.moveY
+* @param {GameObject} GameObject gameObject Gameobject that you wish to move
+* @param {float} float to The final position with which to move to
+* @param {float} float time The time to complete the move in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr moveY(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_Y, options() );
 }
 
+/**
+* Move a GameObject along the z-axis
+* 
+* @method LeanTween.moveZ
+* @param {GameObject} GameObject gameObject Gameobject that you wish to move
+* @param {float} float to The final position with which to move to
+* @param {float} float time The time to complete the move in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr moveZ(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_Z, options() );
 }
 
+/**
+* Move a GameObject to a certain location relative to the parent transform. 
+* 
+* @method LeanTween.moveLocal
+* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
+* @param {Vector3} Vector3 to The final positin with which to move to
+* @param {float} float time The time to complete the tween in
+* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr moveLocal(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE_LOCAL, options() );
+}
+
+/**
+* Move a GameObject along a set of bezier curves
+* 
+* @method LeanTween.move
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle1,Handle2,Point2,...
+* @param {float} time:float The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+* @example
+* <i>Javascript:</i><br>
+* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0).setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br><br>
+* <i>C#:</i><br>
+* LeanTween.move(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}).setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br>
+*/
+public static LeanTweenDescr moveLocal(GameObject gameObject, Vector3[] to, float time){
+	descr = options();
+	if(descr.path==null)
+		descr.path = new LTBezierPath( to );
+	else 
+		descr.path.setPoints( to );
+
+	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr );
 }
 
 public static LeanTweenDescr moveLocalX(GameObject gameObject, float to, float time){
@@ -1583,62 +1955,225 @@ public static LeanTweenDescr moveLocalZ(GameObject gameObject, float to, float t
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_LOCAL_Z, options() );
 }
 
+/**
+* Rotate a GameObject, to values are in passed in degrees
+* 
+* @method LeanTween.rotate
+* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
+* @param {Vector3} Vector3 to The final rotation with which to rotate to
+* @param {float} float time The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+* @example LeanTween.rotate(cube, new Vector3(180f,30f,0f), 1.5f);
+*/
+
 public static LeanTweenDescr rotate(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.ROTATE, options() );
 }
 
+/**
+* Rotate a GUI element (using an LTRect object), to a value that is in degrees
+* 
+* @method LeanTween.rotate
+* @param {LTRect} ltRect:LTRect LTRect that you wish to rotate
+* @param {float} to:float The final rotation with which to rotate to
+* @param {float} time:float The time to complete the tween in
+* @param {Array} optional:Array Object Array where you can pass <a href="#optional">optional items</a>.
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+* @example 
+* if(GUI.Button(buttonRect.rect, "Rotate"))<br>
+*	LeanTween.rotate( buttonRect4, 150.0f, 1.0f).setEase(LeanTween.easeOutElastic);<br>
+* GUI.matrix = Matrix4x4.identity;<br>
+*/
 public static LeanTweenDescr rotate(LTRect ltRect, float to, float time){
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ROTATE, options().setRect( ltRect ) );
 }
 
+/**
+* Rotate a GameObject in the objects local space (on the transforms localEulerAngles object)
+* 
+* @method LeanTween.rotateLocal
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
+* @param {Vector3} to:Vector3 The final rotation with which to rotate to
+* @param {float} time:float The time to complete the rotation in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr rotateLocal(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.ROTATE_LOCAL, options() );
 }
 
+/**
+* Rotate a GameObject only on the X axis
+* 
+* @method LeanTween.rotateX
+* @param {GameObject} GameObject Gameobject that you wish to rotate
+* @param {float} to:float The final x-axis rotation with which to rotate
+* @param {float} time:float The time to complete the rotation in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr rotateX(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_X, options() );
 }
 
+/**
+* Rotate a GameObject only on the Y axis
+* 
+* @method LeanTween.rotateY
+* @param {GameObject} GameObject Gameobject that you wish to rotate
+* @param {float} to:float The final y-axis rotation with which to rotate
+* @param {float} time:float The time to complete the rotation in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr rotateY(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_Y, options() );
 }
 
+/**
+* Rotate a GameObject only on the Z axis
+* 
+* @method LeanTween.rotateZ
+* @param {GameObject} GameObject Gameobject that you wish to rotate
+* @param {float} to:float The final z-axis rotation with which to rotate
+* @param {float} time:float The time to complete the rotation in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr rotateZ(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_Z, options() );
 }
 
+/**
+* Rotate a GameObject around a certain Axis (the best method to use when you want to rotate beyond 180 degrees)
+* 
+* @method LeanTween.rotateAround
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
+* @param {Vector3} vec:Vector3 axis in which to rotate around ex: Vector3.up
+* @param {float} degrees:float the degrees in which to rotate
+* @param {float} time:float time The time to complete the rotation in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr rotateAround(GameObject gameObject, Vector3 axis, float add, float time){
 	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND, options().setAxis(axis) );
 }
 
+/**
+* Scale a GameObject to a certain size
+* 
+* @method LeanTween.scale
+* @param {GameObject} gameObject:GameObject gameObject Gameobject that you wish to scale
+* @param {Vector3} vec:Vector3 to The size with which to tween to
+* @param {float} time:float time The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr scale(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.SCALE, options() );
 }
 	
+/**
+* Scale a GUI Element to a certain width and height
+* 
+* @method LeanTween.scale (GUI)
+* @param {LTRect} LTRect ltRect LTRect object that you wish to move
+* @param {Vector2} Vector2 to The final width and height to scale to (pixel based)
+* @param {float} float time The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+* @example
+* <i>Example Javascript: </i><br>
+* var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br>
+* LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 ).setEase(LeanTweenType.easeOutBounce);<br>
+* function OnGUI(){<br>
+* &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br>
+* }<br>
+* <br>
+* <i>Example C#: </i> <br>
+* LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br>
+* LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f ).setEase(LeanTweenType.easeOutBounce);<br>
+* void OnGUI(){<br>
+* &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br>
+* }<br>
+*/
 public static LeanTweenDescr scale(LTRect ltRect, Vector2 to, float time){
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_SCALE, options().setRect( ltRect ) );
 }
 
+/**
+* Scale a GameObject to a certain size along the x-axis only
+* 
+* @method LeanTween.scaleX
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
+* @param {float} scaleTo:float the size with which to scale to
+* @param {float} time:float the time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr scaleX(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_X, options() );
 }
 
+/**
+* Scale a GameObject to a certain size along the y-axis only
+* 
+* @method LeanTween.scaleY
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
+* @param {float} scaleTo:float the size with which to scale to
+* @param {float} time:float the time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr scaleY(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_Y, options() );
 }
 
+/**
+* Scale a GameObject to a certain size along the z-axis only
+* 
+* @method LeanTween.scaleZ
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
+* @param {float} scaleTo:float the size with which to scale to
+* @param {float} time:float the time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr scaleZ(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.SCALE_Z, options());
 }
 
+/**
+* Tween any particular value, it does not need to be tied to any particular type or GameObject
+* 
+* @method LeanTween.value (float)
+* @param {GameObject} GameObject gameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
+* @param {Action<float>} callOnUpdate:Action<float> The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( float val ){ }
+* @param {float} float from The original value to start the tween from
+* @param {float} float to The value to end the tween on
+* @param {float} float time The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr value(GameObject gameObject, Action<float> callOnUpdate, float from, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
 }
 
+/**
+* Tween any particular value (Vector3), this could be used to tween an arbitrary value like a material color
+* 
+* @method LeanTween.value (Vector3)
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {Action<Vector3>} callOnUpdate:Action<Vector3> The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( Vector3 val ){ }
+* @param {float} from:Vector3 The original value to start the tween from
+* @param {Vector3} to:Vector3 The final Vector3 with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr value(GameObject gameObject, System.Action<Vector3> callOnUpdate, Vector3 from, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setFrom( from ).setOnUpdate(callOnUpdate) );
 }
-	
+
+/**
+* Tween any particular value (float)
+* 
+* @method LeanTween.value (float,object)
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {Action<float,object>} callOnUpdate:Action<float,object> The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( Vector3 val, object obj ){ }
+* @param {float} from:Vector3 The original value to start the tween from
+* @param {Vector3} to:Vector3 The final Vector3 with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LeanTweenDescr} LeanTweenDescr an object that distinguishes the tween
+*/
 public static LeanTweenDescr value(GameObject gameObject, Action<float,object> callOnUpdate, float from, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
 }
@@ -1660,7 +2195,7 @@ public static Hashtable h( object[] arr ){
 }
 
 private static int idFromUnique( int uniqueId ){
-	return (uniqueId >> 24) & 0xFFFFFF;
+	return uniqueId & 0xFFFFFF;
 }
 
 private static int pushNewTween( GameObject gameObject, Vector3 to, float time, TweenAction tweenAction, Hashtable optional ){
@@ -1766,16 +2301,6 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	return tweens[i].uniqueId;
 }
 
-/**
-* Tween any particular value, it does not need to be tied to any particular type or GameObject
-* 
-* @method LeanTween.value
-* @param {Function} callOnUpdate:Function The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( float val ){ }
-* @param {float} float from The original value to start the tween from
-* @param {float} float to The value to end the tween on
-* @param {float} float time The time to complete the tween in
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static int value(string callOnUpdate, float from, float to, float time, Hashtable optional){
 	return value( tweenEmpty, callOnUpdate, from, to, time, optional );
 }
@@ -1793,18 +2318,7 @@ public static int value(GameObject gameObject, Action<float> callOnUpdate, float
 public static int value(GameObject gameObject, Action<float,Hashtable> callOnUpdate, float from, float to, float time, object[] optional){
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
 }
-/**
-* Tween any particular value, it does not need to be tied to any particular type or GameObject
-* 
-* @method LeanTween.value
-* @param {GameObject} GameObject gameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
-* @param {Function} callOnUpdate:Function The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( float val ){ }
-* @param {float} float from The original value to start the tween from
-* @param {float} float to The value to end the tween on
-* @param {float} float time The time to complete the tween in
-* @param {Hashtable} time:Hashtable The time to complete the tween in
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
+
 public static int value(GameObject gameObject,string callOnUpdate, float from, float to, float time, Hashtable optional){
 	if(optional==null || optional.Count == 0)
 		optional = new Hashtable();
@@ -1835,18 +2349,6 @@ public static int value(GameObject gameObject,Action<float,Hashtable> callOnUpda
 	return id;
 }
 
-/**
-* Tween any particular value (Vector3), it does not need to be tied to any particular type or GameObject
-* 
-* @method LeanTween.value
-* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
-* @param {String} callOnUpdate:String The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( val:Vector3 ){ }
-* @param {float} from:Vector3 The original value to start the tween from
-* @param {Vector3} to:Vector3 The final Vector3 with which to tween to
-* @param {float} time:float The time to complete the tween in
-* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static int value(GameObject gameObject, String callOnUpdate, Vector3 from, Vector3 to, float time, Hashtable optional){
 	if(optional==null || optional.Count==0)
 		optional = new Hashtable();
@@ -1885,41 +2387,6 @@ public static int value(GameObject gameObject, System.Action<Vector3,Hashtable> 
 	return value(gameObject, callOnUpdate, from, to, time, h(optional)); 
 }
 
-
-
-/**
-* Rotate a GameObject, to values are in passed in degrees
-* 
-* @method LeanTween.rotate
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {Vector3} Vector3 to The final rotation with which to rotate to
-* @param {float} float time The time to complete the tween in
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example <i>Javascript:</i><br>
-* LeanTween.rotate(cube, Vector3(180,30,0), 1.5);
-* <br><br>
-* <i>C#: </i> <br>
-* LeanTween.rotate(cube, Vector3(180f,30f,0f), 1.5f);<br>
-*/
-
-/**
-* Rotate a GameObject, to values that are in passed in degrees
-* 
-* @method LeanTween.rotate
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {Vector3} Vector3 to The final rotation with which to rotate to
-* @param {float} float time The time to complete the tween in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example <i>Javascript:</i><br>
-* LeanTween.rotate(cube, Vector3(180,30,0), 1.5, {"ease":LeanTween.easeInOutQuad, onComplete":finishedTweening});
-* <br><br>
-* <i>C#: </i> <br>
-* Hashtable optional = new Hashtable();<br>
-* optional.Add("ease":LeanTweenType.easeInOutQuad);<br>
-* optional.Add("onComplete":"finishedTweening");<br>
-* LeanTween.rotate(cube, Vector3(180f,30f,0f), 1.5f, optional);<br>
-*/
 public static int rotate(GameObject gameObject, Vector3 to, float time, Hashtable optional){
 	return pushNewTween( gameObject, to, time, TweenAction.ROTATE, optional );
 }
@@ -1936,49 +2403,11 @@ public static int rotate(LTRect ltRect, float to, float time, Hashtable optional
 	optional["rect"] = ltRect;
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ROTATE, optional );
 }
-/**
-* Rotate a GUI element (using an LTRect object), to a value that is in degrees
-* 
-* @method LeanTween.rotate
-* @param {LTRect} ltRect:LTRect LTRect that you wish to rotate
-* @param {float} to:float The final rotation with which to rotate to
-* @param {float} time:float The time to complete the tween in
-* @param {Array} optional:Array Object Array where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example <i>Javascript:</i><br>
-* if(GUI.Button(buttonRect.rect, "Rotate"))<br>
-*	LeanTween.rotate( buttonRect4, 150.0, 1.0, ["ease",LeanTween.easeOutElastic]);<br>
-* GUI.matrix = Matrix4x4.identity;<br>
-* <br><br>
-* <i>C#: </i> <br>
-* if(GUI.Button(buttonRect.rect, "Rotate"))<br>
-*	LeanTween.rotate( buttonRect4, 150.0, 1.0, new object[]{"ease",LeanTween.easeOutElastic});<br>
-* GUI.matrix = Matrix4x4.identity;<br>
-*/
+
 public static int rotate(LTRect ltRect, float to, float time, object[] optional){
 	return rotate( ltRect, to, time, h(optional) );
 }
 
-/**
-* Rotate a GameObject only on the X axis
-* 
-* @method LeanTween.rotateX
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {float} float to The final x-axis rotation with which to rotate
-* @param {float} float time The time to complete the rotation in
-*/
-
-
-
-/**
-* Rotate a GameObject only on the X axis
-* 
-* @method LeanTween.rotateX
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {float} float to The final x-axis rotation with which to rotate
-* @param {float} float time The time to complete the rotation in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-*/
 public static int rotateX(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_X, optional );
 }
@@ -1986,26 +2415,7 @@ public static int rotateX(GameObject gameObject, float to, float time, Hashtable
 public static int rotateX(GameObject gameObject, float to, float time, object[] optional){
 	return rotateX( gameObject, to, time, h(optional) );
 }
-/**
-* Rotate a GameObject only on the Y axis
-* 
-* @method LeanTween.rotateY
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {float} float to The final y-axis rotation with which to rotate
-* @param {float} float time The time to complete the rotation in
-*/
 
-
-
-/**
-* Rotate a GameObject only on the Y axis
-* 
-* @method LeanTween.rotateY
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {float} float to The final y-axis rotation with which to rotate
-* @param {float} float time The time to complete the rotation in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-*/
 public static int rotateY(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_Y, optional );
 }
@@ -2013,15 +2423,6 @@ public static int rotateY(GameObject gameObject, float to, float time, object[] 
 	return rotateY( gameObject, to, time, h(optional) );
 }
 	
-/**
-* Rotate a GameObject only on the Z axis
-* 
-* @method LeanTween.rotateZ
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {float} float to The final z-axis rotation with which to rotate
-* @param {float} float time The time to complete the rotation in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-*/
 public static int rotateZ(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ROTATE_Z, optional );
 }
@@ -2029,15 +2430,7 @@ public static int rotateZ(GameObject gameObject, float to, float time, Hashtable
 public static int rotateZ(GameObject gameObject, float to, float time, object[] optional){
 	return rotateZ( gameObject, to, time, h(optional) );
 }
-/**
-* Rotate a GameObject in the objects local space (on the transforms localEulerAngles object)
-* 
-* @method LeanTween.rotateLocal
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {Vector3} Vector3 to The final rotation with which to rotate to
-* @param {float} float time The time to complete the rotation in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-*/
+
 public static int rotateLocal(GameObject gameObject, Vector3 to, float time, Hashtable optional){
 	return pushNewTween( gameObject, to, time, TweenAction.ROTATE_LOCAL, optional );
 }
@@ -2045,15 +2438,6 @@ public static int rotateLocal(GameObject gameObject, Vector3 to, float time, obj
 	return rotateLocal( gameObject, to, time, h(optional) );
 }
 
-/**
-* Rotate a GameObject in the objects local space (on the transforms localEulerAngles object)
-* 
-* @method LeanTween.rotateLocal
-* @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
-* @param {Vector3} to:Vector3 The final rotation with which to rotate to
-* @param {float} time:float The time to complete the rotation in
-* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
-*/
 /*public static int rotateAround(GameObject gameObject, Vector3 point, Vector3 axis, float add, float time, Hashtable optional){
 	if(optional==null || optional.Count==0)
 		optional = new Hashtable();
@@ -2079,15 +2463,6 @@ public static int rotateAround(GameObject gameObject, Vector3 axis, float add, f
 	return rotateAround(gameObject, axis, add, time, h(optional));
 }
 
-/**
-* Move a GameObject along the x-axis
-* 
-* @method LeanTween.moveX
-* @param {GameObject} GameObject gameObject Gameobject that you wish to move
-* @param {float} float to The final position with which to move to
-* @param {float} float time The time to complete the move in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-*/
 public static int moveX(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_X, optional );
 }
@@ -2095,30 +2470,13 @@ public static int moveX(GameObject gameObject, float to, float time, object[] op
 	return moveX( gameObject, to, time, h(optional) );
 }
 
-/**
-* Move a GameObject along the y-axis
-* 
-* @method LeanTween.moveY
-* @param {GameObject} GameObject gameObject Gameobject that you wish to move
-* @param {float} float to The final position with which to move to
-* @param {float} float time The time to complete the move in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-*/
 public static int moveY(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_Y, optional );
 }
 public static int moveY(GameObject gameObject, float to, float time, object[] optional){
 	return moveY( gameObject, to, time, h(optional) );
 }
-/**
-* Move a GameObject along the z-axis
-* 
-* @method LeanTween.moveZ
-* @param {GameObject} GameObject gameObject Gameobject that you wish to move
-* @param {float} float to The final position with which to move to
-* @param {float} float time The time to complete the move in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-*/
+
 public static int moveZ(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_Z, optional );
 }
@@ -2126,23 +2484,6 @@ public static int moveZ(GameObject gameObject, float to, float time, object[] op
 	return moveZ( gameObject, to, time, h(optional) );
 }
 
-/**
-* Move a GameObject to a certain location
-* 
-* @method LeanTween.move
-* @param {GameObject} GameObject gameObject Gameobject that you wish to move
-* @param {Vector3} Vector3 to The final positin with which to move to
-* @param {float} float time The time to complete the tween in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example
-* <i>Javascript:</i><br>
-* LeanTween.move(gameObject, Vector3(0,-3,5), 2.0, {"ease":LeanTween.easeOutQuad});<br><br>
-* <i>C#:</i><br>
-* Hashtable optional = new Hashtable();<br>
-* optional.Add("ease":LeanTweenType.easeOutQuad);<br>
-* LeanTween.move(gameObject, Vector3(0f,-3f,5f), 1.5f, optional);<br>
-*/
 public static int move(GameObject gameObject, Vector3 to, float time, Hashtable optional){
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE, optional );
 }
@@ -2151,25 +2492,6 @@ public static int move(GameObject gameObject, Vector3 to, float time, object[] o
 	return move( gameObject, to, time, LeanTween.h( optional ) );
 }
 
-
-/**
-* Move a GameObject along a set of bezier curves
-* 
-* @method LeanTween.move
-* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
-* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle1,Handle2,Point2,...
-* @param {float} time:float The time to complete the tween in
-* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example
-* <i>Javascript:</i><br>
-* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0, {"ease":LeanTween.easeOutQuad,"orientToPath":true});<br><br>
-* <i>C#:</i><br>
-* Hashtable optional = new Hashtable();<br>
-* optional.Add("ease":LeanTweenType.easeOutQuad);<br>
-* optional.Add("orientToPath":true);<br>
-* LeanTween.move(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f, optional);<br>
-*/
 public static int move(GameObject gameObject, Vector3[] to, float time, Hashtable optional){
 	if(to.Length<4){
 		string errorMsg = "LeanTween - When passing values for a vector path, you must pass four or more values!";
@@ -2197,17 +2519,6 @@ public static int move(GameObject gameObject, Vector3[] to, float time, object[]
 	return move( gameObject, to, time, LeanTween.h( optional ) );
 }
 
-
-/**
-* Move a GUI Element to a certain location
-* 
-* @method LeanTween.move (GUI)
-* @param {LTRect} LTRect ltRect LTRect object that you wish to move
-* @param {Vector2} Vector2 to The final position with which to move to (pixel coordinates)
-* @param {float} float time The time to complete the tween in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static int move(LTRect ltRect, Vector2 to, float time, Hashtable optional){
 	init();
 	if( optional==null || optional.Count == 0 )
@@ -2220,17 +2531,6 @@ public static int move(LTRect ltRect, Vector3 to, float time, object[] optional)
 	return move( ltRect, to, time, LeanTween.h( optional ) );
 }
 	
-
-/**
-* Move a GameObject to a certain location relative to the parent transform. 
-* 
-* @method LeanTween.moveLocal
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {Vector3} Vector3 to The final positin with which to move to
-* @param {float} float time The time to complete the tween in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static int moveLocal(GameObject gameObject, Vector3 to, float time, Hashtable optional){
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE_LOCAL, optional );
 }
@@ -2238,25 +2538,6 @@ public static int moveLocal(GameObject gameObject, Vector3 to, float time, objec
 	return moveLocal( gameObject, to, time, LeanTween.h( optional ) );
 }
 
-
-/**
-* Move a GameObject along a set of bezier curves
-* 
-* @method LeanTween.move
-* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
-* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle1,Handle2,Point2,...
-* @param {float} time:float The time to complete the tween in
-* @param {Hashtable} optional:Hashtable Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example
-* <i>Javascript:</i><br>
-* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0, {"ease":LeanTween.easeOutQuad,"orientToPath":true});<br><br>
-* <i>C#:</i><br>
-* Hashtable optional = new Hashtable();<br>
-* optional.Add("ease":LeanTweenType.easeOutQuad);<br>
-* optional.Add("orientToPath":true);<br>
-* LeanTween.move(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f, optional);<br>
-*/
 public static int moveLocal(GameObject gameObject, Vector3[] to, float time, Hashtable optional){
 	if(to.Length<4){
 		string errorMsg = "LeanTween - When passing values for a vector path, you must pass four or more values!";
@@ -2305,17 +2586,6 @@ public static int moveLocalZ(GameObject gameObject, float to, float time, object
 	return moveLocalZ( gameObject, to, time, h(optional) );
 }
 	
-
-/**
-* Scale a GameObject to a certain size
-* 
-* @method LeanTween.scale
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {Vector3} Vector3 to The size with which to tween to
-* @param {float} float time The time to complete the tween in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static int scale(GameObject gameObject, Vector3 to, float time, Hashtable optional){
 	return pushNewTween( gameObject, to, time, TweenAction.SCALE, optional );
 }
@@ -2323,16 +2593,6 @@ public static int scale(GameObject gameObject, Vector3 to, float time, object[] 
 	return scale( gameObject, to, time, h(optional) );
 }
 
-/**
-* Scale a GUI Element to a certain width and height
-* 
-* @method LeanTween.scale (GUI)
-* @param {LTRect} LTRect ltRect LTRect object that you wish to move
-* @param {Vector2} Vector2 to The final width and height to scale to (pixel based)
-* @param {float} float time The time to complete the tween in
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static int scale(LTRect ltRect,Vector2 to, float time, Hashtable optional)
 { 
 	init();
@@ -2346,29 +2606,6 @@ public static int scale(LTRect ltRect, Vector2 to, float time, object[] optional
 	return scale( ltRect, to, time, h(optional) );
 }
 
-/**
-* Scale a GUI Element to a certain width and height
-* 
-* @method LeanTween.scale (GUI)
-* @param {LTRect} LTRect ltRect LTRect object that you wish to move
-* @param {Vector2} Vector2 to The final width and height to scale to (pixel based)
-* @param {float} float time The time to complete the tween in
-* @return {int} Returns an integer id that is used to distinguish this tween
-* @example
-* <i>Example Javascript: </i><br>
-* var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br>
-* LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 );<br>
-* function OnGUI(){<br>
-* &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br>
-* }<br>
-* <br>
-* <i>Example C#: </ia> <br>
-* LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br>
-* LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f );<br>
-* void OnGUI(){<br>
-* &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br>
-* }<br>
-*/
 public static int alpha(LTRect ltRect, float to, float time, Hashtable optional){
 	init();
 	if( optional==null || optional.Count == 0 )
@@ -2403,15 +2640,6 @@ public static int scaleZ(GameObject gameObject, float to, float time, object[] o
 	return scaleZ( gameObject, to, time, h(optional) );
 }
 
-/**
-* Call a function after a certain amount of time has passed
-* 
-* @method LeanTween.delayedCall
-* @param {float} float delayTime The time with which to delay before calling the function
-* @param {Function} callback:Function Function that is called after the certain amount of time.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
-
 public static int delayedCall( float delayTime, string callback, Hashtable optional ){
 	init();
 	return delayedCall( tweenEmpty, delayTime, callback, optional );
@@ -2429,50 +2657,6 @@ public static int delayedCall( GameObject gameObject, float delayTime, Action ca
 	return delayedCall( gameObject, delayTime, callback, h(optional) );
 }
 
-/**
-* Call a function after a certain amount of time has passed
-* 
-* @method LeanTween.delayedCall
-* @param {GameObject} GameObject gameObject Gameobject that you wish to tie this delayed function call to
-* @param {float} float delayTime The time with which to delay before calling the function
-* @param {Function} callback:Function Function that is called after the certain amount of time.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
-
-
-/**
-* Call a function after a certain amount of time has passed
-* 
-* @method LeanTween.delayedCall
-* @param {GameObject} GameObject gameObject Gameobject that you wish to tie this delayed function call to
-* @param {float} float delayTime The time with which to delay before calling the function
-* @param {Function} callback:Function Function that is called after the certain amount of time.
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
-
-
-/**
-* Call a function after a certain amount of time has passed
-* 
-* @method LeanTween.delayedCall
-* @param {GameObject} GameObject gameObject Gameobject that you wish to call the Function on
-* @param {float} float delayTime The time with which to delay before calling the function
-* @param {String} callback:String Function that is called after the certain amount of time.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
-
-
-/**
-* Call a function after a certain amount of time has passed
-* 
-* @method LeanTween.delayedCall
-* @param {GameObject} GameObject gameObject Gameobject that you wish to call the Function on
-* @param {float} float delayTime The time with which to delay before calling the function
-* @param {String} callback:String Function that is called after the certain amount of time.
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static int delayedCall( GameObject gameObject, float delayTime, string callback, Hashtable optional){
 	if(optional==null || optional.Count == 0)
 		optional = new Hashtable();
@@ -2497,16 +2681,6 @@ public static int delayedCall( GameObject gameObject, float delayTime, Action<ob
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, optional );
 }
 
-/**
-* Fade a gameobject's material to a certain alpha value. The material's shader needs to support alpha. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>.
-* 
-* @method LeanTween.alpha
-* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
-* @param {float} float to The time with which to delay before callin the function
-* @param {float} float time The time with which to delay before calling the function
-* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
-* @return {int} Returns an integer id that is used to distinguish this tween
-*/
 public static int alpha(GameObject gameObject, float to, float time, Hashtable optional){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ALPHA, optional );
 }
