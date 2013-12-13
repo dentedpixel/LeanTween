@@ -164,7 +164,7 @@ function scaleXExample(){
 
 }
 
-private var moveId:LeanTweenDescr;
+private var moveId:LTDescr;
 private var pingPongId:int;
 
 function loopPause(){
