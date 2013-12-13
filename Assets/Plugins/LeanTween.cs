@@ -466,6 +466,7 @@ public class LTDescr{
 		return this;
 	}
 
+
 	/**
 	* Have a method called on each frame that the tween is being animated (passes a float value)
 	* @method setOnUpdate
@@ -480,7 +481,17 @@ public class LTDescr{
 		this.onUpdateFloat = onUpdate;
 		return this;
 	}
+	
+	public LTDescr setOnUpdateObject( Action<float,object> onUpdate ){
+		this.onUpdateFloatObject = onUpdate;
+		return this;
+	}
+	public LTDescr setOnUpdateVector3( Action<Vector3> onUpdate ){
+		this.onUpdateVector3 = onUpdate;
+		return this;
+	}
 
+	#if !UNITY_FLASH
 	/**
 	* Have a method called on each frame that the tween is being animated (passes a float value and a object)
 	* @method setOnUpdate (object)
@@ -510,6 +521,8 @@ public class LTDescr{
 		this.onUpdateVector3 = onUpdate;
 		return this;
 	}
+	#endif
+	
 
 	/**
 	* Have an object passed along with the onUpdate method
@@ -2161,7 +2174,7 @@ public static LTDescr value(GameObject gameObject, Action<float> callOnUpdate, f
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, System.Action<Vector3> callOnUpdate, Vector3 from, Vector3 to, float time){
-	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setFrom( from ).setOnUpdate(callOnUpdate) );
+	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setFrom( from ).setOnUpdateVector3(callOnUpdate) );
 }
 
 /**
@@ -2176,7 +2189,7 @@ public static LTDescr value(GameObject gameObject, System.Action<Vector3> callOn
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Action<float,object> callOnUpdate, float from, float to, float time){
-	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdateObject(callOnUpdate) );
 }
 
 #if !UNITY_METRO
@@ -3045,7 +3058,7 @@ public static void addListener( GameObject caller, int eventId, System.Action<LT
 
 			return;
 		}
-		if(goListeners[ point ] == caller && eventListeners[ point ] == callback){
+		if(goListeners[ point ] == caller && System.Object.ReferenceEquals( eventListeners[ point ], callback)){
 			// Debug.Log("This event is already being listened for.");
 			return;
 		}
@@ -3060,7 +3073,7 @@ public static bool removeListener( int eventId, System.Action<LTEvent> callback 
 public static bool removeListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
 	for(i = 0; i < eventsMaxSearch; i++){
 		int point = eventId*LISTENERS_MAX + i;
-		if(goListeners[ point ] == caller && eventListeners[ point ] == callback){
+		if(goListeners[ point ] == caller && System.Object.ReferenceEquals( eventListeners[ point ], callback) ){
 			eventListeners[ point ] = null;
 			goListeners[ point ] = null;
 			return true;
