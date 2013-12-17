@@ -22,7 +22,7 @@ public class MenuExampleCSharp : MonoBehaviour {
 		h = Screen.height;
 		buttonRect1 = new LTRect(0.10f*w, 0.8f*h, 0.2f*w, 0.14f*h );
 		buttonRect2 = new LTRect(1.2f*w, 0.8f*h, 0.2f*w, 0.14f*h );
-		buttonRect3 = new LTRect(0.35f*w, 0.0f*h, 0.3f*w, 0.2f*h );
+		buttonRect3 = new LTRect(0.35f*w, 0.0f*h, 0.3f*w, 0.2f*h, 0f );
 		buttonRect4 = new LTRect(0.0f*w, 0.4f*h, 0.3f*w, 0.2f*h, 1.0f, 15.0f );
 		
 		grumpyRect = new LTRect(0.5f*w - grumpy.width*0.5f, 0.5f*h - grumpy.height*0.5f, grumpy.width, grumpy.height );

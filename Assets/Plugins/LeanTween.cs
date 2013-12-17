@@ -1053,9 +1053,7 @@ public static void update() {
 							tween.from.x = 0; break;
 						case TweenAction.ROTATE:
 							tween.from = trans.eulerAngles; 
-							tween.to.x = LeanTween.closestRot( tween.from.x, tween.to.x);
-							tween.to.y = LeanTween.closestRot( tween.from.y, tween.to.y);
-							tween.to.z = LeanTween.closestRot( tween.from.z, tween.to.z);
+							tween.to = new Vector3(LeanTween.closestRot( tween.from.x, tween.to.x), LeanTween.closestRot( tween.from.y, tween.to.y), LeanTween.closestRot( tween.from.z, tween.to.z));
 							break;
 						case TweenAction.ROTATE_X:
 							tween.from.x = trans.eulerAngles.x; 
@@ -1075,9 +1073,7 @@ public static void update() {
 							break;
 						case TweenAction.ROTATE_LOCAL:
 							tween.from = trans.localEulerAngles; 
-							tween.to.x = LeanTween.closestRot( tween.from.x, tween.to.x);
-							tween.to.y = LeanTween.closestRot( tween.from.y, tween.to.y);
-							tween.to.z = LeanTween.closestRot( tween.from.z, tween.to.z);
+							tween.to = new Vector3(LeanTween.closestRot( tween.from.x, tween.to.x), LeanTween.closestRot( tween.from.y, tween.to.y), LeanTween.closestRot( tween.from.z, tween.to.z));
 							break;
 						case TweenAction.SCALE:
 							tween.from = trans.localScale; break;
@@ -1098,9 +1094,7 @@ public static void update() {
 							tween.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 							break;
 					}
-					tween.diff.x = tween.to.x - tween.from.x;
-					tween.diff.y = tween.to.y - tween.from.y;
-					tween.diff.z = tween.to.z - tween.from.z;
+					tween.diff = new Vector3(tween.to.x - tween.from.x, tween.to.y - tween.from.y, tween.to.z - tween.from.z);
 				}
 				if(tween.delay<=0){
 					// Move Values
@@ -1185,6 +1179,7 @@ public static void update() {
                                 case LeanTweenType.punch:
 									tween.animationCurve = LeanTween.punch;
 									tween.to.x = tween.from.x + tween.to.x;
+									tween.diff.x = tween.to.x - tween.from.x;
 									val = tweenOnCurve(tween, ratioPassed); break;
                                 default:
                                     {
@@ -1268,9 +1263,7 @@ public static void update() {
 							newVect = tweenOnCurveVector(tween, ratioPassed);
 						}else{
 							if(tween.tweenType == LeanTweenType.linear){
-								newVect.x = tween.from.x + tween.diff.x * ratioPassed;
-								newVect.y = tween.from.y + tween.diff.y * ratioPassed;
-								newVect.z = tween.from.z + tween.diff.z * ratioPassed;
+								newVect = new Vector3( tween.from.x + tween.diff.x * ratioPassed, tween.from.y + tween.diff.y * ratioPassed, tween.from.z + tween.diff.z * ratioPassed);
 							}else if(tween.tweenType >= LeanTweenType.linear){
 								switch(tween.tweenType){
 									case LeanTweenType.easeOutQuad:
@@ -1335,20 +1328,15 @@ public static void update() {
 										newVect = new Vector3(easeInOutElastic(tween.from.x, tween.to.x, ratioPassed), easeInOutElastic(tween.from.y, tween.to.y, ratioPassed), easeInOutElastic(tween.from.z, tween.to.z, ratioPassed)); break;
 									case LeanTweenType.punch:
 										tween.animationCurve = LeanTween.punch;
-										tween.to.x = tween.from.x + tween.to.x;
-										tween.to.y = tween.from.y + tween.to.y;
-										tween.to.z = tween.from.z + tween.to.z;
+										tween.to = new Vector3(tween.from.x + tween.to.x, tween.from.y + tween.to.y, tween.from.z + tween.to.z);
+										tween.diff = new Vector3(tween.to.x - tween.from.x, tween.to.y - tween.from.y, tween.to.z - tween.from.z);
 										if(tweenAction==TweenAction.ROTATE || tweenAction==TweenAction.ROTATE_LOCAL){
-											tween.to.x = closestRot(tween.from.x, tween.to.x);
-											tween.to.y = closestRot(tween.from.y, tween.to.y);
-											tween.to.z = closestRot(tween.from.z, tween.to.z);
+											tween.to = new Vector3(closestRot(tween.from.x, tween.to.x), closestRot(tween.from.y, tween.to.y), closestRot(tween.from.z, tween.to.z));
 										}
 										newVect = tweenOnCurveVector(tween, ratioPassed); break;
 								}
 							}else{
-								newVect.x = tween.from.x + tween.diff.x * ratioPassed;
-								newVect.y = tween.from.y + tween.diff.y * ratioPassed;
-								newVect.z = tween.from.z + tween.diff.z * ratioPassed;
+								newVect = new Vector3( tween.from.x + tween.diff.x * ratioPassed, tween.from.y + tween.diff.y * ratioPassed, tween.from.z + tween.diff.z * ratioPassed);
 							}
 						}
 						 
