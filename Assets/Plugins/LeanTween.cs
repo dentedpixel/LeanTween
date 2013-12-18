@@ -229,12 +229,11 @@ public class LTDescr{
 		get{ 
 			int toId = _id | ((int)type << 24);
 
-			/*Debug.Log("toId:"+_id+" toType:"+(TweenAction)type);
-
-			int backId = toId & 0xFFFFFF;
+			/*int backId = toId & 0xFFFFFF;
 			int backType = toId >> 24;
-			
-			Debug.Log("backId:"+backId+" backType:"+(TweenAction)backType);*/
+			if(_id!=backId || backType!=(int)type){
+				Debug.LogError("BAD CONVERSION toId:"+_id+" toType:"+(TweenAction)type+ " backId:"+backId+" backType:"+(TweenAction)backType);
+			}*/
 
 			return toId;
 		}
@@ -1546,6 +1545,7 @@ public static float closestRot( float from, float to ){
 * @param {GameObject} gameObject:GameObject gameObject whose tweens you want to cancel
 */
 public static void cancel( GameObject gameObject ){
+	init();
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans)
@@ -1554,8 +1554,15 @@ public static void cancel( GameObject gameObject ){
 }
 
 // Deprecated use cancel( id )
-public static void cancel( GameObject gameObject, int id ){
-	cancel( id );
+public static void cancel( GameObject gameObject, int uniqueId ){
+	if(uniqueId>=0){
+		init();
+		int backId = uniqueId & 0xFFFFFF;
+		int backType = uniqueId >> 24;
+		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
+		if(tweens[backId].trans.gameObject == gameObject && tweens[backId].type==(TweenAction)backType)
+			removeTween(backId);
+	}
 }
 
 // Deprecated use cancel( id )
@@ -1572,11 +1579,14 @@ public static void cancel( LTRect ltRect, int id ){
 * LeanTween.cancel( tweenIDMove );
 */
 public static void cancel( int uniqueId ){
-	int backId = uniqueId & 0xFFFFFF;
-	int backType = uniqueId >> 24;
-	// Debug.Log("id:"+backId+" action:"+backType + " tweens[id].type:"+tweens[backId].type +" action:"+(TweenAction)backType);
-	if(tweens[backId].type==(TweenAction)backType)
-		removeTween(backId);
+	if(uniqueId>=0){
+		init();
+		int backId = uniqueId & 0xFFFFFF;
+		int backType = uniqueId >> 24;
+		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
+		if(tweens[backId].type==(TweenAction)backType)
+			removeTween(backId);
+	}
 }
 
 // Deprecated
