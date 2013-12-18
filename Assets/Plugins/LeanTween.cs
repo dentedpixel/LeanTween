@@ -1566,8 +1566,15 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 }
 
 // Deprecated use cancel( id )
-public static void cancel( LTRect ltRect, int id ){
-	cancel( id );
+public static void cancel( LTRect ltRect, int uniqueId ){
+	if(uniqueId>=0){
+		init();
+		int backId = uniqueId & 0xFFFFFF;
+		int backType = uniqueId >> 24;
+		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
+		if(tweens[backId].ltRect == ltRect && tweens[backId].type==(TweenAction)backType)
+			removeTween(backId);
+	}
 }
 
 /**
