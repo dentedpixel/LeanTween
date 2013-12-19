@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.0 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.02 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -604,6 +604,8 @@ public class LTDescr{
 * @param {float} y:float Y location
 * @param {float} width:float Width
 * @param {float} height:float Height
+* @param {float} alpha:float (Optional) initial alpha amount (0-1)
+* @param {float} rotation:float (Optional) initial rotation in degrees (0-360) 
 */
 
 [System.Serializable]
@@ -788,6 +790,10 @@ public class LTBezier{
 * @class LTBezierPath
 * @constructor
 * @param {float} pts:Vector3[] A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
+* @example 
+* LTBezierPath ltPath = new LTBezierPath( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(1f,0f,0f), new Vector3(1f,0f,0f), new Vector3(1f,1f,0f)} );<br><br>
+* LeanTween.move(lt, ltPath.vec3, 4.0).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
+* float pt = ltPath.point( 0.6 ); // retrieve a point along the path
 */
 public class LTBezierPath{
 	public Vector3[] pts;
@@ -825,6 +831,15 @@ public class LTBezierPath{
 		}
 	}
 
+	/**
+	* Retrieve a point along a path
+	* 
+	* @method point
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @return {Vector3} Vector3 position of the point along the path
+	* @example
+	* transform.position = ltPath.point( 0.6f );
+	*/
 	public Vector3 point( float ratio ){
 		float added = 0.0f;
 		for(int i = 0; i < lengthRatio.Length; i++){
@@ -835,10 +850,29 @@ public class LTBezierPath{
 		return beziers[lengthRatio.Length-1].point( 1.0f );
 	}
 
+	/**
+	* Place an object along a certain point on the path (facing the direction perpendicular to the path)
+	* 
+	* @method place
+	* @param {Transform} transform:Transform the transform of the object you wish to place along the path
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @example
+	* ltPath.place( transform, 0.6f );
+	*/
 	public void place( Transform transform, float ratio ){
 		place( transform, ratio, Vector3.up );
 	}
 
+	/**
+	* Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path
+	* 
+	* @method place
+	* @param {Transform} transform:Transform the transform of the object you wish to place along the path
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @param {Vector3} rotation:Vector3 the direction in which to place the transform ex: Vector3.up
+	* @example
+	* ltPath.place( transform, 0.6f, Vector3.left );
+	*/
 	public void place( Transform transform, float ratio, Vector3 worldUp ){
 		transform.position = point( ratio );
 		ratio += 0.001f;
@@ -846,10 +880,29 @@ public class LTBezierPath{
 			transform.LookAt( point( ratio ), worldUp );
 	}
 
+	/**
+	* Place an object along a certain point on the path (facing the direction perpendicular to the path) - Local Space, not world-space
+	* 
+	* @method placeLocal
+	* @param {Transform} transform:Transform the transform of the object you wish to place along the path
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @example
+	* ltPath.placeLocal( transform, 0.6f );
+	*/
 	public void placeLocal( Transform transform, float ratio ){
 		placeLocal( transform, ratio, Vector3.up );
 	}
 
+	/**
+	* Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path - Local Space, not world-space
+	* 
+	* @method placeLocal
+	* @param {Transform} transform:Transform the transform of the object you wish to place along the path
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @param {Vector3} rotation:Vector3 the direction in which to place the transform ex: Vector3.up
+	* @example
+	* ltPath.placeLocal( transform, 0.6f, Vector3.left );
+	*/
 	public void placeLocal( Transform transform, float ratio, Vector3 worldUp ){
 		transform.localPosition = point( ratio );
 		ratio += 0.001f;
@@ -1542,7 +1595,9 @@ public static float closestRot( float from, float to ){
 * Cancel all tweens that are currently targeting the gameObject
 * 
 * @method LeanTween.cancel
-* @param {GameObject} gameObject:GameObject gameObject whose tweens you want to cancel
+* @param {GameObject} gameObject:GameObject gameObject whose tweens you wish to cancel
+* @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
+* LeanTween.cancel( gameObject );
 */
 public static void cancel( GameObject gameObject ){
 	init();
@@ -1553,7 +1608,13 @@ public static void cancel( GameObject gameObject ){
 	}
 }
 
-// Deprecated use cancel( id )
+/**
+* Cancel a specific tween with the provided id
+* 
+* @method LeanTween.cancel
+* @param {GameObject} gameObject:GameObject gameObject whose tweens you want to cancel
+* @param {float} id:float unique id that represents that tween
+*/
 public static void cancel( GameObject gameObject, int uniqueId ){
 	if(uniqueId>=0){
 		init();
@@ -1565,7 +1626,13 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 	}
 }
 
-// Deprecated use cancel( id )
+/**
+* Cancel a specific tween with the provided id
+* 
+* @method LeanTween.cancel
+* @param {LTRect} ltRect:LTRect LTRect object whose tweens you want to cancel
+* @param {float} id:float unique id that represents that tween
+*/
 public static void cancel( LTRect ltRect, int uniqueId ){
 	if(uniqueId>=0){
 		init();
@@ -1577,15 +1644,7 @@ public static void cancel( LTRect ltRect, int uniqueId ){
 	}
 }
 
-/**
-* Cancel all tweens that are currently targeting the gameObject
-* 
-* @method LeanTween.cancel
-* @param {int} id:int id of the tween you want to cancel
-* @example int tweenIDMove = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
-* LeanTween.cancel( tweenIDMove );
-*/
-public static void cancel( int uniqueId ){
+private static void cancel( int uniqueId ){
 	if(uniqueId>=0){
 		init();
 		int backId = uniqueId & 0xFFFFFF;
