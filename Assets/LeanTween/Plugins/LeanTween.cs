@@ -1885,6 +1885,10 @@ public static LTDescr delayedCall( float delayTime, Action callback){
 	return pushNewTween( tweenEmpty, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
 }
 
+public static LTDescr delayedCall( float delayTime, Action<object> callback){
+	return pushNewTween( tweenEmpty, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
+}
+
 public static LTDescr delayedCall( GameObject gameObject, float delayTime, Action callback){
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
 }
