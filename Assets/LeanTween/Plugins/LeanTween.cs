@@ -1621,7 +1621,7 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 		int backId = uniqueId & 0xFFFFFF;
 		int backType = uniqueId >> 24;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-		if(tweens[backId].trans.gameObject == gameObject && tweens[backId].type==(TweenAction)backType)
+		if(tweens[backId].trans && tweens[backId].trans.gameObject == gameObject && tweens[backId].type==(TweenAction)backType)
 			removeTween(backId);
 	}
 }
