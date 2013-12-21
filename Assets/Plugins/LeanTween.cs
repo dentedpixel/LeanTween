@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.02 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.03 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1397,11 +1397,11 @@ public static void update() {
 					    }else if(tweenAction==TweenAction.MOVE_LOCAL){
 							trans.localPosition = newVect;
 					    }else if(tweenAction==TweenAction.ROTATE){
-					    	if(tween.hasPhysics){
+					    	/*if(tween.hasPhysics){
 					    		trans.gameObject.rigidbody.MoveRotation(Quaternion.Euler( newVect ));
-				    		}else{
+				    		}else{*/
 				    			trans.eulerAngles = newVect;
-				    		}
+				    		// }
 					    }else if(tweenAction==TweenAction.ROTATE_LOCAL){
 					    	trans.localEulerAngles = newVect;
 					    }else if(tweenAction==TweenAction.SCALE){
