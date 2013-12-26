@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.03 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.031 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -201,6 +201,7 @@ public class LTDescr{
 	public Action<float> onUpdateFloat;
 	public Action<float,object> onUpdateFloatObject;
 	public Action<Vector3> onUpdateVector3;
+	public Action<Vector3,object> onUpdateVector3Object;
 	public Action onComplete;
 	public Action<object> onCompleteObject;
 	public object onCompleteParam;
@@ -259,6 +260,7 @@ public class LTDescr{
 		this.onUpdateFloat = null;
 		this.onUpdateVector3 = null;
 		this.onUpdateFloatObject = null;
+		this.onUpdateVector3Object = null;
 		this.onComplete = null;
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
@@ -501,8 +503,17 @@ public class LTDescr{
 	* <br>
 	* void tweenMoved( float val, object obj ){ }<br>
 	*/
-	public LTDescr setOnUpdate( Action<float,object> onUpdate ){
+	public LTDescr setOnUpdate( Action<float,object> onUpdate, object onUpdateParam = null ){
 		this.onUpdateFloatObject = onUpdate;
+		if(onUpdateParam!=null)
+			this.onUpdateParam = onUpdateParam;
+		return this;
+	}
+
+	public LTDescr setOnUpdate( Action<Vector3,object> onUpdate, object onUpdateParam = null ){
+		this.onUpdateVector3Object = onUpdate;
+		if(onUpdateParam!=null)
+			this.onUpdateParam = onUpdateParam;
 		return this;
 	}
 
@@ -516,8 +527,10 @@ public class LTDescr{
 	* <br>
 	* void tweenMoved( Vector3 val ){ }<br>
 	*/
-	public LTDescr setOnUpdate( Action<Vector3> onUpdate ){
+	public LTDescr setOnUpdate( Action<Vector3> onUpdate, object onUpdateParam = null ){
 		this.onUpdateVector3 = onUpdate;
+		if(onUpdateParam!=null)
+			this.onUpdateParam = onUpdateParam;
 		return this;
 	}
 	#endif
@@ -1422,6 +1435,8 @@ public static void update() {
 						tween.onUpdateFloat(val);
 					}else if(tween.onUpdateFloatObject!=null){
 						tween.onUpdateFloatObject(val, tween.onUpdateParam);
+					}else if(tween.onUpdateVector3Object!=null){
+						tween.onUpdateVector3Object(newVect, tween.onUpdateParam);
 					}else if(tween.onUpdateVector3!=null){
 						tween.onUpdateVector3(newVect);
 					}

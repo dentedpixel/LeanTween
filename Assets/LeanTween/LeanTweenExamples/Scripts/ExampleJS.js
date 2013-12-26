@@ -47,7 +47,11 @@ function cycleThroughExamples(){
 
 function updateValue3Example(){
 	Debug.Log("updateValue3Example");
-	LeanTween.value( ltLogo, updateValue3ExampleCallback, new Vector3(0.0, 270.0, 0.0), new Vector3(30.0, 270.0, 180), 0.5).setEase(LeanTweenType.easeInBounce).setLoopPingPong().setRepeat(2).setUseEstimatedTime(useEstimatedTime);
+	LeanTween.value( ltLogo, updateValue3ExampleCallback, new Vector3(0.0, 270.0, 0.0), new Vector3(30.0, 270.0, 180), 0.5).setEase(LeanTweenType.easeInBounce).setLoopPingPong().setRepeat(2).setOnUpdate(updateValue3ExampleUpdate, {}).setUseEstimatedTime(useEstimatedTime);
+}
+
+function updateValue3ExampleUpdate( val:Vector3, obj:Object){
+	Debug.Log("val:"+val+" obj:"+obj);
 }
 
 function updateValue3ExampleCallback( val:Vector3 ){
