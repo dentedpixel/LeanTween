@@ -24,12 +24,17 @@ public class ExampleCSharp : MonoBehaviour {
 	void Start () {
 		ltLogo = GameObject.Find("LeanTweenLogo");
 		cycleThroughExamples();
+		//LeanTween.delayedCall(gameObject, 2.5f, endlessCallback).setRepeat(-1);
 	}
 
 	void OnGUI(){
 		GUI.Label(new Rect(0.03f*Screen.width,0.03f*Screen.height,0.5f*Screen.width,0.3f*Screen.height), "useEstimatedTime:"+useEstimatedTime);
 	}
 	
+	void endlessCallback(){
+		Debug.Log("endless");
+	}
+
 	void cycleThroughExamples(){
 		if(exampleIter==0){
 			useEstimatedTime = !useEstimatedTime;
@@ -39,6 +44,7 @@ public class ExampleCSharp : MonoBehaviour {
 		
 		exampleIter = exampleIter+1>=exampleFunctions.Length ? 0 : exampleIter + 1;
 		
+		Debug.Log("cycleThroughExamples time:"+Time.time);
 		LeanTween.delayedCall( gameObject, 1.05f, cycleThroughExamples).setUseEstimatedTime(useEstimatedTime);
 	}
 

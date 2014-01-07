@@ -359,7 +359,7 @@ public class LTDescr{
 	*/
 	public LTDescr setRepeat( int repeat ){
 		this.loopCount = repeat;
-		if(repeat>1 && this.loopType == LeanTweenType.once){
+		if((repeat>1 && this.loopType == LeanTweenType.once) || (repeat < 0 && this.loopType == LeanTweenType.once)){
 			this.loopType = LeanTweenType.clamp;
 		}
 		return this;
@@ -921,6 +921,126 @@ public class LTBezierPath{
 		ratio += 0.001f;
 		if(ratio<=1.0f)
 			transform.LookAt( transform.parent.TransformPoint( point( ratio ) ), worldUp );
+	}
+}
+
+[System.Serializable]
+public class LTSpline {
+	public Vector3[] pts;
+	private float[] lengthRatio;
+	private float[] lengths;
+	private int numSections;
+	private int currPt;
+	private float totalLength;
+	
+	public LTSpline(params Vector3[] pts) {
+		this.pts = new Vector3[pts.Length];
+		System.Array.Copy(pts, this.pts, pts.Length);
+
+		numSections = pts.Length - 3;
+		int precision = 20;
+		lengthRatio = new float[numSections];
+		lengths = new float[precision];
+		
+		Vector3 lastPoint = new Vector3(Mathf.Infinity,0,0);
+		
+		totalLength = 0f;
+		for(int i = 0; i < precision; i++){
+			//Debug.Log("i:"+i);
+			float fract = (i*1f) / precision;
+			Vector3 point = interp( fract );
+
+			if(i>=1){
+				lengths[ i ] = (point - lastPoint).magnitude;
+				// Debug.Log("fract:"+fract+" mag:"+lengths[ i ] + " i:"+i);
+			}
+			totalLength += lengths[ i ];
+
+			lastPoint = point;
+		}
+
+		for(int i = 0; i < lengths.Length; i++){
+			float t = i *1f / lengths.Length;
+			currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
+
+			lengthRatio[currPt] += lengths[i] / totalLength;
+			Debug.Log("lengthRatio["+currPt+"]:"+lengthRatio[currPt]+" lengths["+i+"]:"+lengths[i]);
+		}
+	}
+
+	public float map( float t ){
+		float added = 0.0f;
+		//Debug.Log("map t:"+t);
+		for(int i = 0; i < lengthRatio.Length; i++){
+			//Debug.Log("lengthRatio["+i+"]:"+lengthRatio[i]);
+			
+			if(added+lengthRatio[i] >= t){
+				return added + (t-added)/lengthRatio[i] * lengthRatio[i];
+			}
+			added += lengthRatio[i];
+		}
+		return 1f;
+	}
+	
+	public Vector3 interp(float t) {
+		currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
+		float u = t * (float) numSections - (float) currPt;
+				
+		//		Debug.Log("currPt:"+currPt+" numSections:"+numSections+" pts.Length :"+pts.Length );
+		Vector3 a = pts[currPt];
+		Vector3 b = pts[currPt + 1];
+		Vector3 c = pts[currPt + 2];
+		Vector3 d = pts[currPt + 3];
+		
+		return .5f * (
+			(-a + 3f * b - 3f * c + d) * (u * u * u)
+			+ (2f * a - 5f * b + 4f * c - d) * (u * u)
+			+ (-a + c) * u
+			+ 2f * b
+		);
+	}
+
+	public Vector3 point( float ratio ){
+		float t = map( ratio );
+		//Debug.Log("t:"+t+" ratio:"+ratio);
+		return interp( ratio );
+	}
+	
+	public void gizmoDraw(float t = -1.0f) {
+		if(lengthRatio!=null && lengthRatio.Length>0){
+			Gizmos.color = Color.white;
+			Vector3 prevPt = point(0);
+			
+			for (int i = 1; i <= 120; i++) {
+				float pm = (float) i / 120f;
+				Vector3 currPt = point(pm);
+				Gizmos.DrawLine(currPt, prevPt);
+				prevPt = currPt;
+			}
+			
+			if(t>=0f){
+				Gizmos.color = Color.blue;
+				Vector3 pos = point(t);
+				Gizmos.DrawLine(pos, pos + Velocity(t));
+			}
+		}
+	}
+
+	public Vector3 Velocity(float t) {
+		t = map( t );
+
+		int numSections = pts.Length - 3;
+		int currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
+		float u = t * (float) numSections - (float) currPt;
+				
+		Vector3 a = pts[currPt];
+		Vector3 b = pts[currPt + 1];
+		Vector3 c = pts[currPt + 2];
+		Vector3 d = pts[currPt + 3];
+
+		return 1.5f * (-a + 3f * b - 3f * c + d) * (u * u)
+				+ (2f * a -5f * b + 4f * c - d) * u
+				+ .5f * c - .5f * a;
 	}
 }
 
@@ -1540,6 +1660,13 @@ public static void update() {
 							removeTween(i);
 						}
 					}else{
+						if(tween.loopCount<0 && tween.type==TweenAction.CALLBACK){
+							if(tween.onComplete!=null){
+								tween.onComplete();
+							}else if(tween.onCompleteObject!=null){
+								tween.onCompleteObject(tween.onCompleteParam);
+							}
+						}
 						if(tween.loopCount>=1){
 							tween.loopCount--;
 						}
@@ -1636,7 +1763,7 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 		int backId = uniqueId & 0xFFFFFF;
 		int backType = uniqueId >> 24;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-		if(tweens[backId].trans && tweens[backId].trans.gameObject == gameObject && tweens[backId].type==(TweenAction)backType)
+		if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].type==(TweenAction)backType))
 			removeTween(backId);
 	}
 }
