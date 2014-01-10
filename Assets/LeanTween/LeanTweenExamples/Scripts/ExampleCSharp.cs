@@ -13,7 +13,7 @@ public class ExampleCSharp : MonoBehaviour {
 	
 	public delegate void NextFunc();
 	private int exampleIter = 0;
-	private string[] exampleFunctions = new string[] { "updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample" };
+	private string[] exampleFunctions = new string[] { /*"updateValue3Example", "loopTestClamp", "loopTestPingPong",*/ "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample" };
 	private bool useEstimatedTime = true;
 	private GameObject ltLogo;
 
@@ -25,6 +25,8 @@ public class ExampleCSharp : MonoBehaviour {
 		ltLogo = GameObject.Find("LeanTweenLogo");
 		cycleThroughExamples();
 		//LeanTween.delayedCall(gameObject, 2.5f, endlessCallback).setRepeat(-1);
+		//Time.timeScale = 0.1f;
+		//LeanTween.move(ltLogo, new Vector3(-2f,0f,0f), 1f).setRepeat(2).setLoopPingPong().setUseEstimatedTime(true).setOrientToPath(true);
 	}
 
 	void OnGUI(){
@@ -38,7 +40,7 @@ public class ExampleCSharp : MonoBehaviour {
 	void cycleThroughExamples(){
 		if(exampleIter==0){
 			useEstimatedTime = !useEstimatedTime;
-			Time.timeScale = useEstimatedTime ? 0 : 1f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
+			Time.timeScale = useEstimatedTime ? 0 : 0.5f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
 		}
 		gameObject.BroadcastMessage( exampleFunctions[ exampleIter ] );
 		
@@ -54,7 +56,7 @@ public class ExampleCSharp : MonoBehaviour {
 	}
 
 	public void updateValue3ExampleUpdate( Vector3 val, object obj){
-		Debug.Log("val:"+val+" obj:"+obj);
+		//Debug.Log("val:"+val+" obj:"+obj);
 	}
 
 	public void updateValue3ExampleCallback( Vector3 val ){

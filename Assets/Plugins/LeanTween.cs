@@ -305,7 +305,7 @@ public class LTDescr{
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f );
 	*/
 	public LTDescr setDelay( float delay ){
-		this.delay = delay;
+		this.delay = delay*Time.timeScale;
 		return this;
 	}
 
@@ -341,6 +341,8 @@ public class LTDescr{
 
 	public LTDescr setFrom( Vector3 from ){
 		this.from = from;
+		this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
+		this.diff = this.to - this.from;
 		return this;
 	}
 
@@ -424,7 +426,7 @@ public class LTDescr{
 	* @method setLoopPingPong
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
-	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopClamp();
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopPingPong();
 	*/
 	public LTDescr setLoopPingPong(){ this.loopType = LeanTweenType.pingPong; return this; }
 
@@ -1001,7 +1003,7 @@ public class LTSpline {
 	}
 
 	public Vector3 point( float ratio ){
-		float t = map( ratio );
+		//float t = map( ratio );
 		//Debug.Log("t:"+t+" ratio:"+ratio);
 		return interp( ratio );
 	}
@@ -1132,6 +1134,7 @@ public static void init(int maxSimultaneousTweens){
 		_tweenEmpty.name = "~LeanTween";
 		_tweenEmpty.AddComponent(typeof(LeanTween));
 		_tweenEmpty.isStatic = true;
+		_tweenEmpty.hideFlags = HideFlags.HideAndDontSave;
 		DontDestroyOnLoad( _tweenEmpty );
 		for(int i = 0; i < maxTweens; i++){
 			tweens[i] = new LTDescr();
@@ -1279,7 +1282,7 @@ public static void update() {
 							tween.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 							break;
 					}
-					tween.diff = new Vector3(tween.to.x - tween.from.x, tween.to.y - tween.from.y, tween.to.z - tween.from.z);
+					tween.diff = tween.to - tween.from;
 				}
 				if(tween.delay<=0){
 					// Move Values
@@ -1513,8 +1516,8 @@ public static void update() {
 										newVect = new Vector3(easeInOutElastic(tween.from.x, tween.to.x, ratioPassed), easeInOutElastic(tween.from.y, tween.to.y, ratioPassed), easeInOutElastic(tween.from.z, tween.to.z, ratioPassed)); break;
 									case LeanTweenType.punch:
 										tween.animationCurve = LeanTween.punch;
-										tween.to = new Vector3(tween.from.x + tween.to.x, tween.from.y + tween.to.y, tween.from.z + tween.to.z);
-										tween.diff = new Vector3(tween.to.x - tween.from.x, tween.to.y - tween.from.y, tween.to.z - tween.from.z);
+										tween.to = tween.from + tween.to;
+										tween.diff = tween.to - tween.from;
 										if(tweenAction==TweenAction.ROTATE || tweenAction==TweenAction.ROTATE_LOCAL){
 											tween.to = new Vector3(closestRot(tween.from.x, tween.to.x), closestRot(tween.from.y, tween.to.y), closestRot(tween.from.z, tween.to.z));
 										}
