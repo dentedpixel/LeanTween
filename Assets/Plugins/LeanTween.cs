@@ -1134,7 +1134,9 @@ public static void init(int maxSimultaneousTweens){
 		_tweenEmpty.name = "~LeanTween";
 		_tweenEmpty.AddComponent(typeof(LeanTween));
 		_tweenEmpty.isStatic = true;
+		#if !UNITY_EDITOR
 		_tweenEmpty.hideFlags = HideFlags.HideAndDontSave;
+		#endif
 		DontDestroyOnLoad( _tweenEmpty );
 		for(int i = 0; i < maxTweens; i++){
 			tweens[i] = new LTDescr();
