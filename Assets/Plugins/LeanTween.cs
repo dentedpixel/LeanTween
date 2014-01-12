@@ -171,6 +171,17 @@ public enum LeanTweenType{
 */
 public class LTDescr{
 	public bool toggle;
+	public bool useEstimatedTime;
+	public bool useFrames;
+	public bool hasInitiliazed;
+	public bool hasPhysics;
+	public float passed;
+	public float delay;
+	public float time;
+	public float lastVal;
+	private int _id;
+	public int loopCount;
+	public float direction;
 	public Transform trans;
 	public LTRect ltRect;
 	public Vector3 from;
@@ -180,24 +191,10 @@ public class LTDescr{
 	public Vector3 axis;
 	public Vector3 origRotation;
 	public LTBezierPath path;
-	public float time;
-	public float lastVal;
-	public bool useEstimatedTime;
-	public bool useFrames;
-	public bool hasInitiliazed;
-	public bool hasPhysics;
-	public float passed;
 	public TweenAction type;
-	#if !UNITY_METRO
-	public Hashtable optional;
-	#endif
-	public float delay;
 	public LeanTweenType tweenType;
 	public AnimationCurve animationCurve;
-	private int _id;
 	public LeanTweenType loopType;
-	public int loopCount;
-	public float direction;
 	public Action<float> onUpdateFloat;
 	public Action<float,object> onUpdateFloatObject;
 	public Action<Vector3> onUpdateVector3;
@@ -206,6 +203,9 @@ public class LTDescr{
 	public Action<object> onCompleteObject;
 	public object onCompleteParam;
 	public object onUpdateParam;
+	#if !UNITY_METRO
+	public Hashtable optional;
+	#endif
 
     public override string ToString(){
 		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
@@ -336,6 +336,11 @@ public class LTDescr{
 	*/
 	public LTDescr setEase( AnimationCurve easeCurve ){
 		this.animationCurve = easeCurve;
+		return this;
+	}
+
+	public LTDescr setTo( Vector3 to ){
+		this.to = to;
 		return this;
 	}
 
@@ -1367,8 +1372,7 @@ public static void update() {
 								case LeanTweenType.easeOutElastic:
 									val = easeOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
 								case LeanTweenType.easeInOutElastic:
-									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed); 
-                                    break;
+									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
                                 case LeanTweenType.punch:
 									tween.animationCurve = LeanTween.punch;
 									tween.to.x = tween.from.x + tween.to.x;
@@ -2377,7 +2381,7 @@ public static LTDescr scaleZ(GameObject gameObject, float to, float time){
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Action<float> callOnUpdate, float from, float to, float time){
-	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
 }
 
 /**
@@ -2392,7 +2396,7 @@ public static LTDescr value(GameObject gameObject, Action<float> callOnUpdate, f
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, System.Action<Vector3> callOnUpdate, Vector3 from, Vector3 to, float time){
-	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setFrom( from ).setOnUpdateVector3(callOnUpdate) );
+	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setTo( to ).setFrom( from ).setOnUpdateVector3(callOnUpdate) );
 }
 
 /**
@@ -2407,7 +2411,7 @@ public static LTDescr value(GameObject gameObject, System.Action<Vector3> callOn
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Action<float,object> callOnUpdate, float from, float to, float time){
-	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ).setOnUpdateObject(callOnUpdate) );
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdateObject(callOnUpdate) );
 }
 
 #if !UNITY_METRO
