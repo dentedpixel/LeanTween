@@ -208,7 +208,7 @@ public class LTDescr{
 	public object onUpdateParam;
 
     public override string ToString(){
-		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id;
+		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
 
 	public LTDescr(){
@@ -1196,18 +1196,21 @@ public static void update() {
 					removeTween(i);
 					continue;
 				}
+				//Debug.Log("i:"+i+" tween:"+tween+" dt:"+dt);
 				
 				// Check for tween finished
 				isTweenFinished = false;
-				if((tween.passed + dt > timeTotal && tween.direction > 0.0f )){
-					isTweenFinished = true;
-					tween.passed = timeTotal; // Set to the exact end time so that it can finish tween exactly on the end value
-				}else if(tween.direction<0.0f && tween.passed - dt < 0.0f){
-					isTweenFinished = true;
-					tween.passed = Mathf.Epsilon;
+				if(tween.delay<=0){
+					if((tween.passed + dt > timeTotal && tween.direction > 0.0f )){
+						isTweenFinished = true;
+						tween.passed = timeTotal; // Set to the exact end time so that it can finish tween exactly on the end value
+					}else if(tween.direction<0.0f && tween.passed - dt < 0.0f){
+						isTweenFinished = true;
+						tween.passed = Mathf.Epsilon;
+					}
 				}
-				
-				if( (tween.passed==0.0 && tweens[i].delay==0.0) || (!tween.hasInitiliazed && tween.passed>0.0) ){
+
+				if(!tween.hasInitiliazed && ((tween.passed==0.0 && tween.delay==0.0) || tween.passed>0.0) ){
 					tween.hasInitiliazed = true;
 					// Initialize From Values
 					switch(tweenAction){
@@ -1609,7 +1612,7 @@ public static void update() {
 				}
 				
 				if(isTweenFinished){
-					// Debug.Log("fininished tween:"+tween.id);
+					//Debug.Log("finished tween:"+i);
 					if(tweenAction==TweenAction.GUI_ROTATE)
 						tween.ltRect.rotateFinished = true;
 					
