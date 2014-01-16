@@ -141,7 +141,7 @@ using System;
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
-	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong
+	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong, animationCurve
 }
 
 /**
@@ -458,6 +458,12 @@ public class LTDescr{
 	*/
 	public LTDescr setOnComplete( Action<object> onComplete ){
 		this.onCompleteObject = onComplete;
+		return this;
+	}
+	public LTDescr setOnComplete( Action<object> onComplete, object onCompleteParam ){
+		this.onCompleteObject = onComplete;
+		if(onCompleteParam!=null)
+			this.onCompleteParam = onCompleteParam;
 		return this;
 	}
 
@@ -2044,6 +2050,10 @@ public static LTDescr delayedCall( float delayTime, Action<object> callback){
 }
 
 public static LTDescr delayedCall( GameObject gameObject, float delayTime, Action callback){
+	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
+}
+
+public static LTDescr delayedCall( GameObject gameObject, float delayTime, Action<object> callback){
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
 }
 
