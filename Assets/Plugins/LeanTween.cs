@@ -141,7 +141,7 @@ using System;
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
-	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong, animationCurve
+	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong
 }
 
 /**
@@ -228,7 +228,8 @@ public class LTDescr{
 
 	public int uniqueId{
 		get{ 
-			int toId = _id | ((int)type << 24);
+			int typeVal = (int)type;
+			int toId = _id | typeVal << 24;
 
 			/*int backId = toId & 0xFFFFFF;
 			int backType = toId >> 24;
