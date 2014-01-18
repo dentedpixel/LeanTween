@@ -1247,7 +1247,14 @@ public static void update() {
 						case TweenAction.SCALE_Z:
 							tween.from.x = trans.localScale.z; break;
 						case TweenAction.ALPHA:
-							tween.from.x = trans.gameObject.renderer.material.color.a; break;
+							#if UNITY_3_5
+								tween.from.x = trans.gameObject.renderer.material.color.a; 
+								break;	
+							#else
+								SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
+								tween.from.x = (ren!=null) ? ren.material.color.a : trans.gameObject.renderer.material.color.a;
+								break;
+							#endif
 						case TweenAction.MOVE_LOCAL:
 							tween.from = trans.localPosition; break;
 						case TweenAction.MOVE_CURVED:
@@ -1445,9 +1452,24 @@ public static void update() {
 					    	//}
 
 					    }else if(tweenAction==TweenAction.ALPHA){
+					    	#if UNITY_3_5
+
 							foreach(Material mat in trans.gameObject.renderer.materials){
         						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
     						}
+
+							#else
+
+							SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
+							if(ren!=null){
+								ren.material.color = new Color( ren.material.color.r, ren.material.color.g, ren.material.color.b, val);
+							}else{
+								foreach(Material mat in trans.gameObject.renderer.materials){
+	        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+	    						}
+							}
+
+    						#endif
 						}else if(tweenAction==TweenAction.ALPHA_VERTEX){
 							Mesh mesh = trans.GetComponent<MeshFilter>().mesh;
 							Vector3[] vertices = mesh.vertices;
@@ -2075,6 +2097,10 @@ public static LTDescr delayedCall( GameObject gameObject, float delayTime, Actio
 public static LTDescr move(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE, options() );
 }
+public static LTDescr move(GameObject gameObject, Vector2 to, float time){
+	return pushNewTween( gameObject, new Vector3(to.x, to.y, gameObject.transform.position.z), time, TweenAction.MOVE, options() );
+}
+
 
 /**
 * Move a GameObject along a set of bezier curves
