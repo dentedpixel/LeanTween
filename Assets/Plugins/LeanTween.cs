@@ -141,7 +141,7 @@ using System;
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
-	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong
+	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong, animationCurve
 }
 
 /**
@@ -1252,7 +1252,7 @@ public static void update() {
 								break;	
 							#else
 								SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-								tween.from.x = (ren!=null) ? ren.material.color.a : trans.gameObject.renderer.material.color.a;
+								tween.from.x = (ren!=null) ? ren.color.a : trans.gameObject.renderer.material.color.a;
 								break;
 							#endif
 						case TweenAction.MOVE_LOCAL:
@@ -1462,7 +1462,7 @@ public static void update() {
 
 							SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
 							if(ren!=null){
-								ren.material.color = new Color( ren.material.color.r, ren.material.color.g, ren.material.color.b, val);
+								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
 							}else{
 								foreach(Material mat in trans.gameObject.renderer.materials){
 	        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
