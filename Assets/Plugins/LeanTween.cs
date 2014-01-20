@@ -847,6 +847,7 @@ public class LTBezierPath{
 		beziers = new LTBezier[ pts.Length / 4 ];
 		lengthRatio = new float[ beziers.Length ];
 		int i;
+		length = 0;
 		for(i = 0; i < pts.Length; i+=4){
 			beziers[k] = new LTBezier(pts[i+0],pts[i+2],pts[i+1],pts[i+3],0.05f);
 			length += beziers[k].length;
