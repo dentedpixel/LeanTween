@@ -257,7 +257,7 @@ public class LTDescr{
 		this.animationCurve = null;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
-		this.direction = 1.0f;
+		this.direction = this.lastVal = 1.0f;
 		this.onUpdateFloat = null;
 		this.onUpdateVector3 = null;
 		this.onUpdateFloatObject = null;
@@ -275,9 +275,12 @@ public class LTDescr{
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	*/
 	public LTDescr pause(){
-		this.lastVal =  this.direction;
-		this.direction = 0.0f;
-		return this;
+		if(this.direction != 0.0f){ // check if tween is already paused
+        	this.lastVal =  this.direction;
+            this.direction = 0.0f;
+        }
+
+        return this;
 	}
 
 	/**
@@ -1862,8 +1865,7 @@ public static void pause( int uniqueId ){
 	int backId = uniqueId & 0xFFFFFF;
 	int backType = uniqueId >> 24;
 	if(tweens[backId].type==(TweenAction)backType){
-		tweens[backId].lastVal = tweens[backId].direction;
-		tweens[backId].direction = 0.0f;
+		tweens[backId].pause();
 	}
 }
 
@@ -1877,8 +1879,7 @@ public static void pause( GameObject gameObject ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans){
-			tweens[i].lastVal = tweens[i].direction;
-			tweens[i].direction = 0.0f;
+			tweens[i].pause();
 		}
 	}
 }
@@ -1898,7 +1899,7 @@ public static void resume( int uniqueId ){
 	int backId = uniqueId & 0xFFFFFF;
 	int backType = uniqueId >> 24;
 	if(tweens[backId].type==(TweenAction)backType){
-		tweens[backId].direction = tweens[backId].lastVal;
+		tweens[backId].resume();
 	}
 }
 
@@ -1912,7 +1913,7 @@ public static void resume( GameObject gameObject ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].trans==trans)
-			tweens[i].direction = tweens[i].lastVal;
+			tweens[i].resume();
 	}
 }
 

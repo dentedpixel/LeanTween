@@ -13,7 +13,7 @@ public class ExampleCSharp : MonoBehaviour {
 	
 	public delegate void NextFunc();
 	private int exampleIter = 0;
-	private string[] exampleFunctions = new string[] { /*"updateValue3Example", "loopTestClamp", "loopTestPingPong",*/ "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample" };
+	private string[] exampleFunctions = new string[] { "updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample" };
 	private bool useEstimatedTime = true;
 	private GameObject ltLogo;
 
@@ -24,8 +24,8 @@ public class ExampleCSharp : MonoBehaviour {
 	void Start () {
 		ltLogo = GameObject.Find("LeanTweenLogo");
 		cycleThroughExamples();
-		//alphaExample();
-		//LeanTween.move(ltLogo, new Vector3(-2f,0f,0f), 0.00001f).setDelay(1f);
+		//LeanTween.delayedCall(5,loopPause);
+		//LeanTween.delayedCall(8, loopResume);
 	}
 
 	void OnGUI(){
