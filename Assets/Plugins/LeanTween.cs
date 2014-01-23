@@ -1738,6 +1738,7 @@ public static void update() {
 	}
 }
 
+// This method should not be used externally! To cancel a tween use LeanTween.cancel
 public static void removeTween( int i ){
 	if(tweens[i].toggle){
 		tweens[i].toggle = false;
