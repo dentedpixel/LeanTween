@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.031 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.1 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -182,6 +182,7 @@ public class LTDescr{
 	private int _id;
 	public int loopCount;
 	public float direction;
+	public bool destroyOnComplete;
 	public Transform trans;
 	public LTRect ltRect;
 	public Vector3 from;
@@ -252,6 +253,7 @@ public class LTDescr{
 		#if !UNITY_METRO
 		this.optional = null;
 		#endif
+		this.destroyOnComplete = false;
 		this.passed = this.delay = 0.0f;
 		this.useEstimatedTime = this.useFrames = this.hasInitiliazed = false;
 		this.animationCurve = null;
@@ -309,7 +311,12 @@ public class LTDescr{
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f );
 	*/
 	public LTDescr setDelay( float delay ){
-		this.delay = delay*Time.timeScale;
+		if(this.useEstimatedTime){
+			this.delay = delay;
+		}else{
+			this.delay = delay*Time.timeScale;
+		}
+		
 		return this;
 	}
 
@@ -610,6 +617,11 @@ public class LTDescr{
 		this.point = point;
 		return this;
 	}
+
+	public LTDescr setDestroyOnComplete( bool doesDestroy ){
+		this.destroyOnComplete = doesDestroy;
+		return this;
+	}
 	
 }
 
@@ -655,6 +667,17 @@ public class LTRect : System.Object{
 	[HideInInspector]
 	public bool rotateFinished;
 	public bool alphaEnabled;
+	[HideInInspector]
+	public string labelStr;
+	[HideInInspector]
+	public int type;
+	public GUIStyle style;
+	public Color color = Color.white;
+	public bool fontScaleToFit;
+
+	public Texture texture;
+
+	public int id;
 
 	public static bool colorTouched;
 
@@ -718,6 +741,16 @@ public class LTRect : System.Object{
 		set{ _rect.y = value; }
 	}
 
+	public float width{
+		get{ return _rect.width; }
+		set{ _rect.width = value; }
+	}
+
+	public float height{
+		get{ return _rect.height; }
+		set{ _rect.height = value; }
+	}
+
 	public Rect rect{
 
 		get{
@@ -743,13 +776,34 @@ public class LTRect : System.Object{
 				GUI.color = new Color(GUI.color.r,GUI.color.g,GUI.color.b,alpha);
 				colorTouched = true;
 			}
+			if(fontScaleToFit){
+				style.fontSize = (int)_rect.height;
+			}
 			return _rect;
 		}
 
 		set{
 			_rect = value;
-		}
-		
+		}	
+	}
+
+	public LTRect setStyle( GUIStyle style ){
+		this.style = style;
+		return this;
+	}
+
+	public LTRect setFontScaleToFit( bool fontScaleToFit ){
+		this.fontScaleToFit = fontScaleToFit;
+		return this;
+	}
+
+	public LTRect setColor( Color color ){
+		this.color = color;
+		return this;
+	}
+
+	 public override string ToString(){
+		return "x:"+_rect.x+" y:"+_rect.y+" width:"+_rect.width+" height:"+_rect.height;
 	}
 }
 
@@ -1166,6 +1220,11 @@ public static void reset(){
 
 public void Update(){
 	LeanTween.update();
+}
+
+public void OnLevelWasLoaded( int lvl ){
+	// Debug.Log("reseting gui");
+	LTGUI.reset();
 }
 
 private static Transform trans;
@@ -1649,7 +1708,7 @@ public static void update() {
 				}
 				
 				if(isTweenFinished){
-					//Debug.Log("finished tween:"+i);
+					// Debug.Log("finished tween:"+i+" tween:"+tween);
 					if(tweenAction==TweenAction.GUI_ROTATE)
 						tween.ltRect.rotateFinished = true;
 					
@@ -1738,10 +1797,19 @@ public static void update() {
 	}
 }
 
-// This method should not be used externally! To cancel a tween use LeanTween.cancel
+// This method is only used internally! Do not call this from your scripts. To cancel a tween use LeanTween.cancel
 public static void removeTween( int i ){
 	if(tweens[i].toggle){
 		tweens[i].toggle = false;
+		if(tweens[i].destroyOnComplete){
+			//Debug.Log("destroying tween.type:"+tween.type);
+			if(tweens[i].ltRect!=null){
+			//	Debug.Log("destroy i:"+i+" id:"+tweens[i].ltRect.id);
+				LTGUI.destroy( tweens[i].ltRect.id );
+			}else{ // check if equal to tweenEmpty
+
+			}
+		}
 		//tweens[i].optional = null;
 		startSearch = i;
 		//Debug.Log("start search reset:"+startSearch + " i:"+i+" tweenMaxSearch:"+tweenMaxSearch);
@@ -2081,6 +2149,10 @@ public static LTDescr delayedCall( GameObject gameObject, float delayTime, Actio
 
 public static LTDescr delayedCall( GameObject gameObject, float delayTime, Action<object> callback){
 	return pushNewTween( gameObject, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
+}
+
+public static LTDescr destroyAfter( LTRect rect, float delayTime){
+	return pushNewTween( tweenEmpty, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setRect( rect ).setDestroyOnComplete(true) );
 }
 
 /*public static LTDescr delayedCall(GameObject gameObject, float delayTime, string callback){
@@ -2435,7 +2507,7 @@ public static LTDescr value(GameObject gameObject, Action<float> callOnUpdate, f
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
-public static LTDescr value(GameObject gameObject, System.Action<Vector3> callOnUpdate, Vector3 from, Vector3 to, float time){
+public static LTDescr value(GameObject gameObject, Action<Vector3> callOnUpdate, Vector3 from, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setTo( to ).setFrom( from ).setOnUpdateVector3(callOnUpdate) );
 }
 
@@ -3303,6 +3375,17 @@ public static void addListener( int eventId, System.Action<LTEvent> callback ){
 	addListener(tweenEmpty, eventId, callback);
 }
 
+/**
+* Add a listener method to be called when the appropriate LeanTween.dispatchEvent is called
+* @method LeanTween.addListener
+* @param {GameObject} caller:GameObject the gameObject the listener is attached to
+* @param {int} eventId:int a unique int that describes the event (best to use an enum)
+* @param {System.Action<LTEvent>} callback:System.Action<LTEvent> the method to call when the event has been dispatched
+* @example
+* LeanTween.addListener(gameObject, (int)MyEvents.JUMP, jumpUp);<br>
+* <br>
+* void jumpUp( LTEvent e ){ Debug.Log("jump!"); }<br>
+*/
 public static void addListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
 	if(eventListeners==null){
 		eventListeners = new System.Action<LTEvent>[ EVENTS_MAX * LISTENERS_MAX ];
@@ -3332,6 +3415,17 @@ public static bool removeListener( int eventId, System.Action<LTEvent> callback 
 	return removeListener( tweenEmpty, eventId, callback);
 }
 
+/**
+* Remove an event listener you have added
+* @method LeanTween.removeListener
+* @param {GameObject} caller:GameObject the gameObject the listener is attached to
+* @param {int} eventId:int a unique int that describes the event (best to use an enum)
+* @param {System.Action<LTEvent>} callback:System.Action<LTEvent> the method that was specified to call when the event has been dispatched
+* @example
+* LeanTween.removeListener(gameObject, (int)MyEvents.JUMP, jumpUp);<br>
+* <br>
+* void jumpUp( LTEvent e ){ }<br>
+*/
 public static bool removeListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
 	for(i = 0; i < eventsMaxSearch; i++){
 		int point = eventId*LISTENERS_MAX + i;
@@ -3344,10 +3438,29 @@ public static bool removeListener( GameObject caller, int eventId, System.Action
 	return false;
 }
 
+/**
+* Tell the added listeners that you are dispatching the event
+* @method LeanTween.dispatchEvent
+* @param {int} eventId:int a unique int that describes the event (best to use an enum)
+* @example
+* LeanTween.dispatchEvent( (int)MyEvents.JUMP );<br>
+*/
 public static void dispatchEvent( int eventId ){
 	dispatchEvent( eventId, null);
 }
 
+/**
+* Tell the added listeners that you are dispatching the event
+* @method LeanTween.dispatchEvent
+* @param {int} eventId:int a unique int that describes the event (best to use an enum)
+* @param {object} data:object Pass data to the listener, access it from the listener with *.data on the LTEvent object
+* @example
+* LeanTween.dispatchEvent( (int)MyEvents.JUMP, transform );<br>
+* <br>
+* void jumpUp( LTEvent e ){<br>
+* &nbsp; Transform tran = (Transform)e.data;<br>
+* }<br>
+*/
 public static void dispatchEvent( int eventId, object data ){
 	for(int k = 0; k < eventsMaxSearch; k++){
 		int point = eventId*LISTENERS_MAX + k;
@@ -3363,6 +3476,12 @@ public static void dispatchEvent( int eventId, object data ){
 
 }
 
+/**
+* Object that describes the event to an event listener
+* @class LTEvent
+* @constructor
+* @param {object} data:object Data that has been passed from the dispatchEvent method
+*/
 public class LTEvent{
 	public int id;
 	public object data;
@@ -3371,4 +3490,224 @@ public class LTEvent{
 		this.id = id;
 		this.data = data;
 	}
+}
+
+public class LTGUI{
+	public static int RECT_LEVELS = 5;
+	public static int RECTS_PER_LEVEL = 10;
+	public static int BUTTONS_MAX = 24;
+
+	private static LTRect[] levels;
+	private static int[] levelDepths;
+	private static Rect[] buttons;
+	private static int[] buttonLevels;
+	private static int[] buttonLastFrame;
+	private static LTRect r;
+	private static Color color;
+	private static bool isGUIEnabled = false;
+
+	public enum LTGUI_ANIM_Type{
+		Texture,
+		Label
+	}
+
+	public static void init(){
+		if(levels==null){
+			levels = new LTRect[RECT_LEVELS*RECTS_PER_LEVEL];
+			levelDepths = new int[RECT_LEVELS];
+		}
+	}
+
+	public static void initRectCheck(){
+		if(buttons==null){
+			buttons = new Rect[BUTTONS_MAX];
+			buttonLevels = new int[BUTTONS_MAX];
+			buttonLastFrame = new int[BUTTONS_MAX];
+			for(int i = 0; i < buttonLevels.Length; i++){
+				buttonLevels[i] = -1;
+			}
+		}
+	}
+
+	public static void reset(){
+		if(isGUIEnabled){
+			isGUIEnabled = false;
+			int maxLoop = RECT_LEVELS*RECTS_PER_LEVEL;
+			for(int i = 0; i < maxLoop; i++){
+				levels[i] = null;
+			}
+
+			for(int i = 0; i < levelDepths.Length; i++){
+				levelDepths[i] = 0;
+			}
+		}
+	}
+
+	public static void update( int updateLevel ){
+		if(isGUIEnabled){
+			init();
+			if(levelDepths[updateLevel]>0){
+				color = GUI.contentColor;
+				int baseI = updateLevel*RECTS_PER_LEVEL;
+				int maxLoop = baseI + levelDepths[updateLevel];// RECTS_PER_LEVEL;//;
+				
+				for(int i = baseI; i < maxLoop; i++){
+					r = levels[i];
+					//Debug.Log("r:"+r+" i:"+i);
+					if(r!=null && checkOnScreen(r.rect)){
+						if(r.type == (int)LTGUI_ANIM_Type.Label){
+							if(r.style!=null)
+								GUI.skin.label = r.style;
+							GUI.contentColor = r.color;
+							GUI.Label( r.rect, r.labelStr );
+						}else if(r.type == (int)LTGUI_ANIM_Type.Texture){
+							//if(r.color!=null)
+							//	GUI.contentColor = r.color;
+							GUI.DrawTexture( r.rect, r.texture );
+						}
+					}
+				}
+				GUI.contentColor = color;
+			}
+		}
+	}
+
+	public static bool checkOnScreen(Rect rect){
+		bool offLeft = rect.x + rect.width < 0f;
+		bool offRight = rect.x > Screen.width;
+		bool offBottom = rect.y > Screen.height;
+		bool offTop = rect.y + rect.height < 0f;
+
+		return !(offLeft || offRight || offBottom || offTop);
+	}
+
+	public static void destroy( int id ){
+		levels[id] = null;
+	}
+
+	public static LTRect label( Rect rect, string label, int depth){
+		isGUIEnabled = true;
+		init();
+		bool added = false;
+		int maxLoop = depth*RECTS_PER_LEVEL + RECTS_PER_LEVEL;
+		int k = 0;
+		for(int i = depth*RECTS_PER_LEVEL; i < maxLoop; i++){
+			r = levels[i];
+			if(r==null){
+				r =  new LTRect( rect );
+				r.rotateEnabled = true;
+				r.alphaEnabled = true;
+				r.type = (int)LTGUI_ANIM_Type.Label;
+				r.labelStr = label;
+				r.id = i;
+				levels[i] = r;
+				added = true;
+				// Debug.Log("k:"+k+ " maxDepth:"+levelDepths[depth]);
+				if(k>=levelDepths[depth]){
+					levelDepths[depth] = k + 1;
+				}
+				break;
+			}
+			k++;
+		}
+
+		if(added==false)
+			return null;
+
+		return r;
+	}
+
+	public static LTRect texture( Rect rect, Texture texture, int depth){
+		isGUIEnabled = true;
+		init();
+		bool added = false;
+		int maxLoop = depth*RECTS_PER_LEVEL + RECTS_PER_LEVEL;
+		int k = 0;
+		for(int i = depth*RECTS_PER_LEVEL; i < maxLoop; i++){
+			r = levels[i];
+			if(r==null){
+				r =  new LTRect( rect );
+				r.rotateEnabled = true;
+				r.alphaEnabled = true;
+				r.type = (int)LTGUI_ANIM_Type.Texture;
+				r.id = i;
+				levels[i] = r;
+				added = true;
+				// Debug.Log("k:"+k+ " maxDepth:"+levelDepths[depth]);
+				if(k>=levelDepths[depth]){
+					levelDepths[depth] = k + 1;
+				}
+				break;
+			}
+			k++;
+		}
+
+		if(added==false)
+			return null;
+
+		return r;
+	}
+
+	public static bool hasNoOverlap( Rect rect, int depth ){
+		initRectCheck();
+		bool hasNoOverlap = true;
+		bool wasAddedToList = false;
+		for(int i = 0; i < buttonLevels.Length; i++){
+			// Debug.Log("buttonLastFrame["+i+"]:"+buttonLastFrame[i]);
+			//Debug.Log("buttonLevels["+i+"]:"+buttonLevels[i]);
+			if(buttonLevels[i]>=0){
+				//Debug.Log("buttonLastFrame["+i+"]:"+buttonLastFrame[i]+" Time.frameCount:"+Time.frameCount);
+				if( buttonLastFrame[i] + 1 < Time.frameCount ){ // It has to have been visible within the current, or
+					buttonLevels[i] = -1;
+					// Debug.Log("resetting i:"+i);
+				}else{
+					//if(buttonLevels[i]>=0)
+					//	 Debug.Log("buttonLevels["+i+"]:"+buttonLevels[i]);
+					if(buttonLevels[i]>depth){
+						/*if(firstTouch().x > 0){
+							Debug.Log("buttons["+i+"]:"+buttons[i] + " firstTouch:");
+							Debug.Log(firstTouch());
+							Debug.Log(buttonLevels[i]);
+						}*/
+						if(pressedWithinRect( buttons[i] )){
+							hasNoOverlap = false; // there is an overlapping button that is higher
+						}
+					}
+				}
+			}
+
+			if(wasAddedToList==false && buttonLevels[i]<0){
+				wasAddedToList = true;
+				buttonLevels[i] = depth;
+				buttons[i] = rect;
+				buttonLastFrame[i] = Time.frameCount;
+			}
+		}
+
+		return hasNoOverlap;
+	}
+
+	public static bool pressedWithinRect( Rect rect ){
+		Vector2 vec2 = firstTouch();
+		if(vec2.x<0f)
+			return false;
+		float vecY = Screen.height-vec2.y;
+		return (vec2.x > rect.x && vec2.x < rect.x + rect.width && vecY > rect.y && vecY < rect.y + rect.height);
+	}
+
+	public static bool checkWithinRect(Vector2 vec2, Rect rect){
+		vec2.y = Screen.height-vec2.y;
+		return (vec2.x > rect.x && vec2.x < rect.x + rect.width && vec2.y > rect.y && vec2.y < rect.y + rect.height);
+	}
+
+	public static Vector2 firstTouch(){
+		if(Input.touchCount>0){
+			return Input.touches[0].position;
+		}else if(Input.GetMouseButton(0)){
+			return Input.mousePosition;
+		}
+
+		return new Vector2(Mathf.NegativeInfinity,Mathf.NegativeInfinity);
+	}
+
 }

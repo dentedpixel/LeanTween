@@ -54,10 +54,10 @@ public class ExampleCSharp : MonoBehaviour {
 
 	public void updateValue3Example(){
 		Debug.Log("updateValue3Example Time:"+Time.time);
-		LeanTween.value( gameObject, updateValue3ExampleCallback, new Vector3(0.0f, 270.0f, 0.0f), new Vector3(30.0f, 270.0f, 180f), 0.5f ).setEase(LeanTweenType.easeInBounce).setRepeat(2).setLoopPingPong().setOnUpdate(updateValue3ExampleUpdate).setUseEstimatedTime(useEstimatedTime);
+		LeanTween.value( gameObject, updateValue3ExampleCallback, new Vector3(0.0f, 270.0f, 0.0f), new Vector3(30.0f, 270.0f, 180f), 0.5f ).setEase(LeanTweenType.easeInBounce).setRepeat(2).setLoopPingPong().setOnUpdateVector3(updateValue3ExampleUpdate).setUseEstimatedTime(useEstimatedTime);
 	}
 
-	public void updateValue3ExampleUpdate( Vector3 val, object obj){
+	public void updateValue3ExampleUpdate( Vector3 val){
 		//Debug.Log("val:"+val+" obj:"+obj);
 	}
 
