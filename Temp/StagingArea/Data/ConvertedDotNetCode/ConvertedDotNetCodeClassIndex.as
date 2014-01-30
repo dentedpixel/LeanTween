@@ -10,7 +10,7 @@ package {
 		import global.LeanTween;
 		import global.LTEvent;
 		import global.LTGUI;
-		import global.EventListenersScattered;
+		import global.EventListenersScatteredCS;
 		import global.ExampleCSharp;
 		import global.ExampleCameraShake;
 		import global.ExampleCatmull;
@@ -18,6 +18,8 @@ package {
 		import global.MenuExampleCSharp;
 		import global.MenuSimpleCSharp;
 		import global.PunchTester;
+		import global.MyEvents;
+		import global.EventListenersScatteredJS;
 		import global.ExampleJS;
 		import global.ExamplePunchJS;
 		import global.MenuExampleJS;
@@ -47,8 +49,8 @@ package {
 			c = global.LTEvent;
 			if (verbose) trace('Initializing global.LTGUI');
 			c = global.LTGUI;
-			if (verbose) trace('Initializing global.EventListenersScattered');
-			c = global.EventListenersScattered;
+			if (verbose) trace('Initializing global.EventListenersScatteredCS');
+			c = global.EventListenersScatteredCS;
 			if (verbose) trace('Initializing global.ExampleCSharp');
 			c = global.ExampleCSharp;
 			if (verbose) trace('Initializing global.ExampleCameraShake');
@@ -63,6 +65,10 @@ package {
 			c = global.MenuSimpleCSharp;
 			if (verbose) trace('Initializing global.PunchTester');
 			c = global.PunchTester;
+			if (verbose) trace('Initializing global.MyEvents');
+			c = global.MyEvents;
+			if (verbose) trace('Initializing global.EventListenersScatteredJS');
+			c = global.EventListenersScatteredJS;
 			if (verbose) trace('Initializing global.ExampleJS');
 			c = global.ExampleJS;
 			if (verbose) trace('Initializing global.ExamplePunchJS');

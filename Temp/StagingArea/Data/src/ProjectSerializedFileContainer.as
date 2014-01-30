@@ -24,10 +24,10 @@ package
        {
               files = new Dictionary();
 files["mainData"] = new mainData() as ByteArray
-fileSizes["mainData"] = 34920
+fileSizes["mainData"] = 45528
 files["Resources/unity default resources"] = new Resources_unity_default_resources() as ByteArray
 fileSizes["Resources/unity default resources"] = 2417517
 files["sharedassets0.assets"] = new sharedassets0_assets() as ByteArray
-fileSizes["sharedassets0.assets"] = 55992
+fileSizes["sharedassets0.assets"] = 56112
 }	}
 }
