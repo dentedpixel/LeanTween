@@ -179,8 +179,9 @@ public class LTDescr{
 	public float delay;
 	public float time;
 	public float lastVal;
-	private int _id;
+	private uint _id;
 	public int loopCount;
+	public uint counter;
 	public float direction;
 	public bool destroyOnComplete;
 	public Transform trans;
@@ -208,6 +209,8 @@ public class LTDescr{
 	public Hashtable optional;
 	#endif
 
+	private static uint global_counter = 0;
+
     public override string ToString(){
 		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
@@ -223,22 +226,21 @@ public class LTDescr{
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	*/
 	public LTDescr cancel(){
-		LeanTween.removeTween(this._id);
+		LeanTween.removeTween((int)this._id);
 		return this;
 	}
 
 	public int uniqueId{
 		get{ 
-			int typeVal = (int)type;
-			int toId = _id | typeVal << 24;
+			uint toId = _id | counter << 16;
 
-			/*int backId = toId & 0xFFFFFF;
-			int backType = toId >> 24;
-			if(_id!=backId || backType!=(int)type){
-				Debug.LogError("BAD CONVERSION toId:"+_id+" toType:"+(TweenAction)type+ " backId:"+backId+" backType:"+(TweenAction)backType);
-			}*/
+			uint backId = toId & 0xFFFF;
+			uint backCounter = toId >> 16;
+			if(_id!=backId || backCounter!=counter){
+				Debug.LogError("BAD CONVERSION toId:"+_id);
+			}
 
-			return toId;
+			return (int)toId;
 		}
 	}
 
@@ -362,8 +364,9 @@ public class LTDescr{
 		return this;
 	}
 
-	public LTDescr setId( int id ){
+	public LTDescr setId( uint id ){
 		this._id = id;
+		this.counter = global_counter;
 		return this;
 	}
 
@@ -1874,11 +1877,11 @@ public static void cancel( GameObject gameObject ){
 public static void cancel( GameObject gameObject, int uniqueId ){
 	if(uniqueId>=0){
 		init();
-		int backId = uniqueId & 0xFFFFFF;
-		int backType = uniqueId >> 24;
+		uint backId = (uint)uniqueId & 0xFFFF;
+		uint backCounter = (uint)uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-		if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].type==(TweenAction)backType))
-			removeTween(backId);
+		if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter))
+			removeTween((int)backId);
 	}
 }
 
@@ -1892,34 +1895,34 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 public static void cancel( LTRect ltRect, int uniqueId ){
 	if(uniqueId>=0){
 		init();
-		int backId = uniqueId & 0xFFFFFF;
-		int backType = uniqueId >> 24;
+		uint backId = (uint)uniqueId & 0xFFFF;
+		uint backCounter = (uint)uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-		if(tweens[backId].ltRect == ltRect && tweens[backId].type==(TweenAction)backType)
-			removeTween(backId);
+		if(tweens[backId].ltRect == ltRect && tweens[backId].counter==backCounter)
+			removeTween((int)backId);
 	}
 }
 
 private static void cancel( int uniqueId ){
 	if(uniqueId>=0){
 		init();
-		int backId = uniqueId & 0xFFFFFF;
-		int backType = uniqueId >> 24;
+		uint backId = (uint)uniqueId & 0xFFFF;
+		uint backCounter = (uint)uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-		if(tweens[backId].type==(TweenAction)backType)
-			removeTween(backId);
+		if(tweens[backId].counter==backCounter)
+			removeTween((int)backId);
 	}
 }
 
 // Deprecated
 public static LTDescr description( int uniqueId ){
-	int backId = uniqueId & 0xFFFFFF;
-	int backType = uniqueId >> 24;
+	uint backId = (uint)uniqueId & 0xFFFF;
+	uint backCounter = (uint)uniqueId >> 16;
 
-	if(tweens[backId]!=null && tweens[backId].uniqueId == uniqueId && tweens[backId].type==(TweenAction)backType)
+	if(tweens[backId]!=null && tweens[backId].uniqueId == uniqueId && tweens[backId].counter==backCounter)
 		return tweens[backId];
 	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].uniqueId == uniqueId && tweens[i].type==(TweenAction)backType)
+		if(tweens[i].uniqueId == uniqueId && tweens[i].counter==backCounter)
 			return tweens[i];
 	}
 	return null;
@@ -1931,9 +1934,9 @@ public static void pause( GameObject gameObject, int uniqueId ){
 }
 
 public static void pause( int uniqueId ){
-	int backId = uniqueId & 0xFFFFFF;
-	int backType = uniqueId >> 24;
-	if(tweens[backId].type==(TweenAction)backType){
+	uint backId = (uint)uniqueId & 0xFFFF;
+	uint backCounter = (uint)uniqueId >> 16;
+	if(tweens[backId].counter==backCounter){
 		tweens[backId].pause();
 	}
 }
@@ -1965,9 +1968,9 @@ public static void resume( GameObject gameObject, int uniqueId ){
 * @param {int} id:int Id of the tween you want to resume ex: int id = LeanTween.MoveX(gameObject, 5, 1.0).id;
 */
 public static void resume( int uniqueId ){
-	int backId = uniqueId & 0xFFFFFF;
-	int backType = uniqueId >> 24;
-	if(tweens[backId].type==(TweenAction)backType){
+	uint backId = (uint)uniqueId & 0xFFFF;
+	uint backCounter = (uint)uniqueId >> 16;
+	if(tweens[backId].counter==backCounter){
 		tweens[backId].resume();
 	}
 }
@@ -2057,7 +2060,7 @@ public static LTDescr options(){
 	}
 	tween = tweens[i];
 	tween.reset();
-	tween.setId( i );
+	tween.setId( (uint)i );
 
 	return tween;
 }
@@ -2576,7 +2579,7 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	tween.time = time;
 	tween.type = tweenAction;
 	tween.optional = optional;
-	tween.setId( i );
+	tween.setId( (uint)i );
 	tween.hasPhysics = gameObject.rigidbody!=null;
 
 	if(optional!=null){
