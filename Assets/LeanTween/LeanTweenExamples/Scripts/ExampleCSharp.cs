@@ -24,8 +24,16 @@ public class ExampleCSharp : MonoBehaviour {
 	void Start () {
 		ltLogo = GameObject.Find("LeanTweenLogo");
 		cycleThroughExamples();
+		
+		//LeanTween.move( ltLogo, Vector3.zero, 10f);
+		//LeanTween.delayedCall(2f, pauseNow);
 		//LeanTween.delayedCall(5,loopPause);
 		//LeanTween.delayedCall(8, loopResume);
+	}
+
+	void pauseNow(){
+		Time.timeScale = 0f;
+		Debug.Log("pausing");
 	}
 
 	void OnGUI(){

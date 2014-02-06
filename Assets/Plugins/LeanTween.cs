@@ -1256,7 +1256,7 @@ public static void update() {
 			if(tweens[i].toggle){
 				tween = tweens[i];
 				trans = tween.trans;
-				timeTotal = tween.time*Time.timeScale;
+				timeTotal = tween.time;
 				tweenAction = tween.type;
 				
 				dt = dtActual;
@@ -1278,7 +1278,7 @@ public static void update() {
 				if(tween.delay<=0){
 					if((tween.passed + dt > timeTotal && tween.direction > 0.0f )){
 						isTweenFinished = true;
-						tween.passed = timeTotal; // Set to the exact end time so that it can finish tween exactly on the end value
+						tween.passed = tween.time; // Set to the exact end time so that it can finish tween exactly on the end value
 					}else if(tween.direction<0.0f && tween.passed - dt < 0.0f){
 						isTweenFinished = true;
 						tween.passed = Mathf.Epsilon;
@@ -3503,7 +3503,7 @@ public class LTGUI{
 	private static int[] buttonLevels;
 	private static int[] buttonLastFrame;
 	private static LTRect r;
-	private static Color color;
+	private static Color color = Color.white;
 	private static bool isGUIEnabled = false;
 
 	public enum LTGUI_ANIM_Type{

@@ -32,7 +32,7 @@ function jumpUp( e:LTEvent ){
 }
 
 function changeColor( e:LTEvent ){
-	var tran:Transform = e.data;
+	var tran:Transform = e.data as Transform;
 	var distance:float = Vector3.Distance( tran.position, transform.position);
 	var to:Vector3 = new Vector3(Random.Range(0f,1f),0f,Random.Range(0f,1f));
 	LeanTween.value( gameObject, updateColor, fromColor, to, 0.8f ).setRepeat(2).setLoopPingPong().setDelay(distance*0.05f);
