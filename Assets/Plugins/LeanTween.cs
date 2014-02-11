@@ -261,6 +261,7 @@ public class LTDescr{
 		this.animationCurve = null;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
+		this.loopCount = 0;
 		this.direction = this.lastVal = 1.0f;
 		this.onUpdateFloat = null;
 		this.onUpdateVector3 = null;
@@ -438,7 +439,12 @@ public class LTDescr{
 	* @example
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopClamp();
 	*/
-	public LTDescr setLoopClamp(){ this.loopType = LeanTweenType.clamp; return this; }
+	public LTDescr setLoopClamp(){ 
+		this.loopType = LeanTweenType.clamp; 
+		if(this.loopCount==0)
+			this.loopCount = -1;
+		return this;
+	}
 
 	/**
 	* When the animation gets to the end it then tweens back to where it started (and on, and on)
@@ -447,7 +453,12 @@ public class LTDescr{
 	* @example
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopPingPong();
 	*/
-	public LTDescr setLoopPingPong(){ this.loopType = LeanTweenType.pingPong; return this; }
+	public LTDescr setLoopPingPong(){ 
+		this.loopType = LeanTweenType.pingPong;
+		if(this.loopCount==0)
+			this.loopCount = -1;
+		return this; 
+	}
 
 	/**
 	* Have a method called when the tween finishes
@@ -805,7 +816,12 @@ public class LTRect : System.Object{
 		return this;
 	}
 
-	 public override string ToString(){
+	public LTRect setAlpha( float alpha ){
+		this.alpha = alpha;
+		return this;
+	}
+
+	public override string ToString(){
 		return "x:"+_rect.x+" y:"+_rect.y+" width:"+_rect.width+" height:"+_rect.height;
 	}
 }
