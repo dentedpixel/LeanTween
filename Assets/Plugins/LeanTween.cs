@@ -1329,7 +1329,7 @@ public static void update() {
 						case TweenAction.SCALE_Z:
 							tween.from.x = trans.localScale.z; break;
 						case TweenAction.ALPHA:
-							#if UNITY_3_5
+							#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 								tween.from.x = trans.gameObject.renderer.material.color.a; 
 								break;	
 							#else
@@ -1534,7 +1534,7 @@ public static void update() {
 					    	//}
 
 					    }else if(tweenAction==TweenAction.ALPHA){
-					    	#if UNITY_3_5
+					    	#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 
 							foreach(Material mat in trans.gameObject.renderer.materials){
         						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
