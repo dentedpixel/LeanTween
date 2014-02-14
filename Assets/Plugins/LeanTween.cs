@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.1 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.12 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -234,11 +234,11 @@ public class LTDescr{
 		get{ 
 			uint toId = _id | counter << 16;
 
-			uint backId = toId & 0xFFFF;
+			/*uint backId = toId & 0xFFFF;
 			uint backCounter = toId >> 16;
 			if(_id!=backId || backCounter!=counter){
 				Debug.LogError("BAD CONVERSION toId:"+_id);
-			}
+			}*/
 
 			return (int)toId;
 		}
@@ -2016,6 +2016,25 @@ public static bool isTweening( GameObject gameObject ){
 	for(int i = 0; i < tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].trans==trans)
 			return true;
+	}
+	return false;
+}
+
+/**
+* Test whether or not a tween is active or not
+* 
+* @method LeanTween.isTweening
+* @param {GameObject} id:int id of the tween that you want to test if it is tweening
+* &nbsp;&nbsp;<i>Example:</i><br>
+* &nbsp;&nbsp;int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br>
+* &nbsp;&nbsp;if(LeanTween.isTweening( id ))<br>
+* &nbsp;&nbsp; &nbsp;&nbsp;Debug.Log("I am tweening!");<br>
+*/
+public static bool isTweening( int uniqueId ){
+	uint backId = (uint)uniqueId & 0xFFFF;
+	uint backCounter = (uint)uniqueId >> 16;
+	if(tweens[backId].counter==backCounter && tweens[backId].toggle){
+		return true;
 	}
 	return false;
 }
