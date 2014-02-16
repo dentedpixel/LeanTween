@@ -779,9 +779,9 @@ public class LTRect : System.Object{
 					_rect.x += pivot.x;
 					_rect.y += pivot.y;
 					pivot = Vector2.zero;
-					GUI.matrix = Matrix4x4.identity; 
+					//GUI.matrix = Matrix4x4.identity; 
 				}else{
-					Matrix4x4 trsMatrix = Matrix4x4.identity; 
+					Matrix4x4 trsMatrix = GUI.matrix; 
 					trsMatrix.SetTRS(pivot, Quaternion.Euler(0f,0f,rotation), Vector3.one);
 					GUI.matrix = trsMatrix;
 				}
@@ -1893,8 +1893,8 @@ public static void cancel( GameObject gameObject ){
 public static void cancel( GameObject gameObject, int uniqueId ){
 	if(uniqueId>=0){
 		init();
-		uint backId = (uint)uniqueId & 0xFFFF;
-		uint backCounter = (uint)uniqueId >> 16;
+		int backId = uniqueId & 0xFFFF;
+		int backCounter = uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
 		if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter))
 			removeTween((int)backId);
@@ -1911,8 +1911,8 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 public static void cancel( LTRect ltRect, int uniqueId ){
 	if(uniqueId>=0){
 		init();
-		uint backId = (uint)uniqueId & 0xFFFF;
-		uint backCounter = (uint)uniqueId >> 16;
+		int backId = uniqueId & 0xFFFF;
+		int backCounter = uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
 		if(tweens[backId].ltRect == ltRect && tweens[backId].counter==backCounter)
 			removeTween((int)backId);
@@ -1922,8 +1922,8 @@ public static void cancel( LTRect ltRect, int uniqueId ){
 private static void cancel( int uniqueId ){
 	if(uniqueId>=0){
 		init();
-		uint backId = (uint)uniqueId & 0xFFFF;
-		uint backCounter = (uint)uniqueId >> 16;
+		int backId = uniqueId & 0xFFFF;
+		int backCounter = uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
 		if(tweens[backId].counter==backCounter)
 			removeTween((int)backId);
@@ -1932,8 +1932,8 @@ private static void cancel( int uniqueId ){
 
 // Deprecated
 public static LTDescr description( int uniqueId ){
-	uint backId = (uint)uniqueId & 0xFFFF;
-	uint backCounter = (uint)uniqueId >> 16;
+	int backId = uniqueId & 0xFFFF;
+	int backCounter = uniqueId >> 16;
 
 	if(tweens[backId]!=null && tweens[backId].uniqueId == uniqueId && tweens[backId].counter==backCounter)
 		return tweens[backId];
@@ -1950,8 +1950,8 @@ public static void pause( GameObject gameObject, int uniqueId ){
 }
 
 public static void pause( int uniqueId ){
-	uint backId = (uint)uniqueId & 0xFFFF;
-	uint backCounter = (uint)uniqueId >> 16;
+	int backId = uniqueId & 0xFFFF;
+	int backCounter = uniqueId >> 16;
 	if(tweens[backId].counter==backCounter){
 		tweens[backId].pause();
 	}
@@ -1984,8 +1984,8 @@ public static void resume( GameObject gameObject, int uniqueId ){
 * @param {int} id:int Id of the tween you want to resume ex: int id = LeanTween.MoveX(gameObject, 5, 1.0).id;
 */
 public static void resume( int uniqueId ){
-	uint backId = (uint)uniqueId & 0xFFFF;
-	uint backCounter = (uint)uniqueId >> 16;
+	int backId = uniqueId & 0xFFFF;
+	int backCounter = uniqueId >> 16;
 	if(tweens[backId].counter==backCounter){
 		tweens[backId].resume();
 	}
@@ -2031,8 +2031,8 @@ public static bool isTweening( GameObject gameObject ){
 * &nbsp;&nbsp; &nbsp;&nbsp;Debug.Log("I am tweening!");<br>
 */
 public static bool isTweening( int uniqueId ){
-	uint backId = (uint)uniqueId & 0xFFFF;
-	uint backCounter = (uint)uniqueId >> 16;
+	int backId = uniqueId & 0xFFFF;
+	int backCounter = uniqueId >> 16;
 	if(tweens[backId].counter==backCounter && tweens[backId].toggle){
 		return true;
 	}
@@ -2435,6 +2435,9 @@ public static LTDescr rotateZ(GameObject gameObject, float to, float time){
 * @param {float} degrees:float the degrees in which to rotate
 * @param {float} time:float time The time to complete the rotation in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Example:</i><br>
+* LeanTween.rotateAround ( gameObject, Vector3.left, 90f,  1f );
 */
 public static LTDescr rotateAround(GameObject gameObject, Vector3 axis, float add, float time){
 	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND, options().setAxis(axis) );
