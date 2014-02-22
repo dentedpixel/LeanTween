@@ -738,11 +738,10 @@ public class LTRect : System.Object{
 	}
 
 	public void resetForRotation(){
-		if(pivot==Vector2.zero){
-			pivot = new Vector2(_rect.x+_rect.width*0.5f, _rect.y+_rect.height*0.5f);
-			_rect.x += -pivot.x;
-			_rect.y += -pivot.y;
-		}
+		Vector3 scale = new Vector3(GUI.matrix[0,0], GUI.matrix[1,1], GUI.matrix[2,2]);
+        if(pivot==Vector2.zero){
+            pivot = new Vector2((_rect.x+((_rect.width)*0.5f )) * scale.x + GUI.matrix[0,3], (_rect.y+((_rect.height)*0.5f )) * scale.y + GUI.matrix[1,3]);
+        }
 	}
 
 	public float x{
@@ -773,18 +772,14 @@ public class LTRect : System.Object{
 				GUI.color = new Color(GUI.color.r,GUI.color.g,GUI.color.b,1.0f);
 			}
 			if(rotateEnabled){
-				if(rotateFinished){
-					rotateFinished = false;
-					rotateEnabled = false;
-					_rect.x += pivot.x;
-					_rect.y += pivot.y;
-					pivot = Vector2.zero;
-					//GUI.matrix = Matrix4x4.identity; 
-				}else{
-					Matrix4x4 trsMatrix = GUI.matrix; 
-					trsMatrix.SetTRS(pivot, Quaternion.Euler(0f,0f,rotation), Vector3.one);
-					GUI.matrix = trsMatrix;
-				}
+				 if(rotateFinished){
+                    rotateFinished = false;
+                    rotateEnabled = false;
+                    //this.rotation = 0.0f;
+                    pivot = Vector2.zero;
+                }else{
+                    GUIUtility.RotateAroundPivot(rotation, pivot);
+                }
 			}
 			if(alphaEnabled){
 				GUI.color = new Color(GUI.color.r,GUI.color.g,GUI.color.b,alpha);
@@ -818,6 +813,11 @@ public class LTRect : System.Object{
 
 	public LTRect setAlpha( float alpha ){
 		this.alpha = alpha;
+		return this;
+	}
+
+	public LTRect setLabel( String str ){
+		this.labelStr = str;
 		return this;
 	}
 
@@ -1284,6 +1284,8 @@ public static void update() {
 					timeTotal = tween.time;
 				}else if( tween.useFrames ){
 					dt = 1;
+				}else if(tween.direction==0f){
+					dt = 0f;
 				}
 				
 				if(trans==null){
@@ -1804,6 +1806,7 @@ public static void update() {
 					tween.passed += dt*tween.direction;
 				}else{
 					tween.delay -= dt;
+					// Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
 					if(tween.delay<0){
 						tween.passed = 0.0f;//-tween.delay
 						tween.delay = 0.0f;
