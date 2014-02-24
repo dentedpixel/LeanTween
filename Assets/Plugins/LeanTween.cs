@@ -191,7 +191,7 @@ public class LTDescr{
 	public Vector3 diff;
 	public Vector3 point;
 	public Vector3 axis;
-	public Vector3 origRotation;
+	public Quaternion origRotation;
 	public LTBezierPath path;
 	public TweenAction type;
 	public LeanTweenType tweenType;
@@ -676,6 +676,7 @@ public class LTRect : System.Object{
 	public float alpha;
 	public float rotation;
 	public Vector2 pivot;
+	public Vector2 margin;
 
 	public bool rotateEnabled;
 	[HideInInspector]
@@ -735,6 +736,7 @@ public class LTRect : System.Object{
 		this.alpha = 1.0f;
 		this.rotation = 0.0f;
 		this.rotateEnabled = this.alphaEnabled = false;
+		this.margin = Vector2.zero;
 	}
 
 	public void resetForRotation(){
@@ -1161,6 +1163,7 @@ public enum TweenAction{
 	SCALE,
 	VALUE3,
 	GUI_MOVE,
+	GUI_MOVE_MARGIN,
 	GUI_SCALE,
 	GUI_ALPHA,
 	GUI_ROTATE
@@ -1365,7 +1368,7 @@ public static void update() {
 							break;
 						case TweenAction.ROTATE_AROUND:
 							tween.lastVal = 0.0f; // optional["last"]
-							tween.origRotation = trans.eulerAngles; // optional["origRotation"
+							tween.origRotation = trans.rotation; // optional["origRotation"
 							break;
 						case TweenAction.ROTATE_LOCAL:
 							tween.from = trans.localEulerAngles; 
@@ -1374,9 +1377,11 @@ public static void update() {
 						case TweenAction.SCALE:
 							tween.from = trans.localScale; break;
 						case TweenAction.GUI_MOVE:
-							tween.from =new Vector3(tween.ltRect.rect.x, tween.ltRect.rect.y, 0); break;
+							tween.from = new Vector3(tween.ltRect.rect.x, tween.ltRect.rect.y, 0); break;
+						case TweenAction.GUI_MOVE_MARGIN:
+							tween.from = new Vector2(tween.ltRect.margin.x, tween.ltRect.margin.y); break;
 						case TweenAction.GUI_SCALE:
-							tween.from =new  Vector3(tween.ltRect.rect.width, tween.ltRect.rect.height, 0); break;
+							tween.from = new  Vector3(tween.ltRect.rect.width, tween.ltRect.rect.height, 0); break;
 						case TweenAction.GUI_ALPHA:
 							tween.from.x = tween.ltRect.alpha; break;
 						case TweenAction.GUI_ROTATE:
@@ -1531,8 +1536,11 @@ public static void update() {
 					    		trans.eulerAngles = tween.origRotation;
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
 					    	}else{*/
-					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, move /*tween.to.x * (dt/timeTotal)*/);
+					    		trans.rotation = tween.origRotation;
+					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, val /*tween.to.x * (dt/timeTotal)*/);
 								tween.lastVal = val;
+
+								//trans.rotation =  * Quaternion.AngleAxis(val, tween.axis);
 					    	//}
 
 					    }else if(tweenAction==TweenAction.ALPHA){
@@ -1666,6 +1674,8 @@ public static void update() {
 					    	trans.localScale = newVect;
 					    }else if(tweenAction==TweenAction.GUI_MOVE){
 					    	tween.ltRect.rect = new Rect( newVect.x, newVect.y, tween.ltRect.rect.width, tween.ltRect.rect.height);
+					    }else if(tweenAction==TweenAction.GUI_MOVE_MARGIN){
+					    	tween.ltRect.margin = new Vector2(newVect.x, newVect.y);
 					    }else if(tweenAction==TweenAction.GUI_SCALE){
 					    	tween.ltRect.rect = new Rect( tween.ltRect.rect.x, tween.ltRect.rect.y, newVect.x, newVect.y);
 					    }else if(tweenAction==TweenAction.GUI_ALPHA){
@@ -2253,6 +2263,10 @@ public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 */
 public static LTDescr move(LTRect ltRect, Vector2 to, float time){
 	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_MOVE, options().setRect( ltRect ) );
+}
+
+public static LTDescr moveMargin(LTRect ltRect, Vector2 to, float time){
+	return pushNewTween( tweenEmpty, to, time, TweenAction.GUI_MOVE_MARGIN, options().setRect( ltRect ) );
 }
 
 /**
@@ -3598,16 +3612,16 @@ public class LTGUI{
 				for(int i = baseI; i < maxLoop; i++){
 					r = levels[i];
 					//Debug.Log("r:"+r+" i:"+i);
-					if(r!=null && checkOnScreen(r.rect)){
+					if(r!=null /*&& checkOnScreen(r.rect)*/){
 						if(r.type == (int)LTGUI_ANIM_Type.Label){
 							if(r.style!=null)
 								GUI.skin.label = r.style;
 							GUI.contentColor = r.color;
-							GUI.Label( r.rect, r.labelStr );
+							GUI.Label( new Rect(r.rect.x + r.margin.x, r.rect.y + r.margin.y, r.rect.width, r.rect.height), r.labelStr );
 						}else if(r.type == (int)LTGUI_ANIM_Type.Texture){
 							//if(r.color!=null)
 							//	GUI.contentColor = r.color;
-							GUI.DrawTexture( r.rect, r.texture );
+							GUI.DrawTexture( new Rect(r.rect.x + r.margin.x, r.rect.y + r.margin.y, r.rect.width, r.rect.height), r.texture );
 						}
 					}
 				}
@@ -3674,6 +3688,7 @@ public class LTGUI{
 				r.rotateEnabled = true;
 				r.alphaEnabled = true;
 				r.type = (int)LTGUI_ANIM_Type.Texture;
+				r.texture = texture;
 				r.id = i;
 				levels[i] = r;
 				added = true;
