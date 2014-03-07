@@ -12,7 +12,7 @@ public class PunchTester : MonoBehaviour {
     {        
         if (Input.GetKeyDown(KeyCode.S))
         {
-            LeanTween.scale(this.gameObject, Vector3.one, 1.0f).setEase(LeanTweenType.punch);            
+            LeanTween.scale(this.gameObject, Vector3.one*3f, 1.0f).setEase(LeanTweenType.easeSpring);            
             print("scale punch!");
         }
  

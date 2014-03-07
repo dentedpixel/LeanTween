@@ -141,7 +141,7 @@ using System;
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
-	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, punch, once, clamp, pingPong, animationCurve
+	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, easeSpring, punch, once, clamp, pingPong, animationCurve
 }
 
 /**
@@ -209,7 +209,7 @@ public class LTDescr{
 	public Hashtable optional;
 	#endif
 
-	private static uint global_counter = 0;
+	private static uint global_counter = 1;
 
     public override string ToString(){
 		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
@@ -673,26 +673,30 @@ public class LTRect : System.Object{
 	* @type {Rect} rect:Rect Rect object that controls the positioning and size
 	*/
 	public Rect _rect;
-	public float alpha;
+	public float alpha = 1f;
 	public float rotation;
 	public Vector2 pivot;
 	public Vector2 margin;
+	public Rect relativeRect;
 
 	public bool rotateEnabled;
 	[HideInInspector]
 	public bool rotateFinished;
 	public bool alphaEnabled;
-	[HideInInspector]
 	public string labelStr;
-	[HideInInspector]
-	public int type;
+	public LTGUI.Element_Type type;
 	public GUIStyle style;
+	public bool useColor = false;
 	public Color color = Color.white;
 	public bool fontScaleToFit;
+	public bool useSimpleScale;
+	public bool sizeByHeight;
 
 	public Texture texture;
 
-	public int id;
+	private int _id = -1;
+	[HideInInspector]
+	public int counter;
 
 	public static bool colorTouched;
 
@@ -732,11 +736,38 @@ public class LTRect : System.Object{
 		}
 	}
 
+	public bool hasInitiliazed{
+		get{ 
+			return _id!=-1;
+		}
+	}
+
+	public int id{
+		get{ 
+			int toId = _id | counter << 16;
+
+			/*uint backId = toId & 0xFFFF;
+			uint backCounter = toId >> 16;
+			if(_id!=backId || backCounter!=counter){
+				Debug.LogError("BAD CONVERSION toId:"+_id);
+			}*/
+
+			return toId;
+		}
+	} 
+
+	public void setId( int id, int counter){
+		this._id = id;
+		this.counter = counter;
+	}
+
 	public void reset(){
 		this.alpha = 1.0f;
 		this.rotation = 0.0f;
 		this.rotateEnabled = this.alphaEnabled = false;
 		this.margin = Vector2.zero;
+		this.sizeByHeight = false;
+		this.useColor = false;
 	}
 
 	public void resetForRotation(){
@@ -788,7 +819,11 @@ public class LTRect : System.Object{
 				colorTouched = true;
 			}
 			if(fontScaleToFit){
-				style.fontSize = (int)_rect.height;
+				if(this.useSimpleScale){
+					style.fontSize = (int)(_rect.height*this.relativeRect.height);
+				}else{
+					style.fontSize = (int)_rect.height;
+				}
 			}
 			return _rect;
 		}
@@ -810,6 +845,7 @@ public class LTRect : System.Object{
 
 	public LTRect setColor( Color color ){
 		this.color = color;
+		this.useColor = true;
 		return this;
 	}
 
@@ -820,6 +856,23 @@ public class LTRect : System.Object{
 
 	public LTRect setLabel( String str ){
 		this.labelStr = str;
+		return this;
+	}
+
+	public LTRect setUseSimpleScale( bool useSimpleScale, Rect relativeRect){
+		this.useSimpleScale = useSimpleScale;
+		this.relativeRect = relativeRect;
+		return this;
+	}
+
+	public LTRect setUseSimpleScale( bool useSimpleScale){
+		this.useSimpleScale = useSimpleScale;
+		this.relativeRect = new Rect(0f,0f,Screen.width,Screen.height);
+		return this;
+	}
+
+	public LTRect setSizeByHeight( bool sizeByHeight){
+		this.sizeByHeight = sizeByHeight;
 		return this;
 	}
 
@@ -1481,6 +1534,8 @@ public static void update() {
 									tween.to.x = tween.from.x + tween.to.x;
 									tween.diff.x = tween.to.x - tween.from.x;
 									val = tweenOnCurve(tween, ratioPassed); break;
+								case LeanTweenType.easeSpring:
+									val = spring(tween.from.x, tween.to.x, ratioPassed); break;
                                 default:
                                     {
                                         val = tween.from.x + tween.diff.x * ratioPassed; break;
@@ -1530,7 +1585,7 @@ public static void update() {
 					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,val);
 					    }else if(tweenAction==TweenAction.ROTATE_AROUND){
 							
-							float move = val -  tween.lastVal;
+							// float move = val -  tween.lastVal;
 					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
 					    	/*if(isTweenFinished){
 					    		trans.eulerAngles = tween.origRotation;
@@ -1652,6 +1707,9 @@ public static void update() {
 											tween.to = new Vector3(closestRot(tween.from.x, tween.to.x), closestRot(tween.from.y, tween.to.y), closestRot(tween.from.z, tween.to.z));
 										}
 										newVect = tweenOnCurveVector(tween, ratioPassed); break;
+									case LeanTweenType.easeSpring:
+										newVect = new Vector3(spring(tween.from.x, tween.to.x, ratioPassed), spring(tween.from.y, tween.to.y, ratioPassed), spring(tween.from.z, tween.to.z, ratioPassed)); break;
+									
 								}
 							}else{
 								newVect = new Vector3( tween.from.x + tween.diff.x * ratioPassed, tween.from.y + tween.diff.y * ratioPassed, tween.from.z + tween.diff.z * ratioPassed);
@@ -1938,7 +1996,7 @@ private static void cancel( int uniqueId ){
 		int backId = uniqueId & 0xFFFF;
 		int backCounter = uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-		if(tweens[backId].counter==backCounter)
+		if(tweens[backId].hasInitiliazed && tweens[backId].counter==backCounter)
 			removeTween((int)backId);
 	}
 }
@@ -3563,8 +3621,9 @@ public class LTGUI{
 	private static LTRect r;
 	private static Color color = Color.white;
 	private static bool isGUIEnabled = false;
+	private static int global_counter = 0;
 
-	public enum LTGUI_ANIM_Type{
+	public enum Element_Type{
 		Texture,
 		Label
 	}
@@ -3590,8 +3649,7 @@ public class LTGUI{
 	public static void reset(){
 		if(isGUIEnabled){
 			isGUIEnabled = false;
-			int maxLoop = RECT_LEVELS*RECTS_PER_LEVEL;
-			for(int i = 0; i < maxLoop; i++){
+			for(int i = 0; i < levels.Length; i++){
 				levels[i] = null;
 			}
 
@@ -3605,7 +3663,7 @@ public class LTGUI{
 		if(isGUIEnabled){
 			init();
 			if(levelDepths[updateLevel]>0){
-				color = GUI.contentColor;
+				color = GUI.color;
 				int baseI = updateLevel*RECTS_PER_LEVEL;
 				int maxLoop = baseI + levelDepths[updateLevel];// RECTS_PER_LEVEL;//;
 				
@@ -3613,19 +3671,31 @@ public class LTGUI{
 					r = levels[i];
 					//Debug.Log("r:"+r+" i:"+i);
 					if(r!=null /*&& checkOnScreen(r.rect)*/){
-						if(r.type == (int)LTGUI_ANIM_Type.Label){
+						//Debug.Log("label:"+r.labelStr+" textColor:"+r.style.normal.textColor);
+						if(r.useColor)
+							GUI.color = r.color;
+						if(r.type == Element_Type.Label){
 							if(r.style!=null)
 								GUI.skin.label = r.style;
-							GUI.contentColor = r.color;
-							GUI.Label( new Rect(r.rect.x + r.margin.x, r.rect.y + r.margin.y, r.rect.width, r.rect.height), r.labelStr );
-						}else if(r.type == (int)LTGUI_ANIM_Type.Texture){
-							//if(r.color!=null)
-							//	GUI.contentColor = r.color;
-							GUI.DrawTexture( new Rect(r.rect.x + r.margin.x, r.rect.y + r.margin.y, r.rect.width, r.rect.height), r.texture );
+							if(r.useSimpleScale){
+								GUI.Label( new Rect((r.rect.x + r.margin.x + r.relativeRect.x)*r.relativeRect.width, (r.rect.y + r.margin.y + r.relativeRect.y)*r.relativeRect.height, r.rect.width*r.relativeRect.width, r.rect.height*r.relativeRect.height), r.labelStr );
+							}else{
+								GUI.Label( new Rect(r.rect.x + r.margin.x, r.rect.y + r.margin.y, r.rect.width, r.rect.height), r.labelStr );
+							}
+						}else if(r.type == Element_Type.Texture && r.texture!=null){
+							Vector2 size = r.useSimpleScale ? new Vector2(0f, r.rect.height*r.relativeRect.height) : new Vector2(r.rect.width, r.rect.height);
+							if(r.sizeByHeight){
+								size.x = (float)r.texture.width/(float)r.texture.height * size.y;
+							}
+							if(r.useSimpleScale){
+								GUI.DrawTexture( new Rect((r.rect.x + r.margin.x + r.relativeRect.x)*r.relativeRect.width, (r.rect.y + r.margin.y + r.relativeRect.y)*r.relativeRect.height, size.x, size.y), r.texture );
+							}else{
+								GUI.DrawTexture( new Rect(r.rect.x + r.margin.x, r.rect.y + r.margin.y, size.x, size.y), r.texture );
+							}
 						}
 					}
 				}
-				GUI.contentColor = color;
+				GUI.color = color;
 			}
 		}
 	}
@@ -3640,71 +3710,66 @@ public class LTGUI{
 	}
 
 	public static void destroy( int id ){
-		levels[id] = null;
+		int backId = id & 0xFFFF;
+		int backCounter = id >> 16;
+		if(id>=0 && levels[backId]!=null && levels[backId].hasInitiliazed && levels[backId].counter==backCounter)
+			levels[backId] = null;
 	}
 
 	public static LTRect label( Rect rect, string label, int depth){
-		isGUIEnabled = true;
-		init();
-		bool added = false;
-		int maxLoop = depth*RECTS_PER_LEVEL + RECTS_PER_LEVEL;
-		int k = 0;
-		for(int i = depth*RECTS_PER_LEVEL; i < maxLoop; i++){
-			r = levels[i];
-			if(r==null){
-				r =  new LTRect( rect );
-				r.rotateEnabled = true;
-				r.alphaEnabled = true;
-				r.type = (int)LTGUI_ANIM_Type.Label;
-				r.labelStr = label;
-				r.id = i;
-				levels[i] = r;
-				added = true;
-				// Debug.Log("k:"+k+ " maxDepth:"+levelDepths[depth]);
-				if(k>=levelDepths[depth]){
-					levelDepths[depth] = k + 1;
-				}
-				break;
-			}
-			k++;
-		}
+		return LTGUI.label(new LTRect(rect), label, depth);
+	}
 
-		if(added==false)
-			return null;
-
-		return r;
+	public static LTRect label( LTRect rect, string label, int depth){
+		rect.type = Element_Type.Label;
+		rect.labelStr = label;
+		return element(rect, depth);
 	}
 
 	public static LTRect texture( Rect rect, Texture texture, int depth){
+		return LTGUI.texture( new LTRect(rect), texture, depth);
+	}
+
+	public static LTRect texture( LTRect rect, Texture texture, int depth){
+		rect.type = Element_Type.Texture;
+		rect.texture = texture;
+		return element(rect, depth);
+	}
+
+	public static LTRect element( LTRect rect, int depth){
 		isGUIEnabled = true;
 		init();
-		bool added = false;
 		int maxLoop = depth*RECTS_PER_LEVEL + RECTS_PER_LEVEL;
 		int k = 0;
+		if(rect!=null){
+			destroy(rect.id);
+		}
+		if(rect.type==LTGUI.Element_Type.Label && rect.style!=null){
+			if(rect.style.normal.textColor.a<=0f){
+				Debug.LogWarning("Your GUI normal color has an alpha of zero, and will not be rendered.");
+			}
+		}
 		for(int i = depth*RECTS_PER_LEVEL; i < maxLoop; i++){
 			r = levels[i];
 			if(r==null){
-				r =  new LTRect( rect );
+				r = rect;
 				r.rotateEnabled = true;
 				r.alphaEnabled = true;
-				r.type = (int)LTGUI_ANIM_Type.Texture;
-				r.texture = texture;
-				r.id = i;
+				r.setId( i, global_counter );
 				levels[i] = r;
-				added = true;
 				// Debug.Log("k:"+k+ " maxDepth:"+levelDepths[depth]);
 				if(k>=levelDepths[depth]){
 					levelDepths[depth] = k + 1;
 				}
-				break;
+				global_counter++;
+				return r;
 			}
 			k++;
 		}
 
-		if(added==false)
-			return null;
+		Debug.LogError("You ran out of GUI Element spaces");
 
-		return r;
+		return null;
 	}
 
 	public static bool hasNoOverlap( Rect rect, int depth ){
