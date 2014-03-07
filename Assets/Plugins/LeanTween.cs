@@ -209,7 +209,7 @@ public class LTDescr{
 	public Hashtable optional;
 	#endif
 
-	private static uint global_counter = 1;
+	private static uint global_counter = 0;
 
     public override string ToString(){
 		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
