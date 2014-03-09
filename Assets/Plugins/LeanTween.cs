@@ -141,7 +141,7 @@ using System;
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
-	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, easeSpring, punch, once, clamp, pingPong, animationCurve
+	easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, easeSpring, easeShake, punch, once, clamp, pingPong, animationCurve
 }
 
 /**
@@ -1258,6 +1258,7 @@ private static LTDescr tween;
 private static int i;
 private static int j;
 private static AnimationCurve punch = new AnimationCurve( new Keyframe(0.0f, 0.0f ), new Keyframe(0.112586f, 0.9976035f ), new Keyframe(0.3120486f, -0.1720615f ), new Keyframe(0.4316337f, 0.07030682f ), new Keyframe(0.5524869f, -0.03141804f ), new Keyframe(0.6549395f, 0.003909959f ), new Keyframe(0.770987f, -0.009817753f ), new Keyframe(0.8838775f, 0.001939224f ), new Keyframe(1.0f, 0.0f ) );
+private static AnimationCurve shake = new AnimationCurve( new Keyframe(0f, 0f), new Keyframe(0.25f, 1f), new Keyframe(0.75f, -1f), new Keyframe(1f, 0f) ) ;
 
 public static void init(){
 	init(maxTweens);
@@ -1530,7 +1531,12 @@ public static void update() {
 								case LeanTweenType.easeInOutElastic:
 									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
                                 case LeanTweenType.punch:
-									tween.animationCurve = LeanTween.punch;
+								case LeanTweenType.easeShake:
+									if(tween.tweenType==LeanTweenType.punch){
+										tween.animationCurve = LeanTween.punch;
+									}else if(tween.tweenType==LeanTweenType.easeShake){
+										tween.animationCurve = LeanTween.shake;
+									}
 									tween.to.x = tween.from.x + tween.to.x;
 									tween.diff.x = tween.to.x - tween.from.x;
 									val = tweenOnCurve(tween, ratioPassed); break;
@@ -1585,14 +1591,17 @@ public static void update() {
 					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,val);
 					    }else if(tweenAction==TweenAction.ROTATE_AROUND){
 							
-							// float move = val -  tween.lastVal;
+							float move = val -  tween.lastVal;
 					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
 					    	/*if(isTweenFinished){
 					    		trans.eulerAngles = tween.origRotation;
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
 					    	}else{*/
-					    		trans.rotation = tween.origRotation;
-					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, val /*tween.to.x * (dt/timeTotal)*/);
+					    		/*trans.rotation = tween.origRotation;
+					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, val);
+								tween.lastVal = val;*/
+
+								trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, move);
 								tween.lastVal = val;
 
 								//trans.rotation =  * Quaternion.AngleAxis(val, tween.axis);
@@ -1700,7 +1709,12 @@ public static void update() {
 									case LeanTweenType.easeInOutElastic:
 										newVect = new Vector3(easeInOutElastic(tween.from.x, tween.to.x, ratioPassed), easeInOutElastic(tween.from.y, tween.to.y, ratioPassed), easeInOutElastic(tween.from.z, tween.to.z, ratioPassed)); break;
 									case LeanTweenType.punch:
-										tween.animationCurve = LeanTween.punch;
+									case LeanTweenType.easeShake:
+										if(tween.tweenType==LeanTweenType.punch){
+											tween.animationCurve = LeanTween.punch;
+										}else if(tween.tweenType==LeanTweenType.easeShake){
+											tween.animationCurve = LeanTween.shake;
+										}
 										tween.to = tween.from + tween.to;
 										tween.diff = tween.to - tween.from;
 										if(tweenAction==TweenAction.ROTATE || tweenAction==TweenAction.ROTATE_LOCAL){
@@ -1742,7 +1756,7 @@ public static void update() {
 					    	tween.ltRect.rotation = newVect.x;
 					    }
 					}
-					//Debug.Log("tween.delay:"+tween.delay + " tween.passed:"+tween.passed + " tweenAction:"+tweenAction + " from:"+newVect);
+					//Debug.Log("tween.delay:"+tween.delay + " tween.passed:"+tween.passed + " tweenAction:"+tweenAction + " to:"+newVect+" axis:"+tween.axis);
 
 					if(tween.onUpdateFloat!=null){
 						tween.onUpdateFloat(val);
