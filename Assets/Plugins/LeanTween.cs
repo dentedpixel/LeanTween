@@ -193,6 +193,7 @@ public class LTDescr{
 	public Vector3 axis;
 	public Quaternion origRotation;
 	public LTBezierPath path;
+	public LTSpline spline;
 	public TweenAction type;
 	public LeanTweenType tweenType;
 	public AnimationCurve animationCurve;
@@ -598,9 +599,13 @@ public class LTDescr{
 	* LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 	*/
 	public LTDescr setOrientToPath( bool doesOrient ){
-		if(this.path==null)
-			this.path = new LTBezierPath();
-		this.path.orientToPath = doesOrient;
+		if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
+			if(this.path==null)
+				this.path = new LTBezierPath();
+			this.path.orientToPath = doesOrient;
+		}else{
+			this.spline.orientToPath = doesOrient;
+		}
 		return this;
 	}
 
@@ -950,8 +955,8 @@ public class LTBezier{
 * @param {float} pts:Vector3[] A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
 * @example 
 * LTBezierPath ltPath = new LTBezierPath( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(1f,0f,0f), new Vector3(1f,0f,0f), new Vector3(1f,1f,0f)} );<br><br>
-* LeanTween.move(lt, ltPath.vec3, 4.0).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
-* float pt = ltPath.point( 0.6 ); // retrieve a point along the path
+* LeanTween.move(lt, ltPath.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
+* Vector3 pt = ltPath.point( 0.6f ); // retrieve a point along the path
 */
 public class LTBezierPath{
 	public Vector3[] pts;
@@ -1070,9 +1075,20 @@ public class LTBezierPath{
 	}
 }
 
+/**
+* Manually animate along a spline path with this class, in format: controlPoint, point1, point2.... pointLast, endControlPoint
+* @class LTSpline
+* @constructor
+* @param {float} pts:Vector3[] A set of points that define the points the path will pass through (starting with starting control point, and ending with a control point)
+* @example 
+* LTSpline ltSpline = new LTSpline( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(0f,0f,0f), new Vector3(0f,0.5f,0f), new Vector3(1f,1f,0f), new Vector3(1f,1f,0f)} );<br><br>
+* LeanTween.moveSpline(lt, ltSpline.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
+* Vector3 pt = ltSpline.point( 0.6f ); // retrieve a point along the path
+*/
 [System.Serializable]
 public class LTSpline {
 	public Vector3[] pts;
+	public bool orientToPath;
 	private float[] lengthRatio;
 	private float[] lengths;
 	private int numSections;
@@ -1085,7 +1101,7 @@ public class LTSpline {
 
 		numSections = pts.Length - 3;
 		int precision = 20;
-		lengthRatio = new float[numSections];
+		lengthRatio = new float[precision];
 		lengths = new float[precision];
 		
 		Vector3 lastPoint = new Vector3(Mathf.Infinity,0,0);
@@ -1105,34 +1121,39 @@ public class LTSpline {
 			lastPoint = point;
 		}
 
+		float ratioTotal = 0f;
 		for(int i = 0; i < lengths.Length; i++){
-			float t = i *1f / lengths.Length;
+			float t = i *1f / (lengths.Length-1);
 			currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
 
-			lengthRatio[currPt] += lengths[i] / totalLength;
-			Debug.Log("lengthRatio["+currPt+"]:"+lengthRatio[currPt]+" lengths["+i+"]:"+lengths[i]);
+			float ratioLength = lengths[i] / totalLength;
+			ratioTotal += ratioLength;
+			lengthRatio[i] = ratioTotal;
+			
+			//Debug.Log("lengthRatio["+i+"]:"+lengthRatio[i]+" lengths["+i+"]:"+lengths[i] + " t:"+t);
 		}
 	}
 
 	public float map( float t ){
-		float added = 0.0f;
 		//Debug.Log("map t:"+t);
 		for(int i = 0; i < lengthRatio.Length; i++){
-			//Debug.Log("lengthRatio["+i+"]:"+lengthRatio[i]);
-			
-			if(added+lengthRatio[i] >= t){
-				return added + (t-added)/lengthRatio[i] * lengthRatio[i];
+			if(lengthRatio[i] >= t){
+				// Debug.Log("map lengthRatio["+i+"]:"+lengthRatio[i]);
+				return lengthRatio[i]+(t-lengthRatio[i]);
 			}
-			added += lengthRatio[i];
 		}
 		return 1f;
 	}
 	
 	public Vector3 interp(float t) {
+		// The adjustments done to numSections, I am not sure why I needed to add them
+		/*int numSections = this.numSections+1;
+		if(numSections>=3)
+			numSections += 1;*/
 		currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
 		float u = t * (float) numSections - (float) currPt;
 				
-		//		Debug.Log("currPt:"+currPt+" numSections:"+numSections+" pts.Length :"+pts.Length );
+		// Debug.Log("currPt:"+currPt+" numSections:"+numSections+" pts.Length :"+pts.Length );
 		Vector3 a = pts[currPt];
 		Vector3 b = pts[currPt + 1];
 		Vector3 c = pts[currPt + 2];
@@ -1146,15 +1167,84 @@ public class LTSpline {
 		);
 	}
 
+	/**
+	* Retrieve a point along a path
+	* 
+	* @method point
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @return {Vector3} Vector3 position of the point along the path
+	* @example
+	* transform.position = ltSpline.point( 0.6f );
+	*/
 	public Vector3 point( float ratio ){
-		//float t = map( ratio );
+		float t = map( ratio );
 		//Debug.Log("t:"+t+" ratio:"+ratio);
-		return interp( ratio );
+		//float t = ratio;
+		return interp( t );
+	}
+
+	/**
+	* Place an object along a certain point on the path (facing the direction perpendicular to the path)
+	* 
+	* @method place
+	* @param {Transform} transform:Transform the transform of the object you wish to place along the path
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @example
+	* ltPath.place( transform, 0.6f );
+	*/
+	public void place( Transform transform, float ratio ){
+		place(transform, ratio, Vector3.up);
+	}
+
+	/**
+	* Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path
+	* 
+	* @method place
+	* @param {Transform} transform:Transform the transform of the object you wish to place along the path
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @param {Vector3} rotation:Vector3 the direction in which to place the transform ex: Vector3.up
+	* @example
+	* ltPath.place( transform, 0.6f, Vector3.left );
+	*/
+	public void place( Transform transform, float ratio, Vector3 worldUp ){
+		transform.position = point( ratio );
+		ratio += 0.001f;
+		if(ratio<=1.0f)
+			transform.LookAt( point( ratio ), worldUp );
+	}
+
+	/**
+	* Place an object along a certain point on the path (facing the direction perpendicular to the path) - Local Space, not world-space
+	* 
+	* @method placeLocal
+	* @param {Transform} transform:Transform the transform of the object you wish to place along the path
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @example
+	* ltPath.placeLocal( transform, 0.6f );
+	*/
+	public void placeLocal( Transform transform, float ratio ){
+		placeLocal( transform, ratio, Vector3.up );
+	}
+
+	/**
+	* Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path - Local Space, not world-space
+	* 
+	* @method placeLocal
+	* @param {Transform} transform:Transform the transform of the object you wish to place along the path
+	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
+	* @param {Vector3} rotation:Vector3 the direction in which to place the transform ex: Vector3.up
+	* @example
+	* ltPath.placeLocal( transform, 0.6f, Vector3.left );
+	*/
+	public void placeLocal( Transform transform, float ratio, Vector3 worldUp ){
+		transform.localPosition = point( ratio );
+		ratio += 0.001f;
+		if(ratio<=1.0f)
+			transform.LookAt( transform.parent.TransformPoint( point( ratio ) ), worldUp );
 	}
 	
 	public void gizmoDraw(float t = -1.0f) {
 		if(lengthRatio!=null && lengthRatio.Length>0){
-			Gizmos.color = Color.white;
 			Vector3 prevPt = point(0);
 			
 			for (int i = 1; i <= 120; i++) {
@@ -1162,12 +1252,6 @@ public class LTSpline {
 				Vector3 currPt = point(pm);
 				Gizmos.DrawLine(currPt, prevPt);
 				prevPt = currPt;
-			}
-			
-			if(t>=0f){
-				Gizmos.color = Color.blue;
-				Vector3 pos = point(t);
-				Gizmos.DrawLine(pos, pos + Velocity(t));
 			}
 		}
 	}
@@ -1199,6 +1283,8 @@ public enum TweenAction{
 	MOVE_LOCAL_Z,
 	MOVE_CURVED,
 	MOVE_CURVED_LOCAL,
+	MOVE_SPLINE,
+	MOVE_SPLINE_LOCAL,
 	SCALE_X,
 	SCALE_Y,
 	SCALE_Z,
@@ -1399,10 +1485,9 @@ public static void update() {
 						case TweenAction.MOVE_LOCAL:
 							tween.from = trans.localPosition; break;
 						case TweenAction.MOVE_CURVED:
-							// tween.path.pts[0] = trans.position;
-							tween.from.x = 0; break;
 						case TweenAction.MOVE_CURVED_LOCAL:
-							// tween.path.pts[0] = trans.localPosition;
+						case TweenAction.MOVE_SPLINE:
+						case TweenAction.MOVE_SPLINE_LOCAL:
 							tween.from.x = 0; break;
 						case TweenAction.ROTATE:
 							tween.from = trans.eulerAngles; 
@@ -1577,6 +1662,18 @@ public static void update() {
 								trans.localPosition = tween.path.point( val );
 							}
 							// Debug.Log("val:"+val+" trans.position:"+trans.position);
+						}else if((TweenAction)tweenAction==TweenAction.MOVE_SPLINE){
+							if(tween.spline.orientToPath){
+								tween.spline.place( trans, val );
+							}else{
+								trans.position = tween.spline.point( val );
+							}
+						}else if((TweenAction)tweenAction==TweenAction.MOVE_SPLINE_LOCAL){
+							if(tween.spline.orientToPath){
+								tween.spline.placeLocal( trans, val );
+							}else{
+								trans.localPosition = tween.spline.point( val );
+							}
 						}else if(tweenAction==TweenAction.SCALE_X){
 							trans.localScale=new Vector3(val, trans.localScale.y,trans.localScale.z);
 						}else if(tweenAction==TweenAction.SCALE_Y){
@@ -2325,6 +2422,48 @@ public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 }
 
 /**
+* Move a GameObject through a set of points
+* 
+* @method LeanTween.moveSpline
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: ControlStart,Pt1,Pt2,Pt3,.. ..ControlEnd
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Javascript:</i><br>
+* LeanTween.moveSpline(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br><br>
+* <i>C#:</i><br>
+* LeanTween.moveSpline(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br>
+*/
+public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time){
+	descr = options();
+	descr.spline = new LTSpline( to );
+
+	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE, descr );
+}
+
+/**
+* Move a GameObject through a set of points, in local space
+* 
+* @method LeanTween.moveSplineLocal
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: ControlStart,Pt1,Pt2,Pt3,.. ..ControlEnd
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Javascript:</i><br>
+* LeanTween.moveSpline(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br><br>
+* <i>C#:</i><br>
+* LeanTween.moveSpline(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f). setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br>
+*/
+public static LTDescr moveSplineLocal(GameObject gameObject, Vector3[] to, float time){
+	descr = options();
+	descr.spline = new LTSpline( to );
+
+	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr );
+}
+
+/**
 * Move a GUI Element to a certain location
 * 
 * @method LeanTween.move (GUI)
@@ -2395,9 +2534,9 @@ public static LTDescr moveLocal(GameObject gameObject, Vector3 to, float time){
 }
 
 /**
-* Move a GameObject along a set of bezier curves
+* Move a GameObject along a set of bezier curves, in local space
 * 
-* @method LeanTween.move
+* @method LeanTween.moveLocal
 * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
 * @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle1,Handle2,Point2,...
 * @param {float} time:float The time to complete the tween in
