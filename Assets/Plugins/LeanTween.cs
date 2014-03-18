@@ -272,6 +272,7 @@ public class LTDescr{
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
 		this.point = Vector3.zero;
+		global_counter++;
 	}
 
 	/**
@@ -952,7 +953,7 @@ public class LTBezier{
 * Manually animate along a bezier path with this class
 * @class LTBezierPath
 * @constructor
-* @param {float} pts:Vector3[] A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
+* @param {Vector3 Array} pts A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
 * @example 
 * LTBezierPath ltPath = new LTBezierPath( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(1f,0f,0f), new Vector3(1f,0f,0f), new Vector3(1f,1f,0f)} );<br><br>
 * LeanTween.move(lt, ltPath.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
@@ -1076,10 +1077,10 @@ public class LTBezierPath{
 }
 
 /**
-* Manually animate along a spline path with this class, in format: controlPoint, point1, point2.... pointLast, endControlPoint
+* Animate along a set of points that need to be in the format: controlPoint, point1, point2.... pointLast, endControlPoint
 * @class LTSpline
 * @constructor
-* @param {float} pts:Vector3[] A set of points that define the points the path will pass through (starting with starting control point, and ending with a control point)
+* @param {Vector3 Array} pts A set of points that define the points the path will pass through (starting with starting control point, and ending with a control point)
 * @example 
 * LTSpline ltSpline = new LTSpline( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(0f,0f,0f), new Vector3(0f,0.5f,0f), new Vector3(1f,1f,0f), new Vector3(1f,1f,0f)} );<br><br>
 * LeanTween.moveSpline(lt, ltSpline.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
@@ -2077,7 +2078,7 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 		init();
 		int backId = uniqueId & 0xFFFF;
 		int backCounter = uniqueId >> 16;
-		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
+		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" counter:"+backCounter + " setCounter:"+ tweens[backId].counter + " tweens[id].type:"+tweens[backId].type);
 		if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter))
 			removeTween((int)backId);
 	}
@@ -2812,7 +2813,7 @@ public static Hashtable h( object[] arr ){
 }
 
 private static int idFromUnique( int uniqueId ){
-	return uniqueId & 0xFFFFFF;
+	return uniqueId & 0xFFFF;
 }
 
 private static int pushNewTween( GameObject gameObject, Vector3 to, float time, TweenAction tweenAction, Hashtable optional ){
