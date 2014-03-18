@@ -2301,7 +2301,7 @@ private static LTDescr pushNewTween( GameObject gameObject, Vector3 to, float ti
 	tween.to = to;
 	tween.time = time;
 	tween.type = tweenAction;
-	tween.hasPhysics = gameObject.rigidbody!=null;
+	//tween.hasPhysics = gameObject.rigidbody!=null;
 	
 	return tween;
 }
@@ -2847,7 +2847,7 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	tween.type = tweenAction;
 	tween.optional = optional;
 	tween.setId( (uint)i );
-	tween.hasPhysics = gameObject.rigidbody!=null;
+	//tween.hasPhysics = gameObject.rigidbody!=null;
 
 	if(optional!=null){
         var ease = optional["ease"];
