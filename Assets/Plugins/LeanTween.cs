@@ -1419,7 +1419,7 @@ public static void update() {
 			if(tweens[i].toggle){
 				tween = tweens[i];
 				trans = tween.trans;
-				timeTotal = tween.time*Time.timeScale;
+				timeTotal = tween.time;
 				tweenAction = tween.type;
 				
 				dt = dtActual;
@@ -1452,6 +1452,12 @@ public static void update() {
 
 				if(!tween.hasInitiliazed && ((tween.passed==0.0 && tween.delay==0.0) || tween.passed>0.0) ){
 					tween.hasInitiliazed = true;
+
+					// Set time based on current timeScale
+					if( !tween.useEstimatedTime ){
+						tween.time = tween.time*Time.timeScale;
+					}
+
 					// Initialize From Values
 					switch(tweenAction){
 						case TweenAction.MOVE:
