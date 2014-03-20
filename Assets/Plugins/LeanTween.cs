@@ -2299,7 +2299,7 @@ private static LTDescr pushNewTween( GameObject gameObject, Vector3 to, float ti
 		return null;
 	tween.trans = gameObject.transform;
 	tween.to = to;
-	tween.time = time;
+	tween.time = time*Time.timeScale;
 	tween.type = tweenAction;
 	//tween.hasPhysics = gameObject.rigidbody!=null;
 	
@@ -2843,7 +2843,7 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	tween.reset();
 	tween.trans = gameObject.transform;
 	tween.to = to;
-	tween.time = time;
+	tween.time = time*Time.timeScale;
 	tween.type = tweenAction;
 	tween.optional = optional;
 	tween.setId( (uint)i );
