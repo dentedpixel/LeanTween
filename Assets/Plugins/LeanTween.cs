@@ -191,7 +191,7 @@ public class LTDescr{
 	public Vector3 diff;
 	public Vector3 point;
 	public Vector3 axis;
-	public Quaternion origRotation;
+	public Vector3 origRotation;
 	public LTBezierPath path;
 	public LTSpline spline;
 	public TweenAction type;
@@ -1419,7 +1419,7 @@ public static void update() {
 			if(tweens[i].toggle){
 				tween = tweens[i];
 				trans = tween.trans;
-				timeTotal = tween.time;
+				timeTotal = tween.time*Time.timeScale;
 				tweenAction = tween.type;
 				
 				dt = dtActual;
@@ -1508,7 +1508,7 @@ public static void update() {
 							break;
 						case TweenAction.ROTATE_AROUND:
 							tween.lastVal = 0.0f; // optional["last"]
-							tween.origRotation = trans.rotation; // optional["origRotation"
+							tween.origRotation = trans.eulerAngles; // optional["origRotation"
 							break;
 						case TweenAction.ROTATE_LOCAL:
 							tween.from = trans.localEulerAngles; 
@@ -1545,9 +1545,13 @@ public static void update() {
 					}else{
 						ratioPassed = tween.passed / timeTotal;
 					}
-					
-					if(ratioPassed>1.0)
+
+					if(ratioPassed>1.0f){
 						ratioPassed = 1.0f;
+					}else if(ratioPassed<0f){
+						ratioPassed = 0f;
+					}
+					// Debug.Log("action:"+tweenAction+" ratioPassed:"+ratioPassed + " timeTotal:" + timeTotal + " tween.passed:"+ tween.passed +" dt:"+dt);
 					
 					if(tweenAction>=TweenAction.MOVE_X && tweenAction<=TweenAction.CALLBACK){
 						if(tween.animationCurve!=null){
@@ -1691,10 +1695,10 @@ public static void update() {
 							
 							float move = val -  tween.lastVal;
 					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
-					    	/*if(isTweenFinished){
+					    	if(isTweenFinished){
 					    		trans.eulerAngles = tween.origRotation;
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
-					    	}else{*/
+					    	}else{
 					    		/*trans.rotation = tween.origRotation;
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, val);
 								tween.lastVal = val;*/
@@ -1703,7 +1707,7 @@ public static void update() {
 								tween.lastVal = val;
 
 								//trans.rotation =  * Quaternion.AngleAxis(val, tween.axis);
-					    	//}
+					    	}
 
 					    }else if(tweenAction==TweenAction.ALPHA){
 					    	#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
@@ -2299,7 +2303,7 @@ private static LTDescr pushNewTween( GameObject gameObject, Vector3 to, float ti
 		return null;
 	tween.trans = gameObject.transform;
 	tween.to = to;
-	tween.time = time*Time.timeScale;
+	tween.time = time;
 	tween.type = tweenAction;
 	//tween.hasPhysics = gameObject.rigidbody!=null;
 	
@@ -2843,7 +2847,7 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	tween.reset();
 	tween.trans = gameObject.transform;
 	tween.to = to;
-	tween.time = time*Time.timeScale;
+	tween.time = time;
 	tween.type = tweenAction;
 	tween.optional = optional;
 	tween.setId( (uint)i );

@@ -23,7 +23,7 @@ public class ExampleCSharp : MonoBehaviour {
 
 	void Start () {
 		ltLogo = GameObject.Find("LeanTweenLogo");
-		cycleThroughExamples();
+		LeanTween.delayedCall(1f, cycleThroughExamples);
 		
 		//LeanTween.move( ltLogo, Vector3.zero, 10f);
 		//LeanTween.delayedCall(2f, pauseNow);
@@ -47,12 +47,12 @@ public class ExampleCSharp : MonoBehaviour {
 	void cycleThroughExamples(){
 		if(exampleIter==0){
 			useEstimatedTime = !useEstimatedTime;
-			Time.timeScale = useEstimatedTime ? 0 : 1f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
+			Time.timeScale = useEstimatedTime ? 0 : 3f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
 		}
 		gameObject.BroadcastMessage( exampleFunctions[ exampleIter ] );
 
-		Debug.Log("cycleThroughExamples time:"+Time.time);
-		float delayTime = useEstimatedTime==false && exampleIter==0 ? Time.timeScale : 1.1f;
+		Debug.Log("cycleThroughExamples time:"+Time.time + " useEstimatedTime:"+useEstimatedTime);
+		float delayTime = useEstimatedTime==false && exampleIter==0 ? 1.1f : 1.1f;
 		LeanTween.delayedCall( gameObject, delayTime, cycleThroughExamples).setUseEstimatedTime(useEstimatedTime);
 		
 		exampleIter = exampleIter+1>=exampleFunctions.Length ? 0 : exampleIter + 1;
