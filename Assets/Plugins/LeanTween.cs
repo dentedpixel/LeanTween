@@ -642,6 +642,11 @@ public class LTDescr{
 		this.destroyOnComplete = doesDestroy;
 		return this;
 	}
+
+	public LTDescr setAudio( object audio ){
+		this.onCompleteParam = audio;
+		return this;
+	}
 	
 }
 
@@ -1306,7 +1311,8 @@ public enum TweenAction{
 	GUI_MOVE_MARGIN,
 	GUI_SCALE,
 	GUI_ALPHA,
-	GUI_ROTATE
+	GUI_ROTATE,
+	DELAYED_SOUND
 }
 
 /**
@@ -1924,6 +1930,9 @@ public static void update() {
 						tween.ltRect.rotateFinished = true;
 					
 					if(tween.loopType==LeanTweenType.once || tween.loopCount==1){
+						if(tweenAction==TweenAction.DELAYED_SOUND){
+							AudioSource.PlayClipAtPoint((AudioClip)tween.onCompleteParam, tween.to, tween.from.x);
+						}
 						if(tween.onComplete!=null){
 							removeTween(i);
 							tween.onComplete();
@@ -1932,6 +1941,7 @@ public static void update() {
 							removeTween(i);
 							tween.onCompleteObject(tween.onCompleteParam);
 						}
+
 						#if !UNITY_METRO
 						else if(tween.optional!=null){
 							System.Action callback=null;
@@ -2804,6 +2814,10 @@ public static LTDescr value(GameObject gameObject, Action<Vector3> callOnUpdate,
 */
 public static LTDescr value(GameObject gameObject, Action<float,object> callOnUpdate, float from, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdateObject(callOnUpdate) );
+}
+
+public static LTDescr delayedSound( AudioClip audio, Vector3 pos, float volume ){
+	return pushNewTween( tweenEmpty, pos, 0f, TweenAction.DELAYED_SOUND, options().setTo( pos ).setFrom( new Vector3(volume,0,0) ).setAudio( audio ) );
 }
 
 #if !UNITY_METRO
