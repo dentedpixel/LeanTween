@@ -597,7 +597,7 @@ public class LTDescr{
 	* @param {bool} doesOrient:bool whether the gameobject will orient to the path it is animating along
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
-	* LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
+	* LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true).setAxis(Vector3.forward);<br>
 	*/
 	public LTDescr setOrientToPath( bool doesOrient ){
 		if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
@@ -688,7 +688,7 @@ public class LTRect : System.Object{
 	public float rotation;
 	public Vector2 pivot;
 	public Vector2 margin;
-	public Rect relativeRect;
+	public Rect relativeRect = new Rect(0f,0f,float.PositiveInfinity,float.PositiveInfinity);
 
 	public bool rotateEnabled;
 	[HideInInspector]
@@ -2781,7 +2781,20 @@ public static LTDescr scaleZ(GameObject gameObject, float to, float time){
 * @param {float} float to The value to end the tween on
 * @param {float} float time The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Example Javascript: </i><br>
+* LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br>
+* function updateValueExampleCallback( val:float ){<br>
+* &nbsp; Debug.Log("tweened value:"+val+" set this to whatever variable you are tweening...");<br>
+* }<br>
+* <br>
+* <i>Example C#: </i> <br>
+* LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br>
+* void updateValueExampleCallback( float val ){<br>
+* &nbsp; Debug.Log("tweened value:"+val+" set this to whatever variable you are tweening...");<br>
+* }<br>
 */
+
 public static LTDescr value(GameObject gameObject, Action<float> callOnUpdate, float from, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
 }
@@ -3847,7 +3860,7 @@ public class LTGUI{
 				
 				for(int i = baseI; i < maxLoop; i++){
 					r = levels[i];
-					//Debug.Log("r:"+r+" i:"+i);
+					// Debug.Log("r:"+r+" i:"+i);
 					if(r!=null /*&& checkOnScreen(r.rect)*/){
 						//Debug.Log("label:"+r.labelStr+" textColor:"+r.style.normal.textColor);
 						if(r.useColor)
@@ -3926,6 +3939,9 @@ public class LTGUI{
 			if(rect.style.normal.textColor.a<=0f){
 				Debug.LogWarning("Your GUI normal color has an alpha of zero, and will not be rendered.");
 			}
+		}
+		if(rect.relativeRect.width==float.PositiveInfinity){
+			rect.relativeRect = new Rect(0f,0f,Screen.width,Screen.height);
 		}
 		for(int i = depth*RECTS_PER_LEVEL; i < maxLoop; i++){
 			r = levels[i];
