@@ -27,5 +27,14 @@ public class PunchTester : MonoBehaviour {
             LeanTween.move(this.gameObject, new Vector3(0f,0f,1f), 1.0f).setEase(LeanTweenType.punch);
             print("move punch!");
         }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            LeanTween.delayedCall(gameObject,0.3f, delayedMethod).setRepeat(4).setOnCompleteOnRepeat(true);
+        }
 	}
+
+    void delayedMethod(){
+        Debug.Log("delayed call:"+Time.time);
+    }
 }

@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.14 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.12 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -191,7 +191,7 @@ public class LTDescr{
 	public Vector3 diff;
 	public Vector3 point;
 	public Vector3 axis;
-	public Vector3 origRotation;
+	public Quaternion origRotation;
 	public LTBezierPath path;
 	public LTSpline spline;
 	public TweenAction type;
@@ -206,6 +206,7 @@ public class LTDescr{
 	public Action<object> onCompleteObject;
 	public object onCompleteParam;
 	public object onUpdateParam;
+	public bool onCompleteOnRepeat;
 	#if !UNITY_METRO
 	public Hashtable optional;
 	#endif
@@ -256,9 +257,8 @@ public class LTDescr{
 		#if !UNITY_METRO
 		this.optional = null;
 		#endif
-		this.destroyOnComplete = false;
 		this.passed = this.delay = 0.0f;
-		this.useEstimatedTime = this.useFrames = this.hasInitiliazed = false;
+		this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = false;
 		this.animationCurve = null;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
@@ -648,6 +648,10 @@ public class LTDescr{
 		return this;
 	}
 	
+	public LTDescr setOnCompleteOnRepeat( bool isOn ){
+		this.onCompleteOnRepeat = isOn;
+		return this;
+	}
 }
 
 /**
@@ -1298,6 +1302,7 @@ public enum TweenAction{
 	ROTATE_Y,
 	ROTATE_Z,
 	ROTATE_AROUND,
+	ROTATE_AROUND_LOCAL,
 	ALPHA,
 	ALPHA_VERTEX,
 	CALLBACK,
@@ -1520,7 +1525,11 @@ public static void update() {
 							break;
 						case TweenAction.ROTATE_AROUND:
 							tween.lastVal = 0.0f; // optional["last"]
-							tween.origRotation = trans.eulerAngles; // optional["origRotation"
+							tween.origRotation = trans.rotation; // optional["origRotation"
+							break;
+						case TweenAction.ROTATE_AROUND_LOCAL:
+							tween.lastVal = 0.0f; // optional["last"]
+							tween.origRotation = trans.localRotation; // optional["origRotation"
 							break;
 						case TweenAction.ROTATE_LOCAL:
 							tween.from = trans.localEulerAngles; 
@@ -1708,7 +1717,7 @@ public static void update() {
 							float move = val -  tween.lastVal;
 					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
 					    	if(isTweenFinished){
-					    		trans.eulerAngles = tween.origRotation;
+					    		trans.rotation = tween.origRotation;
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
 					    	}else{
 					    		/*trans.rotation = tween.origRotation;
@@ -1721,6 +1730,15 @@ public static void update() {
 								//trans.rotation =  * Quaternion.AngleAxis(val, tween.axis);
 					    	}
 
+					    }else if(tweenAction==TweenAction.ROTATE_AROUND_LOCAL){
+							float move = val -  tween.lastVal;
+					    	if(isTweenFinished){
+					    		trans.localRotation = tween.origRotation;
+					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), tween.to.x);
+					    	}else{
+					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), move);
+								tween.lastVal = val;
+					    	}
 					    }else if(tweenAction==TweenAction.ALPHA){
 					    	#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 
@@ -1985,7 +2003,10 @@ public static void update() {
 							removeTween(i);
 						}
 					}else{
-						if(tween.loopCount<0 && tween.type==TweenAction.CALLBACK){
+						if((tween.loopCount<0 && tween.type==TweenAction.CALLBACK) || tween.onCompleteOnRepeat){
+							if(tweenAction==TweenAction.DELAYED_SOUND){
+								AudioSource.PlayClipAtPoint((AudioClip)tween.onCompleteParam, tween.to, tween.from.x);
+							}
 							if(tween.onComplete!=null){
 								tween.onComplete();
 							}else if(tween.onCompleteObject!=null){
@@ -2236,6 +2257,7 @@ public static bool isTweening( GameObject gameObject ){
 public static bool isTweening( int uniqueId ){
 	int backId = uniqueId & 0xFFFF;
 	int backCounter = uniqueId >> 16;
+	if (backId < 0 || backId >= maxTweens) return false;
 	if(tweens[backId].counter==backCounter && tweens[backId].toggle){
 		return true;
 	}
@@ -2423,7 +2445,7 @@ public static LTDescr move(GameObject gameObject, Vector2 to, float time){
 * 
 * @method LeanTween.move
 * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
-* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle1,Handle2,Point2,...
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: Point1,Handle2,Handle1,Point2,...
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
@@ -2690,6 +2712,23 @@ public static LTDescr rotateZ(GameObject gameObject, float to, float time){
 */
 public static LTDescr rotateAround(GameObject gameObject, Vector3 axis, float add, float time){
 	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND, options().setAxis(axis) );
+}
+
+/**
+* Rotate a GameObject around a certain Axis in Local Space (the best method to use when you want to rotate beyond 180 degrees)
+* 
+* @method LeanTween.rotateAroundLocal
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
+* @param {Vector3} vec:Vector3 axis in which to rotate around ex: Vector3.up
+* @param {float} degrees:float the degrees in which to rotate
+* @param {float} time:float time The time to complete the rotation in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Example:</i><br>
+* LeanTween.rotateAround ( gameObject, Vector3.left, 90f,  1f );
+*/
+public static LTDescr rotateAroundLocal(GameObject gameObject, Vector3 axis, float add, float time){
+	return pushNewTween( gameObject, new Vector3(add,0f,0f), time, TweenAction.ROTATE_AROUND_LOCAL, options().setAxis(axis) );
 }
 
 /**
@@ -3677,6 +3716,7 @@ private static GameObject[] goListeners;
 private static int eventsMaxSearch = 0;
 public static int EVENTS_MAX = 10;
 public static int LISTENERS_MAX = 10;
+private static int INIT_LISTENERS_MAX = LISTENERS_MAX;
 
 public static void addListener( int eventId, System.Action<LTEvent> callback ){
 	addListener(tweenEmpty, eventId, callback);
@@ -3695,12 +3735,13 @@ public static void addListener( int eventId, System.Action<LTEvent> callback ){
 */
 public static void addListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
 	if(eventListeners==null){
+		INIT_LISTENERS_MAX = LISTENERS_MAX;
 		eventListeners = new System.Action<LTEvent>[ EVENTS_MAX * LISTENERS_MAX ];
 		goListeners = new GameObject[ EVENTS_MAX * LISTENERS_MAX ];
 	}
 	// Debug.Log("searching for an empty space for:"+caller + " eventid:"+event);
-	for(i = 0; i < LISTENERS_MAX; i++){
-		int point = eventId*LISTENERS_MAX + i;
+	for(i = 0; i < INIT_LISTENERS_MAX; i++){
+		int point = eventId*INIT_LISTENERS_MAX + i;
 		if(goListeners[ point ]==null || eventListeners[ point ]==null){
 			eventListeners[ point ] = callback;
 			goListeners[ point ] = caller;
@@ -3715,7 +3756,7 @@ public static void addListener( GameObject caller, int eventId, System.Action<LT
 			return;
 		}
 	}
-	Debug.LogError("You ran out of areas to add listeners, consider increasing LISTENERS_MAX, ex: LeanTween.LISTENERS_MAX = "+(LISTENERS_MAX*2));
+	Debug.LogError("You ran out of areas to add listeners, consider increasing INIT_LISTENERS_MAX, ex: LeanTween.INIT_LISTENERS_MAX = "+(INIT_LISTENERS_MAX*2));
 }
 
 public static bool removeListener( int eventId, System.Action<LTEvent> callback ){
@@ -3735,7 +3776,7 @@ public static bool removeListener( int eventId, System.Action<LTEvent> callback 
 */
 public static bool removeListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
 	for(i = 0; i < eventsMaxSearch; i++){
-		int point = eventId*LISTENERS_MAX + i;
+		int point = eventId*INIT_LISTENERS_MAX + i;
 		if(goListeners[ point ] == caller && System.Object.ReferenceEquals( eventListeners[ point ], callback) ){
 			eventListeners[ point ] = null;
 			goListeners[ point ] = null;
@@ -3770,7 +3811,7 @@ public static void dispatchEvent( int eventId ){
 */
 public static void dispatchEvent( int eventId, object data ){
 	for(int k = 0; k < eventsMaxSearch; k++){
-		int point = eventId*LISTENERS_MAX + k;
+		int point = eventId*INIT_LISTENERS_MAX + k;
 		if(eventListeners[ point ]!=null){
 			if(goListeners[point]){
 				eventListeners[ point ]( new LTEvent(eventId, data) );
