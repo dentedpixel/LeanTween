@@ -648,6 +648,14 @@ public class LTDescr{
 		return this;
 	}
 	
+	/**
+	* Set the onComplete method to be called at the end of every loop cycle (also applies to the delayedCall method)
+	* @method setOnCompleteOnRepeat
+	* @param {bool} isOn:bool does call onComplete on every loop cycle
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.delayedCall(gameObject,0.3f, delayedMethod).setRepeat(4).setOnCompleteOnRepeat(true);
+	*/
 	public LTDescr setOnCompleteOnRepeat( bool isOn ){
 		this.onCompleteOnRepeat = isOn;
 		return this;
@@ -1717,8 +1725,12 @@ public static void update() {
 							float move = val -  tween.lastVal;
 					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
 					    	if(isTweenFinished){
-					    		trans.rotation = tween.origRotation;
-					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
+					    		if(tween.direction>0){
+					    			trans.rotation = tween.origRotation;
+						    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
+				    			}else{
+				    				trans.rotation = tween.origRotation;
+				    			}
 					    	}else{
 					    		/*trans.rotation = tween.origRotation;
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, val);
@@ -1733,8 +1745,12 @@ public static void update() {
 					    }else if(tweenAction==TweenAction.ROTATE_AROUND_LOCAL){
 							float move = val -  tween.lastVal;
 					    	if(isTweenFinished){
-					    		trans.localRotation = tween.origRotation;
+					    		if(tween.direction>0){
+					    			trans.localRotation = tween.origRotation;
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), tween.to.x);
+				    			}else{
+				    				trans.localRotation = tween.origRotation;
+				    			}
 					    	}else{
 					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), move);
 								tween.lastVal = val;
