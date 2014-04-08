@@ -1771,6 +1771,13 @@ public static void update() {
 								foreach(Material mat in trans.gameObject.renderer.materials){
 	        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
 	    						}
+	    						if(trans.childCount>0){
+	    							foreach (Transform child in trans) {
+	    								foreach(Material mat in child.gameObject.renderer.materials){
+			        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+			    						}
+									}
+	    						}
 							}
 
     						#endif
