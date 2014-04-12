@@ -30,11 +30,12 @@ public class PunchTester : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            LeanTween.delayedCall(gameObject,0.3f, delayedMethod).setRepeat(4).setOnCompleteOnRepeat(true);
+            LeanTween.delayedCall(gameObject,0.3f, delayedMethod).setRepeat(4).setOnCompleteOnRepeat(true).setOnCompleteParam( "hi" );
         }
 	}
 
-    void delayedMethod(){
-        Debug.Log("delayed call:"+Time.time);
+    void delayedMethod( object myVal ){
+        string castBack = myVal as string;
+        Debug.Log("delayed call:"+Time.time +" myVal:"+castBack);
     }
 }
