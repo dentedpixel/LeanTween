@@ -1505,11 +1505,7 @@ public static void update() {
 								break;	
 							#else
 								SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-								if(ren!=null){
-									tween.from.x = ren.color.a;
-								}else if(trans.gameObject.renderer!=null){
-									tween.from.x = trans.gameObject.renderer.material.color.a;
-								}
+								tween.from.x = (ren!=null) ? ren.color.a : trans.gameObject.renderer.material.color.a;
 								break;
 							#endif
 						case TweenAction.MOVE_LOCAL:
@@ -1772,18 +1768,14 @@ public static void update() {
 							if(ren!=null){
 								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
 							}else{
-								if(trans.gameObject.renderer!=null){
-									foreach(Material mat in trans.gameObject.renderer.materials){
-		        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-		    						}
-		    					}
+								foreach(Material mat in trans.gameObject.renderer.materials){
+	        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+	    						}
 	    						if(trans.childCount>0){
 	    							foreach (Transform child in trans) {
-	    								if(child.gameObject.renderer!=null){
-		    								foreach(Material mat in child.gameObject.renderer.materials){
-				        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-				    						}
-				    					}
+	    								foreach(Material mat in child.gameObject.renderer.materials){
+			        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+			    						}
 									}
 	    						}
 							}
@@ -2461,7 +2453,7 @@ public static LTDescr destroyAfter( LTRect rect, float delayTime){
 * @param {Vector3} vec:Vector3 to The final positin with which to move to
 * @param {float} time:float time The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
-* @example LeanTween.move(gameObject, new Vector3(0f,-3f,5f), 2.0f) .setEase( LeanTween.easeOutQuad );
+* @example LeanTween.move(gameObject, new Vector3(0f,-3f,5f), 2.0f) .setEase( LeanTweenType.easeOutQuad );
 */
 public static LTDescr move(GameObject gameObject, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.MOVE, options() );
@@ -2481,9 +2473,9 @@ public static LTDescr move(GameObject gameObject, Vector2 to, float time){
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
 * <i>Javascript:</i><br>
-* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br><br>
+* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 * <i>C#:</i><br>
-* LeanTween.move(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f) .setEase(LeanTween.easeOutQuad).setOrientToPath(true);;<br>
+* LeanTween.move(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);;<br>
 */	
 public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 	descr = options();
@@ -2505,9 +2497,9 @@ public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
 * <i>Javascript:</i><br>
-* LeanTween.moveSpline(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br><br>
+* LeanTween.moveSpline(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 * <i>C#:</i><br>
-* LeanTween.moveSpline(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br>
+* LeanTween.moveSpline(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 */
 public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time){
 	descr = options();
@@ -2526,9 +2518,9 @@ public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
 * <i>Javascript:</i><br>
-* LeanTween.moveSpline(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br><br>
+* LeanTween.moveSpline(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 * <i>C#:</i><br>
-* LeanTween.moveSpline(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f). setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br>
+* LeanTween.moveSpline(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f). setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 */
 public static LTDescr moveSplineLocal(GameObject gameObject, Vector3[] to, float time){
 	descr = options();
@@ -2617,9 +2609,9 @@ public static LTDescr moveLocal(GameObject gameObject, Vector3 to, float time){
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
 * <i>Javascript:</i><br>
-* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0).setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br><br>
+* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 * <i>C#:</i><br>
-* LeanTween.move(gameObject, new Vector3{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}).setEase(LeanTween.easeOutQuad).setOrientToPath(true);<br>
+* LeanTween.move(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 */
 public static LTDescr moveLocal(GameObject gameObject, Vector3[] to, float time){
 	descr = options();
@@ -2669,7 +2661,7 @@ public static LTDescr rotate(GameObject gameObject, Vector3 to, float time){
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example 
 * if(GUI.Button(buttonRect.rect, "Rotate"))<br>
-*	LeanTween.rotate( buttonRect4, 150.0f, 1.0f).setEase(LeanTween.easeOutElastic);<br>
+*	LeanTween.rotate( buttonRect4, 150.0f, 1.0f).setEase(LeanTweenType.easeOutElastic);<br>
 * GUI.matrix = Matrix4x4.identity;<br>
 */
 public static LTDescr rotate(LTRect ltRect, float to, float time){
