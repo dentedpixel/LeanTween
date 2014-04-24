@@ -1537,10 +1537,12 @@ public static void update() {
 							break;
 						case TweenAction.ROTATE_AROUND:
 							tween.lastVal = 0.0f; // optional["last"]
+							tween.from.x = 0.0f;
 							tween.origRotation = trans.rotation; // optional["origRotation"
 							break;
 						case TweenAction.ROTATE_AROUND_LOCAL:
 							tween.lastVal = 0.0f; // optional["last"]
+							tween.from.x = 0.0f;
 							tween.origRotation = trans.localRotation; // optional["origRotation"
 							break;
 						case TweenAction.ROTATE_LOCAL:
