@@ -2145,7 +2145,7 @@ public static void cancel( GameObject gameObject ){
 * 
 * @method LeanTween.cancel
 * @param {GameObject} gameObject:GameObject gameObject whose tweens you want to cancel
-* @param {float} id:float unique id that represents that tween
+* @param {float} id:int unique id that represents that tween
 */
 public static void cancel( GameObject gameObject, int uniqueId ){
 	if(uniqueId>=0){
@@ -2163,7 +2163,7 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 * 
 * @method LeanTween.cancel
 * @param {LTRect} ltRect:LTRect LTRect object whose tweens you want to cancel
-* @param {float} id:float unique id that represents that tween
+* @param {float} id:int unique id that represents that tween
 */
 public static void cancel( LTRect ltRect, int uniqueId ){
 	if(uniqueId>=0){
