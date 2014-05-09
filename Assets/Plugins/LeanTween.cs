@@ -2201,7 +2201,7 @@ public static LTDescr description( int uniqueId ){
 	return null;
 }
 
-// Deprecated use pause( id )
+[System.Obsolete("Use 'pause( id )' instead")]
 public static void pause( GameObject gameObject, int uniqueId ){
 	pause( uniqueId );
 }
@@ -2229,7 +2229,7 @@ public static void pause( GameObject gameObject ){
 	}
 }
 
-// Deprecated
+[System.Obsolete("Use 'resume( id )' instead")]
 public static void resume( GameObject gameObject, int uniqueId ){
 	resume( uniqueId );
 }
