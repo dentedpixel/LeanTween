@@ -2485,7 +2485,7 @@ public static LTDescr move(GameObject gameObject, Vector2 to, float time){
 * <i>Javascript:</i><br>
 * LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 * <i>C#:</i><br>
-* LeanTween.move(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);;<br>
+* LeanTween.move(gameObject, new Vector3[]{new Vector3(0f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);;<br>
 */	
 public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 	descr = options();
@@ -2509,7 +2509,7 @@ public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 * <i>Javascript:</i><br>
 * LeanTween.moveSpline(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 * <i>C#:</i><br>
-* LeanTween.moveSpline(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
+* LeanTween.moveSpline(gameObject, new Vector3[]{new Vector3(0f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 */
 public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time){
 	descr = options();
@@ -2530,7 +2530,7 @@ public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time
 * <i>Javascript:</i><br>
 * LeanTween.moveSpline(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 * <i>C#:</i><br>
-* LeanTween.moveSpline(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}, 1.5f). setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
+* LeanTween.moveSpline(gameObject, new Vector3[]{new Vector3(0f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 */
 public static LTDescr moveSplineLocal(GameObject gameObject, Vector3[] to, float time){
 	descr = options();
