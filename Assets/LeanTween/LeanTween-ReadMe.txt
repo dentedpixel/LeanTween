@@ -6,7 +6,7 @@ http://dentedpixel.com/LeanTweenDocumentation/classes/LeanTween.html
 Getting Started
 	Move the contents of LeanTween/Plugins folder into the root of your project /Assets/Plugins/* (if you do not have this folder already you can just drag the actual Plugins folder to the Assets folder)
 
-	There are many examples included! Look in the “LeanTweenExampl folder to see many of the methods outlined.
+	There are many examples included! Look in the "LeanTweenExamples" folder to see many of the methods outlined.
 
 LeanTween and Windows Store
 	Hashtables are not supported for Windows Store publishing. So to pass optional values, make sure to do so in this format:
