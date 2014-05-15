@@ -24,8 +24,13 @@ public class PunchTester : MonoBehaviour {
  
         if (Input.GetKeyDown(KeyCode.M))
         {
-            LeanTween.move(this.gameObject, new Vector3(0f,0f,1f), 1.0f).setEase(LeanTweenType.punch);
+            // LeanTween.move(this.gameObject, new Vector3(0f,0f,1f), 1.0f).setEase(LeanTweenType.punch);
             print("move punch!");
+
+            LeanTween.moveX( this.gameObject, 1f, 1f).setOnComplete( destroyOnComp ).setOnCompleteParam( this.gameObject );
+
+
+
         }
 
         if (Input.GetKeyDown(KeyCode.E))
@@ -37,5 +42,10 @@ public class PunchTester : MonoBehaviour {
     void delayedMethod( object myVal ){
         string castBack = myVal as string;
         Debug.Log("delayed call:"+Time.time +" myVal:"+castBack);
+    }
+
+    void destroyOnComp( object p ){
+      GameObject g = (GameObject)p;
+      Destroy( g );
     }
 }

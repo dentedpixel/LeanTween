@@ -1,6 +1,6 @@
 // Copyright (c) 2013 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.12 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.15 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
