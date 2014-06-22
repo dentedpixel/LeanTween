@@ -91,7 +91,7 @@ public class ExampleCSharp : MonoBehaviour {
 
 	public void colorExample(){
 		GameObject lChar = GameObject.Find("LCharacter");
-		LeanTween.color( lChar, new Color(1.0f,0.0f,0.0f,0.5f), 1.0f ).setEase(LeanTweenType.easeOutBounce).setRepeat(2).setLoopPingPong().setUseEstimatedTime(useEstimatedTime);
+		LeanTween.color( lChar, new Color(1.0f,0.0f,0.0f,0.5f), 0.5f ).setEase(LeanTweenType.easeOutBounce).setRepeat(2).setLoopPingPong().setUseEstimatedTime(useEstimatedTime);
 	}
 
 	public void moveOnACurveExample(){

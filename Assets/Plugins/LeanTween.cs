@@ -1586,12 +1586,28 @@ public static void update() {
 							tween.diff = new Vector3(1.0f,0.0f,0.0f);
 							break;
 						case TweenAction.COLOR:
-							if(trans.gameObject.renderer){
-								Color col = trans.gameObject.renderer.material.color;
-								tween.from = new Vector3(0.0f, col.a, 0.0f);
-								tween.diff = new Vector3(1.0f,0.0f,0.0f);
-								tween.axis = new Vector3( col.r, col.g, col.b );
-							}
+							#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+								if(trans.gameObject.renderer){
+									Color col = trans.gameObject.renderer.material.color;
+									tween.from = new Vector3(0.0f, col.a, 0.0f);
+									tween.diff = new Vector3(1.0f,0.0f,0.0f);
+									tween.axis = new Vector3( col.r, col.g, col.b );
+								}
+							#else
+								SpriteRenderer ren2 = trans.gameObject.GetComponent<SpriteRenderer>();
+								if(ren2!=null){
+									tween.from = new Vector3(0.0f, ren2.color.a, 0.0f);
+									tween.diff = new Vector3(1.0f,0.0f,0.0f);
+									tween.axis = new Vector3( ren2.color.r, ren2.color.g, ren2.color.b );
+								}else if(trans.gameObject.renderer!=null){
+									if(trans.gameObject.renderer){
+										Color col = trans.gameObject.renderer.material.color;
+										tween.from = new Vector3(0.0f, col.a, 0.0f);
+										tween.diff = new Vector3(1.0f,0.0f,0.0f);
+										tween.axis = new Vector3( col.r, col.g, col.b );
+									}
+								}
+							#endif
 							break;
 					}
 					if(tweenAction!=TweenAction.CALLBACK_COLOR && tweenAction!=TweenAction.COLOR)
