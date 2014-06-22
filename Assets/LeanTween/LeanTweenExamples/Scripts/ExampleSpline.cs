@@ -14,7 +14,10 @@ public class ExampleSpline : MonoBehaviour {
 		ltLogo = GameObject.Find("LeanTweenLogo1");
 		ltLogo2 = GameObject.Find("LeanTweenLogo2");
 
-		LeanTween.moveSpline( ltLogo2, new Vector3[] {trans[0].position, trans[1].position, trans[2].position, trans[3].position, trans[4].position}, 1f).setEase(LeanTweenType.easeInOutQuad).setLoopPingPong().setOrientToPath(true);
+		// LeanTween.moveSpline( ltLogo2, new Vector3[] {trans[0].position, trans[1].position, trans[2].position, trans[3].position, trans[4].position}, 1f).setEase(LeanTweenType.easeInOutQuad).setLoopPingPong().setOrientToPath(true);
+
+		LTDescr zoomInPath_LT = LeanTween.moveSpline(ltLogo2, new Vector3[]{Vector3.zero, Vector3.zero, new Vector3(1,1,1), new Vector3(2,1,1), new Vector3(2,1,1)}, 1.5f);
+		zoomInPath_LT.setUseEstimatedTime(true);
 	}
 	
 	private float iter;

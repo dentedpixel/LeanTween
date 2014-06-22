@@ -138,6 +138,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 using UnityEngine;
 using System.Collections;
 using System;
+using System.Runtime.InteropServices;
 public enum LeanTweenType{
 	notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart, 
 	easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc, 
@@ -202,6 +203,7 @@ public class LTDescr{
 	public Action<float,object> onUpdateFloatObject;
 	public Action<Vector3> onUpdateVector3;
 	public Action<Vector3,object> onUpdateVector3Object;
+	public Action<Color> onUpdateColor;
 	public Action onComplete;
 	public Action<object> onCompleteObject;
 	public object onCompleteParam;
@@ -214,7 +216,7 @@ public class LTDescr{
 	private static uint global_counter = 0;
 
     public override string ToString(){
-		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
+		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
 
 	public LTDescr(){
@@ -364,6 +366,11 @@ public class LTDescr{
 		this.from = from;
 		this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
 		this.diff = this.to - this.from;
+		return this;
+	}
+
+	public LTDescr setHasInitialized( bool has ){
+		this.hasInitiliazed = has;
 		return this;
 	}
 
@@ -529,6 +536,10 @@ public class LTDescr{
 	}
 	public LTDescr setOnUpdateVector3( Action<Vector3> onUpdate ){
 		this.onUpdateVector3 = onUpdate;
+		return this;
+	}
+	public LTDescr setOnUpdateColor( Action<Color> onUpdate ){
+		this.onUpdateColor = onUpdate;
 		return this;
 	}
 
@@ -1313,6 +1324,8 @@ public enum TweenAction{
 	ROTATE_AROUND_LOCAL,
 	ALPHA,
 	ALPHA_VERTEX,
+	COLOR,
+	CALLBACK_COLOR,
 	CALLBACK,
 	MOVE,
 	MOVE_LOCAL,
@@ -1455,7 +1468,7 @@ public static void update() {
 					removeTween(i);
 					continue;
 				}
-				//Debug.Log("i:"+i+" tween:"+tween+" dt:"+dt);
+				// Debug.Log("i:"+i+" tween:"+tween+" dt:"+dt);
 				
 				// Check for tween finished
 				isTweenFinished = false;
@@ -1569,8 +1582,20 @@ public static void update() {
 						case TweenAction.ALPHA_VERTEX:
 							tween.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 							break;
+						case TweenAction.CALLBACK_COLOR:
+							tween.diff = new Vector3(1.0f,0.0f,0.0f);
+							break;
+						case TweenAction.COLOR:
+							if(trans.gameObject.renderer){
+								Color col = trans.gameObject.renderer.material.color;
+								tween.from = new Vector3(0.0f, col.a, 0.0f);
+								tween.diff = new Vector3(1.0f,0.0f,0.0f);
+								tween.axis = new Vector3( col.r, col.g, col.b );
+							}
+							break;
 					}
-					tween.diff = tween.to - tween.from;
+					if(tweenAction!=TweenAction.CALLBACK_COLOR && tweenAction!=TweenAction.COLOR)
+						tween.diff = tween.to - tween.from;
 				}
 				if(tween.delay<=0){
 					// Move Values
@@ -1801,6 +1826,18 @@ public static void update() {
 								colors[k] = c;
 							}
 							mesh.colors32 = colors;
+						}else if(tweenAction==TweenAction.COLOR || tweenAction==TweenAction.CALLBACK_COLOR){
+							Color toColor = tweenColor(tween, val);
+							// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
+							if(tweenAction==TweenAction.COLOR){
+								if(trans.gameObject.renderer!=null){
+									foreach(Material mat in trans.gameObject.renderer.materials){
+		        						mat.color = toColor;
+		    						}
+		    					}
+		    				}else if(tweenAction==TweenAction.CALLBACK_COLOR){
+								tween.onUpdateColor(toColor);
+							}
 						}
 						
 					}else if(tweenAction>=TweenAction.MOVE){
@@ -2071,6 +2108,12 @@ public static void update() {
 
 		frameRendered = Time.frameCount;
 	}
+}
+
+private static Color tweenColor( LTDescr tween, float val ){
+	Vector3 diff3 = tween.point - tween.axis;
+	float diffAlpha = tween.to.y - tween.from.y;
+	return new Color(tween.axis.x + diff3.x*val, tween.axis.y + diff3.y*val, tween.axis.z + diff3.z*val, tween.from.y + diffAlpha*val);
 }
 
 // This method is only used internally! Do not call this from your scripts. To cancel a tween use LeanTween.cancel
@@ -2429,6 +2472,10 @@ A shader that supports vertex colors is required for it to work
 */
 public static LTDescr alphaVertex(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0f,0f), time, TweenAction.ALPHA_VERTEX, options() );
+}
+
+public static LTDescr color(GameObject gameObject, Color to, float time){
+	return pushNewTween( gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) ) );
 }
 
 public static LTDescr delayedCall( float delayTime, Action callback){
@@ -2869,6 +2916,35 @@ public static LTDescr scaleZ(GameObject gameObject, float to, float time){
 
 public static LTDescr value(GameObject gameObject, Action<float> callOnUpdate, float from, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
+}
+
+/**
+* Tween from one color to another
+* 
+* @method LeanTween.value (Color)
+* @param {GameObject} GameObject gameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
+* @param {Action<Color>} callOnUpdate:Action<Color> The function that is called on every Update frame, this function needs to accept a color value ex: function updateValue( Color val ){ }
+* @param {Color} Color from The original value to start the tween from
+* @param {Color} Color to The value to end the tween on
+* @param {Color} Color time The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Example Javascript: </i><br>
+* LeanTween.value( gameObject, updateValueExampleCallback, Color.red, Color.green, 1f).setEase(LeanTweenType.easeOutElastic);<br>
+* function updateValueExampleCallback( val:Color ){<br>
+* &nbsp; Debug.Log("tweened color:"+val+" set this to whatever variable you are tweening...");<br>
+* }<br>
+* <br>
+* <i>Example C#: </i> <br>
+* LeanTween.value( gameObject, updateValueExampleCallback, Color.red, Color.green, 1f).setEase(LeanTweenType.easeOutElastic);<br>
+* void updateValueExampleCallback( Color val ){<br>
+* &nbsp; Debug.Log("tweened color:"+val+" set this to whatever variable you are tweening...");<br>
+* }<br>
+*/
+
+public static LTDescr value(GameObject gameObject, Action<Color> callOnUpdate, Color from, Color to, float time){
+	return pushNewTween( gameObject, new Vector3(1.0f,to.a,0.0f), time, TweenAction.CALLBACK_COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) )
+		.setAxis( new Vector3(from.r, from.g, from.b) ).setFrom( new Vector3(0.0f, from.a, 0.0f) ).setHasInitialized(false).setOnUpdateColor(callOnUpdate) );
 }
 
 /**
