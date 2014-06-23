@@ -2490,6 +2490,17 @@ public static LTDescr alphaVertex(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0f,0f), time, TweenAction.ALPHA_VERTEX, options() );
 }
 
+/**
+* Change a gameobject's material to a certain color value. The material's shader needs to support color tinting. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>.
+* 
+* @method LeanTween.color
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to change the color
+* @param {Color} to:Color the final color value ex: Color.Red, new Color(1.0f,1.0f,0.0f,0.8f)
+* @param {float} time:float The time with which to fade the object
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* LeanTween.color(gameObject, Color.yellow, 1f) .setDelay(1f);
+*/
 public static LTDescr color(GameObject gameObject, Color to, float time){
 	return pushNewTween( gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) ) );
 }
