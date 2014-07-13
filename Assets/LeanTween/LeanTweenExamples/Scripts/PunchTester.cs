@@ -5,7 +5,9 @@ public class PunchTester : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+	   LeanTween.rotateAround(gameObject, gameObject.transform.rotation.eulerAngles, 360f, 5f)
+                .setDelay(1f)
+                .setEase(LeanTweenType.easeOutBounce);
 	}
 
 	void Update () 
@@ -18,7 +20,8 @@ public class PunchTester : MonoBehaviour {
  
         if (Input.GetKeyDown(KeyCode.R))
         {
-            LeanTween.rotate(this.gameObject, Vector3.one, 1.0f).setEase(LeanTweenType.punch);
+            // LeanTween.rotate(this.gameObject, Vector3.one, 1.0f).setEase(LeanTweenType.punch);
+            LeanTween.rotateAroundLocal(this.gameObject, this.transform.forward, -80f, 5.0f).setPoint(new Vector3(1.25f, 0f, 0f));
             print("rotate punch!");
         }
  
@@ -52,7 +55,18 @@ public class PunchTester : MonoBehaviour {
             Color to = new Color(Random.Range(0f,1f),0f,Random.Range(0f,1f),0.0f);
             LeanTween.value( gameObject, updateColor, new Color(1.0f,0.0f,0.0f,1.0f), Color.blue, 4.0f );//.setRepeat(2).setLoopPingPong().setEase(LeanTweenType.easeOutBounce);
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            LeanTween.delayedCall(0.05f, enterMiniGameStart).setOnCompleteParam( new object[]{""+5} );
+        }
 	}
+
+    void enterMiniGameStart( object val ){
+        object[] arr = (object [])val;
+        int lvl = int.Parse((string)arr[0]);
+        Debug.Log("level:"+lvl);
+    }
 
     void updateColor( Color c ){
         GameObject l = GameObject.Find("LCharacter");

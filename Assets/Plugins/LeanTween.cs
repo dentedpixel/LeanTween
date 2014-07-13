@@ -1,6 +1,6 @@
-// Copyright (c) 2013 Russell Savage - Dented Pixel
+// Copyright (c) 2014 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.15 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.16 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -621,6 +621,24 @@ public class LTDescr{
 		return this;
 	}
 
+	/**
+	* While tweening along a curve, set this property to true, to be perpendicalur to the path it is moving upon
+	* @method setOrientToPath2d
+	* @param {bool} doesOrient:bool whether the gameobject will orient to the path it is animating along
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true).setAxis(Vector3.forward);<br>
+	*/
+	public LTDescr setOrientToPath2d( bool doesOrient2d ){
+		setOrientToPath(doesOrient2d);
+		if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
+			this.path.orientToPath2d = doesOrient2d;
+		}else{
+			this.spline.orientToPath2d = doesOrient2d;
+		}
+		return this;
+	}
+
 	public LTDescr setRect( LTRect rect ){
 		this.ltRect = rect;
 		return this;
@@ -991,6 +1009,7 @@ public class LTBezierPath{
 	public Vector3[] pts;
 	public float length;
 	public bool orientToPath;
+	public bool orientToPath2d;
 
 	private LTBezier[] beziers;
 	private float[] lengthRatio;
@@ -1041,6 +1060,28 @@ public class LTBezierPath{
 				return beziers[i].point( (ratio-(added-lengthRatio[i])) / lengthRatio[i] );
 		}
 		return beziers[lengthRatio.Length-1].point( 1.0f );
+	}
+
+	public void place2d( Transform transform, float ratio ){
+		transform.position = point( ratio );
+		ratio += 0.001f;
+		if(ratio<=1.0f){
+			float angle = Vector3.Angle(transform.position, point( ratio ) - transform.position );
+			transform.rotation = Quaternion.identity;
+			transform.RotateAround(transform.position, Vector3.up, 90.0f);
+			transform.RotateAround(transform.position, Vector3.right, angle);
+		}
+	}
+
+	public void placeLocal2d( Transform transform, float ratio ){
+		transform.localPosition = point( ratio );
+		ratio += 0.001f;
+		if(ratio<=1.0f){
+			float angle = Vector3.Angle(transform.localPosition, transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition );
+			transform.rotation = Quaternion.identity;
+			transform.RotateAround(transform.position, Vector3.up, 90.0f);
+			transform.RotateAround(transform.position, Vector3.right, angle);
+		}
 	}
 
 	/**
@@ -1118,6 +1159,7 @@ public class LTBezierPath{
 public class LTSpline {
 	public Vector3[] pts;
 	public bool orientToPath;
+	public bool orientToPath2d;
 	private float[] lengthRatio;
 	private float[] lengths;
 	private int numSections;
@@ -1211,6 +1253,29 @@ public class LTSpline {
 		//float t = ratio;
 		return interp( t );
 	}
+
+	public void place2d( Transform transform, float ratio ){
+		transform.position = point( ratio );
+		ratio += 0.001f;
+		if(ratio<=1.0f){
+			float angle = Vector3.Angle(transform.position, point( ratio ) - transform.position );
+			transform.rotation = Quaternion.identity;
+			//transform.RotateAround(transform.position, Vector3.up, 90.0f);
+			transform.RotateAround(transform.position, Vector3.right, angle);
+		}
+	}
+
+	public void placeLocal2d( Transform transform, float ratio ){
+		transform.localPosition = point( ratio );
+		ratio += 0.001f;
+		if(ratio<=1.0f){
+			float angle = Vector3.Angle(transform.localPosition, transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition );
+			transform.rotation = Quaternion.identity;
+			transform.RotateAround(transform.position, Vector3.up, 90.0f);
+			transform.RotateAround(transform.position, Vector3.right, angle);
+		}
+	}
+
 
 	/**
 	* Place an object along a certain point on the path (facing the direction perpendicular to the path)
@@ -1731,27 +1796,43 @@ public static void update() {
 							trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,val);
 						}else if(tweenAction==TweenAction.MOVE_CURVED){
 							if(tween.path.orientToPath){
-								tween.path.place( trans, val );
+								if(tween.path.orientToPath2d){
+									tween.path.place2d( trans, val );
+								}else{
+									tween.path.place( trans, val );
+								}
 							}else{
 								trans.position = tween.path.point( val );
 							}
 							// Debug.Log("val:"+val+" trans.position:"+trans.position + " 0:"+ tween.curves[0] +" 1:"+tween.curves[1] +" 2:"+tween.curves[2] +" 3:"+tween.curves[3]);
 						}else if((TweenAction)tweenAction==TweenAction.MOVE_CURVED_LOCAL){
 							if(tween.path.orientToPath){
-								tween.path.placeLocal( trans, val );
+								if(tween.path.orientToPath2d){
+									tween.path.placeLocal2d( trans, val );
+								}else{
+									tween.path.placeLocal( trans, val );
+								}
 							}else{
 								trans.localPosition = tween.path.point( val );
 							}
 							// Debug.Log("val:"+val+" trans.position:"+trans.position);
 						}else if((TweenAction)tweenAction==TweenAction.MOVE_SPLINE){
 							if(tween.spline.orientToPath){
-								tween.spline.place( trans, val );
+								if(tween.spline.orientToPath2d){
+									tween.spline.place2d( trans, val );
+								}else{
+									tween.spline.place( trans, val );
+								}
 							}else{
 								trans.position = tween.spline.point( val );
 							}
 						}else if((TweenAction)tweenAction==TweenAction.MOVE_SPLINE_LOCAL){
 							if(tween.spline.orientToPath){
-								tween.spline.placeLocal( trans, val );
+								if(tween.spline.orientToPath2d){
+									tween.spline.placeLocal2d( trans, val );
+								}else{
+									tween.spline.placeLocal( trans, val );
+								}
 							}else{
 								trans.localPosition = tween.spline.point( val );
 							}
@@ -1769,10 +1850,16 @@ public static void update() {
 					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,val);
 					    }else if(tweenAction==TweenAction.ROTATE_AROUND){
 							
-							float move = val -  tween.lastVal;
-					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff);
+							float move = val - tween.lastVal;
+					    	Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff + " type:"+tween.tweenType);
 					    	if(isTweenFinished){
 					    		if(tween.direction>0){
+					    			// figure out how much the rotation has shifted the object over
+					    			Vector3 origPos = trans.localPosition;
+					    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, -tween.to.x);
+					    			Vector3 diff = origPos - trans.localPosition;
+					    			
+					    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
 					    			trans.rotation = tween.origRotation;
 						    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
 				    			}else{
@@ -1793,8 +1880,13 @@ public static void update() {
 							float move = val -  tween.lastVal;
 					    	if(isTweenFinished){
 					    		if(tween.direction>0){
+					    			Vector3 origPos = trans.localPosition;
+					    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), -tween.to.x);
+					    			Vector3 diff = origPos - trans.localPosition;
+					    			
+					    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
 					    			trans.localRotation = tween.origRotation;
-					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), tween.to.x);
+					    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), tween.to.x);
 				    			}else{
 				    				trans.localRotation = tween.origRotation;
 				    			}
@@ -4082,6 +4174,13 @@ public class LTGUI{
 		int backCounter = id >> 16;
 		if(id>=0 && levels[backId]!=null && levels[backId].hasInitiliazed && levels[backId].counter==backCounter)
 			levels[backId] = null;
+	}
+
+	public static void destroyAll( int depth ){ // clears all gui elements on depth
+		int maxLoop = depth*RECTS_PER_LEVEL + RECTS_PER_LEVEL;
+		for(int i = depth*RECTS_PER_LEVEL; i < maxLoop; i++){
+			levels[i] = null;
+		}
 	}
 
 	public static LTRect label( Rect rect, string label, int depth){
