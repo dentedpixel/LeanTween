@@ -1258,10 +1258,9 @@ public class LTSpline {
 		transform.position = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f){
-			float angle = Vector3.Angle(transform.position, point( ratio ) - transform.position );
-			transform.rotation = Quaternion.identity;
-			//transform.RotateAround(transform.position, Vector3.up, 90.0f);
-			transform.RotateAround(transform.position, Vector3.right, angle);
+			Vector3 v3Dir = point( ratio ) - transform.position;
+			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
+			transform.eulerAngles = new Vector3(0, 0, angle-90);
 		}
 	}
 
@@ -1269,10 +1268,9 @@ public class LTSpline {
 		transform.localPosition = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f){
-			float angle = Vector3.Angle(transform.localPosition, transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition );
-			transform.rotation = Quaternion.identity;
-			transform.RotateAround(transform.position, Vector3.up, 90.0f);
-			transform.RotateAround(transform.position, Vector3.right, angle);
+			Vector3 v3Dir = transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition;
+			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
+			transform.eulerAngles = new Vector3(0, 0, angle-90);
 		}
 	}
 
