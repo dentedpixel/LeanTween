@@ -2,4 +2,12 @@
 .DS_Store
 AssetStoreTools
 cache
-
+Temp*
+Obj*
+Library*
+.csproj
+*.booproj
+*.unityproj
+*.sln
+*.suo
+*.userprefs

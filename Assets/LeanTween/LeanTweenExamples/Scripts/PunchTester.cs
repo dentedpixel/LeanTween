@@ -52,7 +52,6 @@ public class PunchTester : MonoBehaviour {
 
         if (Input.GetKeyDown(KeyCode.V))
         {
-            Color to = new Color(Random.Range(0f,1f),0f,Random.Range(0f,1f),0.0f);
             LeanTween.value( gameObject, updateColor, new Color(1.0f,0.0f,0.0f,1.0f), Color.blue, 4.0f );//.setRepeat(2).setLoopPingPong().setEase(LeanTweenType.easeOutBounce);
         }
 
