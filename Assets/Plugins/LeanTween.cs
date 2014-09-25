@@ -140,6 +140,61 @@ using System.Collections;
 using System;
 using System.Runtime.InteropServices;
 
+public class LeanTest : object {
+	public static int expected = 0;
+	private static int tests = 0;
+	private static int passes = 0;
+
+	public static void debug( string name, bool didPass){
+		float len = printOutLength(name);
+		string logName = formatB(name) +" " + "".PadRight(40-(int)(len*1.05f),"_"[0]) + " [ "+ (didPass ? formatC("pass","green") : formatC("fail","red")) +" ]";
+		Debug.Log(logName);
+		if(didPass)
+			passes++;
+		tests++;
+
+		if(tests==expected){
+			Debug.Log(formatB("Final Report:")+" _____________________ PASSED: "+formatBC(""+passes,"green")+" FAILED: "+formatBC(""+(tests-passes),"red")+" ");
+		}
+	}
+
+	public static float printOutLength( string str ){
+		float len = 0.0f;
+		for(int i = 0; i < str.Length; i++){
+			if(str[i]=="I"[0]||str[i]=="J"[0]){
+				len += 1f;
+			}else{
+				len += 1.0f;
+			}
+		}
+		return len;
+	}
+
+	public static string formatBC( string str, string color ){
+		return formatC(formatB(str),color);
+	}
+
+	public static string formatB( string str ){
+		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+		return str;
+		#else
+		return "<b>"+ str + "</b>";
+		#endif
+	}
+
+	public static string formatC( string str, string color ){
+		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+		return str;
+		#else
+		return "<color="+color+">"+ str + "</color>";
+		#endif
+	}
+
+	public static void overview(){
+
+	}
+}
+
 /**
 * Animate GUI Elements by creating this object and passing the *.rect variable to the GUI method<br><br>
 * <strong>Example Javascript: </strong><br>var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br>
@@ -4006,7 +4061,7 @@ public static void addListener( GameObject caller, int eventId, System.Action<LT
 
 			return;
 		}
-		if(goListeners[ point ] == caller && System.Object.ReferenceEquals( eventListeners[ point ], callback)){
+		if(goListeners[ point ] == caller && System.Object.Equals( eventListeners[ point ], callback)){
 			// Debug.Log("This event is already being listened for.");
 			return;
 		}
@@ -4032,7 +4087,7 @@ public static bool removeListener( int eventId, System.Action<LTEvent> callback 
 public static bool removeListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
 	for(i = 0; i < eventsMaxSearch; i++){
 		int point = eventId*INIT_LISTENERS_MAX + i;
-		if(goListeners[ point ] == caller && System.Object.ReferenceEquals( eventListeners[ point ], callback) ){
+		if(goListeners[ point ] == caller && System.Object.Equals( eventListeners[ point ], callback) ){
 			eventListeners[ point ] = null;
 			goListeners[ point ] = null;
 			return true;
