@@ -7,10 +7,14 @@ public class TestingEverything : MonoBehaviour {
 	public GameObject cube2;
 
 	private bool eventGameObjectWasCalled = false, eventGeneralWasCalled = false;
+	private LTDescr lt1;
+	private LTDescr lt2;
+	private LTDescr lt3;
+	private LTDescr lt4;
 	// Use this for initialization
 	void Start () {
 		
-		LeanTest.expected = 5;
+		LeanTest.expected = 7;
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -33,14 +37,24 @@ public class TestingEverything : MonoBehaviour {
 		// remove listener
 		LeanTest.debug("EVENT ALL REMOVED", LeanTween.removeListener( 1, eventGeneralCalled) );
 
-
+		lt1 = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f );
+		lt2 = LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
 
 		StartCoroutine( timeBasedTesting() );
 	}
 
 	IEnumerator timeBasedTesting(){
 
-		yield return new WaitForSeconds(1);
+		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+
+		lt1.cancel();
+		LeanTween.cancel(cube2);
+
+		yield return new WaitForEndOfFrame();
+
+		LeanTest.debug("CANCEL TWEEN LTDESCR", LeanTween.isTweening(cube1)==false );
+		LeanTest.debug("CANCEL TWEEN LEANTWEEN", LeanTween.isTweening(cube2)==false );
 	}
 
 	void eventGameObjectCalled( LTEvent e ){

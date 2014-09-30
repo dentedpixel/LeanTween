@@ -161,8 +161,10 @@ public class LeanTest : object {
 	public static float printOutLength( string str ){
 		float len = 0.0f;
 		for(int i = 0; i < str.Length; i++){
-			if(str[i]=="I"[0]||str[i]=="J"[0]){
-				len += 1f;
+			if(str[i]=="I"[0]){
+				len += 0.02f;
+			}else if(str[i]=="J"[0]){
+				len += 0.85f;
 			}else{
 				len += 1.0f;
 			}
@@ -943,6 +945,7 @@ public class LTDescr{
 	public bool toggle;
 	public bool useEstimatedTime;
 	public bool useFrames;
+	public bool useManualTime;
 	public bool hasInitiliazed;
 	public bool hasPhysics;
 	public float passed;
@@ -1030,7 +1033,7 @@ public class LTDescr{
 		this.optional = null;
 		#endif
 		this.passed = this.delay = 0.0f;
-		this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = false;
+		this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = false;
 		this.animationCurve = null;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
@@ -1197,6 +1200,11 @@ public class LTDescr{
 	*/
 	public LTDescr setUseFrames( bool useFrames ){
 		this.useFrames = useFrames;
+		return this;
+	}
+
+	public LTDescr setUseManualTime( bool useManualTime ){
+		this.useManualTime = useManualTime;
 		return this;
 	}
 
@@ -1499,6 +1507,7 @@ private static int maxTweens = 400;
 private static int frameRendered= -1;
 private static GameObject _tweenEmpty;
 private static float dtEstimated;
+public static float dtManual;
 private static float previousRealTime;
 private static float dt;
 private static float dtActual;
@@ -1591,6 +1600,8 @@ public static void update() {
 					timeTotal = tween.time;
 				}else if( tween.useFrames ){
 					dt = 1;
+				}else if( tween.useManualTime ){
+					dt = dtManual;
 				}else if(tween.direction==0f){
 					dt = 0f;
 				}
