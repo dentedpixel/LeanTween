@@ -1,6 +1,6 @@
 // Copyright (c) 2014 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.17 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.18 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -2372,9 +2372,10 @@ public static float closestRot( float from, float to ){
 public static void cancel( GameObject gameObject ){
 	init();
 	Transform trans = gameObject.transform;
-	for(int i = 0; i < tweenMaxSearch; i++){
-		if(tweens[i].trans==trans)
+	for(int i = 0; i <= tweenMaxSearch; i++){
+		if(tweens[i].toggle && tweens[i].trans==trans){
 			removeTween(i);
+		}
 	}
 }
 
@@ -2432,7 +2433,7 @@ public static LTDescr description( int uniqueId ){
 
 	if(tweens[backId]!=null && tweens[backId].uniqueId == uniqueId && tweens[backId].counter==backCounter)
 		return tweens[backId];
-	for(int i = 0; i < tweenMaxSearch; i++){
+	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].uniqueId == uniqueId && tweens[i].counter==backCounter)
 			return tweens[i];
 	}
@@ -2460,7 +2461,7 @@ public static void pause( int uniqueId ){
 */
 public static void pause( GameObject gameObject ){
 	Transform trans = gameObject.transform;
-	for(int i = 0; i < tweenMaxSearch; i++){
+	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].trans==trans){
 			tweens[i].pause();
 		}
@@ -2494,7 +2495,7 @@ public static void resume( int uniqueId ){
 */
 public static void resume( GameObject gameObject ){
 	Transform trans = gameObject.transform;
-	for(int i = 0; i < tweenMaxSearch; i++){
+	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].trans==trans)
 			tweens[i].resume();
 	}
@@ -2508,7 +2509,7 @@ public static void resume( GameObject gameObject ){
 */
 public static bool isTweening( GameObject gameObject ){
 	Transform trans = gameObject.transform;
-	for(int i = 0; i < tweenMaxSearch; i++){
+	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].trans==trans)
 			return true;
 	}
@@ -2542,7 +2543,7 @@ public static bool isTweening( int uniqueId ){
 * @param {LTRect} ltRect:LTRect LTRect that you want to test if it is tweening
 */
 public static bool isTweening( LTRect ltRect ){
-	for( int i = 0; i < tweenMaxSearch; i++){
+	for( int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].ltRect==ltRect)
 			return true;
 	}

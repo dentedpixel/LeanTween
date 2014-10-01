@@ -1,10 +1,36 @@
 using UnityEngine;
 using System.Collections;
 
+public class TempTestingCancel : MonoBehaviour {
+    public bool isTweening = false;
+    public bool tweenOverride = false;
+    private LTDescr tween;
+ 
+    // Use this for initialization
+    void Start () {
+        tween = LeanTween.move(gameObject, transform.position + Vector3.one*3f, Random.Range(2,2) ).setRepeat(-1).setLoopClamp ();
+    }
+ 
+    public void Update () {
+        if(tween != null){
+            isTweening = LeanTween.isTweening(gameObject);
+            if(tweenOverride){
+             
+                // this next line works  
+                //tween.cancel();
+ 
+                // this one doesn't
+                LeanTween.cancel(gameObject);
+            }
+        }
+    }
+}
+
 public class TestingEverything : MonoBehaviour {
 
 	public GameObject cube1;
 	public GameObject cube2;
+
 
 	private bool eventGameObjectWasCalled = false, eventGeneralWasCalled = false;
 	private LTDescr lt1;
@@ -13,8 +39,17 @@ public class TestingEverything : MonoBehaviour {
 	private LTDescr lt4;
 	// Use this for initialization
 	void Start () {
+		for(int i = 0; i < 5; i++){
+			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
+			cube.AddComponent( typeof(TempTestingCancel) );
+			Vector3 p = new Vector3(0,0,i*3);
+			cube.transform.position = p;
+			cube.renderer.enabled = true;
+			cube.name = "c"+i;
+		}
 		
-		LeanTest.expected = 7;
+		/*LeanTest.expected = 7;
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -40,7 +75,7 @@ public class TestingEverything : MonoBehaviour {
 		lt1 = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f );
 		lt2 = LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
 
-		StartCoroutine( timeBasedTesting() );
+		StartCoroutine( timeBasedTesting() );*/
 	}
 
 	IEnumerator timeBasedTesting(){
