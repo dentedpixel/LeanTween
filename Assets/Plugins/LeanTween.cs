@@ -155,6 +155,8 @@ public class LeanTest : object {
 
 		if(tests==expected){
 			Debug.Log(formatB("Final Report:")+" _____________________ PASSED: "+formatBC(""+passes,"green")+" FAILED: "+formatBC(""+(tests-passes),"red")+" ");
+		}else if(tests>expected){
+			Debug.Log(formatB("Too many tests for a final report!") + " set LeanTest.expected = "+tests);
 		}
 	}
 
@@ -162,7 +164,7 @@ public class LeanTest : object {
 		float len = 0.0f;
 		for(int i = 0; i < str.Length; i++){
 			if(str[i]=="I"[0]){
-				len += 0.02f;
+				len += 0.5f;
 			}else if(str[i]=="J"[0]){
 				len += 0.85f;
 			}else{
@@ -895,6 +897,7 @@ public enum TweenAction{
 	ALPHA_VERTEX,
 	COLOR,
 	CALLBACK_COLOR,
+	CANVAS_ROTATEAROUND,
 	CALLBACK,
 	MOVE,
 	MOVE_LOCAL,
@@ -907,7 +910,9 @@ public enum TweenAction{
 	GUI_SCALE,
 	GUI_ALPHA,
 	GUI_ROTATE,
-	DELAYED_SOUND
+	DELAYED_SOUND,
+	CANVAS_MOVE,
+	CANVAS_SCALE
 }
 
 public enum LeanTweenType{
@@ -984,6 +989,9 @@ public class LTDescr{
 	public bool onCompleteOnStart;
 	#if !UNITY_METRO
 	public Hashtable optional;
+	#endif
+	#if UNITY_4_6 || UNITY_5_0
+	public RectTransform rectTransform;
 	#endif
 
 	private static uint global_counter = 0;
@@ -1475,6 +1483,13 @@ public class LTDescr{
 		this.onCompleteOnStart = isOn;
 		return this;
 	}
+
+#if UNITY_4_6 || UNITY_5_0
+	public LTDescr setRect( RectTransform rect ){
+		this.rectTransform = rect;
+		return this;
+	}
+#endif
 }
 
 /**
@@ -1712,7 +1727,7 @@ public static void update() {
 						case TweenAction.GUI_MOVE_MARGIN:
 							tween.from = new Vector2(tween.ltRect.margin.x, tween.ltRect.margin.y); break;
 						case TweenAction.GUI_SCALE:
-							tween.from = new  Vector3(tween.ltRect.rect.width, tween.ltRect.rect.height, 0); break;
+							tween.from = new Vector3(tween.ltRect.rect.width, tween.ltRect.rect.height, 0); break;
 						case TweenAction.GUI_ALPHA:
 							tween.from.x = tween.ltRect.alpha; break;
 						case TweenAction.GUI_ROTATE:
@@ -1761,6 +1776,16 @@ public static void update() {
 								}
 							#endif
 							break;
+						#if UNITY_4_6 || UNITY_5_0
+						case TweenAction.CANVAS_MOVE:
+							tween.from = tween.rectTransform.anchoredPosition; break;
+						case TweenAction.CANVAS_ROTATEAROUND:
+							tween.from = tween.rectTransform.localEulerAngles; 
+							tween.to = new Vector3(LeanTween.closestRot( tween.from.x, tween.to.x), LeanTween.closestRot( tween.from.y, tween.to.y), LeanTween.closestRot( tween.from.z, tween.to.z));
+							break;
+						case TweenAction.CANVAS_SCALE:
+							tween.from = tween.rectTransform.localScale; break;
+						#endif
 					}
 					if(tweenAction!=TweenAction.CALLBACK_COLOR && tweenAction!=TweenAction.COLOR)
 						tween.diff = tween.to - tween.from;
@@ -1781,7 +1806,7 @@ public static void update() {
 					}
 					// Debug.Log("action:"+tweenAction+" ratioPassed:"+ratioPassed + " timeTotal:" + timeTotal + " tween.passed:"+ tween.passed +" dt:"+dt);
 					
-					if(tweenAction>=TweenAction.MOVE_X && tweenAction<=TweenAction.CALLBACK){
+					if(tweenAction>=TweenAction.MOVE_X && tweenAction<TweenAction.MOVE){
 						if(tween.animationCurve!=null){
 							val = tweenOnCurve(tween, ratioPassed);
 						}else {
@@ -2034,6 +2059,32 @@ public static void update() {
 								tween.onUpdateColor(toColor);
 							}
 						}
+						#if UNITY_4_6 || UNITY_5_0
+						else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND){
+							
+							float move = val - tween.lastVal;
+					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff + " type:"+tween.tweenType);
+					    	RectTransform rect = tween.rectTransform;
+					    	if(isTweenFinished){
+					    		if(tween.direction>0){
+					    			// figure out how much the rotation has shifted the object over
+					    			Vector3 origPos = rect.localPosition;
+					    			rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, -tween.to.x);
+					    			Vector3 diff = origPos - rect.localPosition;
+					    			
+					    			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+					    			rect.rotation = tween.origRotation;
+						    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, tween.to.x);
+				    			}else{
+				    				rect.rotation = tween.origRotation;
+				    			}
+					    	}else{
+					    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, move);
+								tween.lastVal = val;
+					    	}
+
+					    }
+						#endif
 						
 					}else if(tweenAction>=TweenAction.MOVE){
 						//
@@ -2152,6 +2203,13 @@ public static void update() {
 					    }else if(tweenAction==TweenAction.GUI_ROTATE){
 					    	tween.ltRect.rotation = newVect.x;
 					    }
+					    #if UNITY_4_6 || UNITY_5_0
+						else if(tweenAction==TweenAction.CANVAS_MOVE){
+							tween.rectTransform.anchoredPosition = newVect;
+						}else if(tweenAction==TweenAction.CANVAS_SCALE){
+							tween.rectTransform.localScale = newVect;
+						}
+						#endif
 					}
 					//Debug.Log("tween.delay:"+tween.delay + " tween.passed:"+tween.passed + " tweenAction:"+tweenAction + " to:"+newVect+" axis:"+tween.axis);
 
@@ -3193,6 +3251,22 @@ public static LTDescr delayedSound( AudioClip audio, Vector3 pos, float volume )
 public static LTDescr delayedSound( GameObject gameObject, AudioClip audio, Vector3 pos, float volume ){
 	return pushNewTween( gameObject, pos, 0f, TweenAction.DELAYED_SOUND, options().setTo( pos ).setFrom( new Vector3(volume,0,0) ).setAudio( audio ) );
 }
+
+#if UNITY_4_6 || UNITY_5_0
+
+public static LTDescr move(RectTransform rectTrans, Vector3 to, float time){
+	return pushNewTween( rectTrans.gameObject, to, time, TweenAction.CANVAS_MOVE, options().setRect( rectTrans ) );
+}
+
+public static LTDescr rotateAround(RectTransform rectTrans, Vector3 axis, float to, float time){
+	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_ROTATEAROUND, options().setRect( rectTrans ).setAxis(axis) );
+}
+
+public static LTDescr scale(RectTransform rectTrans, Vector3 to, float time){
+	return pushNewTween( rectTrans.gameObject, to, time, TweenAction.CANVAS_SCALE, options().setRect( rectTrans ) );
+}
+
+#endif
 
 #if !UNITY_METRO
 // LeanTween 1.x Methods

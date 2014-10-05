@@ -37,19 +37,13 @@ public class TestingEverything : MonoBehaviour {
 	private LTDescr lt2;
 	private LTDescr lt3;
 	private LTDescr lt4;
-	// Use this for initialization
+	private LTDescr[] groupTweens;
+	private GameObject[] groupGOs;
+	private int groupTweensCnt;
+
 	void Start () {
-		for(int i = 0; i < 5; i++){
-			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
-			cube.AddComponent( typeof(TempTestingCancel) );
-			Vector3 p = new Vector3(0,0,i*3);
-			cube.transform.position = p;
-			cube.renderer.enabled = true;
-			cube.name = "c"+i;
-		}
-		
-		/*LeanTest.expected = 7;
+		LeanTest.expected = 10;
+
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -75,21 +69,71 @@ public class TestingEverything : MonoBehaviour {
 		lt1 = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f );
 		lt2 = LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
 
-		StartCoroutine( timeBasedTesting() );*/
+		StartCoroutine( timeBasedTesting() );
 	}
 
 	IEnumerator timeBasedTesting(){
-
 		yield return new WaitForEndOfFrame();
+		yield return new WaitForEndOfFrame();
+
+		// Groups of tweens testing
+		groupTweens = new LTDescr[ 300 ];
+		groupGOs = new GameObject[ groupTweens.Length ];
+		groupTweensCnt = 0;
+		for(int i = 0; i < groupTweens.Length; i++){
+			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
+			cube.transform.position = new Vector3(0,0,i*3);
+			cube.name = "c"+i;
+			groupGOs[i] = cube;
+			groupTweens[i] = LeanTween.move(cube, transform.position + Vector3.one*3f, 0.2f ).setOnComplete(groupTweenFinished);
+		}
+		LeanTween.delayedCall(0.42f, groupTweensFinished);
+
 		yield return new WaitForEndOfFrame();
 
 		lt1.cancel();
 		LeanTween.cancel(cube2);
 
+		int tweenCount = 0;
+		for(int i = 0; i < groupTweens.Length; i++){
+			if(LeanTween.isTweening( groupGOs[i] ))
+				tweenCount++;
+			if(i%3==0)
+				LeanTween.pause( groupGOs[i] );
+			else if(i%3==1)
+				groupTweens[i].pause();
+			else
+				LeanTween.pause( groupTweens[i].id );
+		}
+		LeanTest.debug("GROUP ISTWEENING", tweenCount==groupTweens.Length );
+
 		yield return new WaitForEndOfFrame();
+
+		tweenCount = 0;
+		for(int i = 0; i < groupTweens.Length; i++){
+			if(i%3==0)
+				LeanTween.resume( groupGOs[i] );
+			else if(i%3==1)
+				groupTweens[i].resume();
+			else
+				LeanTween.resume( groupTweens[i].id );
+
+			if(i%2==0 ? LeanTween.isTweening( groupTweens[i].id ) : LeanTween.isTweening( groupGOs[i] ) )
+				tweenCount++;
+		}
+		LeanTest.debug("GROUP RESUME", tweenCount==groupTweens.Length );
 
 		LeanTest.debug("CANCEL TWEEN LTDESCR", LeanTween.isTweening(cube1)==false );
 		LeanTest.debug("CANCEL TWEEN LEANTWEEN", LeanTween.isTweening(cube2)==false );
+	}
+
+	void groupTweenFinished(){
+		groupTweensCnt++;
+	}
+
+	void groupTweensFinished(){
+		LeanTest.debug("GROUP FINISH", groupTweensCnt==groupTweens.Length);
 	}
 
 	void eventGameObjectCalled( LTEvent e ){
@@ -99,9 +143,5 @@ public class TestingEverything : MonoBehaviour {
 	void eventGeneralCalled( LTEvent e ){
 		eventGeneralWasCalled = true;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
