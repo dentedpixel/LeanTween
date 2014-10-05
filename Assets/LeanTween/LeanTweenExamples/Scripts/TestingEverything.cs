@@ -67,7 +67,7 @@ public class TestingEverything : MonoBehaviour {
 		LeanTest.debug("EVENT ALL REMOVED", LeanTween.removeListener( 1, eventGeneralCalled) );
 
 		lt1 = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f );
-		lt2 = LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
+		LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
 
 		StartCoroutine( timeBasedTesting() );
 	}

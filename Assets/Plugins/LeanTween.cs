@@ -987,6 +987,7 @@ public class LTDescr{
 	public object onUpdateParam;
 	public bool onCompleteOnRepeat;
 	public bool onCompleteOnStart;
+
 	#if !UNITY_METRO
 	public Hashtable optional;
 	#endif
@@ -1147,6 +1148,11 @@ public class LTDescr{
 		this.from = from;
 		this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
 		this.diff = this.to - this.from;
+		return this;
+	}
+
+	public LTDescr setDiff( Vector3 diff ){
+		this.diff = diff;
 		return this;
 	}
 
@@ -1333,6 +1339,12 @@ public class LTDescr{
 	}
 
 	#if !UNITY_FLASH
+
+	public LTDescr setOnUpdate( Action<Color> onUpdate ){
+		this.onUpdateColor = onUpdate;
+		return this;
+	}
+
 	/**
 	* Have a method called on each frame that the tween is being animated (passes a float value and a object)
 	* @method setOnUpdate (object)
@@ -1782,6 +1794,7 @@ public static void update() {
 						case TweenAction.CANVAS_ROTATEAROUND:
 							tween.from = tween.rectTransform.localEulerAngles; 
 							tween.to = new Vector3(LeanTween.closestRot( tween.from.x, tween.to.x), LeanTween.closestRot( tween.from.y, tween.to.y), LeanTween.closestRot( tween.from.z, tween.to.z));
+							tween.origRotation = tween.rectTransform.rotation; 
 							break;
 						case TweenAction.CANVAS_SCALE:
 							tween.from = tween.rectTransform.localScale; break;
@@ -3242,6 +3255,26 @@ public static LTDescr value(GameObject gameObject, Action<Vector3> callOnUpdate,
 */
 public static LTDescr value(GameObject gameObject, Action<float,object> callOnUpdate, float from, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdateObject(callOnUpdate) );
+}
+
+public static LTDescr value(GameObject gameObject, float from, float to, float time){
+	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ) );
+}
+
+public static LTDescr value(GameObject gameObject, Vector2 from, Vector2 to, float time){
+	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.VALUE3, options().setTo( new Vector3(to.x,to.y,0) ).setFrom( new Vector3(from.x,from.y,0) ) );
+}
+
+public static LTDescr value(GameObject gameObject, Vector3 from, Vector3 to, float time){
+	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.VALUE3, options().setTo( to ).setFrom( from ) );
+}
+
+public static LTDescr value(GameObject gameObject, Color from, Color to, float time){
+	return pushNewTween( gameObject, new Vector3(1f, to.a, 0f), time, TweenAction.CALLBACK_COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) )
+		.setFrom( new Vector3(0f, from.a, 0f) ) 
+		.setDiff( new Vector3(1f, 0f, 0f) )
+		.setAxis( new Vector3( from.r, from.g, from.b ) )
+	);
 }
 
 public static LTDescr delayedSound( AudioClip audio, Vector3 pos, float volume ){
