@@ -30,6 +30,7 @@ public class TestingEverything : MonoBehaviour {
 
 	public GameObject cube1;
 	public GameObject cube2;
+	public GameObject cube3;
 
 
 	private bool eventGameObjectWasCalled = false, eventGeneralWasCalled = false;
@@ -40,9 +41,11 @@ public class TestingEverything : MonoBehaviour {
 	private LTDescr[] groupTweens;
 	private GameObject[] groupGOs;
 	private int groupTweensCnt;
+	private int rotateRepeat;
+	private int rotateRepeatAngle;
 
 	void Start () {
-		LeanTest.expected = 10;
+		LeanTest.expected = 14;
 
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
@@ -69,6 +72,15 @@ public class TestingEverything : MonoBehaviour {
 		lt1 = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f );
 		LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
 
+		// ping pong
+
+		// rotateAround, Repeat, DestroyOnComplete
+		rotateRepeat = rotateRepeatAngle = 0;
+		LeanTween.rotateAround(cube3, Vector3.forward, 360f, 0.1f).setRepeat(3).setOnComplete(rotateRepeatFinished).setOnCompleteOnRepeat(true).setDestroyOnComplete(true);
+		LeanTween.delayedCall(0.1f*8f, rotateRepeatAllFinished);
+
+		// test all onUpdates and onCompletes are removed when tween is initialized
+
 		StartCoroutine( timeBasedTesting() );
 	}
 
@@ -80,16 +92,23 @@ public class TestingEverything : MonoBehaviour {
 		groupTweens = new LTDescr[ 300 ];
 		groupGOs = new GameObject[ groupTweens.Length ];
 		groupTweensCnt = 0;
+		int descriptionMatchCount = 0;
 		for(int i = 0; i < groupTweens.Length; i++){
 			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
 			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
 			cube.transform.position = new Vector3(0,0,i*3);
 			cube.name = "c"+i;
 			groupGOs[i] = cube;
-			groupTweens[i] = LeanTween.move(cube, transform.position + Vector3.one*3f, 0.2f ).setOnComplete(groupTweenFinished);
-		}
-		LeanTween.delayedCall(0.42f, groupTweensFinished);
+			groupTweens[i] = LeanTween.move(cube, transform.position + Vector3.one*3f, 0.6f ).setOnComplete(groupTweenFinished);
 
+			if(LeanTween.description(groupTweens[i].id).trans==groupTweens[i].trans)
+				descriptionMatchCount++;
+		}
+		LeanTween.delayedCall(0.82f, groupTweensFinished);
+
+		LeanTest.debug("GROUP IDS MATCH", descriptionMatchCount==groupTweens.Length );
+
+		yield return new WaitForEndOfFrame();
 		yield return new WaitForEndOfFrame();
 
 		lt1.cancel();
@@ -106,7 +125,7 @@ public class TestingEverything : MonoBehaviour {
 			else
 				LeanTween.pause( groupTweens[i].id );
 		}
-		LeanTest.debug("GROUP ISTWEENING", tweenCount==groupTweens.Length );
+		LeanTest.debug("GROUP ISTWEENING", tweenCount==groupTweens.Length, "expected "+groupTweens.Length+" tweens but got "+tweenCount );
 
 		yield return new WaitForEndOfFrame();
 
@@ -128,12 +147,24 @@ public class TestingEverything : MonoBehaviour {
 		LeanTest.debug("CANCEL TWEEN LEANTWEEN", LeanTween.isTweening(cube2)==false );
 	}
 
+	void rotateRepeatFinished(){
+		if( Mathf.Abs(cube3.transform.eulerAngles.z)<0.0001f )
+			rotateRepeatAngle++;
+		rotateRepeat++;
+	}
+
+	void rotateRepeatAllFinished(){
+		LeanTest.debug("ROTATE AROUND MULTIPLE", rotateRepeatAngle==3, "expected 3 times received "+rotateRepeatAngle+" times" );
+		LeanTest.debug("ROTATE REPEAT", rotateRepeat==3 );
+		LeanTest.debug("DESTROY ON COMPLETE", cube3==null, "cube3:"+cube3 );
+	}
+
 	void groupTweenFinished(){
 		groupTweensCnt++;
 	}
 
 	void groupTweensFinished(){
-		LeanTest.debug("GROUP FINISH", groupTweensCnt==groupTweens.Length);
+		LeanTest.debug("GROUP FINISH", groupTweensCnt==groupTweens.Length, "expected "+groupTweens.Length+" tweens but got "+groupTweensCnt);
 	}
 
 	void eventGameObjectCalled( LTEvent e ){
