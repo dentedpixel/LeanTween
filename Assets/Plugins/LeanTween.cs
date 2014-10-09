@@ -145,9 +145,11 @@ public class LeanTest : object {
 	private static int tests = 0;
 	private static int passes = 0;
 
-	public static void debug( string name, bool didPass){
+	public static void debug( string name, bool didPass, string failExplaination = null){
 		float len = printOutLength(name);
 		string logName = formatB(name) +" " + "".PadRight(40-(int)(len*1.05f),"_"[0]) + " [ "+ (didPass ? formatC("pass","green") : formatC("fail","red")) +" ]";
+		if(didPass==false && failExplaination!=null)
+			logName += " - " + failExplaination;
 		Debug.Log(logName);
 		if(didPass)
 			passes++;
@@ -1052,6 +1054,7 @@ public class LTDescr{
 		this.onUpdateVector3 = null;
 		this.onUpdateFloatObject = null;
 		this.onUpdateVector3Object = null;
+		this.onUpdateColor = null;
 		this.onComplete = null;
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
@@ -2068,7 +2071,8 @@ public static void update() {
 		        						mat.color = toColor;
 		    						}
 		    					}
-		    				}else if(tweenAction==TweenAction.CALLBACK_COLOR){
+		    				}
+		    				if(tween.onUpdateColor!=null){
 								tween.onUpdateColor(toColor);
 							}
 						}
@@ -2386,13 +2390,16 @@ private static Color tweenColor( LTDescr tween, float val ){
 public static void removeTween( int i ){
 	if(tweens[i].toggle){
 		tweens[i].toggle = false;
+		// Debug.Log("removed i:"+i);
 		if(tweens[i].destroyOnComplete){
 			//Debug.Log("destroying tween.type:"+tween.type);
 			if(tweens[i].ltRect!=null){
 			//	Debug.Log("destroy i:"+i+" id:"+tweens[i].ltRect.id);
 				LTGUI.destroy( tweens[i].ltRect.id );
 			}else{ // check if equal to tweenEmpty
-
+				if(tweens[i].trans.gameObject!=_tweenEmpty){
+					Destroy(tweens[i].trans.gameObject);
+				}
 			}
 		}
 		//tweens[i].optional = null;
@@ -2601,6 +2608,7 @@ public static bool isTweening( int uniqueId ){
 	int backId = uniqueId & 0xFFFF;
 	int backCounter = uniqueId >> 16;
 	if (backId < 0 || backId >= maxTweens) return false;
+	// Debug.Log("tweens[backId].counter:"+tweens[backId].counter+" backCounter:"+backCounter +" toggle:"+tweens[backId].toggle);
 	if(tweens[backId].counter==backCounter && tweens[backId].toggle){
 		return true;
 	}
