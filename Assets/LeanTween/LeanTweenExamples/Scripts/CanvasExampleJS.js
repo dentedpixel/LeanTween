@@ -1,39 +1,37 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿#pragma strict
 
-public class CanvasExampleCS : MonoBehaviour {
-	#if UNITY_4_6 || UNITY_5_0
+#if UNITY_4_6 || UNITY_5_0
 
-	public RectTransform button;
+	public var button:RectTransform;
 
-	void Start () {
+	function Start () {
 		if(button==null){
 			Debug.LogError("Button not assigned! Create a new button via Hierarchy->Create->UI->Button. Then assign it to the button variable");
 			return;
 		}
 		
 		// Tweening various values in a block callback style
-		LeanTween.value(button.gameObject, button.anchoredPosition, new Vector2(200f,100f), 1f ).setOnUpdate( 
-			(Vector3 val)=>{
+		LeanTween.value(button.gameObject, button.anchoredPosition, new Vector2(200f,100f), 1f ).setOnUpdateVector3( 
+			function(val:Vector3){
 				button.anchoredPosition = new Vector2(val.x, val.y);
 			}
 		);
 
 		LeanTween.value(gameObject, 1f, 0.5f, 1f ).setOnUpdate( 
-			(float volume)=>{
+			function(volume:float){
 				Debug.Log("volume:"+volume);
 			}
 		);
 
-		LeanTween.value(gameObject, gameObject.transform.position, gameObject.transform.position + new Vector3(0,1f,0), 1f ).setOnUpdate( 
-			(Vector3 val)=>{
+		LeanTween.value(gameObject, gameObject.transform.position, gameObject.transform.position + new Vector3(0,1f,0), 1f ).setOnUpdateVector3( 
+			function(val:Vector3){
 				gameObject.transform.position = val;
 			}
 		);
 
-		LeanTween.value(gameObject, Color.red, Color.green, 1f ).setOnUpdate( 
-			(Color val)=>{
-				UnityEngine.UI.Image image = (UnityEngine.UI.Image)button.gameObject.GetComponent( typeof(UnityEngine.UI.Image) );
+		LeanTween.value(gameObject, Color.red, Color.green, 1f ).setOnUpdateColor( 
+			function(val:Color){
+				var image:UnityEngine.UI.Image = button.gameObject.GetComponent( UnityEngine.UI.Image );
 				image.color = val;
 			}
 		);
@@ -46,4 +44,3 @@ public class CanvasExampleCS : MonoBehaviour {
 	}
 	
 	#endif
-}
