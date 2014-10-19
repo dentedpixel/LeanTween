@@ -963,6 +963,7 @@ public class LTDescr{
 	public int loopCount;
 	public uint counter;
 	public float direction;
+	public float directionLast;
 	public bool destroyOnComplete;
 	public Transform trans;
 	public LTRect ltRect;
@@ -1043,13 +1044,13 @@ public class LTDescr{
 		#if !UNITY_METRO
 		this.optional = null;
 		#endif
-		this.passed = this.delay = 0.0f;
+		this.passed = this.delay = this.lastVal = 0.0f;
 		this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = false;
 		this.animationCurve = null;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
-		this.direction = this.lastVal = 1.0f;
+		this.direction = 1.0f;
 		this.onUpdateFloat = null;
 		this.onUpdateVector3 = null;
 		this.onUpdateFloatObject = null;
@@ -1070,7 +1071,7 @@ public class LTDescr{
 	*/
 	public LTDescr pause(){
 		if(this.direction != 0.0f){ // check if tween is already paused
-        	this.lastVal =  this.direction;
+        	this.directionLast =  this.direction;
             this.direction = 0.0f;
         }
 
@@ -1084,7 +1085,7 @@ public class LTDescr{
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	*/
 	public LTDescr resume(){
-		this.direction = this.lastVal;
+		this.direction = this.directionLast;
 		return this;
 	}
 
@@ -3256,8 +3257,8 @@ public static LTDescr value(GameObject gameObject, Action<Vector3> callOnUpdate,
 * @method LeanTween.value (float,object)
 * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
 * @param {Action<float,object>} callOnUpdate:Action<float,object> The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( Vector3 val, object obj ){ }
-* @param {float} from:Vector3 The original value to start the tween from
-* @param {Vector3} to:Vector3 The final Vector3 with which to tween to
+* @param {float} from:float The original value to start the tween from
+* @param {Vector3} to:float The final Vector3 with which to tween to
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
@@ -3265,18 +3266,58 @@ public static LTDescr value(GameObject gameObject, Action<float,object> callOnUp
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdateObject(callOnUpdate) );
 }
 
+/**
+* Tween any particular value (float)
+* 
+* @method LeanTween.value (float)
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {float} from:float The original value to start the tween from
+* @param {Vector3} to:float The final float with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+*/
 public static LTDescr value(GameObject gameObject, float from, float to, float time){
 	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ) );
 }
 
+/**
+* Tween any particular value (Vector2)
+* 
+* @method LeanTween.value (Vector2)
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {Vector2} from:Vector2 The original value to start the tween from
+* @param {Vector3} to:Vector2 The final Vector2 with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+*/
 public static LTDescr value(GameObject gameObject, Vector2 from, Vector2 to, float time){
 	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.VALUE3, options().setTo( new Vector3(to.x,to.y,0) ).setFrom( new Vector3(from.x,from.y,0) ) );
 }
 
+/**
+* Tween any particular value (Vector3)
+* 
+* @method LeanTween.value (Vector3)
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {Vector3} from:Vector3 The original value to start the tween from
+* @param {Vector3} to:Vector3 The final Vector3 with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+*/
 public static LTDescr value(GameObject gameObject, Vector3 from, Vector3 to, float time){
 	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.VALUE3, options().setTo( to ).setFrom( from ) );
 }
 
+/**
+* Tween any particular value (Color)
+* 
+* @method LeanTween.value (Color)
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {Color} from:Color The original value to start the tween from
+* @param {Color} to:Color The final Color with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+*/
 public static LTDescr value(GameObject gameObject, Color from, Color to, float time){
 	return pushNewTween( gameObject, new Vector3(1f, to.a, 0f), time, TweenAction.CALLBACK_COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) )
 		.setFrom( new Vector3(0f, from.a, 0f) ) 
@@ -3295,14 +3336,59 @@ public static LTDescr delayedSound( GameObject gameObject, AudioClip audio, Vect
 
 #if UNITY_4_6 || UNITY_5_0
 
+/**
+* Move a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+* 
+* @method LeanTween.move (RectTransform)
+* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+* @param {Vector3} to:Vector3 The final Vector3 with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.move(button, new Vector3(200f,-100f,0f), 1f).setDelay(1f);
+*/
 public static LTDescr move(RectTransform rectTrans, Vector3 to, float time){
 	return pushNewTween( rectTrans.gameObject, to, time, TweenAction.CANVAS_MOVE, options().setRect( rectTrans ) );
 }
 
+/**
+* Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+* 
+* @method LeanTween.rotate (RectTransform)
+* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+* @param {float} to:float The degree with which to rotate the RectTransform
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.rotate(button, 90f, 1f).setDelay(1f);
+*/
+public static LTDescr rotate(RectTransform rectTrans, float to, float time){
+	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_ROTATEAROUND, options().setRect( rectTrans ).setAxis(Vector3.forward) );
+}
+
+/**
+* Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+* 
+* @method LeanTween.rotateAround (RectTransform)
+* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+* @param {Vector3} axis:Vector3 The axis in which to rotate the RectTransform (Vector3.forward is most commonly used)
+* @param {float} to:float The degree with which to rotate the RectTransform
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.rotateAround(button, Vector3.forward, 90f, 1f).setDelay(1f);
+*/
 public static LTDescr rotateAround(RectTransform rectTrans, Vector3 axis, float to, float time){
 	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_ROTATEAROUND, options().setRect( rectTrans ).setAxis(axis) );
 }
 
+/**
+* Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+* 
+* @method LeanTween.scale (RectTransform)
+* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+* @param {float} to:float The final Vector3 with which to tween to (localScale)
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.scale(button, button.localScale*2f, 1f).setDelay(1f);
+*/
 public static LTDescr scale(RectTransform rectTrans, Vector3 to, float time){
 	return pushNewTween( rectTrans.gameObject, to, time, TweenAction.CANVAS_SCALE, options().setRect( rectTrans ) );
 }
