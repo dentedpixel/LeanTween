@@ -2441,6 +2441,26 @@ public static float closestRot( float from, float to ){
 }
 
 /**
+* Cancels all tweens 
+* 
+* @method LeanTween.cancelAll
+* @param {callComplete} callComplete:bool if true, then the onComplete event will be
+*                                         fired if it exists
+* @example LeanTween.cancelAll(true); <br>
+*/
+public static void cancelAll(bool callComplete){
+    init();
+    for (int i = 0; i < tweenMaxSearch; i++)
+    {
+        if (tweens[i].trans != null){
+            if (callComplete && tweens[i].onComplete != null)
+                tweens[i].onComplete();
+            removeTween(i);
+        }
+    }
+}
+
+/**
 * Cancel all tweens that are currently targeting the gameObject
 * 
 * @method LeanTween.cancel
@@ -2667,7 +2687,7 @@ public static LTDescr options(){
 		}
 		
 		j++;
-		if(j>=maxTweens)
+		if(j >= maxTweens)
 			return logError("LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );") as LTDescr;
 	}
 	
@@ -2693,6 +2713,9 @@ private static LTDescr pushNewTween( GameObject gameObject, Vector3 to, float ti
 	init(maxTweens);
 	if(gameObject==null)
 		return null;
+    else if (tween == null)
+        return null;
+
 	tween.trans = gameObject.transform;
 	tween.to = to;
 	tween.time = time;
