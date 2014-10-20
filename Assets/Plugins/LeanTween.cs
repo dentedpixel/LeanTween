@@ -1050,7 +1050,7 @@ public class LTDescr{
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
-		this.direction = 1.0f;
+		this.direction = this.directionLast = 1.0f;
 		this.onUpdateFloat = null;
 		this.onUpdateVector3 = null;
 		this.onUpdateFloatObject = null;
