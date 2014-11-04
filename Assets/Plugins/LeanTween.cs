@@ -896,9 +896,11 @@ public enum TweenAction{
 	ROTATE_AROUND,
 	ROTATE_AROUND_LOCAL,
 	ALPHA,
-	ALPHA_VERTEX,
+    TEXT_ALPHA,
+    ALPHA_VERTEX,
 	COLOR,
 	CALLBACK_COLOR,
+    TEXT_COLOR,
 	CANVAS_ROTATEAROUND,
 	CALLBACK,
 	MOVE,
@@ -996,6 +998,7 @@ public class LTDescr{
 	#endif
 	#if UNITY_4_6 || UNITY_5_0
 	public RectTransform rectTransform;
+    public UnityEngine.UI.Text uiText;
 	#endif
 
 	private static uint global_counter = 0;
@@ -1793,6 +1796,21 @@ public static void update() {
 							#endif
 							break;
 						#if UNITY_4_6 || UNITY_5_0
+                        case TweenAction.TEXT_ALPHA:
+                            tween.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+                            if (tween.uiText != null){
+                                tween.from.x = tween.uiText.color.a;
+                            }
+                            break;
+                        case TweenAction.TEXT_COLOR:
+                            tween.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+                            if (tween.uiText != null){
+                                Color col = tween.uiText.color;
+                                tween.from = new Vector3(0.0f, col.a, 0.0f);
+                                tween.diff = new Vector3(1.0f, 0.0f, 0.0f);
+                                tween.axis = new Vector3(col.r, col.g, col.b);
+                            }
+                            break;
 						case TweenAction.CANVAS_MOVE:
 							tween.from = tween.rectTransform.anchoredPosition; break;
 						case TweenAction.CANVAS_ROTATEAROUND:
@@ -1804,7 +1822,7 @@ public static void update() {
 							tween.from = tween.rectTransform.localScale; break;
 						#endif
 					}
-					if(tweenAction!=TweenAction.CALLBACK_COLOR && tweenAction!=TweenAction.COLOR)
+                    if(tweenAction!=TweenAction.CALLBACK_COLOR && tweenAction!=TweenAction.COLOR && tweenAction!=TweenAction.TEXT_COLOR)
 						tween.diff = tween.to - tween.from;
 				}
 				if(tween.delay<=0){
@@ -1945,7 +1963,7 @@ public static void update() {
 								trans.localPosition = tween.path.point( val );
 							}
 							// Debug.Log("val:"+val+" trans.position:"+trans.position);
-						}else if((TweenAction)tweenAction==TweenAction.MOVE_SPLINE){
+						}else if(tweenAction==TweenAction.MOVE_SPLINE){
 							if(tween.spline.orientToPath){
 								if(tween.spline.orientToPath2d){
 									tween.spline.place2d( trans, val );
@@ -1955,7 +1973,7 @@ public static void update() {
 							}else{
 								trans.position = tween.spline.point( val );
 							}
-						}else if((TweenAction)tweenAction==TweenAction.MOVE_SPLINE_LOCAL){
+						}else if(tweenAction==TweenAction.MOVE_SPLINE_LOCAL){
 							if(tween.spline.orientToPath){
 								if(tween.spline.orientToPath2d){
 									tween.spline.placeLocal2d( trans, val );
@@ -2078,6 +2096,18 @@ public static void update() {
 							}
 						}
 						#if UNITY_4_6 || UNITY_5_0
+                        else if (tweenAction == TweenAction.TEXT_ALPHA){
+                            Color c = tween.uiText.color;
+                            c.a = val;
+                            tween.uiText.color = c;
+                        }
+                        else if (tweenAction == TweenAction.TEXT_COLOR){
+                            Color toColor = tweenColor(tween, val);
+                            tween.uiText.color = toColor;
+                            if (tween.onUpdateColor != null){
+                                tween.onUpdateColor(toColor);
+                            }
+                        }
 						else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND){
 							
 							float move = val - tween.lastVal;
@@ -2756,6 +2786,12 @@ public static LTDescr alpha(LTRect ltRect, float to, float time){
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ALPHA, options().setRect( ltRect ) );
 }
 
+#if UNITY_4_6 || UNITY_5_0
+public static LTDescr textAlpha(GameObject gameObject, float to, float time){
+    return pushNewTween(gameObject, new Vector3(to,0,0), time, TweenAction.TEXT_ALPHA, options());
+}
+#endif
+
 /**
 * This works by tweening the vertex colors directly.<br>
 <br>
@@ -2789,6 +2825,12 @@ public static LTDescr alphaVertex(GameObject gameObject, float to, float time){
 public static LTDescr color(GameObject gameObject, Color to, float time){
 	return pushNewTween( gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) ) );
 }
+
+#if UNITY_4_6 || UNITY_5_0
+public static LTDescr textColor(GameObject gameObject, Color to, float time){
+    return pushNewTween(gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.TEXT_COLOR, options().setPoint(new Vector3(to.r, to.g, to.b)));
+}
+#endif
 
 public static LTDescr delayedCall( float delayTime, Action callback){
 	return pushNewTween( tweenEmpty, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
