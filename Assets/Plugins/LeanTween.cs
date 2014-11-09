@@ -2711,10 +2711,8 @@ public static LTDescr descr;
 
 private static LTDescr pushNewTween( GameObject gameObject, Vector3 to, float time, TweenAction tweenAction, LTDescr tween ){
 	init(maxTweens);
-	if(gameObject==null)
+	if(gameObject==null || tween==null)
 		return null;
-    else if (tween == null)
-        return null;
 
 	tween.trans = gameObject.transform;
 	tween.to = to;
