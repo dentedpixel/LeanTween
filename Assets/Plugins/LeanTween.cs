@@ -1196,7 +1196,7 @@ public class LTDescr{
 	}
 
 	/**
-	* Use estimated time when tweening an object. Great for pause screens, when you want all other action to be stopped (or slowed down)
+	* Use estimated time when tweening an object when you want the animation to be time-scale independent (ignores the Time.timeScale value). Great for pause screens, when you want all other action to be stopped (or slowed down)
 	* @method setUseEstimatedTime
 	* @param {bool} useEstimatedTime:bool whether to use estimated time or not
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
@@ -2450,7 +2450,7 @@ public static float closestRot( float from, float to ){
 */
 public static void cancelAll(bool callComplete){
     init();
-    for (int i = 0; i < tweenMaxSearch; i++)
+    for (int i = 0; i <= tweenMaxSearch; i++)
     {
         if (tweens[i].trans != null){
             if (callComplete && tweens[i].onComplete != null)
