@@ -45,7 +45,7 @@ public class TestingEverything : MonoBehaviour {
 	private int rotateRepeatAngle;
 
 	void Start () {
-		LeanTest.expected = 15;
+		LeanTest.expected = 16;
 
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
@@ -108,6 +108,7 @@ public class TestingEverything : MonoBehaviour {
 		LeanTween.delayedCall(0.82f, groupTweensFinished);
 
 		LeanTest.debug("GROUP IDS MATCH", descriptionMatchCount==groupTweens.Length );
+		LeanTest.debug("MAX SEARCH OPTIMIZED", LeanTween.maxSearch<=groupTweens.Length+5, "maxSearch:"+LeanTween.maxSearch );
 
 		// resume item before calling pause should continue item along it's way
 		float previousXLT3 = cube3.transform.position.x;

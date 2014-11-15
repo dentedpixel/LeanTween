@@ -78,7 +78,7 @@ public class ExampleCSharp : MonoBehaviour {
 		Debug.Log("loopTestClamp Time:"+Time.time);
 		GameObject cube1 = GameObject.Find("Cube1");
 		cube1.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-		LeanTween.scaleZ( cube1, 4.0f, 1.0f).setEase(LeanTweenType.easeOutElastic).setRepeat(7).setLoopClamp().setUseEstimatedTime(useEstimatedTime);;//
+		LeanTween.scaleZ( cube1, 4.0f, 1.0f).setEase(LeanTweenType.easeOutElastic).setRepeat(7).setLoopClamp().setUseEstimatedTime(useEstimatedTime);//
 	}
 
 	public void loopTestPingPong(){

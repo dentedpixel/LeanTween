@@ -41,7 +41,7 @@ function cycleThroughExamples(){
 	exampleFunctions[ exampleIter ]();
 	exampleIter = exampleIter+1>=exampleFunctions.length ? 0 : exampleIter + 1;
 	
-	LeanTween.delayedCall( 3.05, cycleThroughExamples, ["useEstimatedTime",useEstimatedTime]);
+	LeanTween.delayedCall( 3.05, cycleThroughExamples).setUseEstimatedTime(useEstimatedTime);
 }
 
 function moveOnACurveExample(){

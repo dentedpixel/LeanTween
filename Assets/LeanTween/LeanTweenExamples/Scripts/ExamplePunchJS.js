@@ -21,7 +21,7 @@ function punchTest(){
 
 	// var a = new Hashtable( [["hello",1.0],["ease",LeanTweenType.punch]] );
 
-	LeanTween.rotate( gameObject, Vector3(-40,10,0), 1.0, ["onComplete", punchTest, "ease", LeanTweenType.punch] );
+	LeanTween.rotate( gameObject, Vector3(-40,10,0), 1.0).setOnComplete(punchTest).setEase(LeanTweenType.punch);
 	//LeanTween.rotate( gameObject, Vector3(90,90,320), 1.0, {"ease":LeanTweenType.punch, "onComplete":punchTest});
 }
 
