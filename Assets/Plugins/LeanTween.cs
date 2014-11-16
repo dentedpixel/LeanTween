@@ -147,7 +147,13 @@ public class LeanTest : object {
 
 	public static void debug( string name, bool didPass, string failExplaination = null){
 		float len = printOutLength(name);
-		string logName = formatB(name) +" " + "".PadRight(40-(int)(len*1.05f),"_"[0]) + " [ "+ (didPass ? formatC("pass","green") : formatC("fail","red")) +" ]";
+		int paddingLen = 40-(int)(len*1.05f);
+		#if UNITY_FLASH
+		string padding = padRight(paddingLen);
+		#else
+		string padding = "".PadRight(paddingLen,"_"[0]);
+		#endif
+		string logName = formatB(name) +" " + padding + " [ "+ (didPass ? formatC("pass","green") : formatC("fail","red")) +" ]";
 		if(didPass==false && failExplaination!=null)
 			logName += " - " + failExplaination;
 		Debug.Log(logName);
@@ -160,6 +166,14 @@ public class LeanTest : object {
 		}else if(tests>expected){
 			Debug.Log(formatB("Too many tests for a final report!") + " set LeanTest.expected = "+tests);
 		}
+	}
+
+	public static string padRight(int len){
+		string str = "";
+		for(int i = 0; i < len; i++){
+			str += "_";
+		}
+		return str;
 	}
 
 	public static float printOutLength( string str ){
@@ -4359,10 +4373,17 @@ public static void addListener( GameObject caller, int eventId, System.Action<LT
 
 			return;
 		}
-		if(goListeners[ point ] == caller && System.Object.Equals( eventListeners[ point ], callback)){
+		#if UNITY_FLASH
+		if(goListeners[ point ] == caller && System.Object.ReferenceEquals( eventListeners[ point ], callback)){  
 			// Debug.Log("This event is already being listened for.");
 			return;
 		}
+		#else
+		if(goListeners[ point ] == caller && System.Object.Equals( eventListeners[ point ], callback)){  
+			// Debug.Log("This event is already being listened for.");
+			return;
+		}
+		#endif
 	}
 	Debug.LogError("You ran out of areas to add listeners, consider increasing INIT_LISTENERS_MAX, ex: LeanTween.INIT_LISTENERS_MAX = "+(INIT_LISTENERS_MAX*2));
 }
@@ -4385,7 +4406,11 @@ public static bool removeListener( int eventId, System.Action<LTEvent> callback 
 public static bool removeListener( GameObject caller, int eventId, System.Action<LTEvent> callback ){
 	for(i = 0; i < eventsMaxSearch; i++){
 		int point = eventId*INIT_LISTENERS_MAX + i;
+		#if UNITY_FLASH
+		if(goListeners[ point ] == caller && System.Object.ReferenceEquals( eventListeners[ point ], callback) ){
+		#else
 		if(goListeners[ point ] == caller && System.Object.Equals( eventListeners[ point ], callback) ){
+		#endif
 			eventListeners[ point ] = null;
 			goListeners[ point ] = null;
 			return true;
