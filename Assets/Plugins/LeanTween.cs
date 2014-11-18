@@ -1078,7 +1078,7 @@ public class LTDescr{
 		this.onCompleteParam = null;
 		this.point = Vector3.zero;
 		global_counter++;
-		if(global_counter>=0xFFFF)
+		if(global_counter>0x8000)
 			global_counter = 0;
 	}
 
