@@ -2534,11 +2534,13 @@ public static void cancelAll(bool callComplete){
 * @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
 * LeanTween.cancel( gameObject );
 */
-public static void cancel( GameObject gameObject ){
+public static void cancel( GameObject gameObject, bool callComplete = false ){
 	init();
 	Transform trans = gameObject.transform;
 	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].trans==trans){
+            if (callComplete && tweens[i].onComplete != null)
+                tweens[i].onComplete();
 			removeTween(i);
 		}
 	}
