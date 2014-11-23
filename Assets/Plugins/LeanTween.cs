@@ -2633,6 +2633,30 @@ public static void pause( GameObject gameObject ){
 	}
 }
 
+/**
+* Pause all active tweens
+* 
+* @method LeanTween.pauseAll
+*/
+public static void pauseAll(){
+	init();
+    for (int i = 0; i <= tweenMaxSearch; i++){
+        tweens[i].pause();
+    }
+}
+
+/**
+* Resume all active tweens
+* 
+* @method LeanTween.resumeAll
+*/
+public static void resumeAll(){
+	init();
+    for (int i = 0; i <= tweenMaxSearch; i++){
+        tweens[i].resume();
+    }
+}
+
 [System.Obsolete("Use 'resume( id )' instead")]
 public static void resume( GameObject gameObject, int uniqueId ){
 	resume( uniqueId );
