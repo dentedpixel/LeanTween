@@ -17,6 +17,18 @@ function Start () {
 	punchTest();
 }
 
+function OnGUI(){
+	var staticRect:Rect = Rect(0.0*Screen.width, 0.0*Screen.height, 0.2*Screen.width, 0.14*Screen.height);
+	if(GUI.Button( staticRect, "Pause All")){
+		LeanTween.pauseAll();
+	}
+
+	staticRect = Rect(0.0*Screen.width, 0.2*Screen.height, 0.2*Screen.width, 0.14*Screen.height);
+	if(GUI.Button( staticRect, "Resume All")){
+		LeanTween.resumeAll();
+	}
+}
+
 function punchTest(){
 
 	// var a = new Hashtable( [["hello",1.0],["ease",LeanTweenType.punch]] );
