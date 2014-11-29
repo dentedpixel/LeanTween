@@ -1723,8 +1723,18 @@ public static void update() {
 								SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
 								if(ren!=null){
 									tween.from.x = ren.color.a;
-								}else if(trans.gameObject.renderer!=null){
-									tween.from.x = trans.gameObject.renderer.material.color.a;
+								}
+								else{
+									TextMesh tm = trans.gameObject.GetComponent<TextMesh>();
+									if (tm != null) {
+										tween.from.x = tm.color.a;
+									}
+									else if(trans.gameObject.renderer!=null){
+										tween.from.x = trans.gameObject.renderer.material.color.a;
+									}
+									else{
+										tween.from.x = 1f;
+									}
 								}
 								break;
 							#endif
@@ -1811,12 +1821,21 @@ public static void update() {
 									tween.from = new Vector3(0.0f, ren2.color.a, 0.0f);
 									tween.diff = new Vector3(1.0f,0.0f,0.0f);
 									tween.axis = new Vector3( ren2.color.r, ren2.color.g, ren2.color.b );
-								}else if(trans.gameObject.renderer!=null){
-									if(trans.gameObject.renderer){
-										Color col = trans.gameObject.renderer.material.color;
-										tween.from = new Vector3(0.0f, col.a, 0.0f);
+								}
+								else {
+									TextMesh tm2 = trans.gameObject.GetComponent<TextMesh>();
+									if (tm2 != null) {
+										tween.from = new Vector3(0.0f, tm2.color.a, 0.0f);
 										tween.diff = new Vector3(1.0f,0.0f,0.0f);
-										tween.axis = new Vector3( col.r, col.g, col.b );
+										tween.axis = new Vector3( tm2.color.r, tm2.color.g, tm2.color.b );
+									}
+									else if(trans.gameObject.renderer!=null){
+										if(trans.gameObject.renderer){
+											Color col = trans.gameObject.renderer.material.color;
+											tween.from = new Vector3(0.0f, col.a, 0.0f);
+											tween.diff = new Vector3(1.0f,0.0f,0.0f);
+											tween.axis = new Vector3( col.r, col.g, col.b );
+										}
 									}
 								}
 							#endif
@@ -2076,24 +2095,25 @@ public static void update() {
 
 							#else
 
-							SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-							if(ren!=null){
-								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
-							}else{
-								if(trans.gameObject.renderer!=null){
-									foreach(Material mat in trans.gameObject.renderer.materials){
-		        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-		    						}
-		    					}
-	    						if(trans.childCount>0){
-	    							foreach (Transform child in trans) {
-	    								if(child.gameObject.renderer!=null){
-		    								foreach(Material mat in child.gameObject.renderer.materials){
-				        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-				    						}
-				    					}
+							// Applies to all itself and all children of any level
+							Transform[] children = trans.GetComponentsInChildren<Transform>();
+							foreach (Transform t in children)
+							{
+								SpriteRenderer ren = t.gameObject.GetComponent<SpriteRenderer>();
+								if(ren!=null){
+									ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
+								}
+								else {
+									TextMesh tm = t.gameObject.GetComponent<TextMesh>();
+									if (tm != null) {
+										tm.color = new Color( tm.color.r, tm.color.g, tm.color.b, val);
 									}
-	    						}
+									else if(t.gameObject.renderer!=null){
+										foreach(Material mat in t.gameObject.renderer.materials){
+											mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+										}
+									}
+								}
 							}
 
     						#endif
