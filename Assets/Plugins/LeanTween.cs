@@ -4073,23 +4073,23 @@ private static float clerp(float start, float end, float val){
 	return retval;
 }
 
-private static float spring(float start, float end, float val){
+public static float spring(float start, float end, float val){
 	val = Mathf.Clamp01(val);
 	val = (Mathf.Sin(val * Mathf.PI * (0.2f + 2.5f * val * val * val)) * Mathf.Pow(1f - val, 2.2f) + val) * (1f + (1.2f * (1f - val)));
 	return start + (end - start) * val;
 }
 
-private static float easeInQuad(float start, float end, float val){
+public static float easeInQuad(float start, float end, float val){
 	end -= start;
 	return end * val * val + start;
 }
 
-private static float easeOutQuad(float start, float end, float val){
+public static float easeOutQuad(float start, float end, float val){
 	end -= start;
 	return -end * val * (val - 2) + start;
 }
 
-private static float easeInOutQuad(float start, float end, float val){
+public static float easeInOutQuad(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val + start;
@@ -4097,18 +4097,18 @@ private static float easeInOutQuad(float start, float end, float val){
 	return -end / 2 * (val * (val - 2) - 1) + start;
 }
 
-private static float easeInCubic(float start, float end, float val){
+public static float easeInCubic(float start, float end, float val){
 	end -= start;
 	return end * val * val * val + start;
 }
 
-private static float easeOutCubic(float start, float end, float val){
+public static float easeOutCubic(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * (val * val * val + 1) + start;
 }
 
-private static float easeInOutCubic(float start, float end, float val){
+public static float easeInOutCubic(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val + start;
@@ -4116,18 +4116,18 @@ private static float easeInOutCubic(float start, float end, float val){
 	return end / 2 * (val * val * val + 2) + start;
 }
 
-private static float easeInQuart(float start, float end, float val){
+public static float easeInQuart(float start, float end, float val){
 	end -= start;
 	return end * val * val * val * val + start;
 }
 
-private static float easeOutQuart(float start, float end, float val){
+public static float easeOutQuart(float start, float end, float val){
 	val--;
 	end -= start;
 	return -end * (val * val * val * val - 1) + start;
 }
 
-private static float easeInOutQuart(float start, float end, float val){
+public static float easeInOutQuart(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val * val + start;
@@ -4135,18 +4135,18 @@ private static float easeInOutQuart(float start, float end, float val){
 	return -end / 2 * (val * val * val * val - 2) + start;
 }
 
-private static float easeInQuint(float start, float end, float val){
+public static float easeInQuint(float start, float end, float val){
 	end -= start;
 	return end * val * val * val * val * val + start;
 }
 
-private static float easeOutQuint(float start, float end, float val){
+public static float easeOutQuint(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * (val * val * val * val * val + 1) + start;
 }
 
-private static float easeInOutQuint(float start, float end, float val){
+public static float easeInOutQuint(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val * val * val + start;
@@ -4154,32 +4154,32 @@ private static float easeInOutQuint(float start, float end, float val){
 	return end / 2 * (val * val * val * val * val + 2) + start;
 }
 
-private static float easeInSine(float start, float end, float val){
+public static float easeInSine(float start, float end, float val){
 	end -= start;
 	return -end * Mathf.Cos(val / 1 * (Mathf.PI / 2)) + end + start;
 }
 
-private static float easeOutSine(float start, float end, float val){
+public static float easeOutSine(float start, float end, float val){
 	end -= start;
 	return end * Mathf.Sin(val / 1 * (Mathf.PI / 2)) + start;
 }
 
-private static float easeInOutSine(float start, float end, float val){
+public static float easeInOutSine(float start, float end, float val){
 	end -= start;
 	return -end / 2 * (Mathf.Cos(Mathf.PI * val / 1) - 1) + start;
 }
 
-private static float easeInExpo(float start, float end, float val){
+public static float easeInExpo(float start, float end, float val){
 	end -= start;
 	return end * Mathf.Pow(2, 10 * (val / 1 - 1)) + start;
 }
 
-private static float easeOutExpo(float start, float end, float val){
+public static float easeOutExpo(float start, float end, float val){
 	end -= start;
 	return end * (-Mathf.Pow(2, -10 * val / 1) + 1) + start;
 }
 
-private static float easeInOutExpo(float start, float end, float val){
+public static float easeInOutExpo(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * Mathf.Pow(2, 10 * (val - 1)) + start;
@@ -4187,18 +4187,18 @@ private static float easeInOutExpo(float start, float end, float val){
 	return end / 2 * (-Mathf.Pow(2, -10 * val) + 2) + start;
 }
 
-private static float easeInCirc(float start, float end, float val){
+public static float easeInCirc(float start, float end, float val){
 	end -= start;
 	return -end * (Mathf.Sqrt(1 - val * val) - 1) + start;
 }
 
-private static float easeOutCirc(float start, float end, float val){
+public static float easeOutCirc(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * Mathf.Sqrt(1 - val * val) + start;
 }
 
-private static float easeInOutCirc(float start, float end, float val){
+public static float easeInOutCirc(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return -end / 2 * (Mathf.Sqrt(1 - val * val) - 1) + start;
@@ -4207,7 +4207,7 @@ private static float easeInOutCirc(float start, float end, float val){
 }
 
 /* GFX47 MOD START */
-private static float easeInBounce(float start, float end, float val){
+public static float easeInBounce(float start, float end, float val){
 	end -= start;
 	float d = 1f;
 	return end - easeOutBounce(0, end, d-val) + start;
@@ -4216,7 +4216,7 @@ private static float easeInBounce(float start, float end, float val){
 
 /* GFX47 MOD START */
 //public static function bounce(float start, float end, float val){
-private static float easeOutBounce(float start, float end, float val){
+public static float easeOutBounce(float start, float end, float val){
 	val /= 1f;
 	end -= start;
 	if (val < (1 / 2.75f)){
@@ -4235,7 +4235,7 @@ private static float easeOutBounce(float start, float end, float val){
 /* GFX47 MOD END */
 
 /* GFX47 MOD START */
-private static float easeInOutBounce(float start, float end, float val){
+public static float easeInOutBounce(float start, float end, float val){
 	end -= start;
 	float d= 1f;
 	if (val < d/2) return easeInBounce(0, end, val*2) * 0.5f + start;
@@ -4243,21 +4243,21 @@ private static float easeInOutBounce(float start, float end, float val){
 }
 /* GFX47 MOD END */
 
-private static float easeInBack(float start, float end, float val){
+public static float easeInBack(float start, float end, float val){
 	end -= start;
 	val /= 1;
 	float s= 1.70158f;
 	return end * (val) * val * ((s + 1) * val - s) + start;
 }
 
-private static float easeOutBack(float start, float end, float val){
+public static float easeOutBack(float start, float end, float val){
 	float s= 1.70158f;
 	end -= start;
 	val = (val / 1) - 1;
 	return end * ((val) * val * ((s + 1) * val + s) + 1) + start;
 }
 
-private static float easeInOutBack(float start, float end, float val){
+public static float easeInOutBack(float start, float end, float val){
 	float s= 1.70158f;
 	end -= start;
 	val /= .5f;
@@ -4271,7 +4271,7 @@ private static float easeInOutBack(float start, float end, float val){
 }
 
 /* GFX47 MOD START */
-private static float easeInElastic(float start, float end, float val){
+public static float easeInElastic(float start, float end, float val){
 	end -= start;
 	
 	float d = 1f;
@@ -4296,7 +4296,7 @@ private static float easeInElastic(float start, float end, float val){
 
 /* GFX47 MOD START */
 //public static function elastic(float start, float end, float val){
-private static float easeOutElastic(float start, float end, float val){
+public static float easeOutElastic(float start, float end, float val){
 /* GFX47 MOD END */
 	//Thank you to rafael.marteleto for fixing this as a port over from Pedro's UnityTween
 	end -= start;
@@ -4322,7 +4322,7 @@ private static float easeOutElastic(float start, float end, float val){
 }		
 
 /* GFX47 MOD START */
-private static float easeInOutElastic(float start, float end, float val)
+public static float easeInOutElastic(float start, float end, float val)
 {
 	end -= start;
 	
