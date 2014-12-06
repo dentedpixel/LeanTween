@@ -3400,7 +3400,7 @@ public static LTDescr value(GameObject gameObject, Action<float,object> callOnUp
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, float from, float to, float time){
-	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ) );
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ) );
 }
 
 /**
@@ -3414,7 +3414,7 @@ public static LTDescr value(GameObject gameObject, float from, float to, float t
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Vector2 from, Vector2 to, float time){
-	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.VALUE3, options().setTo( new Vector3(to.x,to.y,0) ).setFrom( new Vector3(from.x,from.y,0) ) );
+	return pushNewTween( gameObject, new Vector3(to.x,to.y,0), time, TweenAction.VALUE3, options().setFrom( new Vector3(from.x,from.y,0) ) );
 }
 
 /**
@@ -3428,7 +3428,7 @@ public static LTDescr value(GameObject gameObject, Vector2 from, Vector2 to, flo
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Vector3 from, Vector3 to, float time){
-	return pushNewTween( gameObject, Vector3.zero, time, TweenAction.VALUE3, options().setTo( to ).setFrom( from ) );
+	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setFrom( from ) );
 }
 
 /**
