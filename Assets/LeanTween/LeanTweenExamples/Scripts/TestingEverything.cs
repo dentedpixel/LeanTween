@@ -45,10 +45,12 @@ public class TestingEverything : MonoBehaviour {
 	private int rotateRepeatAngle;
 
 	void Start () {
-		LeanTest.expected = 16;
+		LeanTest.expected = 17;
 
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
+
+		LeanTest.debug("NOTHING TWEEENING AT BEGINNING", LeanTween.isTweening(cube1) == false );
 
 		// dispatch event that is received
 		LeanTween.dispatchEvent(0);
