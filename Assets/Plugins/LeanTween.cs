@@ -1064,13 +1064,14 @@ public class LTDescr{
 		this.optional = null;
 		#endif
 		this.passed = this.delay = this.lastVal = 0.0f;
-		this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = false;
+		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = false;
 		this.animationCurve = null;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
 		this.direction = this.directionLast = 1.0f;
 		this.onUpdateFloat = null;
+		this.onUpdateVector2 = null;
 		this.onUpdateVector3 = null;
 		this.onUpdateFloatObject = null;
 		this.onUpdateVector3Object = null;
@@ -3387,6 +3388,21 @@ public static LTDescr value(GameObject gameObject, Action<Color> callOnUpdate, C
 }
 
 /**
+* Tween any particular value (Vector2), this could be used to tween an arbitrary value like a material color
+* 
+* @method LeanTween.value (Vector2)
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
+* @param {Action<Vector2>} callOnUpdate:Action<Vector2> The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( Vector3 val ){ }
+* @param {float} from:Vector2 The original value to start the tween from
+* @param {Vector2} to:Vector2 The final Vector3 with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+*/
+public static LTDescr value(GameObject gameObject, Action<Vector2> callOnUpdate, Vector2 from, Vector2 to, float time){
+	return pushNewTween( gameObject, new Vector3(to.x,to.y,0f), time, TweenAction.CALLBACK, options().setTo( new Vector3(to.x,to.y,0f) ).setFrom( from ).setOnUpdateVector2(callOnUpdate) );
+}
+
+/**
 * Tween any particular value (Vector3), this could be used to tween an arbitrary value like a material color
 * 
 * @method LeanTween.value (Vector3)
@@ -3441,7 +3457,7 @@ public static LTDescr value(GameObject gameObject, float from, float to, float t
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Vector2 from, Vector2 to, float time){
-	return pushNewTween( gameObject, new Vector3(to.x,to.y,0), time, TweenAction.VALUE3, options().setFrom( new Vector3(from.x,from.y,0) ) );
+	return pushNewTween( gameObject, new Vector3(to.x,to.y,0), time, TweenAction.VALUE3, options().setTo( new Vector3(to.x,to.y,0f) ).setFrom( new Vector3(from.x,from.y,0) ) );
 }
 
 /**
