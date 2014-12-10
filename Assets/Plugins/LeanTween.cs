@@ -1012,7 +1012,7 @@ public class LTDescr{
 	#if LEANTWEEN_1
 	public Hashtable optional;
 	#endif
-	#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 	public RectTransform rectTransform;
     public UnityEngine.UI.Text uiText;
 	#endif
@@ -1543,7 +1543,7 @@ public class LTDescr{
 		return this;
 	}
 
-#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3 || !UNITY_4_5
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 	public LTDescr setRect( RectTransform rect ){
 		this.rectTransform = rect;
 		return this;
@@ -1845,7 +1845,7 @@ public static void update() {
 								}
 							#endif
 							break;
-						#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3 || !UNITY_4_5
+						#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
                         case TweenAction.TEXT_ALPHA:
                             tween.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
                             if (tween.uiText != null){
@@ -2145,7 +2145,7 @@ public static void update() {
 								tween.onUpdateColor(toColor);
 							}
 						}
-						#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
+						#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
                         else if (tweenAction == TweenAction.TEXT_ALPHA){
                             Color c = tween.uiText.color;
                             c.a = val;
@@ -2301,7 +2301,7 @@ public static void update() {
 					    }else if(tweenAction==TweenAction.GUI_ROTATE){
 					    	tween.ltRect.rotation = newVect.x;
 					    }
-					    #if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
+					    #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 						else if(tweenAction==TweenAction.CANVAS_MOVE){
 							tween.rectTransform.anchoredPosition = newVect;
 						}else if(tweenAction==TweenAction.CANVAS_SCALE){
@@ -2872,7 +2872,7 @@ public static LTDescr alpha(LTRect ltRect, float to, float time){
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ALPHA, options().setRect( ltRect ) );
 }
 
-#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 public static LTDescr textAlpha(GameObject gameObject, float to, float time){
     return pushNewTween(gameObject, new Vector3(to,0,0), time, TweenAction.TEXT_ALPHA, options());
 }
@@ -2912,7 +2912,7 @@ public static LTDescr color(GameObject gameObject, Color to, float time){
 	return pushNewTween( gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) ) );
 }
 
-#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 public static LTDescr textColor(GameObject gameObject, Color to, float time){
     return pushNewTween(gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.TEXT_COLOR, options().setPoint(new Vector3(to.r, to.g, to.b)));
 }
@@ -3500,7 +3500,7 @@ public static LTDescr delayedSound( GameObject gameObject, AudioClip audio, Vect
 	return pushNewTween( gameObject, pos, 0f, TweenAction.DELAYED_SOUND, options().setTo( pos ).setFrom( new Vector3(volume,0,0) ).setAudio( audio ) );
 }
 
-#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 
 /**
 * Move a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
