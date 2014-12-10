@@ -1,6 +1,6 @@
 // Copyright (c) 2014 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.18 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.20 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -33,7 +33,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 */
 
 /**
-* Pass this to the "ease" parameter in the optional hashtable, to get a different easing behavior<br><br>
+* Pass this to the "ease" parameter, to get a different easing behavior<br><br>
 * <strong>Example: </strong><br>LeanTween.rotateX(gameObject, 270.0f, 1.5f).setEase(LeanTweenType.easeInBack);
 *
 * @class LeanTweenType
@@ -995,8 +995,10 @@ public class LTDescr{
 	public LeanTweenType tweenType;
 	public AnimationCurve animationCurve;
 	public LeanTweenType loopType;
+	public bool hasUpdateCallback;
 	public Action<float> onUpdateFloat;
 	public Action<float,object> onUpdateFloatObject;
+	public Action<Vector2> onUpdateVector2;
 	public Action<Vector3> onUpdateVector3;
 	public Action<Vector3,object> onUpdateVector3Object;
 	public Action<Color> onUpdateColor;
@@ -1010,7 +1012,7 @@ public class LTDescr{
 	#if LEANTWEEN_1
 	public Hashtable optional;
 	#endif
-	#if UNITY_4_6 || UNITY_5_0
+	#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
 	public RectTransform rectTransform;
     public UnityEngine.UI.Text uiText;
 	#endif
@@ -1345,19 +1347,28 @@ public class LTDescr{
 	*/
 	public LTDescr setOnUpdate( Action<float> onUpdate ){
 		this.onUpdateFloat = onUpdate;
+		this.hasUpdateCallback = true;
 		return this;
 	}
 	
 	public LTDescr setOnUpdateObject( Action<float,object> onUpdate ){
 		this.onUpdateFloatObject = onUpdate;
+		this.hasUpdateCallback = true;
+		return this;
+	}
+	public LTDescr setOnUpdateVector2( Action<Vector2> onUpdate ){
+		this.onUpdateVector2 = onUpdate;
+		this.hasUpdateCallback = true;
 		return this;
 	}
 	public LTDescr setOnUpdateVector3( Action<Vector3> onUpdate ){
 		this.onUpdateVector3 = onUpdate;
+		this.hasUpdateCallback = true;
 		return this;
 	}
 	public LTDescr setOnUpdateColor( Action<Color> onUpdate ){
 		this.onUpdateColor = onUpdate;
+		this.hasUpdateCallback = true;
 		return this;
 	}
 
@@ -1365,6 +1376,7 @@ public class LTDescr{
 
 	public LTDescr setOnUpdate( Action<Color> onUpdate ){
 		this.onUpdateColor = onUpdate;
+		this.hasUpdateCallback = true;
 		return this;
 	}
 
@@ -1380,6 +1392,7 @@ public class LTDescr{
 	*/
 	public LTDescr setOnUpdate( Action<float,object> onUpdate, object onUpdateParam = null ){
 		this.onUpdateFloatObject = onUpdate;
+		this.hasUpdateCallback = true;
 		if(onUpdateParam!=null)
 			this.onUpdateParam = onUpdateParam;
 		return this;
@@ -1387,6 +1400,15 @@ public class LTDescr{
 
 	public LTDescr setOnUpdate( Action<Vector3,object> onUpdate, object onUpdateParam = null ){
 		this.onUpdateVector3Object = onUpdate;
+		this.hasUpdateCallback = true;
+		if(onUpdateParam!=null)
+			this.onUpdateParam = onUpdateParam;
+		return this;
+	}
+
+	public LTDescr setOnUpdate( Action<Vector2> onUpdate, object onUpdateParam = null ){
+		this.onUpdateVector2 = onUpdate;
+		this.hasUpdateCallback = true;
 		if(onUpdateParam!=null)
 			this.onUpdateParam = onUpdateParam;
 		return this;
@@ -1404,6 +1426,7 @@ public class LTDescr{
 	*/
 	public LTDescr setOnUpdate( Action<Vector3> onUpdate, object onUpdateParam = null ){
 		this.onUpdateVector3 = onUpdate;
+		this.hasUpdateCallback = true;
 		if(onUpdateParam!=null)
 			this.onUpdateParam = onUpdateParam;
 		return this;
@@ -1519,7 +1542,7 @@ public class LTDescr{
 		return this;
 	}
 
-#if UNITY_4_6 || UNITY_5_0
+#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3 || !UNITY_4_5
 	public LTDescr setRect( RectTransform rect ){
 		this.rectTransform = rect;
 		return this;
@@ -1821,7 +1844,7 @@ public static void update() {
 								}
 							#endif
 							break;
-						#if UNITY_4_6 || UNITY_5_0
+						#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3 || !UNITY_4_5
                         case TweenAction.TEXT_ALPHA:
                             tween.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
                             if (tween.uiText != null){
@@ -2121,7 +2144,7 @@ public static void update() {
 								tween.onUpdateColor(toColor);
 							}
 						}
-						#if UNITY_4_6 || UNITY_5_0
+						#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
                         else if (tweenAction == TweenAction.TEXT_ALPHA){
                             Color c = tween.uiText.color;
                             c.a = val;
@@ -2277,7 +2300,7 @@ public static void update() {
 					    }else if(tweenAction==TweenAction.GUI_ROTATE){
 					    	tween.ltRect.rotation = newVect.x;
 					    }
-					    #if UNITY_4_6 || UNITY_5_0
+					    #if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
 						else if(tweenAction==TweenAction.CANVAS_MOVE){
 							tween.rectTransform.anchoredPosition = newVect;
 						}else if(tweenAction==TweenAction.CANVAS_SCALE){
@@ -2285,16 +2308,20 @@ public static void update() {
 						}
 						#endif
 					}
-					//Debug.Log("tween.delay:"+tween.delay + " tween.passed:"+tween.passed + " tweenAction:"+tweenAction + " to:"+newVect+" axis:"+tween.axis);
+					// Debug.Log("tween.delay:"+tween.delay + " tween.passed:"+tween.passed + " tweenAction:"+tweenAction + " to:"+newVect+" axis:"+tween.axis);
 
-					if(tween.onUpdateFloat!=null){
-						tween.onUpdateFloat(val);
-					}else if(tween.onUpdateFloatObject!=null){
-						tween.onUpdateFloatObject(val, tween.onUpdateParam);
-					}else if(tween.onUpdateVector3Object!=null){
-						tween.onUpdateVector3Object(newVect, tween.onUpdateParam);
-					}else if(tween.onUpdateVector3!=null){
-						tween.onUpdateVector3(newVect);
+					if(tween.hasUpdateCallback){
+						if(tween.onUpdateFloat!=null){
+							tween.onUpdateFloat(val);
+						}else if(tween.onUpdateFloatObject!=null){
+							tween.onUpdateFloatObject(val, tween.onUpdateParam);
+						}else if(tween.onUpdateVector3Object!=null){
+							tween.onUpdateVector3Object(newVect, tween.onUpdateParam);
+						}else if(tween.onUpdateVector3!=null){
+							tween.onUpdateVector3(newVect);
+						}else if(tween.onUpdateVector2!=null){
+							tween.onUpdateVector2(new Vector2(newVect.x,newVect.y));
+						}
 					}
 					#if LEANTWEEN_1
 					else if(tween.optional!=null){ // LeanTween 1.x legacy stuff
@@ -2844,7 +2871,7 @@ public static LTDescr alpha(LTRect ltRect, float to, float time){
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ALPHA, options().setRect( ltRect ) );
 }
 
-#if UNITY_4_6 || UNITY_5_0
+#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
 public static LTDescr textAlpha(GameObject gameObject, float to, float time){
     return pushNewTween(gameObject, new Vector3(to,0,0), time, TweenAction.TEXT_ALPHA, options());
 }
@@ -2884,7 +2911,7 @@ public static LTDescr color(GameObject gameObject, Color to, float time){
 	return pushNewTween( gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) ) );
 }
 
-#if UNITY_4_6 || UNITY_5_0
+#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
 public static LTDescr textColor(GameObject gameObject, Color to, float time){
     return pushNewTween(gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.TEXT_COLOR, options().setPoint(new Vector3(to.r, to.g, to.b)));
 }
@@ -3457,7 +3484,7 @@ public static LTDescr delayedSound( GameObject gameObject, AudioClip audio, Vect
 	return pushNewTween( gameObject, pos, 0f, TweenAction.DELAYED_SOUND, options().setTo( pos ).setFrom( new Vector3(volume,0,0) ).setAudio( audio ) );
 }
 
-#if UNITY_4_6 || UNITY_5_0
+#if !UNITY_3_5 || !UNITY_4_0 || !UNITY_4_0_1 || !UNITY_4_1 || !UNITY_4_2 || !UNITY_4_3
 
 /**
 * Move a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
@@ -4210,16 +4237,12 @@ private static float easeInOutCirc(float start, float end, float val){
 	return end / 2 * (Mathf.Sqrt(1 - val * val) + 1) + start;
 }
 
-/* GFX47 MOD START */
 private static float easeInBounce(float start, float end, float val){
 	end -= start;
 	float d = 1f;
 	return end - easeOutBounce(0, end, d-val) + start;
 }
-/* GFX47 MOD END */
 
-/* GFX47 MOD START */
-//public static function bounce(float start, float end, float val){
 private static float easeOutBounce(float start, float end, float val){
 	val /= 1f;
 	end -= start;
@@ -4236,16 +4259,13 @@ private static float easeOutBounce(float start, float end, float val){
 		return end * (7.5625f * (val) * val + .984375f) + start;
 	}
 }
-/* GFX47 MOD END */
 
-/* GFX47 MOD START */
 private static float easeInOutBounce(float start, float end, float val){
 	end -= start;
 	float d= 1f;
 	if (val < d/2) return easeInBounce(0, end, val*2) * 0.5f + start;
 	else return easeOutBounce(0, end, val*2-d) * 0.5f + end*0.5f + start;
 }
-/* GFX47 MOD END */
 
 private static float easeInBack(float start, float end, float val){
 	end -= start;
@@ -4274,7 +4294,6 @@ private static float easeInOutBack(float start, float end, float val){
 	return end / 2 * ((val) * val * (((s) + 1) * val + s) + 2) + start;
 }
 
-/* GFX47 MOD START */
 private static float easeInElastic(float start, float end, float val){
 	end -= start;
 	
@@ -4296,13 +4315,8 @@ private static float easeInElastic(float start, float end, float val){
 	val = val-1;
 	return -(a * Mathf.Pow(2, 10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p)) + start;
 }		
-/* GFX47 MOD END */
 
-/* GFX47 MOD START */
-//public static function elastic(float start, float end, float val){
 private static float easeOutElastic(float start, float end, float val){
-/* GFX47 MOD END */
-	//Thank you to rafael.marteleto for fixing this as a port over from Pedro's UnityTween
 	end -= start;
 	
 	float d = 1f;
@@ -4325,7 +4339,6 @@ private static float easeOutElastic(float start, float end, float val){
 	return (a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) + end + start);
 }		
 
-/* GFX47 MOD START */
 private static float easeInOutElastic(float start, float end, float val)
 {
 	end -= start;
@@ -4370,6 +4383,7 @@ public static void addListener( int eventId, System.Action<LTEvent> callback ){
 
 /**
 * Add a listener method to be called when the appropriate LeanTween.dispatchEvent is called
+*
 * @method LeanTween.addListener
 * @param {GameObject} caller:GameObject the gameObject the listener is attached to
 * @param {int} eventId:int a unique int that describes the event (best to use an enum)
