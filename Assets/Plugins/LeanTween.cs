@@ -1171,8 +1171,9 @@ public class LTDescr{
 	}
 
 	public LTDescr setFrom( Vector3 from ){
+		this.init();
 		this.from = from;
-		this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
+		// this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
 		this.diff = this.to - this.from;
 		return this;
 	}
@@ -1549,6 +1550,173 @@ public class LTDescr{
 		return this;
 	}
 #endif
+
+	public void init(){
+		this.hasInitiliazed = true;
+
+		// Set time based on current timeScale
+		if( !this.useEstimatedTime ){
+			this.time = this.time*Time.timeScale;
+		}
+
+		// Initialize From Values
+		switch(this.type){
+			case TweenAction.MOVE:
+				this.from = trans.position; break;
+			case TweenAction.MOVE_X:
+				this.from.x = trans.position.x; break;
+			case TweenAction.MOVE_Y:
+				this.from.x = trans.position.y; break;
+			case TweenAction.MOVE_Z:
+				this.from.x = trans.position.z; break;
+			case TweenAction.MOVE_LOCAL_X:
+				this.from.x = trans.localPosition.x; break;
+			case TweenAction.MOVE_LOCAL_Y:
+				this.from.x = trans.localPosition.y; break;
+			case TweenAction.MOVE_LOCAL_Z:
+				this.from.x = trans.localPosition.z; break;
+			case TweenAction.SCALE_X:
+				this.from.x = trans.localScale.x; break;
+			case TweenAction.SCALE_Y:
+				this.from.x = trans.localScale.y; break;
+			case TweenAction.SCALE_Z:
+				this.from.x = trans.localScale.z; break;
+			case TweenAction.ALPHA:
+				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+					this.from.x = trans.gameObject.renderer.material.color.a; 
+					break;	
+				#else
+					SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
+					if(ren!=null){
+						this.from.x = ren.color.a;
+					}else if(trans.gameObject.renderer!=null){
+						this.from.x = trans.gameObject.renderer.material.color.a;
+					}
+					break;
+				#endif
+			case TweenAction.MOVE_LOCAL:
+				this.from = trans.localPosition; break;
+			case TweenAction.MOVE_CURVED:
+			case TweenAction.MOVE_CURVED_LOCAL:
+			case TweenAction.MOVE_SPLINE:
+			case TweenAction.MOVE_SPLINE_LOCAL:
+				this.from.x = 0; break;
+			case TweenAction.ROTATE:
+				this.from = trans.eulerAngles; 
+				this.to = new Vector3(LeanTween.closestRot( this.from.x, this.to.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
+				break;
+			case TweenAction.ROTATE_X:
+				this.from.x = trans.eulerAngles.x; 
+				this.to.x = LeanTween.closestRot( this.from.x, this.to.x);
+				break;
+			case TweenAction.ROTATE_Y:
+				this.from.x = trans.eulerAngles.y; 
+				this.to.x = LeanTween.closestRot( this.from.x, this.to.x);
+				break;
+			case TweenAction.ROTATE_Z:
+				this.from.x = trans.eulerAngles.z; 
+				this.to.x = LeanTween.closestRot( this.from.x, this.to.x);
+				break;
+			case TweenAction.ROTATE_AROUND:
+				this.lastVal = 0.0f; // optional["last"]
+				this.from.x = 0.0f;
+				this.origRotation = trans.rotation; // optional["origRotation"
+				break;
+			case TweenAction.ROTATE_AROUND_LOCAL:
+				this.lastVal = 0.0f; // optional["last"]
+				this.from.x = 0.0f;
+				this.origRotation = trans.localRotation; // optional["origRotation"
+				break;
+			case TweenAction.ROTATE_LOCAL:
+				this.from = trans.localEulerAngles; 
+				this.to = new Vector3(LeanTween.closestRot( this.from.x, this.to.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
+				break;
+			case TweenAction.SCALE:
+				this.from = trans.localScale; break;
+			case TweenAction.GUI_MOVE:
+				this.from = new Vector3(this.ltRect.rect.x, this.ltRect.rect.y, 0); break;
+			case TweenAction.GUI_MOVE_MARGIN:
+				this.from = new Vector2(this.ltRect.margin.x, this.ltRect.margin.y); break;
+			case TweenAction.GUI_SCALE:
+				this.from = new Vector3(this.ltRect.rect.width, this.ltRect.rect.height, 0); break;
+			case TweenAction.GUI_ALPHA:
+				this.from.x = this.ltRect.alpha; break;
+			case TweenAction.GUI_ROTATE:
+				if(this.ltRect.rotateEnabled==false){
+					this.ltRect.rotateEnabled = true;
+					this.ltRect.resetForRotation();
+				}
+				
+				this.from.x = this.ltRect.rotation; break;
+			case TweenAction.ALPHA_VERTEX:
+				this.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
+				break;
+			case TweenAction.CALLBACK:
+				if(this.onCompleteOnStart){
+					if(this.onComplete!=null){
+						this.onComplete();
+					}else if(this.onCompleteObject!=null){
+						this.onCompleteObject(this.onCompleteParam);
+					}
+				}
+				break;
+			case TweenAction.CALLBACK_COLOR:
+				this.diff = new Vector3(1.0f,0.0f,0.0f);
+				break;
+			case TweenAction.COLOR:
+				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+					if(trans.gameObject.renderer){
+						Color col = trans.gameObject.renderer.material.color;
+						this.from = new Vector3(0.0f, col.a, 0.0f);
+						this.diff = new Vector3(1.0f,0.0f,0.0f);
+						this.axis = new Vector3( col.r, col.g, col.b );
+					}
+				#else
+					SpriteRenderer ren2 = trans.gameObject.GetComponent<SpriteRenderer>();
+					if(ren2!=null){
+						this.from = new Vector3(0.0f, ren2.color.a, 0.0f);
+						this.diff = new Vector3(1.0f,0.0f,0.0f);
+						this.axis = new Vector3( ren2.color.r, ren2.color.g, ren2.color.b );
+					}else if(trans.gameObject.renderer!=null){
+						if(trans.gameObject.renderer){
+							Color col = trans.gameObject.renderer.material.color;
+							this.from = new Vector3(0.0f, col.a, 0.0f);
+							this.diff = new Vector3(1.0f,0.0f,0.0f);
+							this.axis = new Vector3( col.r, col.g, col.b );
+						}
+					}
+				#endif
+				break;
+			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+            case TweenAction.TEXT_ALPHA:
+                this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+                if (this.uiText != null){
+                    this.from.x = this.uiText.color.a;
+                }
+                break;
+            case TweenAction.TEXT_COLOR:
+                this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+                if (this.uiText != null){
+                    Color col = this.uiText.color;
+                    this.from = new Vector3(0.0f, col.a, 0.0f);
+                    this.diff = new Vector3(1.0f, 0.0f, 0.0f);
+                    this.axis = new Vector3(col.r, col.g, col.b);
+                }
+                break;
+			case TweenAction.CANVAS_MOVE:
+				this.from = this.rectTransform.anchoredPosition; break;
+			case TweenAction.CANVAS_ROTATEAROUND:
+				this.lastVal = 0.0f;
+				this.from.x = 0.0f;
+				this.origRotation = this.rectTransform.rotation;
+				break;
+			case TweenAction.CANVAS_SCALE:
+				this.from = this.rectTransform.localScale; break;
+			#endif
+		}
+        if(this.type!=TweenAction.CALLBACK_COLOR && this.type!=TweenAction.COLOR && this.type!=TweenAction.TEXT_COLOR)
+			this.diff = this.to - this.from;
+	}
 }
 
 /**
@@ -1710,170 +1878,7 @@ public static void update() {
 				}
 
 				if(!tween.hasInitiliazed && ((tween.passed==0.0 && tween.delay==0.0) || tween.passed>0.0) ){
-					tween.hasInitiliazed = true;
-
-					// Set time based on current timeScale
-					if( !tween.useEstimatedTime ){
-						tween.time = tween.time*Time.timeScale;
-					}
-
-					// Initialize From Values
-					switch(tweenAction){
-						case TweenAction.MOVE:
-							tween.from = trans.position; break;
-						case TweenAction.MOVE_X:
-							tween.from.x = trans.position.x; break;
-						case TweenAction.MOVE_Y:
-							tween.from.x = trans.position.y; break;
-						case TweenAction.MOVE_Z:
-							tween.from.x = trans.position.z; break;
-						case TweenAction.MOVE_LOCAL_X:
-							tweens[i].from.x = trans.localPosition.x; break;
-						case TweenAction.MOVE_LOCAL_Y:
-							tweens[i].from.x = trans.localPosition.y; break;
-						case TweenAction.MOVE_LOCAL_Z:
-							tweens[i].from.x = trans.localPosition.z; break;
-						case TweenAction.SCALE_X:
-							tween.from.x = trans.localScale.x; break;
-						case TweenAction.SCALE_Y:
-							tween.from.x = trans.localScale.y; break;
-						case TweenAction.SCALE_Z:
-							tween.from.x = trans.localScale.z; break;
-						case TweenAction.ALPHA:
-							#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-								tween.from.x = trans.gameObject.renderer.material.color.a; 
-								break;	
-							#else
-								SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-								if(ren!=null){
-									tween.from.x = ren.color.a;
-								}else if(trans.gameObject.renderer!=null){
-									tween.from.x = trans.gameObject.renderer.material.color.a;
-								}
-								break;
-							#endif
-						case TweenAction.MOVE_LOCAL:
-							tween.from = trans.localPosition; break;
-						case TweenAction.MOVE_CURVED:
-						case TweenAction.MOVE_CURVED_LOCAL:
-						case TweenAction.MOVE_SPLINE:
-						case TweenAction.MOVE_SPLINE_LOCAL:
-							tween.from.x = 0; break;
-						case TweenAction.ROTATE:
-							tween.from = trans.eulerAngles; 
-							tween.to = new Vector3(LeanTween.closestRot( tween.from.x, tween.to.x), LeanTween.closestRot( tween.from.y, tween.to.y), LeanTween.closestRot( tween.from.z, tween.to.z));
-							break;
-						case TweenAction.ROTATE_X:
-							tween.from.x = trans.eulerAngles.x; 
-							tween.to.x = LeanTween.closestRot( tween.from.x, tween.to.x);
-							break;
-						case TweenAction.ROTATE_Y:
-							tween.from.x = trans.eulerAngles.y; 
-							tween.to.x = LeanTween.closestRot( tween.from.x, tween.to.x);
-							break;
-						case TweenAction.ROTATE_Z:
-							tween.from.x = trans.eulerAngles.z; 
-							tween.to.x = LeanTween.closestRot( tween.from.x, tween.to.x);
-							break;
-						case TweenAction.ROTATE_AROUND:
-							tween.lastVal = 0.0f; // optional["last"]
-							tween.from.x = 0.0f;
-							tween.origRotation = trans.rotation; // optional["origRotation"
-							break;
-						case TweenAction.ROTATE_AROUND_LOCAL:
-							tween.lastVal = 0.0f; // optional["last"]
-							tween.from.x = 0.0f;
-							tween.origRotation = trans.localRotation; // optional["origRotation"
-							break;
-						case TweenAction.ROTATE_LOCAL:
-							tween.from = trans.localEulerAngles; 
-							tween.to = new Vector3(LeanTween.closestRot( tween.from.x, tween.to.x), LeanTween.closestRot( tween.from.y, tween.to.y), LeanTween.closestRot( tween.from.z, tween.to.z));
-							break;
-						case TweenAction.SCALE:
-							tween.from = trans.localScale; break;
-						case TweenAction.GUI_MOVE:
-							tween.from = new Vector3(tween.ltRect.rect.x, tween.ltRect.rect.y, 0); break;
-						case TweenAction.GUI_MOVE_MARGIN:
-							tween.from = new Vector2(tween.ltRect.margin.x, tween.ltRect.margin.y); break;
-						case TweenAction.GUI_SCALE:
-							tween.from = new Vector3(tween.ltRect.rect.width, tween.ltRect.rect.height, 0); break;
-						case TweenAction.GUI_ALPHA:
-							tween.from.x = tween.ltRect.alpha; break;
-						case TweenAction.GUI_ROTATE:
-							if(tween.ltRect.rotateEnabled==false){
-								tween.ltRect.rotateEnabled = true;
-								tween.ltRect.resetForRotation();
-							}
-							
-							tween.from.x = tween.ltRect.rotation; break;
-						case TweenAction.ALPHA_VERTEX:
-							tween.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
-							break;
-						case TweenAction.CALLBACK:
-							if(tween.onCompleteOnStart){
-								if(tween.onComplete!=null){
-									tween.onComplete();
-								}else if(tween.onCompleteObject!=null){
-									tween.onCompleteObject(tween.onCompleteParam);
-								}
-							}
-							break;
-						case TweenAction.CALLBACK_COLOR:
-							tween.diff = new Vector3(1.0f,0.0f,0.0f);
-							break;
-						case TweenAction.COLOR:
-							#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-								if(trans.gameObject.renderer){
-									Color col = trans.gameObject.renderer.material.color;
-									tween.from = new Vector3(0.0f, col.a, 0.0f);
-									tween.diff = new Vector3(1.0f,0.0f,0.0f);
-									tween.axis = new Vector3( col.r, col.g, col.b );
-								}
-							#else
-								SpriteRenderer ren2 = trans.gameObject.GetComponent<SpriteRenderer>();
-								if(ren2!=null){
-									tween.from = new Vector3(0.0f, ren2.color.a, 0.0f);
-									tween.diff = new Vector3(1.0f,0.0f,0.0f);
-									tween.axis = new Vector3( ren2.color.r, ren2.color.g, ren2.color.b );
-								}else if(trans.gameObject.renderer!=null){
-									if(trans.gameObject.renderer){
-										Color col = trans.gameObject.renderer.material.color;
-										tween.from = new Vector3(0.0f, col.a, 0.0f);
-										tween.diff = new Vector3(1.0f,0.0f,0.0f);
-										tween.axis = new Vector3( col.r, col.g, col.b );
-									}
-								}
-							#endif
-							break;
-						#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-                        case TweenAction.TEXT_ALPHA:
-                            tween.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                            if (tween.uiText != null){
-                                tween.from.x = tween.uiText.color.a;
-                            }
-                            break;
-                        case TweenAction.TEXT_COLOR:
-                            tween.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                            if (tween.uiText != null){
-                                Color col = tween.uiText.color;
-                                tween.from = new Vector3(0.0f, col.a, 0.0f);
-                                tween.diff = new Vector3(1.0f, 0.0f, 0.0f);
-                                tween.axis = new Vector3(col.r, col.g, col.b);
-                            }
-                            break;
-						case TweenAction.CANVAS_MOVE:
-							tween.from = tween.rectTransform.anchoredPosition; break;
-						case TweenAction.CANVAS_ROTATEAROUND:
-							tween.from = tween.rectTransform.localEulerAngles; 
-							tween.to = new Vector3(LeanTween.closestRot( tween.from.x, tween.to.x), LeanTween.closestRot( tween.from.y, tween.to.y), LeanTween.closestRot( tween.from.z, tween.to.z));
-							tween.origRotation = tween.rectTransform.rotation; 
-							break;
-						case TweenAction.CANVAS_SCALE:
-							tween.from = tween.rectTransform.localScale; break;
-						#endif
-					}
-                    if(tweenAction!=TweenAction.CALLBACK_COLOR && tweenAction!=TweenAction.COLOR && tweenAction!=TweenAction.TEXT_COLOR)
-						tween.diff = tween.to - tween.from;
+					tween.init();
 				}
 				if(tween.delay<=0){
 					// Move Values
@@ -2812,7 +2817,7 @@ public static LTDescr options(){
 	tweens[i].reset();
 	tweens[i].setId( (uint)i );
 
-	// Debug.Log("new tween with i:"+i+" counter:"+tweens[i].counter+" tweenMaxSearch:"+tweenMaxSearch);
+	// Debug.Log("new tween with i:"+i+" counter:"+tweens[i].counter+" tweenMaxSearch:"+tweenMaxSearch+" tween:"+tweens[i]);
 
 	return tweens[i];
 }
