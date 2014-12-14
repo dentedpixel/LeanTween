@@ -2181,14 +2181,13 @@ public static void update() {
                         }
                         else if (tweenAction == TweenAction.TEXT_COLOR){
                             Color toColor = tweenColor(tween, val);
-                            UnityEngine.UI.Text uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                            uiText.color = toColor;
+                            tween.uiText.color = toColor;
                         	if (tween.onUpdateColor != null){
                                 tween.onUpdateColor(toColor);
                             }
                             if(trans.childCount>0){
     							foreach (Transform child in trans) {
-    								uiText = child.gameObject.GetComponent<UnityEngine.UI.Text>();
+    								UnityEngine.UI.Text uiText = child.gameObject.GetComponent<UnityEngine.UI.Text>();
     								if(uiText!=null){
 	    								uiText.color = toColor;
 			    					}
@@ -2511,6 +2510,7 @@ public static void update() {
 	}
 }
 
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 private static void textAlphaRecursive( Transform trans, float val ){
 	UnityEngine.UI.Text uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
 	if(uiText!=null){
@@ -2524,6 +2524,7 @@ private static void textAlphaRecursive( Transform trans, float val ){
 		}
 	}
 }
+#endif
 
 private static Color tweenColor( LTDescr tween, float val ){
 	Vector3 diff3 = tween.point - tween.axis;
@@ -2922,6 +2923,17 @@ public static LTDescr alpha(LTRect ltRect, float to, float time){
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ALPHA, options().setRect( ltRect ) );
 }
 
+/**
+* Fade a Unity UI Object
+* 
+* @method LeanTween.alpha
+* @param {RectTransform} rectTransform:RectTransform RectTransform that you wish to fade
+* @param {float} to:float the final alpha value (0-1)
+* @param {float} time:float The time with which to fade the object
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* LeanTween.alpha(gameObject.GetComponent<RectTransform>(), 1f, 1f) .setEase(LeanTweenType.easeInCirc);
+*/	
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 public static LTDescr textAlpha(RectTransform rectTransform, float to, float time){
     return pushNewTween(rectTransform.gameObject, new Vector3(to,0,0), time, TweenAction.TEXT_ALPHA, options());
@@ -2963,6 +2975,17 @@ public static LTDescr color(GameObject gameObject, Color to, float time){
 }
 
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+/**
+* Change the color a Unity UI Object
+* 
+* @method LeanTween.color
+* @param {RectTransform} rectTransform:RectTransform RectTransform that you wish to fade
+* @param {Color} to:Color the final alpha value ex: Color.Red, new Color(1.0f,1.0f,0.0f,0.8f)
+* @param {float} time:float The time with which to fade the object
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* LeanTween.textColor(gameObject.GetComponent<RectTransform>(), Color.yellow, 1f) .setDelay(1f);
+*/
 public static LTDescr textColor(RectTransform rectTransform, Color to, float time){
     return pushNewTween(rectTransform.gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.TEXT_COLOR, options().setPoint(new Vector3(to.r, to.g, to.b)));
 }
@@ -3560,7 +3583,7 @@ public static LTDescr delayedSound( GameObject gameObject, AudioClip audio, Vect
 * @param {Vector3} to:Vector3 The final Vector3 with which to tween to
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
-* @example LeanTween.move(button, new Vector3(200f,-100f,0f), 1f).setDelay(1f);
+* @example LeanTween.move(gameObject.GetComponent<RectTransform>(), new Vector3(200f,-100f,0f), 1f).setDelay(1f);
 */
 public static LTDescr move(RectTransform rectTrans, Vector3 to, float time){
 	return pushNewTween( rectTrans.gameObject, to, time, TweenAction.CANVAS_MOVE, options().setRect( rectTrans ) );
@@ -3574,7 +3597,7 @@ public static LTDescr move(RectTransform rectTrans, Vector3 to, float time){
 * @param {float} to:float The degree with which to rotate the RectTransform
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
-* @example LeanTween.rotate(button, 90f, 1f).setDelay(1f);
+* @example LeanTween.rotate(gameObject.GetComponent<RectTransform>(), 90f, 1f).setDelay(1f);
 */
 public static LTDescr rotate(RectTransform rectTrans, float to, float time){
 	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_ROTATEAROUND, options().setRect( rectTrans ).setAxis(Vector3.forward) );
@@ -3589,7 +3612,7 @@ public static LTDescr rotate(RectTransform rectTrans, float to, float time){
 * @param {float} to:float The degree with which to rotate the RectTransform
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
-* @example LeanTween.rotateAround(button, Vector3.forward, 90f, 1f).setDelay(1f);
+* @example LeanTween.rotateAround(gameObject.GetComponent<RectTransform>(), Vector3.forward, 90f, 1f).setDelay(1f);
 */
 public static LTDescr rotateAround(RectTransform rectTrans, Vector3 axis, float to, float time){
 	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_ROTATEAROUND, options().setRect( rectTrans ).setAxis(axis) );
@@ -3603,7 +3626,7 @@ public static LTDescr rotateAround(RectTransform rectTrans, Vector3 axis, float 
 * @param {float} to:float The final Vector3 with which to tween to (localScale)
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
-* @example LeanTween.scale(button, button.localScale*2f, 1f).setDelay(1f);
+* @example LeanTween.scale(gameObject.GetComponent<RectTransform>(), gameObject.GetComponent<RectTransform>().localScale*2f, 1f).setDelay(1f);
 */
 public static LTDescr scale(RectTransform rectTrans, Vector3 to, float time){
 	return pushNewTween( rectTrans.gameObject, to, time, TweenAction.CANVAS_SCALE, options().setRect( rectTrans ) );
@@ -3617,7 +3640,7 @@ public static LTDescr scale(RectTransform rectTrans, Vector3 to, float time){
 * @param {float} to:float The final Vector3 with which to tween to (localScale)
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
-* @example LeanTween.alpha(button, 0.5f, 1f).setDelay(1f);
+* @example LeanTween.alpha(gameObject.GetComponent<RectTransform>(), 0.5f, 1f).setDelay(1f);
 */
 public static LTDescr alpha(RectTransform rectTrans, float to, float time){
 	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_ALPHA, options().setRect( rectTrans ) );
@@ -3631,7 +3654,7 @@ public static LTDescr alpha(RectTransform rectTrans, float to, float time){
 * @param {float} to:float The final Vector3 with which to tween to (localScale)
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
-* @example LeanTween.alpha(button, 0.5f, 1f).setDelay(1f);
+* @example LeanTween.alpha(gameObject.GetComponent<RectTransform>(), 0.5f, 1f).setDelay(1f);
 */
 public static LTDescr color(RectTransform rectTrans, Color to, float time){
 	return pushNewTween( rectTrans.gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.CANVAS_COLOR, options().setRect( rectTrans ).setPoint( new Vector3(to.r, to.g, to.b) ) );
