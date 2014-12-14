@@ -1,6 +1,6 @@
 // Copyright (c) 2014 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.20 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.21 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -2923,18 +2923,19 @@ public static LTDescr alpha(LTRect ltRect, float to, float time){
 	return pushNewTween( tweenEmpty, new Vector3(to,0f,0f), time, TweenAction.GUI_ALPHA, options().setRect( ltRect ) );
 }
 
+
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 /**
 * Fade a Unity UI Object
 * 
-* @method LeanTween.alpha
+* @method LeanTween.textAlpha
 * @param {RectTransform} rectTransform:RectTransform RectTransform that you wish to fade
 * @param {float} to:float the final alpha value (0-1)
 * @param {float} time:float The time with which to fade the object
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
-* LeanTween.alpha(gameObject.GetComponent<RectTransform>(), 1f, 1f) .setEase(LeanTweenType.easeInCirc);
+* LeanTween.textAlpha(gameObject.GetComponent<RectTransform>(), 1f, 1f) .setEase(LeanTweenType.easeInCirc);
 */	
-#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 public static LTDescr textAlpha(RectTransform rectTransform, float to, float time){
     return pushNewTween(rectTransform.gameObject, new Vector3(to,0,0), time, TweenAction.TEXT_ALPHA, options());
 }
@@ -2978,7 +2979,7 @@ public static LTDescr color(GameObject gameObject, Color to, float time){
 /**
 * Change the color a Unity UI Object
 * 
-* @method LeanTween.color
+* @method LeanTween.textColor
 * @param {RectTransform} rectTransform:RectTransform RectTransform that you wish to fade
 * @param {Color} to:Color the final alpha value ex: Color.Red, new Color(1.0f,1.0f,0.0f,0.8f)
 * @param {float} time:float The time with which to fade the object
