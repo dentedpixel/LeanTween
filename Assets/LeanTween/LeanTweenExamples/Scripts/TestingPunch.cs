@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class PunchTester : MonoBehaviour {
+public class TestingPunch : MonoBehaviour {
 
     public AnimationCurve exportCurve;
 	

@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using System.Threading;
 
-public class ExampleCSharp : MonoBehaviour {
+public class GeneralExamplesCS : MonoBehaviour {
 	public AnimationCurve customAnimationCurve;
 	public Transform pt1;
 	public Transform pt2;

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class MenuExampleCSharp : MonoBehaviour {
+public class GUIExamplesCS : MonoBehaviour {
 	public Texture2D grumpy;
 	public Texture2D beauty;
 

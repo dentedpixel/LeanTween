@@ -1,12 +1,14 @@
+#if !UNITY_FLASH
 using UnityEngine;
 using System.Collections;
 
-public class EventListenersScattered : MonoBehaviour {
+
+public class GeneralEventsListenersCS : MonoBehaviour {
 
 	Vector3 towardsRotation;
 	float turnForLength = 0.5f;
 	float turnForIter = 0f;
-	Vector3 fromColor;
+	Color fromColor;
 
 	// It's best to make this a public enum that you use throughout your project, so every class can have access to it
 	public enum MyEvents{ 
@@ -19,7 +21,7 @@ public class EventListenersScattered : MonoBehaviour {
 		LeanTween.LISTENERS_MAX = 100; // This is the maximum of event listeners you will have added as listeners
 		LeanTween.EVENTS_MAX = (int)MyEvents.LENGTH; // The maximum amount of events you will be dispatching
 
-		fromColor = new Vector3(renderer.material.color.r, renderer.material.color.g, renderer.material.color.b);
+		fromColor = renderer.material.color;
 	}
 
 	void Start () {
@@ -37,12 +39,12 @@ public class EventListenersScattered : MonoBehaviour {
 	void changeColor( LTEvent e ){
 		Transform tran = (Transform)e.data;
 		float distance = Vector3.Distance( tran.position, transform.position);
-		Vector3 to = new Vector3(Random.Range(0f,1f),0f,Random.Range(0f,1f));
-		LeanTween.value( gameObject, updateColor, fromColor, to, 0.8f ).setRepeat(2).setLoopPingPong().setDelay(distance*0.05f);
-	}
-
-	void updateColor( Vector3 v ){
-		renderer.material.color = new Color( v.x, v.y, v.z );
+		Color to = new Color(Random.Range(0f,1f),0f,Random.Range(0f,1f));
+		LeanTween.value( gameObject, fromColor, to, 0.8f ).setRepeat(2).setLoopPingPong().setDelay(distance*0.05f).setOnUpdate(
+			(Color col)=>{
+				renderer.material.color = col;
+			}
+		);
 	}
 
 	// ****** Physics / AI Stuff
@@ -78,3 +80,4 @@ public class EventListenersScattered : MonoBehaviour {
 		}
 	}
 }
+#endif
