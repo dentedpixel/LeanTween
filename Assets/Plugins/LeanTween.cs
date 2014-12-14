@@ -1066,6 +1066,7 @@ public class LTDescr{
 		#if LEANTWEEN_1
 		this.optional = null;
 		#endif
+		this.trans = null;
 		this.passed = this.delay = this.lastVal = 0.0f;
 		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = false;
 		this.animationCurve = null;
@@ -1257,10 +1258,11 @@ public class LTDescr{
 			this.diff = this.to - this.from;
 	}
 
-	private void setFromColor( Color col ){
+	public LTDescr setFromColor( Color col ){
 		this.from = new Vector3(0.0f, col.a, 0.0f);
 		this.diff = new Vector3(1.0f,0.0f,0.0f);
 		this.axis = new Vector3( col.r, col.g, col.b );
+		return this;
 	}
 
 	/**
@@ -1344,12 +1346,19 @@ public class LTDescr{
 	}
 
 	public LTDescr setTo( Vector3 to ){
-		this.to = to;
+		if(this.hasInitiliazed){
+			this.to = to;
+			this.diff = to - this.from;
+		}else{
+			this.to = to;
+		}
+		
 		return this;
 	}
 
 	public LTDescr setFrom( Vector3 from ){
-		this.init();
+		if(this.trans)
+			this.init();
 		this.from = from;
 		// this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
 		this.diff = this.to - this.from;
@@ -1369,6 +1378,11 @@ public class LTDescr{
 	public LTDescr setId( uint id ){
 		this._id = id;
 		this.counter = global_counter;
+		return this;
+	}
+
+	public LTDescr setTime( float time ){
+		this.time = time;
 		return this;
 	}
 
@@ -2063,51 +2077,23 @@ public static void update() {
 					    }else if(tweenAction==TweenAction.ROTATE_Z){
 					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,val);
 					    }else if(tweenAction==TweenAction.ROTATE_AROUND){
-							
-							float move = val - tween.lastVal;
-					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff + " type:"+tween.tweenType);
-					    	if(isTweenFinished){
-					    		if(tween.direction>0){
-					    			// figure out how much the rotation has shifted the object over
-					    			Vector3 origPos = trans.localPosition;
-					    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, -tween.to.x);
-					    			Vector3 diff = origPos - trans.localPosition;
-					    			
-					    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
-					    			trans.rotation = tween.origRotation;
-						    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, tween.to.x);
-				    			}else{
-				    				trans.rotation = tween.origRotation;
-				    			}
-					    	}else{
-					    		/*trans.rotation = tween.origRotation;
-					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, val);
-								tween.lastVal = val;*/
-
-								trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, move);
-								tween.lastVal = val;
-
-								//trans.rotation =  * Quaternion.AngleAxis(val, tween.axis);
-					    	}
+							Vector3 origPos = trans.localPosition;
+			    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, -val);
+			    			Vector3 diff = origPos - trans.localPosition;
+			    			
+			    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			    			trans.rotation = tween.origRotation;
+				    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, val);
 
 					    }else if(tweenAction==TweenAction.ROTATE_AROUND_LOCAL){
-							float move = val -  tween.lastVal;
-					    	if(isTweenFinished){
-					    		if(tween.direction>0){
-					    			Vector3 origPos = trans.localPosition;
-					    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), -tween.to.x);
-					    			Vector3 diff = origPos - trans.localPosition;
-					    			
-					    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
-					    			trans.localRotation = tween.origRotation;
-					    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), tween.to.x);
-				    			}else{
-				    				trans.localRotation = tween.origRotation;
-				    			}
-					    	}else{
-					    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), move);
-								tween.lastVal = val;
-					    	}
+							Vector3 origPos = trans.localPosition;
+			    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), -val);
+			    			Vector3 diff = origPos - trans.localPosition;
+			    			
+			    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			    			trans.localRotation = tween.origRotation;
+			    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), val);
+		    			
 					    }else if(tweenAction==TweenAction.ALPHA){
 					    	#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 
@@ -2195,28 +2181,16 @@ public static void update() {
     						}
                         }
 						else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND){
-							
-							float move = val - tween.lastVal;
-					    	// Debug.Log("move:"+move+" val:"+val + " timeTotal:"+timeTotal + " from:"+tween.from+ " diff:"+tween.diff + " type:"+tween.tweenType);
-					    	RectTransform rect = tween.rectTransform;
-					    	if(isTweenFinished){
-					    		if(tween.direction>0){
-					    			// figure out how much the rotation has shifted the object over
-					    			Vector3 origPos = rect.localPosition;
-					    			rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, -tween.to.x);
-					    			Vector3 diff = origPos - rect.localPosition;
-					    			
-					    			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
-					    			rect.rotation = tween.origRotation;
-						    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, tween.to.x);
-				    			}else{
-				    				rect.rotation = tween.origRotation;
-				    			}
-					    	}else{
-					    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, move);
-								tween.lastVal = val;
-					    	}
-
+							// figure out how much the rotation has shifted the object over
+			    			RectTransform rect = tween.rectTransform;
+			    			float move = (tween.diff.x * val);
+			    			Vector3 origPos = rect.localPosition;
+			    			rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, -val);
+			    			Vector3 diff = origPos - rect.localPosition;
+			    			
+			    			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			    			rect.rotation = tween.origRotation;
+				    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, val);
 					    }
 						#endif
 						
@@ -3560,9 +3534,7 @@ public static LTDescr value(GameObject gameObject, Vector3 from, Vector3 to, flo
 */
 public static LTDescr value(GameObject gameObject, Color from, Color to, float time){
 	return pushNewTween( gameObject, new Vector3(1f, to.a, 0f), time, TweenAction.CALLBACK_COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) )
-		.setFrom( new Vector3(0f, from.a, 0f) ) 
-		.setDiff( new Vector3(1f, 0f, 0f) )
-		.setAxis( new Vector3( from.r, from.g, from.b ) )
+		.setFromColor(from).setHasInitialized(false)
 	);
 }
 
