@@ -2183,7 +2183,6 @@ public static void update() {
 						else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND){
 							// figure out how much the rotation has shifted the object over
 			    			RectTransform rect = tween.rectTransform;
-			    			float move = (tween.diff.x * val);
 			    			Vector3 origPos = rect.localPosition;
 			    			rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, -val);
 			    			Vector3 diff = origPos - rect.localPosition;
