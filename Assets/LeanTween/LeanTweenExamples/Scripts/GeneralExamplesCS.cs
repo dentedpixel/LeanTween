@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 using System.Threading;
 
-public class ExampleCSharp : MonoBehaviour {
+public class GeneralExamplesCS : MonoBehaviour {
 	public AnimationCurve customAnimationCurve;
 	public Transform pt1;
 	public Transform pt2;
@@ -16,6 +16,12 @@ public class ExampleCSharp : MonoBehaviour {
 	private string[] exampleFunctions = new string[] { "updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample", "colorExample" };
 	private bool useEstimatedTime = true;
 	private GameObject ltLogo;
+
+	public enum TimingType{
+		SteadyNormalTime,
+		IgnoreTimeScale,
+		VariableTimeScale
+	}
 
 	void Awake(){
 		// LeanTween.init(3200); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
@@ -56,8 +62,6 @@ public class ExampleCSharp : MonoBehaviour {
 		LeanTween.delayedCall( gameObject, delayTime, cycleThroughExamples).setUseEstimatedTime(useEstimatedTime);
 		
 		exampleIter = exampleIter+1>=exampleFunctions.Length ? 0 : exampleIter + 1;
-		
-		
 	}
 
 	public void updateValue3Example(){

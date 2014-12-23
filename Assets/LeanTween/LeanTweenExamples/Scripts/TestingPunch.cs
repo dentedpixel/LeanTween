@@ -1,13 +1,15 @@
 using UnityEngine;
 using System.Collections;
 
-public class PunchTester : MonoBehaviour {
+public class TestingPunch : MonoBehaviour {
 
-	// Use this for initialization
+    public AnimationCurve exportCurve;
+	
 	void Start () {
 	   LeanTween.rotateAround(gameObject, gameObject.transform.rotation.eulerAngles, 360f, 5f)
                 .setDelay(1f)
                 .setEase(LeanTweenType.easeOutBounce);
+        Debug.Log( "exported curve:" + curveToString(exportCurve) );
 	}
 
 	void Update () 
@@ -87,5 +89,15 @@ public class PunchTester : MonoBehaviour {
     void destroyOnComp( object p ){
       GameObject g = (GameObject)p;
       Destroy( g );
+    }
+
+    string curveToString( AnimationCurve curve) {
+        string str = "";
+        for(int i = 0; i < curve.length; i++){
+            str += "new Keyframe("+curve[i].time+"f, "+curve[i].value+"f)";
+            if(i<curve.length-1)
+                str += ", ";
+        }
+        return "new AnimationCurve( "+str+" )";
     }
 }

@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ExampleSpline2d : MonoBehaviour {
+public class PathSpline2d : MonoBehaviour {
 
 	public Transform[] trans;
 	public Texture2D spriteTexture;

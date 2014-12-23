@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class MenuSimpleCSharp : MonoBehaviour {
+public class GUISimpleCS : MonoBehaviour {
 
 private LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );
 

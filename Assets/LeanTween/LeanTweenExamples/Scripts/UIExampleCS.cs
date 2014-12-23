@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class CanvasExampleCS : MonoBehaviour {
-	#if UNITY_4_6 || UNITY_5_0
+public class UIExampleCS : MonoBehaviour {
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 
 	public RectTransform button;
 
@@ -43,6 +43,11 @@ public class CanvasExampleCS : MonoBehaviour {
 		LeanTween.rotateAround(button, Vector3.forward, 90f, 1f).setDelay(2f);
 		LeanTween.scale(button, button.localScale*2f, 1f).setDelay(3f);
 		LeanTween.rotateAround(button, Vector3.forward, -90f, 1f).setDelay(4f).setEase(LeanTweenType.easeInOutElastic);
+	}
+
+	#else
+	void Start(){
+		Debug.LogError("Unity 4.6+ is required to use the new UI");
 	}
 	
 	#endif
