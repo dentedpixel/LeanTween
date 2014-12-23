@@ -1,6 +1,6 @@
 // Copyright (c) 2014 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.21 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.22 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -590,10 +590,9 @@ public class LTBezierPath{
 		transform.position = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f){
-			float angle = Vector3.Angle(transform.position, point( ratio ) - transform.position );
-			transform.rotation = Quaternion.identity;
-			transform.RotateAround(transform.position, Vector3.up, 90.0f);
-			transform.RotateAround(transform.position, Vector3.right, angle);
+			Vector3 v3Dir = point( ratio ) - transform.position;
+			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
+			transform.eulerAngles = new Vector3(0, 0, angle);
 		}
 	}
 
@@ -601,10 +600,9 @@ public class LTBezierPath{
 		transform.localPosition = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f){
-			float angle = Vector3.Angle(transform.localPosition, transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition );
-			transform.rotation = Quaternion.identity;
-			transform.RotateAround(transform.position, Vector3.up, 90.0f);
-			transform.RotateAround(transform.position, Vector3.right, angle);
+			Vector3 v3Dir = transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition;
+			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
+			transform.eulerAngles = new Vector3(0, 0, angle);
 		}
 	}
 
@@ -784,7 +782,7 @@ public class LTSpline {
 		if(ratio<=1.0f){
 			Vector3 v3Dir = point( ratio ) - transform.position;
 			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
-			transform.eulerAngles = new Vector3(0, 0, angle-90);
+			transform.eulerAngles = new Vector3(0, 0, angle);
 		}
 	}
 
@@ -794,7 +792,7 @@ public class LTSpline {
 		if(ratio<=1.0f){
 			Vector3 v3Dir = transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition;
 			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
-			transform.eulerAngles = new Vector3(0, 0, angle-90);
+			transform.eulerAngles = new Vector3(0, 0, angle);
 		}
 	}
 
@@ -1731,6 +1729,17 @@ public class LTDescr{
 		return this;
 	}
 
+	/**
+	* Set the onComplete method to be called at the beginning of the tween (it will still be called when it is completed as well)
+	* @method setOnCompleteOnStart
+	* @param {bool} isOn:bool does call onComplete at the start of the tween
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.delayedCall(gameObject, 2f, ()=>{<br> // Flash an object 5 times
+	* &nbsp;LeanTween.alpha(gameObject, 0f, 1f);<br>
+	* &nbsp;LeanTween.alpha(gameObject, 1f, 0f).setDelay(1f);<br>
+	* }).setOnCompleteOnStart(true).setRepeat(5);<br>
+	*/
 	public LTDescr setOnCompleteOnStart( bool isOn ){
 		this.onCompleteOnStart = isOn;
 		return this;
