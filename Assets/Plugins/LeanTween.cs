@@ -1092,9 +1092,9 @@ public class LTDescr{
 		this.hasInitiliazed = true;
 
 		// Set time based on current timeScale
-		if( !this.useEstimatedTime ){
+		/*if( !this.useEstimatedTime ){
 			this.time = this.time*Time.timeScale;
-		}
+		}*/
 
 		// Initialize From Values
 		switch(this.type){
@@ -1307,7 +1307,7 @@ public class LTDescr{
 		if(this.useEstimatedTime){
 			this.delay = delay;
 		}else{
-			this.delay = delay*Time.timeScale;
+			this.delay = delay;//*Time.timeScale;
 		}
 		
 		return this;
@@ -1866,7 +1866,7 @@ public static void update() {
 		if(dtEstimated>0.2f) // a catch put in, when at the start sometimes this number can grow unrealistically large
 			dtEstimated = 0.2f;
 		previousRealTime = Time.realtimeSinceStartup;
-		dtActual = Time.deltaTime*Time.timeScale;
+		dtActual = Time.deltaTime;
 		maxTweenReached = 0;
 		finishedCnt = 0;
 		// if(tweenMaxSearch>1500)
