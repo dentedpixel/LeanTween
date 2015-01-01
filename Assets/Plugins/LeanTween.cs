@@ -1127,7 +1127,12 @@ public class LTDescr{
 					if(ren!=null){
 						this.from.x = ren.color.a;
 					}else if(trans.gameObject.renderer!=null){
-						this.from.x = trans.gameObject.renderer.material.color.a;
+						if(trans.gameObject.renderer.material.HasProperty("_Color")){
+							this.from.x = trans.gameObject.renderer.material.color.a;
+						}else{
+							Color col = trans.gameObject.renderer.material.GetColor("_TintColor");
+							this.from.x = col.a;
+						}
 					}
 					break;
 				#endif
@@ -1214,8 +1219,13 @@ public class LTDescr{
 						this.axis = new Vector3( ren2.color.r, ren2.color.g, ren2.color.b );
 					}else if(trans.gameObject.renderer!=null){
 						if(trans.gameObject.renderer){
-							Color col = trans.gameObject.renderer.material.color;
-							this.setFromColor( col );
+							if(trans.gameObject.renderer.material.HasProperty ("_Color")){
+								Color col = trans.gameObject.renderer.material.color;
+								this.setFromColor( col );
+							}else{
+								Color col = trans.gameObject.renderer.material.GetColor ("_TintColor");
+								this.setFromColor( col );
+							}
 						}
 					}
 				#endif
@@ -2119,7 +2129,12 @@ public static void update() {
 							}else{
 								if(trans.gameObject.renderer!=null){
 									foreach(Material mat in trans.gameObject.renderer.materials){
-		        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+										if(mat.HasProperty("_Color")){
+			        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+		        						}else{
+		        							Color col = mat.GetColor ("_TintColor");
+											mat.SetColor("_TintColor", new Color( col.r, col.g, col.b, val));
+		        						}
 		    						}
 		    					}
 	    						if(trans.childCount>0){
