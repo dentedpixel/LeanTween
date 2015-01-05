@@ -5,15 +5,11 @@ public class GeneralBasicCS : MonoBehaviour {
 
 	public GameObject prefabAvatar;
 
-	private GameObject avatarRotate;
-	private GameObject avatarScale;
-	private GameObject avatarMove;
-
 	void Start () {
 		// Setup
-		avatarRotate = GameObject.Find("AvatarRotate");
-		avatarScale = GameObject.Find("AvatarScale");
-		avatarMove = GameObject.Find("AvatarMove");
+		GameObject avatarRotate = GameObject.Find("AvatarRotate");
+		GameObject avatarScale = GameObject.Find("AvatarScale");
+		GameObject avatarMove = GameObject.Find("AvatarMove");
 
 		// Rotate Example
 		LeanTween.rotateAround( avatarRotate, Vector3.forward, 360f, 5f);
@@ -35,16 +31,17 @@ public class GeneralBasicCS : MonoBehaviour {
 		LeanTween.delayedCall(gameObject, 0.2f, advancedExamples);
 	}
 
-	void advancedExamples(){
-		GameObject[] dudes = new GameObject[10];
+	// Advanced Examples
+	// It might be best to master the basics first, but this is included to tease the many possibilies LeanTween provides.
 
+	void advancedExamples(){
 		LeanTween.delayedCall(gameObject, 14f, ()=>{
-			for(int i=0; i < dudes.Length; i++){
-				// Container
+			for(int i=0; i < 10; i++){
+				// Instantiate Container
 				GameObject rotator = new GameObject("rotator"+i);
 				rotator.transform.position = new Vector3(10.2f,2.85f,0f);
 
-				// Instantiate
+				// Instantiate Avatar
 				GameObject dude = (GameObject)GameObject.Instantiate(prefabAvatar, Vector3.zero, prefabAvatar.transform.rotation );
 				dude.transform.parent = rotator.transform;
 				dude.transform.localPosition = new Vector3(0f,1.5f,2.5f*i);
@@ -54,7 +51,7 @@ public class GeneralBasicCS : MonoBehaviour {
 				LeanTween.scale(dude, new Vector3(0.65f,0.65f,0.65f), 1f).setDelay(i*0.2f).setEase(LeanTweenType.easeOutBack);
 
 				// Color like the rainbow
-				float period = LeanTween.tau/dudes.Length*i;
+				float period = LeanTween.tau/10*i;
 				float red   = Mathf.Sin(period + LeanTween.tau*0f/3f) * 0.5f + 0.5f;
 	  			float green = Mathf.Sin(period + LeanTween.tau*1f/3f) * 0.5f + 0.5f;
 	  			float blue  = Mathf.Sin(period + LeanTween.tau*2f/3f) * 0.5f + 0.5f;
@@ -74,11 +71,11 @@ public class GeneralBasicCS : MonoBehaviour {
 				// Alpha Out, and destroy
 				LeanTween.alpha(dude, 0f, 0.6f).setDelay(9.2f + i*0.4f).setDestroyOnComplete(true).setOnComplete(
 					()=>{
-						Destroy( rotator );
+						Destroy( rotator ); // destroying parent as well
 					}
 				);	
 			}
 
-		}).setOnCompleteOnStart(true).setRepeat(-1); // Have the OnComplete play in the beginning and have it repeat endlessly
+		}).setOnCompleteOnStart(true).setRepeat(-1); // Have the OnComplete play in the beginning and have the whole group repeat endlessly
 	}
 }
