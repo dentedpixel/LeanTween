@@ -45,12 +45,14 @@ public class TestingEverything : MonoBehaviour {
 	private int rotateRepeatAngle;
 
 	void Start () {
-		LeanTest.expected = 17;
+		LeanTest.expected = 19;
 
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
-		LeanTest.debug("NOTHING TWEEENING AT BEGINNING", LeanTween.isTweening(cube1) == false );
+		LeanTest.debug("NOTHING TWEEENING AT BEGINNING", LeanTween.isTweening() == false );
+
+		LeanTest.debug("OBJECT NOT TWEEENING AT BEGINNING", LeanTween.isTweening(cube1) == false );
 
 		// dispatch event that is received
 		LeanTween.dispatchEvent(0);
@@ -111,6 +113,7 @@ public class TestingEverything : MonoBehaviour {
 
 		LeanTest.debug("GROUP IDS MATCH", descriptionMatchCount==groupTweens.Length );
 		LeanTest.debug("MAX SEARCH OPTIMIZED", LeanTween.maxSearch<=groupTweens.Length+5, "maxSearch:"+LeanTween.maxSearch );
+		LeanTest.debug("SOMETHING IS TWEENING", LeanTween.isTweening() == true );
 
 		// resume item before calling pause should continue item along it's way
 		float previousXLT3 = cube3.transform.position.x;

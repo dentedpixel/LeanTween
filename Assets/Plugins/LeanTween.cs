@@ -2811,7 +2811,14 @@ public static void resume( GameObject gameObject ){
 * @method LeanTween.isTweening
 * @param {GameObject} gameObject:GameObject GameObject that you want to test if it is tweening
 */
-public static bool isTweening( GameObject gameObject ){
+public static bool isTweening( GameObject gameObject = null ){
+	if(gameObject==null){
+		for(int i = 0; i <= tweenMaxSearch; i++){
+			if(tweens[i].toggle)
+				return true;
+		}
+		return false;
+	}
 	Transform trans = gameObject.transform;
 	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].trans==trans)
