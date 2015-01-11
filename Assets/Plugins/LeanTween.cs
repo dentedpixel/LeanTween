@@ -1,6 +1,6 @@
-// Copyright (c) 2014 Russell Savage - Dented Pixel
+// Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.22 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.23 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1120,7 +1120,17 @@ public class LTDescr{
 				this.from.x = trans.localScale.z; break;
 			case TweenAction.ALPHA:
 				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-					this.from.x = trans.gameObject.renderer.material.color.a; 
+					if(trans.gameObject.renderer){
+						this.from.x = trans.gameObject.renderer.material.color.a;
+					}else if(trans.childCount>0){
+						foreach (Transform child in trans) {
+							if(child.gameObject.renderer!=null){
+								Color col = child.gameObject.renderer.material.color;
+								this.from.x = col.a;
+								break;
+	    					}
+						}
+					}
 					break;	
 				#else
 					SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
@@ -1210,6 +1220,14 @@ public class LTDescr{
 					if(trans.gameObject.renderer){
 						Color col = trans.gameObject.renderer.material.color;
 						this.setFromColor( col );
+					}else if(trans.childCount>0){
+						foreach (Transform child in trans) {
+							if(child.gameObject.renderer!=null){
+								Color col = child.gameObject.renderer.material.color;
+								this.setFromColor( col );
+								break;
+	    					}
+						}
 					}
 				#else
 					SpriteRenderer ren2 = trans.gameObject.GetComponent<SpriteRenderer>();
@@ -1786,6 +1804,7 @@ public class LTDescr{
 public class LeanTween: MonoBehaviour {
 
 public static bool throwErrors = true;
+public static float tau = Mathf.PI*2.0f; 
 
 private static LTDescr[] tweens;
 private static int[] tweensFinished;
@@ -2116,9 +2135,20 @@ public static void update() {
 					    }else if(tweenAction==TweenAction.ALPHA){
 					    	#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 
-							foreach(Material mat in trans.gameObject.renderer.materials){
-        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-    						}
+					    	if(trans.gameObject.renderer){
+								foreach(Material mat in trans.gameObject.renderer.materials){
+	        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+	    						}
+							}
+							if(trans.childCount>0){
+								foreach (Transform child in trans) {
+									if(child.gameObject.renderer!=null){
+										foreach(Material mat in child.gameObject.renderer.materials){
+			        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+			    						}
+			    					}
+								}
+							}
 
 							#else
 
@@ -2168,6 +2198,15 @@ public static void update() {
 		        						mat.color = toColor;
 		    						}
 		    					}
+		    					if(trans.childCount>0){
+	    							foreach (Transform child in trans) {
+	    								if(child.gameObject.renderer!=null){
+		    								foreach(Material mat in child.gameObject.renderer.materials){
+				        						mat.color = toColor;
+				    						}
+				    					}
+									}
+	    						}
 		    				}
 		    				if(tween.onUpdateColor!=null){
 								tween.onUpdateColor(toColor);
@@ -2774,7 +2813,14 @@ public static void resume( GameObject gameObject ){
 * @method LeanTween.isTweening
 * @param {GameObject} gameObject:GameObject GameObject that you want to test if it is tweening
 */
-public static bool isTweening( GameObject gameObject ){
+public static bool isTweening( GameObject gameObject = null ){
+	if(gameObject==null){
+		for(int i = 0; i <= tweenMaxSearch; i++){
+			if(tweens[i].toggle)
+				return true;
+		}
+		return false;
+	}
 	Transform trans = gameObject.transform;
 	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].trans==trans)
@@ -3652,7 +3698,7 @@ public static LTDescr alpha(RectTransform rectTrans, float to, float time){
 * @param {float} to:float The final Vector3 with which to tween to (localScale)
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
-* @example LeanTween.alpha(gameObject.GetComponent&lt;RectTransform&gt;(), 0.5f, 1f).setDelay(1f);
+* @example LeanTween.color(gameObject.GetComponent&lt;RectTransform&gt;(), 0.5f, 1f).setDelay(1f);
 */
 public static LTDescr color(RectTransform rectTrans, Color to, float time){
 	return pushNewTween( rectTrans.gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.CANVAS_COLOR, options().setRect( rectTrans ).setPoint( new Vector3(to.r, to.g, to.b) ) );
