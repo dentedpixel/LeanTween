@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.23 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.24 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -908,6 +908,8 @@ public enum TweenAction{
 	ROTATE_AROUND,
 	ROTATE_AROUND_LOCAL,
 	CANVAS_ROTATEAROUND,
+	CANVAS_ROTATEAROUND_LOCAL,
+	CANVAS_PLAYSPRITE,
 	ALPHA,
     TEXT_ALPHA,
     CANVAS_ALPHA,
@@ -1016,6 +1018,7 @@ public class LTDescr{
 	public RectTransform rectTransform;
     public UnityEngine.UI.Text uiText;
     public UnityEngine.UI.Image uiImage;
+    public UnityEngine.Sprite[] sprites;
 	#endif
 
 	private static uint global_counter = 0;
@@ -1082,6 +1085,12 @@ public class LTDescr{
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
 		this.point = Vector3.zero;
+		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+		this.rectTransform = null;
+	    this.uiText = null;
+	   	this.uiImage = null;
+	    this.sprites = null;
+		#endif
 		global_counter++;
 		if(global_counter>0x8000)
 			global_counter = 0;
@@ -1270,14 +1279,19 @@ public class LTDescr{
                     this.setFromColor( this.uiText.color );
                 break;
 			case TweenAction.CANVAS_MOVE:
-				this.from = this.rectTransform.anchoredPosition; break;
+				this.from = this.rectTransform.anchoredPosition3D; break;
 			case TweenAction.CANVAS_ROTATEAROUND:
+			case TweenAction.CANVAS_ROTATEAROUND_LOCAL:
 				this.lastVal = 0.0f;
 				this.from.x = 0.0f;
 				this.origRotation = this.rectTransform.rotation;
 				break;
 			case TweenAction.CANVAS_SCALE:
 				this.from = this.rectTransform.localScale; break;
+			case TweenAction.CANVAS_PLAYSPRITE:
+				this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
+				this.from.x = 0f;
+				break;
 			#endif
 		}
         if(this.type!=TweenAction.CALLBACK_COLOR && this.type!=TweenAction.COLOR && this.type!=TweenAction.TEXT_COLOR && this.type!=TweenAction.CANVAS_COLOR)
@@ -1778,6 +1792,16 @@ public class LTDescr{
 		this.rectTransform = rect;
 		return this;
 	}
+
+	public LTDescr setSprites( UnityEngine.Sprite[] sprites ){
+		this.sprites = sprites;
+		return this;
+	}
+
+	public LTDescr setFrameRate( float frameRate ){
+		this.time = this.sprites.Length / frameRate;
+		return this;
+	}
 #endif
 
 }
@@ -1879,7 +1903,7 @@ private static float timeTotal;
 private static TweenAction tweenAction;
 private static float ratioPassed;
 private static float from;
-private static float to;
+//private static float to = 1.0f;
 private static float val;
 private static bool isTweenFinished;
 private static int maxTweenReached;
@@ -2253,6 +2277,20 @@ public static void update() {
 			    			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
 			    			rect.rotation = tween.origRotation;
 				    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, val);
+					    }else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND_LOCAL){
+							// figure out how much the rotation has shifted the object over
+			    			RectTransform rect = tween.rectTransform;
+			    			Vector3 origPos = rect.localPosition;
+			    			rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), rect.TransformDirection(tween.axis), -val);
+			    			Vector3 diff = origPos - rect.localPosition;
+			    			
+			    			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			    			rect.rotation = tween.origRotation;
+				    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), rect.TransformDirection(tween.axis), val);
+					    }else if(tweenAction==TweenAction.CANVAS_PLAYSPRITE){
+							int frame = (int)Mathf.Round( val );
+							// Debug.Log("frame:"+frame+" val:"+val);
+							tween.uiImage.sprite = tween.sprites[ frame ];
 					    }
 						#endif
 						
@@ -2375,7 +2413,7 @@ public static void update() {
 					    }
 					    #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 						else if(tweenAction==TweenAction.CANVAS_MOVE){
-							tween.rectTransform.anchoredPosition = newVect;
+							tween.rectTransform.anchoredPosition3D = newVect;
 						}else if(tweenAction==TweenAction.CANVAS_SCALE){
 							tween.rectTransform.localScale = newVect;
 						}
@@ -2936,6 +2974,24 @@ private static LTDescr pushNewTween( GameObject gameObject, Vector3 to, float ti
 	
 	return tween;
 }
+
+#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+/**
+* Play a sequence of images on a Unity UI Object
+* 
+* @method LeanTween.play
+* @param {RectTransform} rectTransform:RectTransform RectTransform that you want to play the sequence of sprites on
+* @param {Sprite[]} sprites:Sprite[] Sequence of sprites to be played
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* LeanTween.play(gameObject.GetComponent<RectTransform>(), sprites).setLoopPingPong();
+*/	
+public static LTDescr play(RectTransform rectTransform, UnityEngine.Sprite[] sprites){
+	float defaultFrameRate = 0.25f;
+	float time = defaultFrameRate * sprites.Length;
+	return pushNewTween(rectTransform.gameObject, new Vector3((float)sprites.Length - 1.0f,0,0), time, TweenAction.CANVAS_PLAYSPRITE, options().setSprites( sprites ).setRepeat(-1));
+}
+#endif
 
 /**
 * Fade a gameobject's material to a certain alpha value. The material's shader needs to support alpha. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>.
@@ -3610,10 +3666,12 @@ public static LTDescr value(GameObject gameObject, Color from, Color to, float t
 }
 
 public static LTDescr delayedSound( AudioClip audio, Vector3 pos, float volume ){
+	//Debug.LogError("Delay sound??");
 	return pushNewTween( tweenEmpty, pos, 0f, TweenAction.DELAYED_SOUND, options().setTo( pos ).setFrom( new Vector3(volume,0,0) ).setAudio( audio ) );
 }
 
 public static LTDescr delayedSound( GameObject gameObject, AudioClip audio, Vector3 pos, float volume ){
+	//Debug.LogError("Delay sound??");
 	return pushNewTween( gameObject, pos, 0f, TweenAction.DELAYED_SOUND, options().setTo( pos ).setFrom( new Vector3(volume,0,0) ).setAudio( audio ) );
 }
 
@@ -3660,6 +3718,21 @@ public static LTDescr rotate(RectTransform rectTrans, float to, float time){
 */
 public static LTDescr rotateAround(RectTransform rectTrans, Vector3 axis, float to, float time){
 	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_ROTATEAROUND, options().setRect( rectTrans ).setAxis(axis) );
+}
+
+/**
+* Rotate a RectTransform object around it's local axis (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+* 
+* @method LeanTween.rotateAroundLocal (RectTransform)
+* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+* @param {Vector3} axis:Vector3 The local axis in which to rotate the RectTransform (Vector3.forward is most commonly used)
+* @param {float} to:float The degree with which to rotate the RectTransform
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.rotateAroundLocal(gameObject.GetComponent&lt;RectTransform&gt;(), Vector3.forward, 90f, 1f).setDelay(1f);
+*/
+public static LTDescr rotateAroundLocal(RectTransform rectTrans, Vector3 axis, float to, float time){
+	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_ROTATEAROUND_LOCAL, options().setRect( rectTrans ).setAxis(axis) );
 }
 
 /**
