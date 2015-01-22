@@ -14,8 +14,8 @@ public class UIExampleCS : MonoBehaviour {
 		
 		// Tweening various values in a block callback style
 		LeanTween.value(button.gameObject, button.anchoredPosition, new Vector2(200f,100f), 1f ).setOnUpdate( 
-			(Vector3 val)=>{
-				button.anchoredPosition = new Vector2(val.x, val.y);
+			(Vector2 val)=>{
+				button.anchoredPosition = val;
 			}
 		);
 

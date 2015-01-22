@@ -6,9 +6,7 @@ public class TestingPunch : MonoBehaviour {
     public AnimationCurve exportCurve;
 	
 	void Start () {
-	   LeanTween.rotateAround(gameObject, gameObject.transform.rotation.eulerAngles, 360f, 5f)
-                .setDelay(1f)
-                .setEase(LeanTweenType.easeOutBounce);
+	   //LeanTween.rotateAround(gameObject, gameObject.transform.rotation.eulerAngles, 360f, 5f).setDelay(1f).setEase(LeanTweenType.easeOutBounce);
         Debug.Log( "exported curve:" + curveToString(exportCurve) );
 	}
 
@@ -66,6 +64,22 @@ public class TestingPunch : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.P))
         {
             LeanTween.delayedCall(0.05f, enterMiniGameStart).setOnCompleteParam( new object[]{""+5} );
+        }
+
+        if(Input.GetKeyDown(KeyCode.U)){
+            LeanTween.value(gameObject, (Vector2 val)=>{
+                // Debug.Log("tweening vec2 val:"+val);
+                transform.position = new Vector3(val.x, transform.position.y, transform.position.z);
+            }, new Vector2(0f,0f), new Vector2(5f,100f), 1f ).setEase(LeanTweenType.easeOutBounce);
+
+            GameObject l = GameObject.Find("LCharacter");
+            Debug.Log("x:"+l.transform.position.x+" y:"+l.transform.position.y);
+            LeanTween.value(l, new Vector2( l.transform.position.x, l.transform.position.y), new Vector2( l.transform.position.x, l.transform.position.y+5), 1f ).setOnUpdate( 
+            (Vector2 val)=>{
+                Debug.Log("tweening vec2 val:"+val);
+                 l.transform.position = new Vector3(val.x, val.y, transform.position.z);
+            }
+        );
         }
 	}
 
