@@ -3572,7 +3572,7 @@ public static LTDescr value(GameObject gameObject, Action<Color> callOnUpdate, C
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Action<Vector2> callOnUpdate, Vector2 from, Vector2 to, float time){
-	return pushNewTween( gameObject, new Vector3(to.x,to.y,0f), time, TweenAction.CALLBACK, options().setTo( new Vector3(to.x,to.y,0f) ).setFrom( from ).setOnUpdateVector2(callOnUpdate) );
+	return pushNewTween( gameObject, new Vector3(to.x,to.y,0f), time, TweenAction.VALUE3, options().setTo( new Vector3(to.x,to.y,0f) ).setFrom( new Vector3(from.x,from.y,0f) ).setOnUpdateVector2(callOnUpdate) );
 }
 
 /**
