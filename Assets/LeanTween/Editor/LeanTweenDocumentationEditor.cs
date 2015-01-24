@@ -7,7 +7,7 @@ public class LeanTweenDocumentationEditor : Editor {
 	[MenuItem ("Lean/LeanTween Documentation")]
 	static void openDocumentation()
 	{
-		string documentationPath = "file://"+Application.dataPath + "/LeanTween/LeanTweenDocumentation/index.html";
+		string documentationPath = "file://"+Application.dataPath + "/LeanTween/Documentation/classes/LeanTween.html#index";
 		Application.OpenURL(documentationPath);
 	}
 
