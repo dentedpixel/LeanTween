@@ -209,7 +209,7 @@ th {
 .toc li li { font-weight: normal; }
 
 /* -- Intro and Example Boxes ----------------------------------------------- */
-/*
+
 .intro, .example { margin-bottom: 2em; }
 .example {
     -moz-border-radius: 4px;
@@ -218,12 +218,12 @@ th {
     -moz-box-shadow: 0 0 5px #bfbfbf;
     -webkit-box-shadow: 0 0 5px #bfbfbf;
     box-shadow: 0 0 5px #bfbfbf;
-    padding: 1em;
+    padding: 0.1em 0.5em 0.1em 0.5em;
 }
 .intro {
     background: none repeat scroll 0 0 #F0F1F8; border: 1px solid #D4D8EB; padding: 0 1em;
 }
-*/
+
 
 /* -- Other Styles ---------------------------------------------------------- */
 
@@ -284,6 +284,11 @@ th {
     margin: 1em 0;
     padding: 1.5em;
 }
+
+.params, .returns{
+    font-size:11px;
+}
+
 
 #classdocs .item .params p,
     #classdocs .item .returns p,{
@@ -624,11 +629,11 @@ kbd .cmd { font-family: Monaco, Helvetica; }
 /* -- Item Parameter List --------------------------------------------------- */
 .apidocs .params-list {
     list-style: square;
-    margin: 1em 0 0 2em;
+    margin: 0 0 0 2em;
     padding: 0;
 }
 
-.apidocs .param { margin-bottom: 1em; }
+.apidocs .param { margin-bottom: 0em; }
 
 .apidocs .param .type,
 .apidocs .param .type a {

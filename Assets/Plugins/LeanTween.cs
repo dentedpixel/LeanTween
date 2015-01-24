@@ -3119,7 +3119,7 @@ public static LTDescr destroyAfter( LTRect rect, float delayTime){
 * Move a GameObject to a certain location
 * 
 * @method LeanTween.move
-* @param {GameObject} GameObject gameObject Gameobject that you wish to move
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
 * @param {Vector3} vec:Vector3 to The final positin with which to move to
 * @param {float} time:float time The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
