@@ -218,10 +218,19 @@ th {
     -moz-box-shadow: 0 0 5px #bfbfbf;
     -webkit-box-shadow: 0 0 5px #bfbfbf;
     box-shadow: 0 0 5px #bfbfbf;
-    padding: 0.1em 0.5em 0.1em 0.5em;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    background-color: #EFF2FA;
 }
 .intro {
     background: none repeat scroll 0 0 #F0F1F8; border: 1px solid #D4D8EB; padding: 0 1em;
+}
+
+.example h4{
+    margin:0.0em 0 0.0em;
+}
+
+.example p {
+    margin:0.3em 0;
 }
 
 
@@ -289,6 +298,9 @@ th {
     font-size:11px;
 }
 
+.returns-description p{
+    margin:0 0 0.6em 0;
+}
 
 #classdocs .item .params p,
     #classdocs .item .returns p,{
@@ -712,6 +724,10 @@ kbd .cmd { font-family: Monaco, Helvetica; }
 
 #api-tabview-panel { border-top: none; }
 #api-filter { width: 97%; }
+
+.yui3-u-1-4{
+    width:21%;
+}
 
 /* -- Content TabView ------------------------------------------------------- */
 #classdocs .yui3-tabview-panel { border: none; }

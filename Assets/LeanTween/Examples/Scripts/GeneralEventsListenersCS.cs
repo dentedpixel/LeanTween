@@ -51,7 +51,7 @@ public class GeneralEventsListenersCS : MonoBehaviour {
 
 	void OnCollisionEnter(Collision collision) {
 		if(collision.gameObject.layer!=2)
-			towardsRotation = new Vector3(0f, 0f, Random.Range(-180, 180));
+			towardsRotation = new Vector3(0f, Random.Range(-180, 180), 0f);
     }
 
      void OnCollisionStay(Collision collision) {
@@ -67,7 +67,7 @@ public class GeneralEventsListenersCS : MonoBehaviour {
 			turnForIter += Time.deltaTime;
 		}
 
-		rigidbody.AddRelativeForce(Vector3.down * 4.5f);
+		rigidbody.AddRelativeForce(Vector3.forward * 4.5f);
 	}
 
 	// ****** Key and clicking detection
