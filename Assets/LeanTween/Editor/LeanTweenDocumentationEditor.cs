@@ -22,4 +22,10 @@ public class LeanTweenDocumentationEditor : Editor {
 	{
 		Application.OpenURL("https://github.com/dentedpixel/LeanTween");
 	}
+
+	[MenuItem ("Lean/Dented Pixel News")]
+	static void openDPNews()
+	{
+		Application.OpenURL("http://dentedpixel.com/category/developer-diary/");
+	}
 }
