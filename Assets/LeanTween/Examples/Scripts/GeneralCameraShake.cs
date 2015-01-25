@@ -1,3 +1,4 @@
+#if !UNITY_FLASH
 using UnityEngine;
 using System.Collections;
 
@@ -117,3 +118,4 @@ public class GeneralCameraShake : MonoBehaviour {
 	}
 	
 }
+#endif

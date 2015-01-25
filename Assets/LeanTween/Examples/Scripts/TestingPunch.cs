@@ -67,6 +67,7 @@ public class TestingPunch : MonoBehaviour {
         }
 
         if(Input.GetKeyDown(KeyCode.U)){
+            #if !UNITY_FLASH
             LeanTween.value(gameObject, (Vector2 val)=>{
                 // Debug.Log("tweening vec2 val:"+val);
                 transform.position = new Vector3(val.x, transform.position.y, transform.position.z);
@@ -79,7 +80,9 @@ public class TestingPunch : MonoBehaviour {
                 Debug.Log("tweening vec2 val:"+val);
                  l.transform.position = new Vector3(val.x, val.y, transform.position.z);
             }
-        );
+
+            );
+            #endif
         }
 	}
 
