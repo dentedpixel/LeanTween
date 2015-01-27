@@ -1412,6 +1412,10 @@ public class LTDescr{
 		return this;
 	}
 
+	public LTDescr setFrom( float from ){
+		return setFrom( new Vector3(from, 0f, 0f) );
+	}
+
 	public LTDescr setDiff( Vector3 diff ){
 		this.diff = diff;
 		return this;
@@ -3169,7 +3173,7 @@ public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 * 
 * @method LeanTween.moveSpline
 * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
-* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: ControlStart,Pt1,Pt2,Pt3,.. ..ControlEnd
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: ControlStart,Pt1,Pt2,Pt3,.. ..ControlEnd<br>Note: The first and last item just define the angle of the end points, they are not actually used in the spline path itself. If you do not care about the angle you can jus set the first two items and last two items as the same value.
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example

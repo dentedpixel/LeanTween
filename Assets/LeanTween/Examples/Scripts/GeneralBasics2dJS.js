@@ -7,7 +7,7 @@ public var prefabParticles:GameObject;
 
 function Start () {
 	// Setup
-	var avatarRotate:GameObject = createSpriteDude( "avatarRotate", new Vector3(-2.51208f,10.2119f,-14.37754f), true);
+	var avatarRotate:GameObject = createSpriteDude( "avatarRotate", new Vector3(-2.51208f,10.7119f,-14.37754f), true);
 	var avatarScale:GameObject = createSpriteDude( "avatarScale", new Vector3(2.51208f,10.2119f,-14.37754f), true);
 	var avatarMove:GameObject = createSpriteDude( "avatarMove", new Vector3(-3.1208f,7.100643f,-14.37754f), true);
 

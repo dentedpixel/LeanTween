@@ -10,7 +10,7 @@ public class GeneralBasics2dCS : MonoBehaviour {
 
 	void Start () {
 		// Setup
-		GameObject avatarRotate = createSpriteDude( "avatarRotate", new Vector3(-2.51208f,10.2119f,-14.37754f));
+		GameObject avatarRotate = createSpriteDude( "avatarRotate", new Vector3(-2.51208f,10.7119f,-14.37754f));
 		GameObject avatarScale = createSpriteDude( "avatarScale", new Vector3(2.51208f,10.2119f,-14.37754f));
 		GameObject avatarMove = createSpriteDude( "avatarMove", new Vector3(-3.1208f,7.100643f,-14.37754f));
 	
