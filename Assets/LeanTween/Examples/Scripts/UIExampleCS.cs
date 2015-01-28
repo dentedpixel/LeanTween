@@ -7,6 +7,7 @@ public class UIExampleCS : MonoBehaviour {
 	public RectTransform button;
 
 	void Start () {
+		Debug.Log("For better examples unzip the 4.6_Examples folder!");
 		if(button==null){
 			Debug.LogError("Button not assigned! Create a new button via Hierarchy->Create->UI->Button. Then assign it to the button variable");
 			return;
