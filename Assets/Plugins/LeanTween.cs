@@ -1145,12 +1145,20 @@ public class LTDescr{
 					SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
 					if(ren!=null){
 						this.from.x = ren.color.a;
-					}else if(trans.gameObject.renderer!=null){
-						if(trans.gameObject.renderer.material.HasProperty("_Color")){
+					}else{
+						if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_Color")){
 							this.from.x = trans.gameObject.renderer.material.color.a;
-						}else{
+						}else if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_TintColor")){
 							Color col = trans.gameObject.renderer.material.GetColor("_TintColor");
 							this.from.x = col.a;
+						}else if(trans.childCount>0){
+							foreach (Transform child in trans) {
+								if(child.gameObject.renderer!=null){
+									Color col = child.gameObject.renderer.material.color;
+									this.from.x = col.a;
+									break;
+		    					}
+							}
 						}
 					}
 					break;
@@ -1239,20 +1247,19 @@ public class LTDescr{
 						}
 					}
 				#else
-					SpriteRenderer ren2 = trans.gameObject.GetComponent<SpriteRenderer>();
-					if(ren2!=null){
-						this.from = new Vector3(0.0f, ren2.color.a, 0.0f);
-						this.diff = new Vector3(1.0f,0.0f,0.0f);
-						this.axis = new Vector3( ren2.color.r, ren2.color.g, ren2.color.b );
-					}else if(trans.gameObject.renderer!=null){
-						if(trans.gameObject.renderer){
-							if(trans.gameObject.renderer.material.HasProperty ("_Color")){
-								Color col = trans.gameObject.renderer.material.color;
+					if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_Color")){
+						Color col = trans.gameObject.renderer.material.color;
+						this.setFromColor( col );
+					}else if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_TintColor")){
+						Color col = trans.gameObject.renderer.material.GetColor ("_TintColor");
+						this.setFromColor( col );
+					}else if(trans.childCount>0){
+						foreach (Transform child in trans) {
+							if(child.gameObject.renderer!=null){
+								Color col = child.gameObject.renderer.material.color;
 								this.setFromColor( col );
-							}else{
-								Color col = trans.gameObject.renderer.material.GetColor ("_TintColor");
-								this.setFromColor( col );
-							}
+								break;
+	    					}
 						}
 					}
 				#endif
@@ -1403,6 +1410,10 @@ public class LTDescr{
 		// this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
 		this.diff = this.to - this.from;
 		return this;
+	}
+
+	public LTDescr setFrom( float from ){
+		return setFrom( new Vector3(from, 0f, 0f) );
 	}
 
 	public LTDescr setDiff( Vector3 diff ){
@@ -2185,7 +2196,7 @@ public static void update() {
 									foreach(Material mat in trans.gameObject.renderer.materials){
 										if(mat.HasProperty("_Color")){
 			        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-		        						}else{
+		        						}else if(mat.HasProperty("_TintColor")){
 		        							Color col = mat.GetColor ("_TintColor");
 											mat.SetColor("_TintColor", new Color( col.r, col.g, col.b, val));
 		        						}
@@ -2195,7 +2206,7 @@ public static void update() {
 	    							foreach (Transform child in trans) {
 	    								if(child.gameObject.renderer!=null){
 		    								foreach(Material mat in child.gameObject.renderer.materials){
-				        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+		    									mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
 				    						}
 				    					}
 									}
@@ -2872,11 +2883,11 @@ public static bool isTweening( GameObject gameObject = null ){
 * 
 * @method LeanTween.isTweening
 * @param {GameObject} id:int id of the tween that you want to test if it is tweening
-* &nbsp;&nbsp;<i>Example:</i><br>
-* &nbsp;&nbsp;int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br>
-* &nbsp;&nbsp;if(LeanTween.isTweening( id ))<br>
+* @example
+* int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br>
+* if(LeanTween.isTweening( id ))<br>
 * &nbsp;&nbsp; &nbsp;&nbsp;Debug.Log("I am tweening!");<br>
-*/
+*/	
 public static bool isTweening( int uniqueId ){
 	int backId = uniqueId & 0xFFFF;
 	int backCounter = uniqueId >> 16;
@@ -3121,7 +3132,7 @@ public static LTDescr destroyAfter( LTRect rect, float delayTime){
 * Move a GameObject to a certain location
 * 
 * @method LeanTween.move
-* @param {GameObject} GameObject gameObject Gameobject that you wish to move
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
 * @param {Vector3} vec:Vector3 to The final positin with which to move to
 * @param {float} time:float time The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
@@ -3164,7 +3175,7 @@ public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 * 
 * @method LeanTween.moveSpline
 * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
-* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: ControlStart,Pt1,Pt2,Pt3,.. ..ControlEnd
+* @param {Vector3[]} path:Vector3[] A set of points that define the curve(s) ex: ControlStart,Pt1,Pt2,Pt3,.. ..ControlEnd<br>Note: The first and last item just define the angle of the end points, they are not actually used in the spline path itself. If you do not care about the angle you can jus set the first two items and last two items as the same value.
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
@@ -3574,7 +3585,7 @@ public static LTDescr value(GameObject gameObject, Action<Color> callOnUpdate, C
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Action<Vector2> callOnUpdate, Vector2 from, Vector2 to, float time){
-	return pushNewTween( gameObject, new Vector3(to.x,to.y,0f), time, TweenAction.CALLBACK, options().setTo( new Vector3(to.x,to.y,0f) ).setFrom( from ).setOnUpdateVector2(callOnUpdate) );
+	return pushNewTween( gameObject, new Vector3(to.x,to.y,0f), time, TweenAction.VALUE3, options().setTo( new Vector3(to.x,to.y,0f) ).setFrom( new Vector3(from.x,from.y,0f) ).setOnUpdateVector2(callOnUpdate) );
 }
 
 /**
