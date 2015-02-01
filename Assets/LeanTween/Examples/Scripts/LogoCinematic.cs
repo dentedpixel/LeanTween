@@ -14,25 +14,20 @@ public class LogoCinematic : MonoBehaviour {
 
 	void Awake(){
 
-		Keyframe[] frames = new Keyframe[60];
+		Keyframe[] frames = new Keyframe[120];
 		float time = 0.5f;
 		for(int i = 0; i < frames.Length; i++){
 			float ratio = (float) i / (float)frames.Length;
-			float height = 1f - Mathf.Sqrt(ratio);
-			height *= 1f;
-			if(i==0)
-				height = 0f;
+			float height = Mathf.Sin(ratio);
 			frames[i] = new Keyframe( ratio * time * 44100f, i%2==0 ? -height : height );
 		}
 		boomAudioCurve = new AnimationCurve( frames );
 
 		printOutAudioClip( audioBoom, ref generatedAudio1 );
 
-		
+		audioBoom = createAudio( boomAudioCurve );
 
 		printOutAudioClip( audioBoom, ref generatedAudio2 );
-
-		audioBoom = createAudio( generatedAudio2, 100);
 	}
 
 	void printOutAudioClip( AudioClip audio, ref AnimationCurve curve ){
@@ -71,12 +66,13 @@ public class LogoCinematic : MonoBehaviour {
 
 	public AnimationCurve boomAudioCurve;
 
-	AudioClip createAudio( AnimationCurve curve, int granularity){
-		int frequency = 441*granularity;
+	AudioClip createAudio( AnimationCurve curve ){
+		float curveTime = curve[ curve.length - 1 ].time;
+		int frequency = 44100;
 		float time = 0.5f;
 		float[] audioArr = new float[ (int)(frequency*time) ];
 
-		float curveTime = curve[ curve.length - 1 ].time;
+		
 		// Debug.Log("curveTime:"+curveTime+" AudioSettings.outputSampleRate:"+AudioSettings.outputSampleRate);
 		for(int i = 0; i < audioArr.Length; i++){
 			float pt = (float)i;
@@ -86,7 +82,7 @@ public class LogoCinematic : MonoBehaviour {
 
 		bool is3dSound = false;
 		int lengthSamples =  audioArr.Length;//(int)( (float)frequency * curveTime );
-		AudioClip audioClip = AudioClip.Create("Generate Audio", lengthSamples, 1, frequency, is3dSound, false);
+		AudioClip audioClip = AudioClip.Create("Generated Audio", lengthSamples, 1, frequency, is3dSound, false);
 		audioClip.SetData(audioArr, 0);
 		return audioClip;
 	}
