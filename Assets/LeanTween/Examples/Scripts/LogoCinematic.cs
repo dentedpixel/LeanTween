@@ -14,12 +14,15 @@ public class LogoCinematic : MonoBehaviour {
 
 	void Awake(){
 
-		Keyframe[] frames = new Keyframe[120];
+		Keyframe[] frames = new Keyframe[500];
 		float time = 0.5f;
 		for(int i = 0; i < frames.Length; i++){
 			float ratio = (float) i / (float)frames.Length;
-			float height = Mathf.Sin(ratio);
-			frames[i] = new Keyframe( ratio * time * 44100f, i%2==0 ? -height : height );
+			float stretcher = 1f - ratio*0.5f;
+			float height = Mathf.Sin(ratio * 400f * stretcher);
+			float hStretcher =  1f - ratio;
+			height = height * hStretcher;
+			frames[i] = new Keyframe( ratio * time * 44100f, height );
 		}
 		boomAudioCurve = new AnimationCurve( frames );
 
