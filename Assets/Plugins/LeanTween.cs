@@ -2151,12 +2151,18 @@ public static void update() {
 					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,val);
 					    }else if(tweenAction==TweenAction.ROTATE_AROUND){
 							Vector3 origPos = trans.localPosition;
-			    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, -val);
+							Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( tween.point );
+			    			trans.RotateAround(rotateAroundPt, tween.axis, -val);
 			    			Vector3 diff = origPos - trans.localPosition;
 			    			
 			    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
 			    			trans.rotation = tween.origRotation;
-				    		trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), tween.axis, val);
+
+			    			rotateAroundPt = (Vector3)trans.TransformPoint( tween.point );
+				    		trans.RotateAround(rotateAroundPt, tween.axis, val);
+
+				    		//GameObject cubeMarker = GameObject.Find("TweenRotatePoint");
+			    			//cubeMarker.transform.position = rotateAroundPt;
 
 					    }else if(tweenAction==TweenAction.ROTATE_AROUND_LOCAL){
 							Vector3 origPos = trans.localPosition;
@@ -2165,7 +2171,11 @@ public static void update() {
 			    			
 			    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
 			    			trans.localRotation = tween.origRotation;
-			    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), val);
+			    			Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( tween.point );
+			    			trans.RotateAround(rotateAroundPt, trans.TransformDirection(tween.axis), val);
+
+			    			//GameObject cubeMarker = GameObject.Find("TweenRotatePoint");
+			    			//cubeMarker.transform.position = rotateAroundPt;
 		    			
 					    }else if(tweenAction==TweenAction.ALPHA){
 					    	#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
