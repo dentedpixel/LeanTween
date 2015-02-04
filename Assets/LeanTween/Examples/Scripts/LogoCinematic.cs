@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LogoCinematic : MonoBehaviour {
 
@@ -12,10 +13,15 @@ public class LogoCinematic : MonoBehaviour {
 	public AnimationCurve generatedAudio1;
 	public AnimationCurve generatedAudio2;
 
-	void Awake(){
+	public AnimationCurve volumeCurve;
+	public AnimationCurve frequencyCurve;
 
-		Keyframe[] frames = new Keyframe[500];
-		float time = 1.5f;
+	public bool useRealSound = false;
+
+	void Awake(){
+		float time = 0.5f;
+		/*Keyframe[] frames = new Keyframe[500];
+		
 		for(int i = 0; i < frames.Length; i++){
 			float ratio = (float) i / (float)frames.Length;
 			float stretcher = 1f - ratio*0.5f;
@@ -24,11 +30,41 @@ public class LogoCinematic : MonoBehaviour {
 			height = height * hStretcher;
 			frames[i] = new Keyframe( ratio * time, height );
 		}
+		boomAudioCurve = new AnimationCurve( frames );*/
+
+		List<float> list = new List<float>();
+		float passed = 0f;
+		for(int i = 0; i < 1000; i++){
+			
+			float f = frequencyCurve.Evaluate(passed);
+			float height = volumeCurve.Evaluate(passed);
+			passed += f;
+			if(passed>=time)
+				break;
+
+			list.Add( passed );
+			list.Add( i%2==0 ? -height : height );
+
+			Debug.Log("i:"+i+" f:"+f+" passed:"+passed);
+		}
+
+		Keyframe[] frames = new Keyframe[list.Count/2+2];
+		frames[0] = new Keyframe( 0f, 0f );
+		frames[ frames.Length-1 ] = new Keyframe( time, 0f );
+		int k = 0;
+		for(int i = 1; i < frames.Length-1; i++){
+			float waveTime = list[ k*2 ];
+			float waveHeight = list[ k*2 + 1 ];
+			frames[i] = new Keyframe( waveTime, waveHeight );
+			Debug.Log("waveTime:"+waveTime+" waveHeight:"+waveHeight+" 1:"+(k*2)+" 2:"+(k*2 + 1));
+			k++;
+		}
 		boomAudioCurve = new AnimationCurve( frames );
 
 		printOutAudioClip( audioBoom, ref generatedAudio1 );
 
-		audioBoom = createAudio( boomAudioCurve );
+		if(useRealSound==false)
+			audioBoom = createAudio( boomAudioCurve );
 
 		printOutAudioClip( audioBoom, ref generatedAudio2 );
 	}

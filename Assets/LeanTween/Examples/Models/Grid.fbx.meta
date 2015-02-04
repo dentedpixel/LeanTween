@@ -1,23 +1,8 @@
 fileFormatVersion: 2
-guid: 7d6f6aee277594029851a7cc81d550d5
+guid: cf8dd6c08e9ac4507bbbd1468b530d48
 ModelImporter:
   fileIDToRecycleName:
-    4300000: Plane.003
-    4300002: Plane.002
-    4300004: Circle.010
-    4300006: Cylinder.006
-    4300008: Circle.008
-    4300010: Circle.007
-    4300012: Cylinder.005
-    4300014: Cylinder.004
-    4300016: Cylinder.003
-    4300018: Plane.001
-    4300020: Circle.006
-    4300022: Cube
-    4300024: Cube.002
-    4300026: Plane
-    4300028: Lean
-    4300030: Tween
+    4300000: Cube
   serializedVersion: 10
   materials:
     importMaterials: 0
@@ -35,7 +20,7 @@ ModelImporter:
     clipAnimations: []
   meshes:
     lODScreenPercentages: []
-    globalScale: 1
+    globalScale: 40
     meshCompression: 0
     addColliders: 0
     swapUVChannels: 0
@@ -47,35 +32,12 @@ ModelImporter:
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
   tangentSpace:
-    normalSmoothAngle: 14
+    normalSmoothAngle: 60
     splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 0
+    tangentImportMode: 1
   textMetaNamesToFileIDs:
     //RootNode:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 111
-        second: 605fa900
-    Lean:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    Tween:
       data:
         first: 1
         second: a0860100
