@@ -35,8 +35,13 @@ public class TestingPunch : MonoBehaviour {
         {
             // LeanTween.move(this.gameObject, new Vector3(0f,0f,1f), 1.0f).setEase(LeanTweenType.punch);
             print("move punch!");
-
-            LeanTween.moveX( this.gameObject, 1f, 1f).setOnComplete( destroyOnComp ).setOnCompleteParam( this.gameObject );
+            Time.timeScale = 0.25f;
+            float start = Time.realtimeSinceStartup;
+            LeanTween.moveX( this.gameObject, 1f, 1f).setOnComplete( destroyOnComp ).setOnCompleteParam( this.gameObject ).setOnComplete( ()=>{
+                float end = Time.realtimeSinceStartup;
+                float diff = end - start;
+                Debug.Log("start:"+start+" end:"+end+" diff:"+diff);
+            });
         }
 
         if (Input.GetKeyDown(KeyCode.C))

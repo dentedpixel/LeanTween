@@ -23,7 +23,9 @@ public class TestingAllCS : MonoBehaviour {
 	public enum TimingType{
 		SteadyNormalTime,
 		IgnoreTimeScale,
-		VariableTimeScale
+		HalfTimeScale,
+		VariableTimeScale,
+		Length
 	}
 
 	void Awake(){
@@ -58,11 +60,13 @@ public class TestingAllCS : MonoBehaviour {
 	void cycleThroughExamples(){
 		if(exampleIter==0){
 			int iter = (int)timingType + 1;
-			if(iter>3)
+			if(iter>(int)TimingType.Length)
 				iter = 0;
 			timingType = (TimingType)iter;
 			useEstimatedTime = timingType==TimingType.IgnoreTimeScale;
 			Time.timeScale = useEstimatedTime ? 0 : 1f; // pause the Time Scale to show the effectiveness of the useEstimatedTime feature (this is very usefull with Pause Screens)
+			if(timingType==TimingType.HalfTimeScale)
+				Time.timeScale = 0.5f;
 
 			if(timingType==TimingType.VariableTimeScale){
 				descrTimeScaleChange = LeanTween.value( gameObject, 0.01f, 10.0f, 3f).setOnUpdate( (float val)=>{
