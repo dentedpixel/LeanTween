@@ -139,6 +139,117 @@ using UnityEngine;
 using System.Collections;
 using System;
 using System.Runtime.InteropServices;
+using System.Collections.Generic;
+
+public class LeanAudio : MonoBehaviour {
+
+	public static int frequencyRate = 44100;
+
+	public static AnimationCurve generateAudioCurve( AnimationCurve volume, AnimationCurve frequency, Vector2[] vibratoPeaks = null ){
+		float time = volume[ volume.length - 1 ].time;
+		List<float> list = new List<float>();
+		// float[] vibratoValues = new float[ vibratoPeaks.Length ];
+		float passed = 0f;
+		for(int i = 0; i < 1000; i++){
+			float height = volume.Evaluate(passed);
+			if(vibratoPeaks!=null){
+				for(int j=0; j<vibratoPeaks.Length; j++){
+					float peakMulti = Mathf.Sin( 1.5708f + passed * (1f/vibratoPeaks[j][0]) * Mathf.PI );
+					float diff = 1f-vibratoPeaks[j][1];
+					peakMulti = vibratoPeaks[j][1] + diff*peakMulti;
+					// Debug.Log("i:"+i+" peakMulti:"+peakMulti);
+					height *= peakMulti;
+				}	
+			}
+
+			float f = frequency.Evaluate(passed);
+			passed += f;
+			// Debug.Log("i:"+i+" f:"+f+" passed:"+passed+" height:"+height+" time:"+time);
+			if(passed>=time)
+				break;
+
+			list.Add( passed );
+			list.Add( i%2==0 ? -height : height );
+		}
+
+		Keyframe[] frames = new Keyframe[list.Count/2+2];
+		frames[0] = new Keyframe( 0f, 0f );
+		frames[ frames.Length-1 ] = new Keyframe( time, 0f );
+		int k = 0;
+		for(int i = 1; i < frames.Length-1; i++){
+			float waveTime = list[ k*2 ];
+			float waveHeight = list[ k*2 + 1 ];
+			frames[i] = new Keyframe( waveTime, waveHeight );
+			// Debug.Log("waveTime:"+waveTime+" waveHeight:"+waveHeight+" 1:"+(k*2)+" 2:"+(k*2 + 1));
+			k++;
+		}
+
+		AnimationCurve curve =  new AnimationCurve( frames );
+
+		return curve;
+	}
+
+	public static AudioClip generateAudioClip( AnimationCurve volume, AnimationCurve frequency, Vector2[] vibratoPeaks = null ){
+		AnimationCurve generatedCurve = generateAudioCurve( volume, frequency, vibratoPeaks);
+		return generateAudioFromCurve( generatedCurve );
+	}
+
+	public static AudioClip generateAudioFromCurve( AnimationCurve curve ){
+		float curveTime = curve[ curve.length - 1 ].time;
+		float time = curveTime;
+		float[] audioArr = new float[ (int)(frequencyRate*time) ];
+
+		// Debug.Log("curveTime:"+curveTime+" AudioSettings.outputSampleRate:"+AudioSettings.outputSampleRate);
+		for(int i = 0; i < audioArr.Length; i++){
+			float pt = (float)i / (float)frequencyRate;
+			audioArr[i] = curve.Evaluate( pt );
+			// Debug.Log("pt:"+pt+" i:"+i+" val:"+audioArr[i]+" len:"+audioArr.Length);
+		}
+
+		bool is3dSound = false;
+		int lengthSamples = audioArr.Length;//(int)( (float)frequencyRate * curveTime );
+		AudioClip audioClip = AudioClip.Create("Generated Audio", lengthSamples, 1, frequencyRate, is3dSound, false);
+		audioClip.SetData(audioArr, 0);
+
+		return audioClip;
+	}
+	
+
+	public static void playAudio( AudioClip audio, Vector3 pos, float volume, float pitch ){
+		// Debug.Log("audio length:"+audio.length);
+		AudioSource audioSource = playClipAt(audio, pos);
+		audioSource.minDistance = 1f;
+		audioSource.pitch = pitch;
+		audioSource.volume = volume;
+	}
+
+	public static AudioSource playClipAt( AudioClip clip, Vector3 pos ) {
+		GameObject tempGO = new GameObject(); // create the temp object
+		tempGO.transform.position = pos; // set its position
+		AudioSource aSource = tempGO.AddComponent<AudioSource>(); // add an audio source
+		aSource.clip = clip; // define the clip
+		aSource.Play(); // start the sound
+		Destroy(tempGO, clip.length); // destroy object after clip duration
+		return aSource; // return the AudioSource reference
+	}
+
+	public static void printOutAudioClip( AudioClip audioClip, ref AnimationCurve curve, float scaleX = 1f ){
+		// Debug.Log("Audio channels:"+audioClip.channels+" frequency:"+audioClip.frequency+" length:"+audioClip.length+" samples:"+audioClip.samples);
+		float[] samples = new float[audioClip.samples * audioClip.channels];
+        audioClip.GetData(samples, 0);
+        int i = 0;
+        //string outstr = "";
+
+        Keyframe[] frames = new Keyframe[samples.Length];
+        while (i < samples.Length) {
+           // outstr += i+":"+samples[i]+",";
+           frames[i] = new Keyframe( (float)i * scaleX, samples[i] );
+            ++i;
+        }
+        curve = new AnimationCurve( frames );
+        // Debug.Log("Audio length:"+samples.Length);
+	}
+}
 
 public class LeanTest : object {
 	public static int expected = 0;
