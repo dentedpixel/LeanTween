@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.24 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.25 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -141,60 +141,154 @@ using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
+/**
+* Pass in options to LeanAudio
+*
+* @class LeanAudioOptions
+* @constructor
+*/
+public class LeanAudioOptions : object {
+	public Vector3[] vibrato;
+	public int frequencyRate = 44100;
+
+	public LeanAudioOptions(){}
+
+	/**
+	* Set the frequency for the audio is encoded. 44100 is CD quality, but you can usually get away with much lower (or use a lower amount to get a more 8-bit sound).
+	* 
+	* @method setFrequency
+	* @param {int} frequencyRate:int of the frequency you wish to encode the AudioClip at
+	* @return {LeanAudioOptions} LeanAudioOptions describing optional values
+	* @example
+	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
+	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ).setFrequency(12100) );<br>
+	*/
+	public LeanAudioOptions setFrequency( int frequencyRate ){
+		this.frequencyRate = frequencyRate;
+		return this;
+	}
+
+	/**
+	* Set details about the shape of the curve by adding vibrato waves through it. You can add as many as you want to sculpt out more detail in the sound wave.
+	* 
+	* @method setVibrato
+	* @param {Vector3[]} vibratoArray:Vector3[] The first value is the period in seconds that you wish to have the vibrato wave fluctuate at. The second value is the minimum height you wish the vibrato wave to dip down to (default is zero). The third is reserved for future effects.
+	* @return {LeanAudioOptions} LeanAudioOptions describing optional values
+	* @example
+	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
+	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0.3f,0f)} ).setFrequency(12100) );<br>
+	*/
+	public LeanAudioOptions setVibrato( Vector3[] vibrato ){
+		this.vibrato = vibrato;
+		return this;
+	}
+}
+
+
+/**
+* Create Audio dynamically and easily playback
+*
+* @class LeanAudio
+* @constructor
+*/
 public class LeanAudio : MonoBehaviour {
 
-	public static int frequencyRate = 44100;
+	/**
+	* Create dynamic audio from a set of Animation Curves and other options.
+	* 
+	* @method createAudio
+	* @param {AnimationCurve} volumeCurve:AnimationCurve describing the shape of the audios volume (from 0-1). The length of the audio is dicated by the end value here.
+	* @param {AnimationCurve} frequencyCurve:AnimationCurve describing the width of the oscillations between the sound waves in seconds. Large numbers mean a lower note, while higher numbers mean a tighter frequency and therefor a higher note. Values are usually between 0.01 and 0.000001 (or smaller)
+	* @param {LeanAudioOptions} options:LeanAudioOptions You can pass any other values in here like vibrato or the frequency you would like the sound to be encoded at. See <a href="LeanAudioOptions.html">LeanAudioOptions</a> for more details.
+	* @return {AudioClip} AudioClip of the procedurally generated audio
+	* @example
+	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
+	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ));<br>
+	*/
+	public static AudioClip createAudio( AnimationCurve volume, AnimationCurve frequency, LeanAudioOptions options = null ){
+		if(options==null)
+			options = new LeanAudioOptions();
+		
+		float[] generatedWavePts = createAudioWave( volume, frequency, options);
+		return createAudioFromWave( generatedWavePts, options );
+	}
 
-	public static AnimationCurve generateAudioCurve( AnimationCurve volume, AnimationCurve frequency, Vector2[] vibratoPeaks = null ){
+	private static float[] createAudioWave( AnimationCurve volume, AnimationCurve frequency, LeanAudioOptions options ){
 		float time = volume[ volume.length - 1 ].time;
 		List<float> list = new List<float>();
-		// float[] vibratoValues = new float[ vibratoPeaks.Length ];
+		// float[] vibratoValues = new float[ vibrato.Length ];
 		float passed = 0f;
 		for(int i = 0; i < 1000; i++){
-			float height = volume.Evaluate(passed);
-			if(vibratoPeaks!=null){
-				for(int j=0; j<vibratoPeaks.Length; j++){
-					float peakMulti = Mathf.Sin( 1.5708f + passed * (1f/vibratoPeaks[j][0]) * Mathf.PI );
-					float diff = 1f-vibratoPeaks[j][1];
-					peakMulti = vibratoPeaks[j][1] + diff*peakMulti;
-					// Debug.Log("i:"+i+" peakMulti:"+peakMulti);
+			float f = frequency.Evaluate(passed);
+			float height = volume.Evaluate(passed + 0.5f*f);
+			if(options.vibrato!=null){
+				for(int j=0; j<options.vibrato.Length; j++){
+					float peakMulti = Mathf.Abs( Mathf.Sin( 1.5708f + passed * (1f/options.vibrato[j][0]) * Mathf.PI ) );
+					float diff = (1f-options.vibrato[j][1]);
+					peakMulti = options.vibrato[j][1] + diff*peakMulti;
 					height *= peakMulti;
 				}	
 			}
-
-			float f = frequency.Evaluate(passed);
-			passed += f;
 			// Debug.Log("i:"+i+" f:"+f+" passed:"+passed+" height:"+height+" time:"+time);
-			if(passed>=time)
+			if(passed + 0.5f*f>=time)
 				break;
+
+			passed += f;
 
 			list.Add( passed );
 			list.Add( i%2==0 ? -height : height );
 		}
 
-		Keyframe[] frames = new Keyframe[list.Count/2+2];
-		frames[0] = new Keyframe( 0f, 0f );
-		frames[ frames.Length-1 ] = new Keyframe( time, 0f );
-		int k = 0;
-		for(int i = 1; i < frames.Length-1; i++){
-			float waveTime = list[ k*2 ];
-			float waveHeight = list[ k*2 + 1 ];
-			frames[i] = new Keyframe( waveTime, waveHeight );
-			// Debug.Log("waveTime:"+waveTime+" waveHeight:"+waveHeight+" 1:"+(k*2)+" 2:"+(k*2 + 1));
-			k++;
+		float[] wave = new float[ list.Count ];
+		for(int i = 0; i < wave.Length; i++){
+			wave[i] = list[i];
+		}
+		return wave;
+	}
+
+	private static AudioClip createAudioFromWave( float[] wave, LeanAudioOptions options ){
+		float time = wave[ wave.Length - 2 ];
+		float[] audioArr = new float[ (int)(options.frequencyRate*time) ];
+
+		int waveIter = 0;
+		float subWaveDiff = wave[waveIter];
+		float subWaveTimeLast = 0f;
+		float subWaveTime = wave[waveIter];
+		float waveHeight = wave[waveIter+1];
+		for(int i = 0; i < audioArr.Length; i++){
+			float passedTime = (float)i / (float)options.frequencyRate;
+			if(passedTime > wave[waveIter] ){
+				subWaveTimeLast = wave[waveIter];
+				waveIter += 2;
+				subWaveDiff = wave[waveIter] - wave[waveIter-2];
+				waveHeight = wave[waveIter+1];
+				// Debug.Log("passed wave i:"+i);
+			}
+			subWaveTime = passedTime - subWaveTimeLast;
+			float ratioElapsed = subWaveTime / subWaveDiff;
+
+			float value = Mathf.Sin( ratioElapsed * Mathf.PI );
+			//if(i<25)
+			//	Debug.Log("passedTime:"+passedTime+" value:"+value+" ratioElapsed:"+ratioElapsed+" subWaveTime:"+subWaveTime+" subWaveDiff:"+subWaveDiff);
+			
+			value *= waveHeight;
+
+			audioArr[i] = value;
+			// Debug.Log("pt:"+pt+" i:"+i+" val:"+audioArr[i]+" len:"+audioArr.Length);
 		}
 
-		AnimationCurve curve =  new AnimationCurve( frames );
+		bool is3dSound = false;
+		int lengthSamples = audioArr.Length;
+		AudioClip audioClip = AudioClip.Create("Generated Audio", lengthSamples, 1, options.frequencyRate, is3dSound, false);
+		audioClip.SetData(audioArr, 0);
 
-		return curve;
+		return audioClip;
 	}
 
-	public static AudioClip generateAudioClip( AnimationCurve volume, AnimationCurve frequency, Vector2[] vibratoPeaks = null ){
-		AnimationCurve generatedCurve = generateAudioCurve( volume, frequency, vibratoPeaks);
-		return generateAudioFromCurve( generatedCurve );
-	}
-
-	public static AudioClip generateAudioFromCurve( AnimationCurve curve ){
+	public static AudioClip generateAudioFromCurve( AnimationCurve curve, int frequencyRate = 44100 ){
 		float curveTime = curve[ curve.length - 1 ].time;
 		float time = curveTime;
 		float[] audioArr = new float[ (int)(frequencyRate*time) ];
@@ -214,7 +308,6 @@ public class LeanAudio : MonoBehaviour {
 		return audioClip;
 	}
 	
-
 	public static void playAudio( AudioClip audio, Vector3 pos, float volume, float pitch ){
 		// Debug.Log("audio length:"+audio.length);
 		AudioSource audioSource = playClipAt(audio, pos);
@@ -238,16 +331,13 @@ public class LeanAudio : MonoBehaviour {
 		float[] samples = new float[audioClip.samples * audioClip.channels];
         audioClip.GetData(samples, 0);
         int i = 0;
-        //string outstr = "";
 
         Keyframe[] frames = new Keyframe[samples.Length];
         while (i < samples.Length) {
-           // outstr += i+":"+samples[i]+",";
            frames[i] = new Keyframe( (float)i * scaleX, samples[i] );
-            ++i;
+           ++i;
         }
         curve = new AnimationCurve( frames );
-        // Debug.Log("Audio length:"+samples.Length);
 	}
 }
 
