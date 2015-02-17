@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>LTRect</title>
+    <title>LeanAudio</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0pr2/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -127,12 +127,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>LTRect Class</h1>
+                        <h1>LeanAudio Class</h1>
                         <div class="box meta">
                         
                         
                                 <div class="foundat">
-                                    Defined in: <a href="../files/LeanTween.cs.html#l419"><code>LeanTween.cs:419</code></a>
+                                    Defined in: <a href="../files/LeanTween.cs.html#l190"><code>LeanTween.cs:190</code></a>
                                 </div>
                         
                         
@@ -140,49 +140,16 @@
                         
                         
                         <div class="box intro">
-                            <p>Animate GUI Elements by creating this object and passing the <em>.rect variable to the GUI method<br><br>
-                        <strong>Example Javascript: </strong><br>var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br>
-                        LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) </em> 1.3, 0.25 );<br>
-                        function OnGUI(){<br>
-                        &nbsp; if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
-                        }<br>
-                        <br>
-                        <strong>Example C#: </strong> <br>
-                        LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br>
-                        LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f );<br>
-                        void OnGUI(){<br>
-                        &nbsp; if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
-                        }<br></p>
+                            <p>Create Audio dynamically and easily playback</p>
                         
                         </div>
                         
                             <div class="constructor">
                                 <h2>Constructor</h2>
-                                <div id="method_LTRect" class="method item">
-                                    <h3 class="name"><code>LTRect</code></h3>
+                                <div id="method_LeanAudio" class="method item">
+                                    <h3 class="name"><code>LeanAudio</code></h3>
                                 
-                                        <div class="args">
-                                            <span class="paren">(</span><ul class="args-list inline commas">
-                                                <li class="arg">
-                                                        <code>x:float</code>
-                                                </li>
-                                                <li class="arg">
-                                                        <code>y:float</code>
-                                                </li>
-                                                <li class="arg">
-                                                        <code>width:float</code>
-                                                </li>
-                                                <li class="arg">
-                                                        <code>height:float</code>
-                                                </li>
-                                                <li class="arg">
-                                                        <code>alpha:float</code>
-                                                </li>
-                                                <li class="arg">
-                                                        <code>rotation:float</code>
-                                                </li>
-                                            </ul><span class="paren">)</span>
-                                        </div>
+                                        <span class="paren">()</span>
                                 
                                 
                                 
@@ -194,7 +161,7 @@
                                     <div class="meta">
                                                 <p>
                                                 Defined in
-                                        <a href="../files/LeanTween.cs.html#l419"><code>LeanTween.cs:419</code></a>
+                                        <a href="../files/LeanTween.cs.html#l190"><code>LeanTween.cs:190</code></a>
                                         </p>
                                 
                                 
@@ -205,78 +172,6 @@
                                         
                                     </div>
                                 
-                                        <div class="params">
-                                            <h4>Parameters:</h4>
-                                
-                                            <ul class="params-list">
-                                                <li class="param">
-                                                        <code class="param-name">x:float</code>
-                                                        <span class="type">Float</span>
-                                
-                                
-                                                    <div class="param-description">
-                                                        <p>X location</p>
-                                
-                                                    </div>
-                                
-                                                </li>
-                                                <li class="param">
-                                                        <code class="param-name">y:float</code>
-                                                        <span class="type">Float</span>
-                                
-                                
-                                                    <div class="param-description">
-                                                        <p>Y location</p>
-                                
-                                                    </div>
-                                
-                                                </li>
-                                                <li class="param">
-                                                        <code class="param-name">width:float</code>
-                                                        <span class="type">Float</span>
-                                
-                                
-                                                    <div class="param-description">
-                                                        <p>Width</p>
-                                
-                                                    </div>
-                                
-                                                </li>
-                                                <li class="param">
-                                                        <code class="param-name">height:float</code>
-                                                        <span class="type">Float</span>
-                                
-                                
-                                                    <div class="param-description">
-                                                        <p>Height</p>
-                                
-                                                    </div>
-                                
-                                                </li>
-                                                <li class="param">
-                                                        <code class="param-name">alpha:float</code>
-                                                        <span class="type">Float</span>
-                                
-                                
-                                                    <div class="param-description">
-                                                        <p>(Optional) initial alpha amount (0-1)</p>
-                                
-                                                    </div>
-                                
-                                                </li>
-                                                <li class="param">
-                                                        <code class="param-name">rotation:float</code>
-                                                        <span class="type">Float</span>
-                                
-                                
-                                                    <div class="param-description">
-                                                        <p>(Optional) initial rotation in degrees (0-360)</p>
-                                
-                                                    </div>
-                                
-                                                </li>
-                                            </ul>
-                                        </div>
                                 
                                 
                                 </div>
@@ -286,35 +181,53 @@
                             <ul class="api-class-tabs">
                                 <li class="api-class-tab index"><a href="#index">Index</a></li>
                         
-                                    <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
+                                    <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
                             </ul>
                         
                             <div>
                                 <div id="index" class="api-class-tabpanel index">
                                     <h2 class="off-left">Item Index</h2>
                         
+                                        <div class="index-section methods">
+                                            <h3>Methods</h3>
                         
-                                        <div class="index-section properties">
-                                            <h3>Properties</h3>
-                        
-                                            <ul class="index-list properties">
-                                                    <li class="index-item property">
-                                                        <a href="#property_rect">rect</a>
+                                            <ul class="index-list methods">
+                                                    <li class="index-item method">
+                                                        <a href="#method_createAudio">createAudio</a>
                         
                                                     </li>
                                             </ul>
                                         </div>
                         
                         
+                        
                                 </div>
                         
+                                    <div id="methods" class="api-class-tabpanel">
+                                        <h2 class="off-left">Methods</h2>
                         
-                                    <div id="properties" class="api-class-tabpanel">
-                                        <h2 class="off-left">Properties</h2>
-                        
-                                            <div id="property_rect" class="property item">
-                                                <h3 class="name"><code>rect</code></h3>
-                                                <span class="type">Rect rect:Rect Rect object that controls the positioning and size</span>
+                                            <div id="method_createAudio" class="method item">
+                                                <h3 class="name"><code>createAudio</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>volumeCurve:AnimationCurve</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>frequencyCurve:AnimationCurve</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>options:LeanAudioOptions</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type">AudioClip</span>
+                                                    </span>
+                                            
+                                            
                                             
                                             
                                             
@@ -323,21 +236,81 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l446"><code>LeanTween.cs:446</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l198"><code>LeanTween.cs:198</code></a>
                                                     </p>
+                                            
                                             
                                             
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Pass this value to the GUI Methods</p>
+                                                    <p>Create dynamic audio from a set of Animation Curves and other options.</p>
                                             
                                                 </div>
                                             
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">volumeCurve:AnimationCurve</code>
+                                                                    <span class="type">AnimationCurve</span>
                                             
                                             
+                                                                <div class="param-description">
+                                                                    <p>describing the shape of the audios volume (from 0-1). The length of the audio is dicated by the end value here.</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">frequencyCurve:AnimationCurve</code>
+                                                                    <span class="type">AnimationCurve</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>describing the width of the oscillations between the sound waves in seconds. Large numbers mean a lower note, while higher numbers mean a tighter frequency and therefor a higher note. Values are usually between 0.01 and 0.000001 (or smaller)</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">options:LeanAudioOptions</code>
+                                                                    <span class="type"><a href="../classes/LeanAudioOptions.html" class="crosslink">LeanAudioOptions</a></span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>You can pass any other values in here like vibrato or the frequency you would like the sound to be encoded at. See <a href="LeanAudioOptions.html">LeanAudioOptions</a> for more details.</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type">AudioClip</span>:
+                                                                <p>AudioClip of the procedurally generated audio</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
+                                            AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
+                                            AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ));<br></p>
+                                            
+                                                        </div>
+                                                    </div>
                                             </div>
                                     </div>
+                        
                         
                         
                             </div>
