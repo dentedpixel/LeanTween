@@ -818,6 +818,7 @@ public class LTBezierPath{
 	*/
 	public void place( Transform transform, float ratio ){
 		place( transform, ratio, Vector3.up );
+
 	}
 
 	/**
@@ -835,6 +836,7 @@ public class LTBezierPath{
 		ratio += 0.001f;
 		if(ratio<=1.0f)
 			transform.LookAt( point( ratio ), worldUp );
+
 	}
 
 	/**
@@ -894,50 +896,10 @@ public class LTSpline {
 		System.Array.Copy(pts, this.pts, pts.Length);
 
 		numSections = pts.Length - 3;
-		int precision = 20;
-		lengthRatio = new float[precision];
-		lengths = new float[precision];
 		
-		Vector3 lastPoint = new Vector3(Mathf.Infinity,0,0);
 		
-		totalLength = 0f;
-		for(int i = 0; i < precision; i++){
-			//Debug.Log("i:"+i);
-			float fract = (i*1f) / precision;
-			Vector3 point = interp( fract );
-
-			if(i>=1){
-				lengths[ i ] = (point - lastPoint).magnitude;
-				// Debug.Log("fract:"+fract+" mag:"+lengths[ i ] + " i:"+i);
-			}
-			totalLength += lengths[ i ];
-
-			lastPoint = point;
-		}
-
-		float ratioTotal = 0f;
-		for(int i = 0; i < lengths.Length; i++){
-			float t = i *1f / (lengths.Length-1);
-			currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
-
-			float ratioLength = lengths[i] / totalLength;
-			ratioTotal += ratioLength;
-			lengthRatio[i] = ratioTotal;
-			
-			//Debug.Log("lengthRatio["+i+"]:"+lengthRatio[i]+" lengths["+i+"]:"+lengths[i] + " t:"+t);
-		}
 	}
 
-	public float map( float t ){
-		//Debug.Log("map t:"+t);
-		for(int i = 0; i < lengthRatio.Length; i++){
-			if(lengthRatio[i] >= t){
-				// Debug.Log("map lengthRatio["+i+"]:"+lengthRatio[i]);
-				return lengthRatio[i]+(t-lengthRatio[i]);
-			}
-		}
-		return 1f;
-	}
 	
 	public Vector3 interp(float t) {
 		// The adjustments done to numSections, I am not sure why I needed to add them
@@ -971,7 +933,7 @@ public class LTSpline {
 	* transform.position = ltSpline.point( 0.6f );
 	*/
 	public Vector3 point( float ratio ){
-		float t = map( ratio );
+		float t = ratio>1f?1f:ratio;
 		//Debug.Log("t:"+t+" ratio:"+ratio);
 		//float t = ratio;
 		return interp( t );
@@ -1026,6 +988,7 @@ public class LTSpline {
 		ratio += 0.001f;
 		if(ratio<=1.0f)
 			transform.LookAt( point( ratio ), worldUp );
+
 	}
 
 	/**
@@ -1059,19 +1022,20 @@ public class LTSpline {
 	}
 	
 	public void gizmoDraw(float t = -1.0f) {
-		if(lengthRatio!=null && lengthRatio.Length>0){
+		
 			Vector3 prevPt = point(0);
 			
 			for (int i = 1; i <= 120; i++) {
 				float pm = (float) i / 120f;
-				Vector3 currPt = point(pm);
-				Gizmos.DrawLine(currPt, prevPt);
-				prevPt = currPt;
+				Vector3 currPt2 = point(pm);
+				//Gizmos.color = new Color(UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),1);
+				Gizmos.DrawLine(currPt2, prevPt);
+				prevPt = currPt2;
 			}
-		}
+	
 	}
 
-	public Vector3 Velocity(float t) {
+	/*public Vector3 Velocity(float t) {
 		t = map( t );
 
 		int numSections = pts.Length - 3;
@@ -1086,7 +1050,7 @@ public class LTSpline {
 		return 1.5f * (-a + 3f * b - 3f * c + d) * (u * u)
 				+ (2f * a -5f * b + 4f * c - d) * u
 				+ .5f * c - .5f * a;
-	}
+	}*/
 }
 
 public enum TweenAction{
@@ -1202,6 +1166,7 @@ public class LTDescr{
 	public LeanTweenType loopType;
 	public bool hasUpdateCallback;
 	public Action<float> onUpdateFloat;
+    public Action<float,float> onUpdateFloatRatio;
 	public Action<float,object> onUpdateFloatObject;
 	public Action<Vector2> onUpdateVector2;
 	public Action<Vector3> onUpdateVector3;
@@ -1277,6 +1242,7 @@ public class LTDescr{
 		this.loopCount = 0;
 		this.direction = this.directionLast = 1.0f;
 		this.onUpdateFloat = null;
+        this.onUpdateFloatRatio = null;
 		this.onUpdateVector2 = null;
 		this.onUpdateVector3 = null;
 		this.onUpdateFloatObject = null;
@@ -1801,6 +1767,12 @@ public class LTDescr{
 		this.hasUpdateCallback = true;
 		return this;
 	}
+    public LTDescr setOnUpdateRatio(Action<float,float> onUpdate)
+    {
+        this.onUpdateFloatRatio = onUpdate;
+        this.hasUpdateCallback = true;
+        return this;
+    }
 	
 	public LTDescr setOnUpdateObject( Action<float,object> onUpdate ){
 		this.onUpdateFloatObject = onUpdate;
@@ -2657,7 +2629,11 @@ public static void update() {
 					if(tween.hasUpdateCallback){
 						if(tween.onUpdateFloat!=null){
 							tween.onUpdateFloat(val);
-						}else if(tween.onUpdateFloatObject!=null){
+						}
+                        if (tween.onUpdateFloatRatio != null){
+                            tween.onUpdateFloatRatio(val,ratioPassed);
+                        }
+                        else if(tween.onUpdateFloatObject!=null){
 							tween.onUpdateFloatObject(val, tween.onUpdateParam);
 						}else if(tween.onUpdateVector3Object!=null){
 							tween.onUpdateVector3Object(newVect, tween.onUpdateParam);
