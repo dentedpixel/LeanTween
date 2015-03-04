@@ -237,6 +237,10 @@
                         
                                                     </li>
                                                     <li class="index-item method">
+                                                        <a href="#method_setIgnoreTimeScale">setIgnoreTimeScale</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
                                                         <a href="#method_setLoopClamp">setLoopClamp</a>
                         
                                                     </li>
@@ -298,10 +302,6 @@
                                                     </li>
                                                     <li class="index-item method">
                                                         <a href="#method_setRepeat">setRepeat</a>
-                        
-                                                    </li>
-                                                    <li class="index-item method">
-                                                        <a href="#method_setUseEstimatedTime">setUseEstimatedTime</a>
                         
                                                     </li>
                                                     <li class="index-item method">
@@ -665,6 +665,79 @@
                                                         </div>
                                                     </div>
                                             </div>
+                                            <div id="method_setIgnoreTimeScale" class="method item">
+                                                <h3 class="name"><code>setIgnoreTimeScale</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>useUnScaledTime:bool</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l1670"><code>LeanTween.cs:1670</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Set ignore time scale when tweening an object when you want the animation to be time-scale independent (ignores the Time.timeScale value). Great for pause screens, when you want all other action to be stopped (or slowed down)</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">useUnScaledTime:bool</code>
+                                                                    <span class="type">Bool</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>whether to use the unscaled time or not</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 2 ).setIgnoreTimeScale( true );</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
                                             <div id="method_setLoopClamp" class="method item">
                                                 <h3 class="name"><code>setLoopClamp</code></h3>
                                             
@@ -683,7 +756,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1710"><code>LeanTween.cs:1710</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1715"><code>LeanTween.cs:1715</code></a>
                                                     </p>
                                             
                                             
@@ -733,7 +806,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1701"><code>LeanTween.cs:1701</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1706"><code>LeanTween.cs:1706</code></a>
                                                     </p>
                                             
                                             
@@ -783,7 +856,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1724"><code>LeanTween.cs:1724</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1729"><code>LeanTween.cs:1729</code></a>
                                                     </p>
                                             
                                             
@@ -839,7 +912,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1738"><code>LeanTween.cs:1738</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1743"><code>LeanTween.cs:1743</code></a>
                                                     </p>
                                             
                                             
@@ -912,7 +985,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1751"><code>LeanTween.cs:1751</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1756"><code>LeanTween.cs:1756</code></a>
                                                     </p>
                                             
                                             
@@ -985,7 +1058,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1973"><code>LeanTween.cs:1973</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1978"><code>LeanTween.cs:1978</code></a>
                                                     </p>
                                             
                                             
@@ -1058,7 +1131,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1986"><code>LeanTween.cs:1986</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1991"><code>LeanTween.cs:1991</code></a>
                                                     </p>
                                             
                                             
@@ -1134,7 +1207,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1770"><code>LeanTween.cs:1770</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1775"><code>LeanTween.cs:1775</code></a>
                                                     </p>
                                             
                                             
@@ -1207,7 +1280,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1784"><code>LeanTween.cs:1784</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1789"><code>LeanTween.cs:1789</code></a>
                                                     </p>
                                             
                                             
@@ -1282,7 +1355,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1829"><code>LeanTween.cs:1829</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1834"><code>LeanTween.cs:1834</code></a>
                                                     </p>
                                             
                                             
@@ -1357,7 +1430,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1863"><code>LeanTween.cs:1863</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1868"><code>LeanTween.cs:1868</code></a>
                                                     </p>
                                             
                                             
@@ -1432,7 +1505,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1883"><code>LeanTween.cs:1883</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1888"><code>LeanTween.cs:1888</code></a>
                                                     </p>
                                             
                                             
@@ -1507,7 +1580,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1898"><code>LeanTween.cs:1898</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1903"><code>LeanTween.cs:1903</code></a>
                                                     </p>
                                             
                                             
@@ -1580,7 +1653,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1917"><code>LeanTween.cs:1917</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1922"><code>LeanTween.cs:1922</code></a>
                                                     </p>
                                             
                                             
@@ -1653,7 +1726,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1950"><code>LeanTween.cs:1950</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1955"><code>LeanTween.cs:1955</code></a>
                                                     </p>
                                             
                                             
@@ -1775,79 +1848,6 @@
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_setUseEstimatedTime" class="method item">
-                                                <h3 class="name"><code>setUseEstimatedTime</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>useEstimatedTime:bool</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1665"><code>LeanTween.cs:1665</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Use estimated time when tweening an object when you want the animation to be time-scale independent (ignores the Time.timeScale value). Great for pause screens, when you want all other action to be stopped (or slowed down)</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">useEstimatedTime:bool</code>
-                                                                    <span class="type">Bool</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>whether to use estimated time or not</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
-                                                                <p>LTDescr an object that distinguishes the tween</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 2 ).setUseEstimatedTime( true );</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
                                             <div id="method_setUseFrames" class="method item">
                                                 <h3 class="name"><code>setUseFrames</code></h3>
                                             
@@ -1872,7 +1872,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1678"><code>LeanTween.cs:1678</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1683"><code>LeanTween.cs:1683</code></a>
                                                     </p>
                                             
                                             

@@ -1662,16 +1662,21 @@ public class LTDescr{
 		return this;
 	}
 
-	/**
-	* Use estimated time when tweening an object when you want the animation to be time-scale independent (ignores the Time.timeScale value). Great for pause screens, when you want all other action to be stopped (or slowed down)
-	* @method setUseEstimatedTime
-	* @param {bool} useEstimatedTime:bool whether to use estimated time or not
-	* @return {LTDescr} LTDescr an object that distinguishes the tween
-	* @example
-	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 2 ).setUseEstimatedTime( true );
-	*/
 	public LTDescr setUseEstimatedTime( bool useEstimatedTime ){
 		this.useEstimatedTime = useEstimatedTime;
+		return this;
+	}
+	
+	/**
+	* Set ignore time scale when tweening an object when you want the animation to be time-scale independent (ignores the Time.timeScale value). Great for pause screens, when you want all other action to be stopped (or slowed down)
+	* @method setIgnoreTimeScale
+	* @param {bool} useUnScaledTime:bool whether to use the unscaled time or not
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 2 ).setIgnoreTimeScale( true );
+	*/
+	public LTDescr setIgnoreTimeScale( bool useUnScaledTime ){
+		this.useEstimatedTime = useUnScaledTime;
 		return this;
 	}
 
@@ -2127,9 +2132,15 @@ public static void update() {
 	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
 		init();
 
+		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5
 		dtEstimated = Time.realtimeSinceStartup - previousRealTime;
 		if(dtEstimated>0.2f) // a catch put in, when at the start sometimes this number can grow unrealistically large
 			dtEstimated = 0.2f;
+		#else
+		dtEstimated = Time.unscaledDeltaTime;
+		#endif
+
+		
 		previousRealTime = Time.realtimeSinceStartup;
 		dtActual = Time.deltaTime;
 		maxTweenReached = 0;
