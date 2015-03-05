@@ -746,6 +746,7 @@ public class LTBezierPath{
 
 	private LTBezier[] beziers;
 	private float[] lengthRatio;
+	private int currentBezier=0,previousBezier=0;
 
 	public LTBezierPath(){ }
 	public LTBezierPath( Vector3[] pts_ ){
@@ -876,6 +877,22 @@ public class LTBezierPath{
 		if(ratio<=1.0f)
 			transform.LookAt( transform.parent.TransformPoint( point( ratio ) ), worldUp );
 	}
+
+	public void gizmoDraw(float t = -1.0f)
+    {
+        Vector3 prevPt = point(0);
+
+        for (int i = 1; i <= 120; i++)
+        {
+            float pm = (float)i / 120f;
+            Vector3 currPt2 = point(pm);
+            //Gizmos.color = new Color(UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),1);
+            Gizmos.color = (previousBezier == currentBezier) ? Color.magenta : Color.grey;
+            Gizmos.DrawLine(currPt2, prevPt);
+            prevPt = currPt2;
+            previousBezier = currentBezier;
+        }
+    }
 }
 
 /**
