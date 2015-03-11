@@ -1347,15 +1347,15 @@ public class LTDescr{
 					if(ren!=null){
 						this.from.x = ren.color.a;
 					}else{
-						if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_Color")){
-							this.from.x = trans.gameObject.renderer.material.color.a;
-						}else if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_TintColor")){
-							Color col = trans.gameObject.renderer.material.GetColor("_TintColor");
+						if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
+							this.from.x = trans.gameObject.GetComponent<Renderer>().material.color.a;
+						}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+							Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor("_TintColor");
 							this.from.x = col.a;
 						}else if(trans.childCount>0){
 							foreach (Transform child in trans) {
-								if(child.gameObject.renderer!=null){
-									Color col = child.gameObject.renderer.material.color;
+								if(child.gameObject.GetComponent<Renderer>()!=null){
+									Color col = child.gameObject.GetComponent<Renderer>().material.color;
 									this.from.x = col.a;
 									break;
 		    					}
@@ -1448,16 +1448,16 @@ public class LTDescr{
 						}
 					}
 				#else
-					if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_Color")){
-						Color col = trans.gameObject.renderer.material.color;
+					if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
+						Color col = trans.gameObject.GetComponent<Renderer>().material.color;
 						this.setFromColor( col );
-					}else if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_TintColor")){
-						Color col = trans.gameObject.renderer.material.GetColor ("_TintColor");
+					}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+						Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor ("_TintColor");
 						this.setFromColor( col );
 					}else if(trans.childCount>0){
 						foreach (Transform child in trans) {
-							if(child.gameObject.renderer!=null){
-								Color col = child.gameObject.renderer.material.color;
+							if(child.gameObject.GetComponent<Renderer>()!=null){
+								Color col = child.gameObject.GetComponent<Renderer>().material.color;
 								this.setFromColor( col );
 								break;
 	    					}
@@ -2414,8 +2414,8 @@ public static void update() {
 							if(ren!=null){
 								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
 							}else{
-								if(trans.gameObject.renderer!=null){
-									foreach(Material mat in trans.gameObject.renderer.materials){
+								if(trans.gameObject.GetComponent<Renderer>()!=null){
+									foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
 										if(mat.HasProperty("_Color")){
 			        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
 		        						}else if(mat.HasProperty("_TintColor")){
@@ -2426,8 +2426,8 @@ public static void update() {
 		    					}
 	    						if(trans.childCount>0){
 	    							foreach (Transform child in trans) {
-	    								if(child.gameObject.renderer!=null){
-		    								foreach(Material mat in child.gameObject.renderer.materials){
+	    								if(child.gameObject.GetComponent<Renderer>()!=null){
+		    								foreach(Material mat in child.gameObject.GetComponent<Renderer>().materials){
 		    									mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
 				    						}
 				    					}
@@ -2450,15 +2450,15 @@ public static void update() {
 							Color toColor = tweenColor(tween, val);
 							// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
 							if(tweenAction==TweenAction.COLOR){
-								if(trans.gameObject.renderer!=null){
-									foreach(Material mat in trans.gameObject.renderer.materials){
+								if(trans.gameObject.GetComponent<Renderer>()!=null){
+									foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
 		        						mat.color = toColor;
 		    						}
 		    					}
 		    					if(trans.childCount>0){
 	    							foreach (Transform child in trans) {
-	    								if(child.gameObject.renderer!=null){
-		    								foreach(Material mat in child.gameObject.renderer.materials){
+	    								if(child.gameObject.GetComponent<Renderer>()!=null){
+		    								foreach(Material mat in child.gameObject.GetComponent<Renderer>().materials){
 				        						mat.color = toColor;
 				    						}
 				    					}
