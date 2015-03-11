@@ -162,7 +162,7 @@ public class LeanAudioOptions : object {
 	* @example
 	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
 	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
-	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ).setFrequency(12100) );<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ).setFrequency(12100) );<br>
 	*/
 	public LeanAudioOptions setFrequency( int frequencyRate ){
 		this.frequencyRate = frequencyRate;
@@ -178,7 +178,7 @@ public class LeanAudioOptions : object {
 	* @example
 	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
 	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
-	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0.3f,0f)} ).setFrequency(12100) );<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.32f,0.3f,0f)} ).setFrequency(12100) );<br>
 	*/
 	public LeanAudioOptions setVibrato( Vector3[] vibrato ){
 		this.vibrato = vibrato;
@@ -195,6 +195,12 @@ public class LeanAudioOptions : object {
 */
 public class LeanAudio : MonoBehaviour {
 
+	public static float MIN_FREQEUNCY_PERIOD = 0.00001f;
+
+	public static LeanAudioOptions options(){
+		return new LeanAudioOptions();
+	}
+
 	/**
 	* Create dynamic audio from a set of Animation Curves and other options.
 	* 
@@ -206,7 +212,7 @@ public class LeanAudio : MonoBehaviour {
 	* @example
 	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
 	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
-	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ));<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ));<br>
 	*/
 	public static AudioClip createAudio( AnimationCurve volume, AnimationCurve frequency, LeanAudioOptions options = null ){
 		if(options==null)
@@ -223,6 +229,8 @@ public class LeanAudio : MonoBehaviour {
 		float passed = 0f;
 		for(int i = 0; i < 1000; i++){
 			float f = frequency.Evaluate(passed);
+			if(f<MIN_FREQEUNCY_PERIOD)
+				f = MIN_FREQEUNCY_PERIOD;
 			float height = volume.Evaluate(passed + 0.5f*f);
 			if(options.vibrato!=null){
 				for(int j=0; j<options.vibrato.Length; j++){
