@@ -2796,6 +2796,7 @@ public static void update() {
 				System.Action<object> callbackWithParam = null;
 				string callbackS=string.Empty;
 				object callbackParam=null;
+				Hashtable optional = tween.optional;
 				if(tween.optional!=null && tween.trans){
 					if(tween.optional["onComplete"]!=null){
 						callbackParam = tween.optional["onCompleteParam"];
@@ -2818,8 +2819,8 @@ public static void update() {
 				}else if(callback!=null){
 					callback();
 				}else if(callbackS!=string.Empty){
-					if (tween.optional["onCompleteTarget"]!=null){
-						customTarget = tween.optional["onCompleteTarget"] as GameObject;
+					if (optional["onCompleteTarget"]!=null){
+						customTarget = optional["onCompleteTarget"] as GameObject;
 						if(callbackParam!=null) customTarget.BroadcastMessage ( callbackS, callbackParam );
 						else customTarget.BroadcastMessage( callbackS );
 					}else{
@@ -2827,6 +2828,7 @@ public static void update() {
 						else trans.gameObject.BroadcastMessage( callbackS );
 					}
 				}
+				
 			}
 			#endif
 			else{
@@ -4076,7 +4078,7 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	}
 	LTDescr tween = tweens[i];
 	tween.toggle = true;
-	//tween.reset();
+	tween.reset();
 	tween.trans = gameObject.transform;
 	tween.to = to;
 	tween.time = time;
