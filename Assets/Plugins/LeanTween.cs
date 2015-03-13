@@ -2118,6 +2118,7 @@ public static void init(int maxSimultaneousTweens){
 
 public static void reset(){
 	tweens = null;
+	Destroy(_tweenEmpty);
 }
 
 public void Update(){

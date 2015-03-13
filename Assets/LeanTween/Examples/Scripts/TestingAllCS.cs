@@ -16,7 +16,7 @@ public class TestingAllCS : MonoBehaviour {
 	private string[] exampleFunctions = new string[] { /**/"updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample", "colorExample" };
 	private bool useEstimatedTime = true;
 	private GameObject ltLogo;
-	private TimingType timingType = TimingType.IgnoreTimeScale;
+	private TimingType timingType = TimingType.SteadyNormalTime;
 	private LTDescr descrTimeScaleChange;
 	private Vector3 origin;
 
