@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.25 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.26 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1284,6 +1284,15 @@ public class LTDescr{
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
 		this.direction = this.directionLast = 1.0f;
+		this.point = Vector3.zero;
+		cleanup();
+		
+		global_counter++;
+		if(global_counter>0x8000)
+			global_counter = 0;
+	}
+
+	public void cleanup(){
 		this.onUpdateFloat = null;
 		this.onUpdateVector2 = null;
 		this.onUpdateVector3 = null;
@@ -1293,16 +1302,13 @@ public class LTDescr{
 		this.onComplete = null;
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
-		this.point = Vector3.zero;
+		
 		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 		this.rectTransform = null;
 	    this.uiText = null;
 	   	this.uiImage = null;
 	    this.sprites = null;
 		#endif
-		global_counter++;
-		if(global_counter>0x8000)
-			global_counter = 0;
 	}
 
 	// This method is only for internal use
@@ -2772,11 +2778,17 @@ public static void update() {
 			tween = tweens[ j ];
 	
 			if(tween.onComplete!=null){
+				System.Action onComplete = tween.onComplete;
 				removeTween(j);
-				tween.onComplete();
+				//tween.cleanup();
+				onComplete();
+				
 			}else if(tween.onCompleteObject!=null){
+				System.Action<object> onCompleteObject = tween.onCompleteObject;
+				object onCompleteParam = tween.onCompleteParam;
 				removeTween(j);
-				tween.onCompleteObject(tween.onCompleteParam);
+				//tween.cleanup();
+				onCompleteObject(onCompleteParam);
 			}
 			#if LEANTWEEN_1
 			else if(tween.optional!=null){
@@ -2819,6 +2831,7 @@ public static void update() {
 			#endif
 			else{
 				removeTween(j);
+				//tween.cleanup();
 			}
 		}
 
@@ -2863,6 +2876,7 @@ public static void removeTween( int i ){
 				}
 			}
 		}
+		tweens[i].cleanup();
 		//tweens[i].optional = null;
 		startSearch = i;
 		//Debug.Log("start search reset:"+startSearch + " i:"+i+" tweenMaxSearch:"+tweenMaxSearch);
@@ -4062,7 +4076,7 @@ private static int pushNewTween( GameObject gameObject, Vector3 to, float time, 
 	}
 	LTDescr tween = tweens[i];
 	tween.toggle = true;
-	tween.reset();
+	//tween.reset();
 	tween.trans = gameObject.transform;
 	tween.to = to;
 	tween.time = time;
