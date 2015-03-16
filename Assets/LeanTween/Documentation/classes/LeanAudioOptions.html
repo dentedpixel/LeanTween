@@ -29,7 +29,7 @@
                 <h1><a href="http://dentedpixel.com/developer-diary/leantween-speed-comparison-to-itween/"><img src="http://s3.amazonaws.com/dentedpixel.com/LeanTween/leantween-logo.png" title=""></a></h1> <div style="position:absolute; left:146px; top:90px;">- Developed by <a href="http://www.dentedpixel.com">Dented Pixel</a></div>
         </div>
         <div class="yui3-u-1-4 version">
-            <em style="margin-top:2px">API Docs for: LeanTween 2.25</em><br>
+            <em style="margin-top:2px">API Docs for: LeanTween 2.26</em><br>
             <table id="support">
                 <tr>
                 <td>
@@ -242,7 +242,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Set the frequency the audio is encoded at. 44100 is CD quality, but you can usually get away with much lower (or use a lower amount to get a more 8-bit sound).</p>
+                                                    <p>Set the frequency for the audio is encoded. 44100 is CD quality, but you can usually get away with much lower (or use a lower amount to get a more 8-bit sound).</p>
                                             
                                                 </div>
                                             
@@ -280,7 +280,7 @@
                                                         <div class="example-content">
                                                             <p>AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
                                             AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
-                                            AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ).setFrequency(12100) );<br></p>
+                                            AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ).setFrequency(12100) );<br></p>
                                             
                                                         </div>
                                                     </div>
@@ -331,7 +331,7 @@
                                             
                                             
                                                                 <div class="param-description">
-                                                                    <p>The first value is the period in seconds that you wish to influence the height of the wave. The second value is the minimum height you wish the vibrato wave to dip down to (default zero). The third is reserved for future effects.</p>
+                                                                    <p>The first value is the period in seconds that you wish to have the vibrato wave fluctuate at. The second value is the minimum height you wish the vibrato wave to dip down to (default is zero). The third is reserved for future effects.</p>
                                             
                                                                 </div>
                                             
@@ -355,7 +355,7 @@
                                                         <div class="example-content">
                                                             <p>AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
                                             AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
-                                            AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0.3f,0f)} ).setFrequency(12100) );<br></p>
+                                            AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.32f,0.3f,0f)} ).setFrequency(12100) );<br></p>
                                             
                                                         </div>
                                                     </div>

@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.25 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.26 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -162,7 +162,7 @@ public class LeanAudioOptions : object {
 	* @example
 	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
 	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
-	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ).setFrequency(12100) );<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ).setFrequency(12100) );<br>
 	*/
 	public LeanAudioOptions setFrequency( int frequencyRate ){
 		this.frequencyRate = frequencyRate;
@@ -178,7 +178,7 @@ public class LeanAudioOptions : object {
 	* @example
 	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
 	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
-	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0.3f,0f)} ).setFrequency(12100) );<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.32f,0.3f,0f)} ).setFrequency(12100) );<br>
 	*/
 	public LeanAudioOptions setVibrato( Vector3[] vibrato ){
 		this.vibrato = vibrato;
@@ -195,6 +195,12 @@ public class LeanAudioOptions : object {
 */
 public class LeanAudio : MonoBehaviour {
 
+	public static float MIN_FREQEUNCY_PERIOD = 0.00001f;
+
+	public static LeanAudioOptions options(){
+		return new LeanAudioOptions();
+	}
+
 	/**
 	* Create dynamic audio from a set of Animation Curves and other options.
 	* 
@@ -206,7 +212,7 @@ public class LeanAudio : MonoBehaviour {
 	* @example
 	* AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f));<br>
 	* AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003f, 0f, 0f), new Keyframe(1f, 0.003f, 0f, 0f));<br>
-	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ));<br>
+	* AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.32f,0f,0f)} ));<br>
 	*/
 	public static AudioClip createAudio( AnimationCurve volume, AnimationCurve frequency, LeanAudioOptions options = null ){
 		if(options==null)
@@ -223,6 +229,8 @@ public class LeanAudio : MonoBehaviour {
 		float passed = 0f;
 		for(int i = 0; i < 1000; i++){
 			float f = frequency.Evaluate(passed);
+			if(f<MIN_FREQEUNCY_PERIOD)
+				f = MIN_FREQEUNCY_PERIOD;
 			float height = volume.Evaluate(passed + 0.5f*f);
 			if(options.vibrato!=null){
 				for(int j=0; j<options.vibrato.Length; j++){
@@ -1276,6 +1284,15 @@ public class LTDescr{
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
 		this.direction = this.directionLast = 1.0f;
+		this.point = Vector3.zero;
+		cleanup();
+		
+		global_counter++;
+		if(global_counter>0x8000)
+			global_counter = 0;
+	}
+
+	public void cleanup(){
 		this.onUpdateFloat = null;
 		this.onUpdateVector2 = null;
 		this.onUpdateVector3 = null;
@@ -1285,16 +1302,13 @@ public class LTDescr{
 		this.onComplete = null;
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
-		this.point = Vector3.zero;
+		
 		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 		this.rectTransform = null;
 	    this.uiText = null;
 	   	this.uiImage = null;
 	    this.sprites = null;
 		#endif
-		global_counter++;
-		if(global_counter>0x8000)
-			global_counter = 0;
 	}
 
 	// This method is only for internal use
@@ -1347,15 +1361,15 @@ public class LTDescr{
 					if(ren!=null){
 						this.from.x = ren.color.a;
 					}else{
-						if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_Color")){
-							this.from.x = trans.gameObject.renderer.material.color.a;
-						}else if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_TintColor")){
-							Color col = trans.gameObject.renderer.material.GetColor("_TintColor");
+						if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
+							this.from.x = trans.gameObject.GetComponent<Renderer>().material.color.a;
+						}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+							Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor("_TintColor");
 							this.from.x = col.a;
 						}else if(trans.childCount>0){
 							foreach (Transform child in trans) {
-								if(child.gameObject.renderer!=null){
-									Color col = child.gameObject.renderer.material.color;
+								if(child.gameObject.GetComponent<Renderer>()!=null){
+									Color col = child.gameObject.GetComponent<Renderer>().material.color;
 									this.from.x = col.a;
 									break;
 		    					}
@@ -1448,16 +1462,16 @@ public class LTDescr{
 						}
 					}
 				#else
-					if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_Color")){
-						Color col = trans.gameObject.renderer.material.color;
+					if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
+						Color col = trans.gameObject.GetComponent<Renderer>().material.color;
 						this.setFromColor( col );
-					}else if(trans.gameObject.renderer!=null && trans.gameObject.renderer.material.HasProperty("_TintColor")){
-						Color col = trans.gameObject.renderer.material.GetColor ("_TintColor");
+					}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+						Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor ("_TintColor");
 						this.setFromColor( col );
 					}else if(trans.childCount>0){
 						foreach (Transform child in trans) {
-							if(child.gameObject.renderer!=null){
-								Color col = child.gameObject.renderer.material.color;
+							if(child.gameObject.GetComponent<Renderer>()!=null){
+								Color col = child.gameObject.GetComponent<Renderer>().material.color;
 								this.setFromColor( col );
 								break;
 	    					}
@@ -1662,16 +1676,21 @@ public class LTDescr{
 		return this;
 	}
 
-	/**
-	* Use estimated time when tweening an object when you want the animation to be time-scale independent (ignores the Time.timeScale value). Great for pause screens, when you want all other action to be stopped (or slowed down)
-	* @method setUseEstimatedTime
-	* @param {bool} useEstimatedTime:bool whether to use estimated time or not
-	* @return {LTDescr} LTDescr an object that distinguishes the tween
-	* @example
-	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 2 ).setUseEstimatedTime( true );
-	*/
 	public LTDescr setUseEstimatedTime( bool useEstimatedTime ){
 		this.useEstimatedTime = useEstimatedTime;
+		return this;
+	}
+	
+	/**
+	* Set ignore time scale when tweening an object when you want the animation to be time-scale independent (ignores the Time.timeScale value). Great for pause screens, when you want all other action to be stopped (or slowed down)
+	* @method setIgnoreTimeScale
+	* @param {bool} useUnScaledTime:bool whether to use the unscaled time or not
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat( 2 ).setIgnoreTimeScale( true );
+	*/
+	public LTDescr setIgnoreTimeScale( bool useUnScaledTime ){
+		this.useEstimatedTime = useUnScaledTime;
 		return this;
 	}
 
@@ -2099,6 +2118,7 @@ public static void init(int maxSimultaneousTweens){
 
 public static void reset(){
 	tweens = null;
+	Destroy(_tweenEmpty);
 }
 
 public void Update(){
@@ -2127,9 +2147,15 @@ public static void update() {
 	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
 		init();
 
+		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5
 		dtEstimated = Time.realtimeSinceStartup - previousRealTime;
 		if(dtEstimated>0.2f) // a catch put in, when at the start sometimes this number can grow unrealistically large
 			dtEstimated = 0.2f;
+		#else
+		dtEstimated = Time.unscaledDeltaTime;
+		#endif
+
+		
 		previousRealTime = Time.realtimeSinceStartup;
 		dtActual = Time.deltaTime;
 		maxTweenReached = 0;
@@ -2403,8 +2429,8 @@ public static void update() {
 							if(ren!=null){
 								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
 							}else{
-								if(trans.gameObject.renderer!=null){
-									foreach(Material mat in trans.gameObject.renderer.materials){
+								if(trans.gameObject.GetComponent<Renderer>()!=null){
+									foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
 										if(mat.HasProperty("_Color")){
 			        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
 		        						}else if(mat.HasProperty("_TintColor")){
@@ -2415,8 +2441,8 @@ public static void update() {
 		    					}
 	    						if(trans.childCount>0){
 	    							foreach (Transform child in trans) {
-	    								if(child.gameObject.renderer!=null){
-		    								foreach(Material mat in child.gameObject.renderer.materials){
+	    								if(child.gameObject.GetComponent<Renderer>()!=null){
+		    								foreach(Material mat in child.gameObject.GetComponent<Renderer>().materials){
 		    									mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
 				    						}
 				    					}
@@ -2439,15 +2465,15 @@ public static void update() {
 							Color toColor = tweenColor(tween, val);
 							// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
 							if(tweenAction==TweenAction.COLOR){
-								if(trans.gameObject.renderer!=null){
-									foreach(Material mat in trans.gameObject.renderer.materials){
+								if(trans.gameObject.GetComponent<Renderer>()!=null){
+									foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
 		        						mat.color = toColor;
 		    						}
 		    					}
 		    					if(trans.childCount>0){
 	    							foreach (Transform child in trans) {
-	    								if(child.gameObject.renderer!=null){
-		    								foreach(Material mat in child.gameObject.renderer.materials){
+	    								if(child.gameObject.GetComponent<Renderer>()!=null){
+		    								foreach(Material mat in child.gameObject.GetComponent<Renderer>().materials){
 				        						mat.color = toColor;
 				    						}
 				    					}
@@ -2753,11 +2779,17 @@ public static void update() {
 			tween = tweens[ j ];
 	
 			if(tween.onComplete!=null){
+				System.Action onComplete = tween.onComplete;
 				removeTween(j);
-				tween.onComplete();
+				//tween.cleanup();
+				onComplete();
+				
 			}else if(tween.onCompleteObject!=null){
+				System.Action<object> onCompleteObject = tween.onCompleteObject;
+				object onCompleteParam = tween.onCompleteParam;
 				removeTween(j);
-				tween.onCompleteObject(tween.onCompleteParam);
+				//tween.cleanup();
+				onCompleteObject(onCompleteParam);
 			}
 			#if LEANTWEEN_1
 			else if(tween.optional!=null){
@@ -2765,6 +2797,7 @@ public static void update() {
 				System.Action<object> callbackWithParam = null;
 				string callbackS=string.Empty;
 				object callbackParam=null;
+				Hashtable optional = tween.optional;
 				if(tween.optional!=null && tween.trans){
 					if(tween.optional["onComplete"]!=null){
 						callbackParam = tween.optional["onCompleteParam"];
@@ -2787,8 +2820,8 @@ public static void update() {
 				}else if(callback!=null){
 					callback();
 				}else if(callbackS!=string.Empty){
-					if (tween.optional["onCompleteTarget"]!=null){
-						customTarget = tween.optional["onCompleteTarget"] as GameObject;
+					if (optional["onCompleteTarget"]!=null){
+						customTarget = optional["onCompleteTarget"] as GameObject;
 						if(callbackParam!=null) customTarget.BroadcastMessage ( callbackS, callbackParam );
 						else customTarget.BroadcastMessage( callbackS );
 					}else{
@@ -2796,10 +2829,12 @@ public static void update() {
 						else trans.gameObject.BroadcastMessage( callbackS );
 					}
 				}
+				
 			}
 			#endif
 			else{
 				removeTween(j);
+				//tween.cleanup();
 			}
 		}
 
@@ -2844,6 +2879,7 @@ public static void removeTween( int i ){
 				}
 			}
 		}
+		tweens[i].cleanup();
 		//tweens[i].optional = null;
 		startSearch = i;
 		//Debug.Log("start search reset:"+startSearch + " i:"+i+" tweenMaxSearch:"+tweenMaxSearch);

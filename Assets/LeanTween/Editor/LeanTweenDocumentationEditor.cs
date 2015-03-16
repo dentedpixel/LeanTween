@@ -42,9 +42,17 @@ public class LeanTweenDocumentationEditor : Editor {
 		Application.OpenURL("https://github.com/dentedpixel/LeanTween");
 	}
 
+	[MenuItem ("Help/LeanTween Support (donate)")]
+	static void openLTDonate()
+	{
+		Application.OpenURL("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=YJPUT3RAK5VL8");	
+	}
+
 	[MenuItem ("Help/Dented Pixel News")]
 	static void openDPNews()
 	{
 		Application.OpenURL("http://dentedpixel.com/category/developer-diary/");
 	}
+
+	
 }
