@@ -2942,6 +2942,7 @@ public static void cancelAll(bool callComplete){
 * 
 * @method LeanTween.cancel
 * @param {GameObject} gameObject:GameObject gameObject whose tweens you wish to cancel
+* @param {bool} callOnComplete:IF true,then any complete actions will also be called
 * @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
 * LeanTween.cancel( gameObject );
 */
