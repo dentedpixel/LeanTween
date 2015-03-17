@@ -2942,14 +2942,17 @@ public static void cancelAll(bool callComplete){
 * 
 * @method LeanTween.cancel
 * @param {GameObject} gameObject:GameObject gameObject whose tweens you wish to cancel
+* @param {bool} callOnComplete:IF true,then any complete actions will also be called
 * @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
 * LeanTween.cancel( gameObject );
 */
-public static void cancel( GameObject gameObject ){
+public static void cancel( GameObject gameObject, bool callComplete = false ){
 	init();
 	Transform trans = gameObject.transform;
 	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].trans==trans){
+            if (callComplete && tweens[i].onComplete != null)
+                tweens[i].onComplete();
 			removeTween(i);
 		}
 	}
