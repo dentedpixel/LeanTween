@@ -1436,13 +1436,6 @@ public class LTDescr{
 				this.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 				break;
 			case TweenAction.CALLBACK:
-				if(this.onCompleteOnStart){
-					if(this.onComplete!=null){
-						this.onComplete();
-					}else if(this.onCompleteObject!=null){
-						this.onCompleteObject(this.onCompleteParam);
-					}
-				}
 				break;
 			case TweenAction.CALLBACK_COLOR:
 				this.diff = new Vector3(1.0f,0.0f,0.0f);
@@ -1518,6 +1511,13 @@ public class LTDescr{
 		}
         if(this.type!=TweenAction.CALLBACK_COLOR && this.type!=TweenAction.COLOR && this.type!=TweenAction.TEXT_COLOR && this.type!=TweenAction.CANVAS_COLOR)
 			this.diff = this.to - this.from;
+		if(this.onCompleteOnStart){
+			if(this.onComplete!=null){
+				this.onComplete();
+			}else if(this.onCompleteObject!=null){
+				this.onCompleteObject(this.onCompleteParam);
+			}
+		}
 	}
 
 	public LTDescr setFromColor( Color col ){

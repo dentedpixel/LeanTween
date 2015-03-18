@@ -15,8 +15,12 @@ public class TestingPunch : MonoBehaviour {
         LeanTween.dtManual = Time.deltaTime;
         if (Input.GetKeyDown(KeyCode.Q))
         {
-            LeanTween.scale(this.gameObject, Vector3.one*3f, 1.0f).setEase(LeanTweenType.easeSpring).setUseManualTime(true);            
-            print("scale punch time independent!");
+            //LeanTween.scale(this.gameObject, Vector3.one*3f, 1.0f).setEase(LeanTweenType.easeSpring).setUseManualTime(true);            
+            //print("scale punch time independent!");
+
+            LeanTween.moveLocalX(gameObject, 5, 1).setOnComplete( () => {
+            Debug.Log("on complete move local X");
+            }).setOnCompleteOnStart(true);
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
