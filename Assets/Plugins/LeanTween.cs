@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.26 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.265 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1455,21 +1455,27 @@ public class LTDescr{
 						}
 					}
 				#else
-					if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
-						Color col = trans.gameObject.GetComponent<Renderer>().material.color;
-						this.setFromColor( col );
-					}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
-						Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor ("_TintColor");
-						this.setFromColor( col );
-					}else if(trans.childCount>0){
-						foreach (Transform child in trans) {
-							if(child.gameObject.GetComponent<Renderer>()!=null){
-								Color col = child.gameObject.GetComponent<Renderer>().material.color;
-								this.setFromColor( col );
-								break;
-	    					}
+					SpriteRenderer renColor = trans.gameObject.GetComponent<SpriteRenderer>();
+                    if(renColor!=null){
+                        Color col = renColor.color;
+                        this.setFromColor( col );
+                    }else{
+                        if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
+							Color col = trans.gameObject.GetComponent<Renderer>().material.color;
+							this.setFromColor( col );
+						}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+							Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor ("_TintColor");
+							this.setFromColor( col );
+						}else if(trans.childCount>0){
+							foreach (Transform child in trans) {
+								if(child.gameObject.GetComponent<Renderer>()!=null){
+									Color col = child.gameObject.GetComponent<Renderer>().material.color;
+									this.setFromColor( col );
+									break;
+		    					}
+							}
 						}
-					}
+                    }
 				#endif
 				break;
 			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
