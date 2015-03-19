@@ -827,7 +827,7 @@ public class LTBezierPath
 
     private LTBezier[] beziers;
     private float[] lengthRatio;
-    private int CurrentBezier=0,PreviousBezier=0;
+    private int CurrentBezier = 0, PreviousBezier = 0;
 
     public LTBezierPath() { }
     public LTBezierPath(Vector3[] pts_)
@@ -1172,6 +1172,20 @@ public class LTSpline
         }
 
     }
+	public void gizmoDraw(Vector3 offset)
+	{
+		
+		Vector3 prevPt = point(0) + offset;
+		
+		for (int i = 1; i <= 120; i++)
+		{
+			float pm = (float)i / 120f;
+			Vector3 currPt2 = point(pm)+offset;
+			Gizmos.DrawLine(currPt2, prevPt);
+			prevPt = currPt2;
+		}
+		
+	}
 
     /*public Vector3 Velocity(float t) {
         t = map( t );
@@ -1314,8 +1328,11 @@ public class LTDescr
     public Action<Vector3, object> onUpdateVector3Object;
     public Action<Color> onUpdateColor;
     public Action onComplete;
+    public Action onStart;
     public Action<object> onCompleteObject;
     public object onCompleteParam;
+    public Action<object> onStartObject;
+    public object onStartParam;
     public object onUpdateParam;
 
 #if LEANTWEEN_1
@@ -1398,6 +1415,9 @@ public class LTDescr
         this.onUpdateVector3Object = null;
         this.onUpdateColor = null;
         this.onComplete = null;
+        this.onStart = null;
+        this.onStartObject = null;
+        this.onStartParam = null;
         this.onCompleteObject = null;
         this.onCompleteParam = null;
         this.point = Vector3.zero;
@@ -1421,6 +1441,23 @@ public class LTDescr
         /*if( !this.useEstimatedTime ){
             this.time = this.time*Time.timeScale;
         }*/
+        if(this.onCompleteOnStart)
+        {
+            if (this.onComplete != null)
+            {
+                this.onComplete();
+            }
+            else if (this.onCompleteObject != null)
+            {
+                this.onCompleteObject(this.onCompleteParam);
+            }
+        }
+
+        if (this.onStart != null)
+        {
+            this.onStart();
+        }
+             
 
         // Initialize From Values
         switch (this.type)
@@ -1550,17 +1587,6 @@ public class LTDescr
                 this.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
                 break;
             case TweenAction.CALLBACK:
-                if (this.onCompleteOnStart)
-                {
-                    if (this.onComplete != null)
-                    {
-                        this.onComplete();
-                    }
-                    else if (this.onCompleteObject != null)
-                    {
-                        this.onCompleteObject(this.onCompleteParam);
-                    }
-                }
                 break;
             case TweenAction.CALLBACK_COLOR:
                 this.diff = new Vector3(1.0f, 0.0f, 0.0f);
@@ -1904,7 +1930,23 @@ public class LTDescr
             this.loopCount = -1;
         return this;
     }
-
+    public LTDescr setOnStart(Action onStart)
+    {
+        this.onStart = onStart;
+        return this;
+    }
+    public LTDescr setOnStart(Action<object> onStart)
+    {
+        this.onStartObject = onStart;
+        return this;
+    }
+    public LTDescr setOnStart(Action<object> onStart, object onStartParam)
+    {
+        this.onStartObject = onStart;
+        if (onStartParam != null)
+            this.onStartParam = onStartParam;
+        return this;
+    }
     /**
     * Have a method called when the tween finishes
     * @method setOnComplete
@@ -3931,6 +3973,13 @@ A shader that supports vertex colors is required for it to work
         return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr);
     }
 
+    public static LTDescr moveSplineLocal(GameObject gameObject, LTSpline to, float time)
+    {
+        descr = options();
+        descr.spline = to;
+
+        return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr);
+    }
     /**
     * Move a GUI Element to a certain location
     * 
