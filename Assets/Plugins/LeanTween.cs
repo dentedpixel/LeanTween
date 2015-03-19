@@ -1183,7 +1183,7 @@ public class LTDescr{
 	public bool hasInitiliazed;
 	public bool hasPhysics;
 	public bool onCompleteOnRepeat;
-	public bool onCompleteOnStart;
+	public bool onStartEvent;
 	public float passed;
 	public float delay;
 	public float time;
@@ -1216,6 +1216,7 @@ public class LTDescr{
 	public Action<Vector3,object> onUpdateVector3Object;
 	public Action<Color> onUpdateColor;
 	public Action onComplete;
+	public Action onStart;
 	public Action<object> onCompleteObject;
 	public object onCompleteParam;
 	public object onUpdateParam;
@@ -1278,7 +1279,7 @@ public class LTDescr{
 		#endif
 		this.trans = null;
 		this.passed = this.delay = this.lastVal = 0.0f;
-		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = false;
+		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onStartEvent = this.useManualTime = false;
 		this.animationCurve = null;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
@@ -1300,9 +1301,9 @@ public class LTDescr{
 		this.onUpdateVector3Object = null;
 		this.onUpdateColor = null;
 		this.onComplete = null;
+		this.onStart = null;
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
-		
 		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 		this.rectTransform = null;
 	    this.uiText = null;
@@ -1436,13 +1437,13 @@ public class LTDescr{
 				this.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 				break;
 			case TweenAction.CALLBACK:
-				if(this.onCompleteOnStart){
-					if(this.onComplete!=null){
-						this.onComplete();
-					}else if(this.onCompleteObject!=null){
-						this.onCompleteObject(this.onCompleteParam);
-					}
-				}
+//				if(this.onStartEvent){
+//					if(this.onComplete!=null){
+//						this.onComplete();
+//					}else if(this.onCompleteObject!=null){
+//						this.onCompleteObject(this.onCompleteParam);
+//					}
+//				}
 				break;
 			case TweenAction.CALLBACK_COLOR:
 				this.diff = new Vector3(1.0f,0.0f,0.0f);
@@ -1762,6 +1763,20 @@ public class LTDescr{
 	* @example
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );
 	*/
+	public LTDescr setOnStart( Action onStart ){
+		this.onStart = onStart;
+		this.onStartEvent = true;
+		return this;
+    }
+
+	/**
+	* Have a method called when the tween finishes
+	* @method setOnComplete
+	* @param {Action} onComplete:Action the method that should be called when the tween is finished ex: tweenFinished(){ }
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );
+	*/
 	public LTDescr setOnComplete( Action onComplete ){
 		this.onComplete = onComplete;
 		return this;
@@ -2013,10 +2028,10 @@ public class LTDescr{
 	* &nbsp;LeanTween.alpha(gameObject, 1f, 0f).setDelay(1f);<br>
 	* }).setOnCompleteOnStart(true).setRepeat(5);<br>
 	*/
-	public LTDescr setOnCompleteOnStart( bool isOn ){
-		this.onCompleteOnStart = isOn;
-		return this;
-	}
+//	public LTDescr setOnCompleteOnStart( bool isOn ){
+//		this.onStartEvent = isOn;
+//		return this;
+//	}
 
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 	public LTDescr setRect( RectTransform rect ){
@@ -2758,6 +2773,10 @@ public static void update() {
 						}
 					}
 				}else if(tween.delay<=0){
+						if(tween.passed <= 0 && tween.onStartEvent){
+							if(tween.onStart != null)
+								tween.onStart();
+						}
 					tween.passed += dt*tween.direction;
 				}else{
 					tween.delay -= dt;
