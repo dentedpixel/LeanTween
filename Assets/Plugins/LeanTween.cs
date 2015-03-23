@@ -921,8 +921,6 @@ public class LTSpline {
 		System.Array.Copy(pts, this.pts, pts.Length);
 
 		numSections = pts.Length - 3;
-		
-		
 	}
 
 	
@@ -1831,6 +1829,11 @@ public class LTDescr{
 		this.hasUpdateCallback = true;
 		return this;
 	}
+	 public LTDescr setOnUpdateRatio(Action<float,float> onUpdate){
+		this.onUpdateFloatRatio = onUpdate;
+		this.hasUpdateCallback = true;
+		return this;
+	}
 
 	#if !UNITY_FLASH
 
@@ -2670,8 +2673,7 @@ public static void update() {
 						}
                         if (tween.onUpdateFloatRatio != null){
                             tween.onUpdateFloatRatio(val,ratioPassed);
-                        }
-                        else if(tween.onUpdateFloatObject!=null){
+                        }else if(tween.onUpdateFloatObject!=null){
 							tween.onUpdateFloatObject(val, tween.onUpdateParam);
 						}else if(tween.onUpdateVector3Object!=null){
 							tween.onUpdateVector3Object(newVect, tween.onUpdateParam);
