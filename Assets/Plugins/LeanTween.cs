@@ -1829,11 +1829,6 @@ public class LTDescr{
 		this.hasUpdateCallback = true;
 		return this;
 	}
-	 public LTDescr setOnUpdateRatio(Action<float,float> onUpdate){
-		this.onUpdateFloatRatio = onUpdate;
-		this.hasUpdateCallback = true;
-		return this;
-	}
 
 	#if !UNITY_FLASH
 
