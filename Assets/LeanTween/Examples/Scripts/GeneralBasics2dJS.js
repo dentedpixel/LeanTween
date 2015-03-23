@@ -34,7 +34,7 @@ function Start () {
 function createSpriteDude( name:String, pos:Vector3, hasParticles:boolean ):GameObject{
 	var go:GameObject = new GameObject(name);
 	var ren:SpriteRenderer = go.AddComponent(SpriteRenderer);
-	go.renderer.material.color = new Color(0f,181f/255f,1f);
+	go.GetComponent.<Renderer>().material.color = new Color(0f,181f/255f,1f);
 	ren.sprite = Sprite.Create( dudeTexture, new Rect(0.0f,0.0f,256.0f,256.0f), new Vector2(0.5f,0f), 256f);
 	go.transform.position = pos;
 

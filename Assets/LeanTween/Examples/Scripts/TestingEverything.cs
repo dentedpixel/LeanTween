@@ -45,7 +45,7 @@ public class TestingEverything : MonoBehaviour {
 	private int rotateRepeatAngle;
 
 	void Start () {
-		LeanTest.expected = 21;
+		LeanTest.expected = 22;
 
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
@@ -76,6 +76,7 @@ public class TestingEverything : MonoBehaviour {
 		lt1 = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f );
 		LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
 
+		LeanTween.reset();
 
 		// ping pong
 
@@ -168,6 +169,14 @@ public class TestingEverything : MonoBehaviour {
 			LeanTest.debug("SCALED TIMING diff:"+diff, Mathf.Abs(0.8f - diff) < 0.05f, "expected to complete in 0.8f but completed in "+diff );
 			LeanTest.debug("SCALED ENDING POSITION", Mathf.Approximately(cube1.transform.position.x, -5f), "expected to end at -5f, but it ended at "+cube1.transform.position.x);
 		});
+
+		int ltCount = 0;
+		GameObject[] allGos = FindObjectsOfType(typeof(GameObject)) as GameObject[];
+        foreach (GameObject go in allGos) {
+            if(go.name == "~LeanTween")
+		     	ltCount++;
+        }
+		LeanTest.debug("RESET CORRECTLY CLEANS UP", ltCount==1 );
 	}
 
 	void rotateRepeatFinished(){

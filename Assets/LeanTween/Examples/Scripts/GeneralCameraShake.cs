@@ -52,7 +52,7 @@ public class GeneralCameraShake : MonoBehaviour {
 				// Make the boxes jump from the big stomping
 				GameObject[] boxes = GameObject.FindGameObjectsWithTag("Respawn"); // I just arbitrarily tagged the boxes with this since it was available in the scene
 		        foreach (GameObject box in boxes) {
-		            box.rigidbody.AddForce(Vector3.up * 100 * height);
+		            box.GetComponent<Rigidbody>().AddForce(Vector3.up * 100 * height);
 		        }
 
 		        // Make the lamps spin from the big stomping
@@ -60,7 +60,7 @@ public class GeneralCameraShake : MonoBehaviour {
 		        foreach (GameObject lamp in lamps) {
 		        	float z = lamp.transform.eulerAngles.z;
 		        	z = z > 0.0f && z < 180f ? 1 : -1; // push the lamps in whatever direction they are currently swinging
-		            lamp.rigidbody.AddForce(new Vector3(z, 0f, 0f ) * 15 * height);
+		            lamp.GetComponent<Rigidbody>().AddForce(new Vector3(z, 0f, 0f ) * 15 * height);
 		        }
 
 		        // Play BOOM!

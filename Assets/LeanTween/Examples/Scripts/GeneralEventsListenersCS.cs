@@ -21,7 +21,7 @@ public class GeneralEventsListenersCS : MonoBehaviour {
 		LeanTween.LISTENERS_MAX = 100; // This is the maximum of event listeners you will have added as listeners
 		LeanTween.EVENTS_MAX = (int)MyEvents.LENGTH; // The maximum amount of events you will be dispatching
 
-		fromColor = renderer.material.color;
+		fromColor = GetComponent<Renderer>().material.color;
 	}
 
 	void Start () {
@@ -33,7 +33,7 @@ public class GeneralEventsListenersCS : MonoBehaviour {
 	// ****** Event Listening Methods
 
 	void jumpUp( LTEvent e ){
-		rigidbody.AddRelativeForce(Vector3.forward * 300f);
+		GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * 300f);
 	}
 
 	void changeColor( LTEvent e ){
@@ -42,7 +42,7 @@ public class GeneralEventsListenersCS : MonoBehaviour {
 		Color to = new Color(Random.Range(0f,1f),0f,Random.Range(0f,1f));
 		LeanTween.value( gameObject, fromColor, to, 0.8f ).setRepeat(2).setLoopPingPong().setDelay(distance*0.05f).setOnUpdate(
 			(Color col)=>{
-				renderer.material.color = col;
+				GetComponent<Renderer>().material.color = col;
 			}
 		);
 	}
@@ -63,11 +63,11 @@ public class GeneralEventsListenersCS : MonoBehaviour {
 
 	void FixedUpdate(){
 		if(turnForIter < turnForLength){
-			rigidbody.MoveRotation( rigidbody.rotation * Quaternion.Euler(towardsRotation * Time.deltaTime ) );
+			GetComponent<Rigidbody>().MoveRotation( GetComponent<Rigidbody>().rotation * Quaternion.Euler(towardsRotation * Time.deltaTime ) );
 			turnForIter += Time.deltaTime;
 		}
 
-		rigidbody.AddRelativeForce(Vector3.forward * 4.5f);
+		GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * 4.5f);
 	}
 
 	// ****** Key and clicking detection
