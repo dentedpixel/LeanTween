@@ -3929,6 +3929,16 @@ A shader that supports vertex colors is required for it to work
         return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED, descr);
     }
 
+    public static LTDescr move(GameObject gameObject, LTBezierPath to, float time)
+    {
+        descr = options();
+        
+            descr.path = to;
+        
+
+        return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED, descr);
+    }
+
     /**
     * Move a GameObject through a set of points
     * 
@@ -3950,7 +3960,13 @@ A shader that supports vertex colors is required for it to work
 
         return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE, descr);
     }
+    public static LTDescr move(GameObject gameObject, LTSpline to, float time)
+    {
+        descr = options();
+        descr.spline = to;
 
+        return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE, descr);
+    }
     /**
     * Move a GameObject through a set of points, in local space
     * 
@@ -3973,7 +3989,7 @@ A shader that supports vertex colors is required for it to work
         return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr);
     }
 
-    public static LTDescr moveSplineLocal(GameObject gameObject, LTSpline to, float time)
+    public static LTDescr moveLocal(GameObject gameObject, LTSpline to, float time)
     {
         descr = options();
         descr.spline = to;
@@ -4077,6 +4093,13 @@ A shader that supports vertex colors is required for it to work
             descr.path = new LTBezierPath(to);
         else
             descr.path.setPoints(to);
+
+        return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr);
+    }
+    public static LTDescr moveLocal(GameObject gameObject, LTBezierPath to, float time)
+    {
+        descr = options();
+        descr.path = to;        
 
         return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr);
     }
