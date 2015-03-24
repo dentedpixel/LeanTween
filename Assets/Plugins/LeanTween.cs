@@ -2942,7 +2942,10 @@ public static void cancelAll(bool callComplete){
 * @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
 * LeanTween.cancel( gameObject );
 */
-public static void cancel( GameObject gameObject, bool callComplete = false ){
+public static void cancel( GameObject gameObject){
+	cancel( gameObject, false);
+}
+public static void cancel( GameObject gameObject, bool callComplete ){
 	init();
 	Transform trans = gameObject.transform;
 	for(int i = 0; i <= tweenMaxSearch; i++){
