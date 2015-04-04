@@ -69,7 +69,7 @@ function loopTestPingPong(){
 	Debug.Log("loopTestPingPong");
 	var cube2:GameObject = GameObject.Find("Cube2");
 	cube2.transform.localScale.y = 1.0;
-	pingPongDescr = LeanTween.scaleY( cube2, 4.0, 1.0).setEase(LeanTweenType.easeOutQuad).setRepeat(8).setLoopPingPong().setUseEstimatedTime(useEstimatedTime);
+	pingPongDescr = LeanTween.scaleY( cube2, 4.0, 1.0).setEase(LeanTweenType.easeOutQuad).setLoopPingPong(4).setUseEstimatedTime(useEstimatedTime);
 	Debug.Log("id:"+pingPongDescr.id);
 }
 

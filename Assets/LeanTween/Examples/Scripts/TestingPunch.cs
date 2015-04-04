@@ -54,7 +54,7 @@ public class TestingPunch : MonoBehaviour {
 
             Color to = new Color(Random.Range(0f,1f),0f,Random.Range(0f,1f),0.0f);
             GameObject l = GameObject.Find("LCharacter");
-            LeanTween.color( l, to, 4.0f ).setRepeat(2).setLoopPingPong().setEase(LeanTweenType.easeOutBounce);
+            LeanTween.color( l, to, 4.0f ).setLoopPingPong(1).setEase(LeanTweenType.easeOutBounce);
         }
 
         if (Input.GetKeyDown(KeyCode.E))

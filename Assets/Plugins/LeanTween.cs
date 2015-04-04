@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.265 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.27 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -1433,9 +1433,10 @@ public class LTDescr{
 	/**
 	* When the animation gets to the end it starts back at where it began
 	* @method setLoopClamp
+	* @param {int} loops:int (defaults to -1) how many times you want the loop to happen (-1 for an infinite number of times)
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
-	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopClamp();
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setLoopClamp( 2 );
 	*/
 	public LTDescr setLoopClamp(){ 
 		this.loopType = LeanTweenType.clamp; 
@@ -1443,18 +1444,28 @@ public class LTDescr{
 			this.loopCount = -1;
 		return this;
 	}
+	public LTDescr setLoopClamp( int loops ){ 
+		this.loopCount = loops;
+		return this;
+	}
 
 	/**
 	* When the animation gets to the end it then tweens back to where it started (and on, and on)
 	* @method setLoopPingPong
+	* @param {int} loops:int (defaults to -1) how many times you want the loop to happen in both directions (-1 for an infinite number of times). Passing a value of 1 will cause the object to go towards and back from it's destination once.
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
-	* LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopPingPong();
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setLoopPingPong( 2 );
 	*/
-	public LTDescr setLoopPingPong(){ 
+	public LTDescr setLoopPingPong(){
 		this.loopType = LeanTweenType.pingPong;
 		if(this.loopCount==0)
 			this.loopCount = -1;
+		return this; 
+	}
+	public LTDescr setLoopPingPong( int loops ) { 
+		this.loopType = LeanTweenType.pingPong;
+        this.loopCount = loops == -1 ? loops : loops * 2;
 		return this; 
 	}
 
@@ -1780,7 +1791,9 @@ private static int frameRendered= -1;
 private static GameObject _tweenEmpty;
 private static float dtEstimated;
 public static float dtManual;
+#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5
 private static float previousRealTime;
+#endif
 private static float dt;
 private static float dtActual;
 private static int i;
@@ -1861,12 +1874,11 @@ public static void update() {
 		dtEstimated = Time.realtimeSinceStartup - previousRealTime;
 		if(dtEstimated>0.2f) // a catch put in, when at the start sometimes this number can grow unrealistically large
 			dtEstimated = 0.2f;
+		previousRealTime = Time.realtimeSinceStartup;
 		#else
 		dtEstimated = Time.unscaledDeltaTime;
 		#endif
 
-		
-		previousRealTime = Time.realtimeSinceStartup;
 		dtActual = Time.deltaTime;
 		maxTweenReached = 0;
 		finishedCnt = 0;

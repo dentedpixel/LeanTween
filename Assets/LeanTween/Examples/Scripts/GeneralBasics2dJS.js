@@ -81,7 +81,7 @@ function advancedExamples(){
 			).setOnCompleteParam( rotator );
 
 			// Jump Up and back down
-			LeanTween.moveLocalY(dude,1.17f,1.2f).setDelay(5f + i*0.2f).setLoopPingPong().setRepeat(2).setEase(LeanTweenType.easeInOutQuad);
+			LeanTween.moveLocalY(dude,1.17f,1.2f).setDelay(5f + i*0.2f).setLoopPingPong(1).setEase(LeanTweenType.easeInOutQuad);
 		
 			// Alpha Out, and destroy
 			LeanTween.alpha(dude, 0f, 0.6f).setDelay(9.2f + i*0.4f).setDestroyOnComplete(true).setOnComplete(

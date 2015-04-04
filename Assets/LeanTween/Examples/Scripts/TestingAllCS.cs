@@ -113,7 +113,7 @@ public class TestingAllCS : MonoBehaviour {
 		Debug.Log("loopTestPingPong Time:"+Time.time);
 		GameObject cube2 = GameObject.Find("Cube2");
 		cube2.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-		LeanTween.scaleY( cube2, 4.0f, 1.0f ).setEase(LeanTweenType.easeOutQuad).setLoopPingPong().setRepeat(8).setUseEstimatedTime(useEstimatedTime);
+		LeanTween.scaleY( cube2, 4.0f, 1.0f ).setEase(LeanTweenType.easeOutQuad).setLoopPingPong(4).setUseEstimatedTime(useEstimatedTime);
 		//LeanTween.scaleY( cube2, 4.0f, 1.0f, LeanTween.options().setEaseOutQuad().setRepeat(8).setLoopPingPong().setUseEstimatedTime(useEstimatedTime) );
 	}
 
