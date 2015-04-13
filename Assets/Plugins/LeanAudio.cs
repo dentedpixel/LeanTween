@@ -110,9 +110,13 @@ public class LeanAudio : MonoBehaviour {
 			// Debug.Log("pt:"+pt+" i:"+i+" val:"+audioArr[i]+" len:"+audioArr.Length);
 		}
 
-		bool is3dSound = false;
 		int lengthSamples = audioArr.Length;
+		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5 && !UNITY_4_6
+		AudioClip audioClip = AudioClip.Create("Generated Audio", lengthSamples, 1, options.frequencyRate, false);
+		#else
+		bool is3dSound = false;
 		AudioClip audioClip = AudioClip.Create("Generated Audio", lengthSamples, 1, options.frequencyRate, is3dSound, false);
+		#endif
 		audioClip.SetData(audioArr, 0);
 
 		return audioClip;
@@ -130,9 +134,13 @@ public class LeanAudio : MonoBehaviour {
 			// Debug.Log("pt:"+pt+" i:"+i+" val:"+audioArr[i]+" len:"+audioArr.Length);
 		}
 
-		bool is3dSound = false;
 		int lengthSamples = audioArr.Length;//(int)( (float)frequencyRate * curveTime );
+		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5 && !UNITY_4_6
+		AudioClip audioClip = AudioClip.Create("Generated Audio", lengthSamples, 1, frequencyRate, false);
+		#else
+		bool is3dSound = false;
 		AudioClip audioClip = AudioClip.Create("Generated Audio", lengthSamples, 1, frequencyRate, is3dSound, false);
+		#endif
 		audioClip.SetData(audioArr, 0);
 
 		return audioClip;
@@ -152,7 +160,7 @@ public class LeanAudio : MonoBehaviour {
 		AudioSource aSource = tempGO.AddComponent<AudioSource>(); // add an audio source
 		aSource.clip = clip; // define the clip
 		aSource.Play(); // start the sound
-		Destroy(tempGO, clip.length); // destroy object after clip duration
+		Destroy(tempGO, clip.length); // destroy object after clip du1783ration
 		return aSource; // return the AudioSource reference
 	}
 

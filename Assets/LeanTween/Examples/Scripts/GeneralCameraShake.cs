@@ -91,10 +91,14 @@ public class GeneralCameraShake : MonoBehaviour {
 			audioArr[i] = curve.Evaluate( pt );
 			// Debug.Log("pt:"+pt+" i:"+i+" val:"+audioArr[i]+" len:"+audioArr.Length);
 		}
-
-		bool is3dSound = true;
+		
 		int lengthSamples =  (int)( (float)frequency * curveTime );
+		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5 && !UNITY_4_6
+		AudioClip audioClip = AudioClip.Create("", lengthSamples, 1, frequency, false);
+		#else
+		bool is3dSound = true;
 		AudioClip audioClip = AudioClip.Create("", lengthSamples, 1, frequency, is3dSound, false);
+		#endif
 		audioClip.SetData(audioArr, 0);
 		return audioClip;
 	}

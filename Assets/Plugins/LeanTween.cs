@@ -1507,7 +1507,11 @@ public class LTDescr{
 	* @param {object} onComplete:object an object that 
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
-	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );
+	* LeanTween.delayedCall(1.5f, enterMiniGameStart).setOnCompleteParam( new object[]{""+5} );<br><br>
+	* void enterMiniGameStart( object val ){<br>
+    * &nbsp;object[] arr = (object [])val;<br>
+    * &nbsp;int lvl = int.Parse((string)arr[0]);<br>
+    * }<br>
 	*/
 	public LTDescr setOnCompleteParam( object onCompleteParam ){
 		this.onCompleteParam = onCompleteParam;
