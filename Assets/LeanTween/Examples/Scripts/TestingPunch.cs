@@ -21,6 +21,18 @@ public class TestingPunch : MonoBehaviour {
             LeanTween.moveLocalX(gameObject, 5, 1).setOnComplete( () => {
             Debug.Log("on complete move local X");
             }).setOnCompleteOnStart(true);
+
+            GameObject light = GameObject.Find("DirectionalLight");
+            Light lt = light.GetComponent<Light>(); 
+        
+            LeanTween.value(lt.gameObject, lt.intensity, 0.0f, 1.5f)
+              .setEase(LeanTweenType.linear)
+              .setLoopPingPong()
+              .setRepeat(-1)
+              .setOnUpdate((float val)=>{
+                
+            lt.intensity = val;
+            });
         }
         if (Input.GetKeyDown(KeyCode.S))
         {

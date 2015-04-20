@@ -3607,6 +3607,16 @@ public static LTDescr value(GameObject gameObject, Action<float,object> callOnUp
 * @param {Vector3} to:float The final float with which to tween to
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Example Javascript: </i><br>
+* LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( function( val:float ){ <br>
+* &nbsp;Debug.Log("tweened val:"+val);<br>
+* } );<br>
+* <br>
+* <i>Example C#: </i> <br>
+* LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( (float val)=>{ <br>
+* &nbsp;Debug.Log("tweened val:"+val);<br>
+* } );<br>
 */
 public static LTDescr value(GameObject gameObject, float from, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setFrom( new Vector3(from,0,0) ) );
@@ -3621,6 +3631,16 @@ public static LTDescr value(GameObject gameObject, float from, float to, float t
 * @param {Vector3} to:Vector2 The final Vector2 with which to tween to
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Example Javascript: </i><br>
+* LeanTween.value( gameObject, new Vector2(1f,0f), new Vector3(5f,0f), 5f).setOnUpdate( function( val:Vector2 ){ <br>
+* &nbsp;Debug.Log("tweened val:"+val);<br>
+* } );<br>
+* <br>
+* <i>Example C#: </i> <br>
+* LeanTween.value( gameObject, new Vector3(1f,0f), new Vector3(5f,0f), 5f).setOnUpdate( (Vector2 val)=>{ <br>
+* &nbsp;Debug.Log("tweened val:"+val);<br>
+* } );<br>
 */
 public static LTDescr value(GameObject gameObject, Vector2 from, Vector2 to, float time){
 	return pushNewTween( gameObject, new Vector3(to.x,to.y,0), time, TweenAction.VALUE3, options().setTo( new Vector3(to.x,to.y,0f) ).setFrom( new Vector3(from.x,from.y,0) ) );
@@ -3635,6 +3655,16 @@ public static LTDescr value(GameObject gameObject, Vector2 from, Vector2 to, flo
 * @param {Vector3} to:Vector3 The final Vector3 with which to tween to
 * @param {float} time:float The time to complete the tween in
 * @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Example Javascript: </i><br>
+* LeanTween.value( gameObject, new Vector3(1f,0f,0f), new Vector3(5f,0f,0f), 5f).setOnUpdate( function( val:Vector3 ){ <br>
+* &nbsp;Debug.Log("tweened val:"+val);<br>
+* } );<br>
+* <br>
+* <i>Example C#: </i> <br>
+* LeanTween.value( gameObject, new Vector3(1f,0f,0f), new Vector3(5f,0f,0f), 5f).setOnUpdate( (Vector3 val)=>{ <br>
+* &nbsp;Debug.Log("tweened val:"+val);<br>
+* } );<br>
 */
 public static LTDescr value(GameObject gameObject, Vector3 from, Vector3 to, float time){
 	return pushNewTween( gameObject, to, time, TweenAction.VALUE3, options().setFrom( from ) );
