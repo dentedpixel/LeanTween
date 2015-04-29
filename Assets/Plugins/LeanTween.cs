@@ -2189,23 +2189,29 @@ public static void update() {
 							mesh.colors32 = colors;
 						}else if(tweenAction==TweenAction.COLOR || tweenAction==TweenAction.CALLBACK_COLOR){
 							Color toColor = tweenColor(tween, val);
-							// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
-							if(tweenAction==TweenAction.COLOR){
-								if(trans.gameObject.GetComponent<Renderer>()!=null){
-									foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
-		        						mat.color = toColor;
+
+							SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
+							if(ren!=null){
+								ren.color = toColor;
+							}else{
+								// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
+								if(tweenAction==TweenAction.COLOR){
+									if(trans.gameObject.GetComponent<Renderer>()!=null){
+										foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
+			        						mat.color = toColor;
+			    						}
+			    					}
+			    					if(trans.childCount>0){
+		    							foreach (Transform child in trans) {
+		    								if(child.gameObject.GetComponent<Renderer>()!=null){
+			    								foreach(Material mat in child.gameObject.GetComponent<Renderer>().materials){
+					        						mat.color = toColor;
+					    						}
+					    					}
+										}
 		    						}
-		    					}
-		    					if(trans.childCount>0){
-	    							foreach (Transform child in trans) {
-	    								if(child.gameObject.GetComponent<Renderer>()!=null){
-		    								foreach(Material mat in child.gameObject.GetComponent<Renderer>().materials){
-				        						mat.color = toColor;
-				    						}
-				    					}
-									}
-	    						}
-		    				}
+			    				}
+			    			}
 		    				if(tween.onUpdateColor!=null){
 								tween.onUpdateColor(toColor);
 							}
