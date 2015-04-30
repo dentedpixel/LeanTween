@@ -2899,18 +2899,57 @@ public static bool isTweening( LTRect ltRect ){
 	return false;
 }
 
-public static void drawBezierPath(Vector3 a, Vector3 b, Vector3 c, Vector3 d){
+public static void drawBezierPath(Vector3 a, Vector3 b, Vector3 c, Vector3 d, bool showArrows = false, Transform arrowTransform = null){
     Vector3 last = a;
     Vector3 p;
     Vector3 aa = (-a + 3*(b-c) + d);
 	Vector3 bb = 3*(a+c) - 6*b;
 	Vector3 cc = 3*(b-a);
+	
 	float t;
-    for(float k = 1.0f; k <= 30.0f; k++){
-    	t = k / 30.0f;
-    	p = ((aa* t + (bb))* t + cc)* t + a;
-	    Gizmos.DrawLine(last, p);
-	    last = p;
+
+	if(showArrows){
+		Vector3 beforePos = arrowTransform.position;
+		Quaternion beforeQ = arrowTransform.rotation;
+		float distanceTravelled = 0f;
+
+		for(float k = 1.0f; k <= 120.0f; k++){
+	    	t = k / 120.0f;
+	    	p = ((aa* t + (bb))* t + cc)* t + a;
+		    Gizmos.DrawLine(last, p);
+	    	distanceTravelled += (p-last).magnitude;
+		    if(distanceTravelled>1f){
+		    	distanceTravelled = distanceTravelled - 1f;
+				/*float deltaY = p.y - last.y;
+				float deltaX = p.x - last.x;
+				float ang = Mathf.Atan(deltaY / deltaX);
+				Vector3 arrow = p + new Vector3( Mathf.Cos(ang+2.5f), Mathf.Sin(ang+2.5f), 0f)*0.5f;
+				Gizmos.DrawLine(p, arrow);
+				arrow = p + new Vector3( Mathf.Cos(ang+-2.5f), Mathf.Sin(ang+-2.5f), 0f)*0.5f;
+				Gizmos.DrawLine(p, arrow);*/
+
+				arrowTransform.position = p;
+				arrowTransform.LookAt( last, Vector3.forward );
+				Vector3 to = arrowTransform.TransformDirection(Vector3.right);
+				// Debug.Log("to:"+to+" tweenEmpty.transform.position:"+arrowTransform.position);
+				Vector3 back = (last-p);
+				back = back.normalized;
+				Gizmos.DrawLine(p, p + (to + back)*0.5f);
+				to = arrowTransform.TransformDirection(-Vector3.right);
+				Gizmos.DrawLine(p, p + (to + back)*0.5f);
+		    }
+		    last = p;
+		}
+
+		arrowTransform.position = beforePos;
+		arrowTransform.rotation = beforeQ;
+	}else{
+		for(float k = 1.0f; k <= 30.0f; k++){
+	    	t = k / 30.0f;
+	    	p = ((aa* t + (bb))* t + cc)* t + a;
+		    Gizmos.DrawLine(last, p);
+		    last = p;
+		}
 	}
 }
 
