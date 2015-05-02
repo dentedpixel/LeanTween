@@ -2899,7 +2899,7 @@ public static bool isTweening( LTRect ltRect ){
 	return false;
 }
 
-public static void drawBezierPath(Vector3 a, Vector3 b, Vector3 c, Vector3 d, bool showArrows = false, Transform arrowTransform = null){
+public static void drawBezierPath(Vector3 a, Vector3 b, Vector3 c, Vector3 d, float arrowSize = 0.0f, Transform arrowTransform = null){
     Vector3 last = a;
     Vector3 p;
     Vector3 aa = (-a + 3*(b-c) + d);
@@ -2908,7 +2908,7 @@ public static void drawBezierPath(Vector3 a, Vector3 b, Vector3 c, Vector3 d, bo
 	
 	float t;
 
-	if(showArrows){
+	if(arrowSize>0.0f){
 		Vector3 beforePos = arrowTransform.position;
 		Quaternion beforeQ = arrowTransform.rotation;
 		float distanceTravelled = 0f;
@@ -2934,9 +2934,9 @@ public static void drawBezierPath(Vector3 a, Vector3 b, Vector3 c, Vector3 d, bo
 				// Debug.Log("to:"+to+" tweenEmpty.transform.position:"+arrowTransform.position);
 				Vector3 back = (last-p);
 				back = back.normalized;
-				Gizmos.DrawLine(p, p + (to + back)*0.5f);
+				Gizmos.DrawLine(p, p + (to + back)*arrowSize);
 				to = arrowTransform.TransformDirection(-Vector3.right);
-				Gizmos.DrawLine(p, p + (to + back)*0.5f);
+				Gizmos.DrawLine(p, p + (to + back)*arrowSize);
 		    }
 		    last = p;
 		}
