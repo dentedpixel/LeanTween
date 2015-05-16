@@ -1,19 +1,50 @@
 using UnityEngine;
+using System.Collections;
+
+public class LeanTester : MonoBehaviour {
+	public float timeout = 15f;
+
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+	public void Start(){
+		StartCoroutine( timeoutCheck() );
+	}
+
+	IEnumerator timeoutCheck(){
+		float pauseEndTime = Time.realtimeSinceStartup + timeout;
+	    while (Time.realtimeSinceStartup < pauseEndTime)
+	    {
+	        yield return 0;
+	    }
+		if(LeanTest.testsFinished==false){
+			Debug.Log(LeanTest.formatB("Tests timed out!"));
+			LeanTest.overview();
+		}
+	}
+	#endif
+}
 
 public class LeanTest : object {
 	public static int expected = 0;
 	private static int tests = 0;
 	private static int passes = 0;
+
+	public static float timeout = 15f;
+	public static bool timeoutStarted = false;
+	public static bool testsFinished = false;
 	
 	public static void debug( string name, bool didPass, string failExplaination = null){
-		float len = printOutLength(name);
+		expect( didPass, name, failExplaination);
+	}
+
+	public static void expect( bool didPass, string definition, string failExplaination = null){
+		float len = printOutLength(definition);
 		int paddingLen = 40-(int)(len*1.05f);
 		#if UNITY_FLASH
 		string padding = padRight(paddingLen);
 		#else
 		string padding = "".PadRight(paddingLen,"_"[0]);
 		#endif
-		string logName = formatB(name) +" " + padding + " [ "+ (didPass ? formatC("pass","green") : formatC("fail","red")) +" ]";
+		string logName = formatB(definition) +" " + padding + " [ "+ (didPass ? formatC("pass","green") : formatC("fail","red")) +" ]";
 		if(didPass==false && failExplaination!=null)
 			logName += " - " + failExplaination;
 		Debug.Log(logName);
@@ -21,10 +52,22 @@ public class LeanTest : object {
 			passes++;
 		tests++;
 		
-		if(tests==expected){
-			Debug.Log(formatB("Final Report:")+" _____________________ PASSED: "+formatBC(""+passes,"green")+" FAILED: "+formatBC(""+(tests-passes),"red")+" ");
+		// Debug.Log("tests:"+tests+" expected:"+expected);
+		if(tests==expected && testsFinished==false){
+			overview();
 		}else if(tests>expected){
 			Debug.Log(formatB("Too many tests for a final report!") + " set LeanTest.expected = "+tests);
+		}
+
+		if(timeoutStarted==false){
+			timeoutStarted = true;
+			GameObject tester = new GameObject();
+			tester.name = "~LeanTest";
+			LeanTester test = tester.AddComponent(typeof(LeanTester)) as LeanTester;
+			test.timeout = timeout;
+			#if !UNITY_EDITOR
+			tester.hideFlags = HideFlags.HideAndDontSave;
+			#endif
 		}
 	}
 	
@@ -70,5 +113,8 @@ public class LeanTest : object {
 		#endif
 	}
 	
-	public static void overview(){ }
+	public static void overview(){ 
+		testsFinished = true;
+		Debug.Log(formatB("Final Report:")+" _____________________ PASSED: "+formatBC(""+passes,"green")+" FAILED: "+formatBC(""+(expected-passes),"red")+" ");
+	}
 }
