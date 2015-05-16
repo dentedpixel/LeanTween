@@ -930,7 +930,7 @@ public class LTDescr{
 	private static uint global_counter = 0;
 
     public override string ToString(){
-		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" from:"+from+" to:"+to+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
+		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
 
 	public LTDescr(){
@@ -944,7 +944,7 @@ public class LTDescr{
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	*/
 	public LTDescr cancel(){
-		LeanTween.removeTween((int)this._id);
+		LeanTween.removeTween((int)this._id, this.uniqueId);
 		return this;
 	}
 
@@ -1816,6 +1816,18 @@ public static int maxSearch{
 	}
 }
 
+public static int tweensRunning{
+	get{ 
+		int count = 0;
+		for (int i = 0; i <= tweenMaxSearch; i++){
+	        if (tweens[i].toggle){
+	            count++;
+	        }
+	    }
+		return count;
+	}
+}
+
 /**
 * This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
 * 
@@ -1844,6 +1856,9 @@ public static void init(int maxSimultaneousTweens){
 }
 
 public static void reset(){
+	for (int i = 0; i <= tweenMaxSearch; i++){
+        tweens[i].toggle = false;
+    }
 	tweens = null;
 	Destroy(_tweenEmpty);
 }
@@ -1890,15 +1905,19 @@ public static void update() {
 		// Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" maxTweens:"+maxTweens);
 		for( int i = 0; i <= tweenMaxSearch && i < maxTweens; i++){
 			
-			//Debug.Log("tweens["+i+"].toggle:"+tweens[i].toggle);
+			//if(i==0 && tweens[i].toggle)
+			//	Debug.Log("tweens["+i+"]"+tweens[i]+" dt:"+dt);
 			if(tweens[i].toggle){
 				maxTweenReached = i;
 				tween = tweens[i];
 				trans = tween.trans;
 				timeTotal = tween.time;
 				tweenAction = tween.type;
-				
-				dt = dtActual;
+
+				/*if(trans.gameObject.name=="Main Camera"){
+					Debug.Log("main tween:"+tween+" i:"+i);
+				}*/
+				 
 				if( tween.useEstimatedTime ){
 					dt = dtEstimated;
 					timeTotal = tween.time;
@@ -1908,6 +1927,8 @@ public static void update() {
 					dt = dtManual;
 				}else if(tween.direction==0f){
 					dt = 0f;
+				}else{
+					dt = dtActual;
 				}
 				
 				if(trans==null){
@@ -2190,10 +2211,12 @@ public static void update() {
 						}else if(tweenAction==TweenAction.COLOR || tweenAction==TweenAction.CALLBACK_COLOR){
 							Color toColor = tweenColor(tween, val);
 
+							#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 							SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
 							if(ren!=null){
 								ren.color = toColor;
 							}else{
+							#endif
 								// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
 								if(tweenAction==TweenAction.COLOR){
 									if(trans.gameObject.GetComponent<Renderer>()!=null){
@@ -2211,7 +2234,9 @@ public static void update() {
 										}
 		    						}
 			    				}
+			    			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 			    			}
+			    			#endif
 		    				if(tween.onUpdateColor!=null){
 								tween.onUpdateColor(toColor);
 							}
@@ -2464,7 +2489,7 @@ public static void update() {
 						tweensFinished[finishedCnt] = i;
 						finishedCnt++;
 
-						// Debug.Log("finished tween:"+i+" tween:"+tween);
+						//Debug.Log("finished tween:"+i+" tween:"+tween);
 						if(tweenAction==TweenAction.GUI_ROTATE)
 							tween.ltRect.rotateFinished = true;
 						
@@ -2492,12 +2517,12 @@ public static void update() {
 							tween.passed = Mathf.Epsilon;
 						}
 					}
-				}else if(tween.delay<=0){
+				}else if(tween.delay<=0f){
 					tween.passed += dt*tween.direction;
 				}else{
 					tween.delay -= dt;
 					// Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
-					if(tween.delay<0){
+					if(tween.delay<0f){
 						tween.passed = 0.0f;//-tween.delay
 						tween.delay = 0.0f;
 					}
@@ -2513,8 +2538,10 @@ public static void update() {
 			j = tweensFinished[i];
 			tween = tweens[ j ];
 	
+			// logError("removing tween:"+tween);
 			if(tween.onComplete!=null){
 				System.Action onComplete = tween.onComplete;
+				//logError("removing tween for j:"+j+" tween:"+tween);
 				removeTween(j);
 				//tween.cleanup();
 				onComplete();
@@ -2598,11 +2625,16 @@ private static Color tweenColor( LTDescr tween, float val ){
 	return new Color(tween.axis.x + diff3.x*val, tween.axis.y + diff3.y*val, tween.axis.z + diff3.z*val, tween.from.y + diffAlpha*val);
 }
 
+public static void removeTween( int i, int uniqueId){ // Only removes the tween if the unique id matches
+	if(tweens[i].uniqueId==uniqueId){
+		removeTween( i );
+	}
+}
+
 // This method is only used internally! Do not call this from your scripts. To cancel a tween use LeanTween.cancel
 public static void removeTween( int i ){
 	if(tweens[i].toggle){
 		tweens[i].toggle = false;
-		// Debug.Log("removed i:"+i);
 		if(tweens[i].destroyOnComplete){
 			//Debug.Log("destroying tween.type:"+tween.type);
 			if(tweens[i].ltRect!=null){
@@ -2964,6 +2996,7 @@ public static LTDescr options(LTDescr seed){ Debug.LogError("error this function
 public static LTDescr options(){
 	init();
 	
+	bool found = false;
 	for(j=0, i = startSearch; j < maxTweens; i++){
 		if(i>=maxTweens-1)
 			i = 0;
@@ -2971,6 +3004,7 @@ public static LTDescr options(){
 			if(i+1>tweenMaxSearch)
 				tweenMaxSearch = i+1;
 			startSearch = i + 1;
+			found = true;
 			break;
 		}
 		
@@ -2978,11 +3012,12 @@ public static LTDescr options(){
 		if(j >= maxTweens)
 			return logError("LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );") as LTDescr;
 	}
+	if(found==false)
+		logError("no available tween found!");
 	
+	// Debug.Log("new tween with i:"+i+" counter:"+tweens[i].counter+" tweenMaxSearch:"+tweenMaxSearch+" tween:"+tweens[i]);
 	tweens[i].reset();
 	tweens[i].setId( (uint)i );
-
-	// Debug.Log("new tween with i:"+i+" counter:"+tweens[i].counter+" tweenMaxSearch:"+tweenMaxSearch+" tween:"+tweens[i]);
 
 	return tweens[i];
 }
