@@ -17,7 +17,7 @@ public class PathSplines : MonoBehaviour {
 		avatar1 = GameObject.Find("Avatar1");
 
 		// Tween automatically
-		LTDescr descr = LeanTween.moveSpline(avatar1, cr.pts, 6.5f).setOrientToPath(true).setRepeat(-1);
+		LeanTween.moveSpline(avatar1, cr.pts, 6.5f).setOrientToPath(true).setRepeat(-1);
 	}
 	
 	private float iter;
