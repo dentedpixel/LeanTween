@@ -68,6 +68,9 @@ public class GUIExamplesCS : MonoBehaviour {
 		if(GUI.Button(buttonRect3.rect, "Alpha")){
 			LeanTween.alpha( buttonRect3, 0.0f, 1.0f).setEase(LeanTweenType.easeOutQuad);
 			LeanTween.alpha( buttonRect3, 1.0f, 1.0f).setDelay(1.0f).setEase( LeanTweenType.easeInQuad);
+
+			LeanTween.alpha( grumpyRect, 0.0f, 1.0f).setEase(LeanTweenType.easeOutQuad);
+			LeanTween.alpha( grumpyRect, 1.0f, 1.0f).setDelay(1.0f).setEase(LeanTweenType.easeInQuad);
 		}
 		GUI.color = new Color(1.0f,1.0f,1.0f,1.0f); // Reset to normal alpha, otherwise other gui elements will be effected
 
