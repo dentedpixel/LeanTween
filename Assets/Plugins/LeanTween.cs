@@ -941,10 +941,26 @@ public class LTDescr{
 	* Cancel a tween
 	* 
 	* @method cancel
+	* @param {GameObject} gameObject:GameObject that the tween is acting upon (this is needed for safety checks)
+	* @example
+	* LTDescr lt = LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f );<br>
+	* lt.cancel( gameObject );<br><br>
+    * Safest way to cancel:<br>
+    * int id = LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f ).id;<br>
+    * LeanTween.cancel( id );<br>
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	*/
+	public LTDescr cancel( GameObject gameObject ){
+		// Debug.Log("canceling id:"+this._id+" this.uniqueId:"+this.uniqueId+" go:"+this.trans.gameObject);
+		if(gameObject==this.trans.gameObject)
+			LeanTween.removeTween((int)this._id, this.uniqueId);
+		return this;
+	}
+
+	[System.Obsolete("Use 'cancel( gameObject )' instead")]
 	public LTDescr cancel(){
-		LeanTween.removeTween((int)this._id, this.uniqueId);
+		// Debug.Log("canceling id:"+this._id+" this.uniqueId:"+this.uniqueId+" go:"+this.trans.gameObject);
+		LeanTween.removeTween((int)this._id);
 		return this;
 	}
 
@@ -1348,6 +1364,7 @@ public class LTDescr{
 	public LTDescr setId( uint id ){
 		this._id = id;
 		this.counter = global_counter;
+		// Debug.Log("Global counter:"+global_counter);
 		return this;
 	}
 
@@ -2635,6 +2652,7 @@ public static void removeTween( int i, int uniqueId){ // Only removes the tween 
 public static void removeTween( int i ){
 	if(tweens[i].toggle){
 		tweens[i].toggle = false;
+		//logError("Removing tween["+i+"]:"+tweens[i]);
 		if(tweens[i].destroyOnComplete){
 			//Debug.Log("destroying tween.type:"+tween.type);
 			if(tweens[i].ltRect!=null){
@@ -2713,7 +2731,7 @@ public static void cancelAll(bool callComplete){
 * @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
 * LeanTween.cancel( gameObject );
 */
-public static void cancel( GameObject gameObject){
+public static void cancel( GameObject gameObject ){
 	cancel( gameObject, false);
 }
 public static void cancel( GameObject gameObject, bool callComplete ){

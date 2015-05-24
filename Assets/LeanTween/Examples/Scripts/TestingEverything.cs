@@ -46,7 +46,7 @@ public class TestingEverything : MonoBehaviour {
 	private int rotateRepeatAngle;
 
 	void Start () {
-		LeanTest.timeout = 7f;
+		LeanTest.timeout = 70f;
 		LeanTest.expected = 24;
 
 		LeanTween.init(3 + 1200);
@@ -113,7 +113,7 @@ public class TestingEverything : MonoBehaviour {
 
 		yield return new WaitForSeconds(1.0f);
 
-		Time.timeScale = 1f;
+		Time.timeScale = 4f;
 
 		// Groups of tweens testing
 		groupTweens = new LTDescr[ 1200 ];
@@ -147,7 +147,7 @@ public class TestingEverything : MonoBehaviour {
 		yield return new WaitForSeconds(0.1f);
 
 		int countBeforeCancel = LeanTween.tweensRunning;
-		lt1.cancel();
+		lt1.cancel( cube1 );
 		LeanTest.expect( countBeforeCancel==LeanTween.tweensRunning, "CANCEL AFTER RESET SHOULD FAIL", "expected "+countBeforeCancel+" but got "+LeanTween.tweensRunning);
 		LeanTween.cancel(cube2);
 
@@ -192,6 +192,76 @@ public class TestingEverything : MonoBehaviour {
 		     	ltCount++;
         }
 		LeanTest.expect( ltCount==1, "RESET CORRECTLY CLEANS UP" );
+
+
+		lotsOfCancels();
+	}
+
+	IEnumerator lotsOfCancels(){
+		yield return new WaitForEndOfFrame();
+
+		Time.timeScale = 4f;
+		int cubeCount = 10;
+
+		LTDescr[] tweensA = new LTDescr[ cubeCount ];
+		GameObject[] aGOs = new GameObject[ cubeCount ];
+		for(int i = 0; i < aGOs.Length; i++){
+			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
+			cube.transform.position = new Vector3(0,0,i*2f);
+			cube.name = "a"+i;
+			aGOs[i] = cube;
+			tweensA[i] = LeanTween.move(cube, cube.transform.position + new Vector3(10f,0,0), 0.5f + 1f * (1.0f/(float)aGOs.Length) );
+			LeanTween.color(cube, Color.red, 0.01f);
+		}
+
+		yield return new WaitForSeconds(1.0f);
+
+		LTDescr[] tweensB = new LTDescr[ cubeCount ];
+		GameObject[] bGOs = new GameObject[ cubeCount ];
+		for(int i = 0; i < bGOs.Length; i++){
+			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
+			cube.transform.position = new Vector3(0,0,i*2f);
+			cube.name = "b"+i;
+			bGOs[i] = cube;
+			tweensB[i] = LeanTween.move(cube, cube.transform.position + new Vector3(10f,0,0), 2f);
+		}
+
+		for(int i = 0; i < aGOs.Length; i++){
+			tweensA[i].cancel( aGOs[i] );
+			GameObject cube = aGOs[i];
+			tweensA[i] = LeanTween.move(cube, new Vector3(0,0,i*2f), 2f);
+		}
+
+		yield return new WaitForSeconds(0.5f);
+
+		for(int i = 0; i < aGOs.Length; i++){
+			tweensA[i].cancel( aGOs[i] );
+			GameObject cube = aGOs[i];
+			tweensA[i] = LeanTween.move(cube, new Vector3(0,0,i*2f) + new Vector3(10f,0,0), 2f );
+		}
+
+		for(int i = 0; i < bGOs.Length; i++){
+			tweensB[i].cancel( bGOs[i] );
+			GameObject cube = bGOs[i];
+			tweensB[i] = LeanTween.move(cube, new Vector3(0,0,i*2f), 2f );
+		}
+
+		yield return new WaitForSeconds(2.1f);
+
+		bool inFinalPlace = true;
+		for(int i = 0; i < aGOs.Length; i++){
+			if(Vector3.Distance( aGOs[i].transform.position, new Vector3(0,0,i*2f) + new Vector3(10f,0,0) ) > 0.1f)
+				inFinalPlace = false;
+		}
+
+		for(int i = 0; i < bGOs.Length; i++){
+			if(Vector3.Distance( bGOs[i].transform.position, new Vector3(0,0,i*2f) ) > 0.1f)
+				inFinalPlace = false;
+		}
+
+		LeanTest.expect(inFinalPlace,"AFTER LOTS OF CANCELS");
 	}
 
 	void rotateRepeatFinished(){

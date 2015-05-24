@@ -76,7 +76,7 @@ public class TestingAllCS : MonoBehaviour {
 			}else{
 				Debug.Log("cancel variable time");
 				if(descrTimeScaleChange!=null)
-					descrTimeScaleChange.cancel();
+					descrTimeScaleChange.cancel( gameObject );
 			}
 		}
 		gameObject.BroadcastMessage( exampleFunctions[ exampleIter ] );
