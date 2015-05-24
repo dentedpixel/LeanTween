@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.28 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.29 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -383,7 +383,7 @@ public class LTRect : System.Object{
 	}
 }
 
-public class LTBezier{
+public class LTBezier {
 	public float length;
 
 	private Vector3 a;
@@ -455,7 +455,7 @@ public class LTBezier{
 * LeanTween.move(lt, ltPath.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
 * Vector3 pt = ltPath.point( 0.6f ); // retrieve a point along the path
 */
-public class LTBezierPath{
+public class LTBezierPath {
 	public Vector3[] pts;
 	public float length;
 	public bool orientToPath;
@@ -871,7 +871,7 @@ public enum LeanTweenType{
 * @class LTDescr
 * @constructor
 */
-public class LTDescr{
+public class LTDescr {
 	public bool toggle;
 	public bool useEstimatedTime;
 	public bool useFrames;
@@ -1798,7 +1798,7 @@ public class LTDescr{
 * @class LeanTween
 */
 
-public class LeanTween: MonoBehaviour {
+public class LeanTween : MonoBehaviour {
 
 public static bool throwErrors = true;
 public static float tau = Mathf.PI*2.0f; 
@@ -4813,7 +4813,7 @@ public static void dispatchEvent( int eventId, object data ){
 * @constructor
 * @param {object} data:object Data that has been passed from the dispatchEvent method
 */
-public class LTEvent{
+public class LTEvent {
 	public int id;
 	public object data;
 
@@ -4823,7 +4823,7 @@ public class LTEvent{
 	}
 }
 
-public class LTGUI{
+public class LTGUI {
 	public static int RECT_LEVELS = 5;
 	public static int RECTS_PER_LEVEL = 10;
 	public static int BUTTONS_MAX = 24;
