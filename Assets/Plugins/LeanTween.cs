@@ -624,17 +624,13 @@ public class LTBezierPath {
 */
 [System.Serializable]
 public class LTSpline {
+	public static int SUBDIVIDING_COUNT = 10; // increase for a more accurate constant speed
+
 	public Vector3[] pts;
 	public Vector3[] ptsAdj;
 	public int ptsAdjLength;
-	public float[] lengthRatio;
-	public float[] lengths;
-	public float[] multis;
-	public float[] multiAdjusted;
 	public bool orientToPath;
 	public bool orientToPath2d;
-	//private float[] lengthRatio;
-	//public float[] lengths;
 	private int numSections;
 	private int currPt;
 	private float totalLength;
@@ -658,7 +654,7 @@ public class LTSpline {
 		}
 
 		float minPrecision = minSegment / 10f; // number of subdivisions in each segment
-		int precision = (int)(totalDistance / minPrecision * 20f);
+		int precision = (int)(totalDistance / minPrecision) * SUBDIVIDING_COUNT;
 
 		ptsAdj = new Vector3[ precision ];
 		earlierPoint = interp( 0f );
@@ -683,19 +679,6 @@ public class LTSpline {
 	}
 
 	public Vector3 map( float u ){
-		/*for(int i = 0; i < multiAdjusted.Length; i++){
-			if( multiAdjusted[i] >= u ){
-				// 
-				float found = multiAdjusted[i];
-				Debug.Log("u:"+u+" found:"+found+" multis["+i+"]:"+multis[i]);
-				return found + (u-found);
-			}
-		}*/
-
-		/*int targetSpot = (int)(u * this.multiAdjusted.Length);
-		float found = multiAdjusted[ targetSpot ];// + u - ((float)targetSpot/(float)this.multiAdjusted.Length);
-		return found;*/
-
 		float t = u * (ptsAdjLength-1);
 		int first = (int)Mathf.Floor( t );
 		int next = (int)Mathf.Ceil( t );
@@ -711,14 +694,9 @@ public class LTSpline {
 		val = val + (nextVal - val) * diff;
 
 		return val;
-
 	}
 	
 	public Vector3 interp(float t) {
-		// The adjustments done to numSections, I am not sure why I needed to add them
-		/*int numSections = this.numSections+1;
-		if(numSections>=3)
-			numSections += 1;*/
 		currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
 		float u = t * (float) numSections - (float) currPt;
 				
@@ -747,9 +725,7 @@ public class LTSpline {
 	*/
 	public Vector3 point( float ratio ){
 		float t = ratio>1f?1f:ratio;
-		//Debug.Log("t:"+t+" ratio:"+ratio);
-		//float t = ratio;
-		//return interp( t );
+
 		return map(t);
 	}
 
