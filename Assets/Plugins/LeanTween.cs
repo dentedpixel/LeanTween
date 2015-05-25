@@ -625,6 +625,12 @@ public class LTBezierPath {
 [System.Serializable]
 public class LTSpline {
 	public Vector3[] pts;
+	public Vector3[] ptsAdj;
+	public int ptsAdjLength;
+	public float[] lengthRatio;
+	public float[] lengths;
+	public float[] multis;
+	public float[] multiAdjusted;
 	public bool orientToPath;
 	public bool orientToPath2d;
 	//private float[] lengthRatio;
@@ -638,8 +644,75 @@ public class LTSpline {
 		System.Array.Copy(pts, this.pts, pts.Length);
 
 		numSections = pts.Length - 3;
+
+		float minSegment = float.PositiveInfinity;
+		Vector3 earlierPoint = this.pts[1];
+		float totalDistance = 0f;
+		for(int i=2; i < this.pts.Length-2; i++){
+			float pointDistance = Vector3.Distance(this.pts[i], earlierPoint);
+			if(pointDistance < minSegment){
+				minSegment = pointDistance;
+			}
+
+			totalDistance += pointDistance;
+		}
+
+		float minPrecision = minSegment / 10f; // number of subdivisions in each segment
+		int precision = (int)(totalDistance / minPrecision * 20f);
+
+		ptsAdj = new Vector3[ precision ];
+		earlierPoint = interp( 0f );
+		int num = 0;
+		for(int i = 0; i < precision; i++){
+			float fract = ((float)(i+1f)) / precision;
+			Vector3 point = interp( fract );
+			float dist = Vector3.Distance(point, earlierPoint);
+			if(dist>=minPrecision){
+				ptsAdj[num] = point;
+
+				earlierPoint = point;
+				// Debug.Log("point:"+point);
+				num++;
+			}
+		}
+
+		ptsAdjLength = num;
+
+		// Debug.Log("ptsAdjLength:"+ptsAdjLength+" minPrecision:"+minPrecision+" precision:"+precision);
+
 	}
 
+	public Vector3 map( float u ){
+		/*for(int i = 0; i < multiAdjusted.Length; i++){
+			if( multiAdjusted[i] >= u ){
+				// 
+				float found = multiAdjusted[i];
+				Debug.Log("u:"+u+" found:"+found+" multis["+i+"]:"+multis[i]);
+				return found + (u-found);
+			}
+		}*/
+
+		/*int targetSpot = (int)(u * this.multiAdjusted.Length);
+		float found = multiAdjusted[ targetSpot ];// + u - ((float)targetSpot/(float)this.multiAdjusted.Length);
+		return found;*/
+
+		float t = u * (ptsAdjLength-1);
+		int first = (int)Mathf.Floor( t );
+		int next = (int)Mathf.Ceil( t );
+
+		Vector3 val = ptsAdj[ first ];
+		
+
+		Vector3 nextVal = ptsAdj[ next ];
+		float diff = t - first;
+
+		// Debug.Log("u:"+u+" val:"+val +" nextVal:"+nextVal+" diff:"+diff);
+
+		val = val + (nextVal - val) * diff;
+
+		return val;
+
+	}
 	
 	public Vector3 interp(float t) {
 		// The adjustments done to numSections, I am not sure why I needed to add them
@@ -676,7 +749,8 @@ public class LTSpline {
 		float t = ratio>1f?1f:ratio;
 		//Debug.Log("t:"+t+" ratio:"+ratio);
 		//float t = ratio;
-		return interp( t );
+		//return interp( t );
+		return map(t);
 	}
 
 	public void place2d( Transform transform, float ratio ){

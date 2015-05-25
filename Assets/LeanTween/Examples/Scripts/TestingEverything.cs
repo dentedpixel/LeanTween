@@ -90,7 +90,15 @@ public class TestingEverything : MonoBehaviour {
 
 		// test all onUpdates and onCompletes are removed when tween is initialized
 
-		StartCoroutine( timeBasedTesting() );
+		// Test LTBezierPath has correct halfway point
+
+		LTSpline cr = new LTSpline( new Vector3[] {new Vector3(-1f,0f,0f), new Vector3(0f,0f,0f), new Vector3(4f,0f,0f), new Vector3(20f,0f,0f), new Vector3(30f,0f,0f)} );
+		cr.place( cube4.transform, 0.5f );
+		Debug.Log("pos:"+cube4.transform.position);
+		LeanTest.expect( (Vector3.Distance( cube4.transform.position, new Vector3(10f,0f,0f) ) <= 1.5f), "SPLINE POSITIONING", "position is:"+cube4.transform.position+" but should be:(10f,0f,0f)");
+		LeanTween.color(cube4, Color.green, 0.01f);
+
+		// StartCoroutine( timeBasedTesting() );
 	}
 
 	IEnumerator timeBasedTesting(){
