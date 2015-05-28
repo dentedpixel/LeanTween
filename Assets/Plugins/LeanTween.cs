@@ -939,6 +939,8 @@ public class LTDescr {
 	public uint counter;
 	public float direction;
 	public float directionLast;
+	public float overshoot;
+	public float period;
 	public bool destroyOnComplete;
 	public Transform trans;
 	public LTRect ltRect;
@@ -1046,7 +1048,8 @@ public class LTDescr {
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
-		this.direction = this.directionLast = 1.0f;
+		this.direction = this.directionLast = this.overshoot = 1.0f;
+		this.period = 0.3f;
 		this.point = Vector3.zero;
 		cleanup();
 		
@@ -1361,6 +1364,32 @@ public class LTDescr {
 	*/
 	public LTDescr setEase( LeanTweenType easeType ){
 		this.tweenType = easeType;
+		return this;
+	}
+
+	/**
+	* Set how far past a tween will overshoot  for certain ease types (compatible:  easeInBack, easeInOutBack, easeOutBack, easeOutElastic, easeInElastic, easeInOutElastic). <br>
+	* @method setOvershoot
+	* @param {float} overshoot:float how far past the destination it will go before settling in
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.easeOutBack ).setOvershoot(2f);
+	*/
+	public LTDescr setOvershoot( float overshoot ){
+		this.overshoot = overshoot;
+		return this;
+	}
+
+	/**
+	* Set how short the iterations are for certain ease types (compatible: easeOutElastic, easeInElastic, easeInOutElastic). <br>
+	* @method setPeriod
+	* @param {float} period:float how short the iterations are that the tween will animate at (default 0.3f)
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.easeOutElastic ).setPeriod(0.3f);
+	*/
+	public LTDescr setPeriod( float period ){
+		this.period = period;
 		return this;
 	}
 
@@ -2092,17 +2121,17 @@ public static void update() {
 								case LeanTweenType.easeInOutBounce:
 									val = easeInOutBounce(tween.from.x, tween.to.x, ratioPassed); break;
 								case LeanTweenType.easeInBack:
-									val = easeInBack(tween.from.x, tween.to.x, ratioPassed); break;
+									val = easeInBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot); break;
 								case LeanTweenType.easeOutBack:
-									val = easeOutBack(tween.from.x, tween.to.x, ratioPassed); break;
+									val = easeOutBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot); break;
 								case LeanTweenType.easeInOutBack:
-									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
+									val = easeInOutBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot); break;
 								case LeanTweenType.easeInElastic:
-									val = easeInElastic(tween.from.x, tween.to.x, ratioPassed); break;
+									val = easeInElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period); break;
 								case LeanTweenType.easeOutElastic:
-									val = easeOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
+									val = easeOutElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period); break;
 								case LeanTweenType.easeInOutElastic:
-									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed); break;
+									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period); break;
                                 case LeanTweenType.punch:
 								case LeanTweenType.easeShake:
 									if(tween.tweenType==LeanTweenType.punch){
@@ -2427,15 +2456,15 @@ public static void update() {
 									case LeanTweenType.easeInBack:
 										newVect = new Vector3(easeInBack(tween.from.x, tween.to.x, ratioPassed), easeInBack(tween.from.y, tween.to.y, ratioPassed), easeInBack(tween.from.z, tween.to.z, ratioPassed)); break;
 									case LeanTweenType.easeOutBack:
-										newVect = new Vector3(easeOutBack(tween.from.x, tween.to.x, ratioPassed), easeOutBack(tween.from.y, tween.to.y, ratioPassed), easeOutBack(tween.from.z, tween.to.z, ratioPassed)); break;
+										newVect = new Vector3(easeOutBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot), easeOutBack(tween.from.y, tween.to.y, ratioPassed, tween.overshoot), easeOutBack(tween.from.z, tween.to.z, ratioPassed, tween.overshoot)); break;
 									case LeanTweenType.easeInOutBack:
-										newVect = new Vector3(easeInOutBack(tween.from.x, tween.to.x, ratioPassed), easeInOutBack(tween.from.y, tween.to.y, ratioPassed), easeInOutBack(tween.from.z, tween.to.z, ratioPassed)); break;
+										newVect = new Vector3(easeInOutBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot), easeInOutBack(tween.from.y, tween.to.y, ratioPassed, tween.overshoot), easeInOutBack(tween.from.z, tween.to.z, ratioPassed, tween.overshoot)); break;
 									case LeanTweenType.easeInElastic:
-										newVect = new Vector3(easeInElastic(tween.from.x, tween.to.x, ratioPassed), easeInElastic(tween.from.y, tween.to.y, ratioPassed), easeInElastic(tween.from.z, tween.to.z, ratioPassed)); break;
+										newVect = new Vector3(easeInElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period), easeInElastic(tween.from.y, tween.to.y, ratioPassed, tween.overshoot, tween.period), easeInElastic(tween.from.z, tween.to.z, ratioPassed, tween.overshoot, tween.period)); break;
 									case LeanTweenType.easeOutElastic:
-										newVect = new Vector3(easeOutElastic(tween.from.x, tween.to.x, ratioPassed), easeOutElastic(tween.from.y, tween.to.y, ratioPassed), easeOutElastic(tween.from.z, tween.to.z, ratioPassed)); break;
+										newVect = new Vector3(easeOutElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period), easeOutElastic(tween.from.y, tween.to.y, ratioPassed, tween.overshoot, tween.period), easeOutElastic(tween.from.z, tween.to.z, ratioPassed, tween.overshoot, tween.period)); break;
 									case LeanTweenType.easeInOutElastic:
-										newVect = new Vector3(easeInOutElastic(tween.from.x, tween.to.x, ratioPassed), easeInOutElastic(tween.from.y, tween.to.y, ratioPassed), easeInOutElastic(tween.from.z, tween.to.z, ratioPassed)); break;
+										newVect = new Vector3(easeInOutElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period), easeInOutElastic(tween.from.y, tween.to.y, ratioPassed, tween.overshoot, tween.period), easeInOutElastic(tween.from.z, tween.to.z, ratioPassed, tween.overshoot, tween.period)); break;
 									case LeanTweenType.punch:
 									case LeanTweenType.easeShake:
 										if(tween.tweenType==LeanTweenType.punch){
@@ -2862,6 +2891,17 @@ public static void pause( GameObject gameObject, int uniqueId ){
 	pause( uniqueId );
 }
 
+/**
+* Pause all tweens for a GameObject
+* 
+* @method LeanTween.pause
+* @param {int} id:int Id of the tween you want to pause
+* @example 
+* int id = LeanTween.moveX(gameObject, 5, 1.0).id<br>
+* LeanTween.pause( id );<br>
+* // Later....<br>
+* LeanTween.resume( id );
+*/
 public static void pause( int uniqueId ){
 	int backId = uniqueId & 0xFFFF;
 	int backCounter = uniqueId >> 16;
@@ -2918,7 +2958,12 @@ public static void resume( GameObject gameObject, int uniqueId ){
 * Resume a specific tween
 * 
 * @method LeanTween.resume
-* @param {int} id:int Id of the tween you want to resume ex: int id = LeanTween.MoveX(gameObject, 5, 1.0).id;
+* @param {int} id:int Id of the tween you want to resume
+* @example 
+* int id = LeanTween.moveX(gameObject, 5, 1.0).id<br>
+* LeanTween.pause( id );<br>
+* // Later....<br>
+* LeanTween.resume( id );
 */
 public static void resume( int uniqueId ){
 	int backId = uniqueId & 0xFFFF;
@@ -3800,7 +3845,7 @@ public static LTDescr value(GameObject gameObject, Action<Color> callOnUpdate, C
 }
 
 /**
-* Tween any particular value (Vector2), this could be used to tween an arbitrary value like a material color
+* Tween any particular value (Vector2), this could be used to tween an arbitrary value like offset property
 * 
 * @method LeanTween.value (Vector2)
 * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -3815,7 +3860,7 @@ public static LTDescr value(GameObject gameObject, Action<Vector2> callOnUpdate,
 }
 
 /**
-* Tween any particular value (Vector3), this could be used to tween an arbitrary value like a material color
+* Tween any particular value (Vector3), this could be used to tween an arbitrary property that uses a Vector
 * 
 * @method LeanTween.value (Vector3)
 * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -4466,9 +4511,9 @@ private static float clerp(float start, float end, float val){
 	return retval;
 }
 
-private static float spring(float start, float end, float val){
+private static float spring(float start, float end, float val ){
 	val = Mathf.Clamp01(val);
-	val = (Mathf.Sin(val * Mathf.PI * (0.2f + 2.5f * val * val * val)) * Mathf.Pow(1f - val, 2.2f) + val) * (1f + (1.2f * (1f - val)));
+	val = (Mathf.Sin(val * Mathf.PI * (0.2f + 2.5f * val * val * val)) * Mathf.Pow(1f - val, 2.2f ) + val) * (1f + (1.2f * (1f - val) ));
 	return start + (end - start) * val;
 }
 
@@ -4622,6 +4667,30 @@ private static float easeOutBounce(float start, float end, float val){
 	}
 }
 
+/*private static float easeOutBounce( float start, float end, float val, float overshoot = 1.0f ){
+	end -= start;
+	float baseAmt = 2.75f * overshoot;
+	float baseAmt2 = baseAmt * baseAmt;
+	Debug.Log("val:"+val); // 1f, 0.75f, 0.5f, 0.25f, 0.125f
+	if (val < ((baseAmt-(baseAmt - 1f)) / baseAmt)){ // 0.36
+		return end * (baseAmt2 * val * val) + start; // 1 - 1/1
+
+	}else if (val < ((baseAmt-0.75f) / baseAmt)){ // .72
+		val -= ((baseAmt-(baseAmt - 1f - 0.5f)) / baseAmt); // 1.25f
+		return end * (baseAmt2 * val * val + .75f) + start; // 1 - 1/(4)
+
+	}else if (val < ((baseAmt-(baseAmt - 1f - 0.5f - 0.25f)) / baseAmt)){ // .909
+		val -= ((baseAmt-0.5f) / baseAmt); // 0.5
+		return end * (baseAmt2 * val * val + .9375f) + start; // 1 - 1/(4*4)
+
+	}else{ // x
+		// Debug.Log("else val:"+val);
+		val -= ((baseAmt-0.125f) / baseAmt); // 0.125
+		return end * (baseAmt2 * val * val + .984375f) + start; // 1 - 1/(4*4*4)
+
+	}
+}*/
+
 private static float easeInOutBounce(float start, float end, float val){
 	end -= start;
 	float d= 1f;
@@ -4629,105 +4698,118 @@ private static float easeInOutBounce(float start, float end, float val){
 	else return easeOutBounce(0, end, val*2-d) * 0.5f + end*0.5f + start;
 }
 
-private static float easeInBack(float start, float end, float val){
+private static float easeInBack(float start, float end, float val, float overshoot = 1.0f){
 	end -= start;
 	val /= 1;
-	float s= 1.70158f;
+	float s= 1.70158f * overshoot;
 	return end * (val) * val * ((s + 1) * val - s) + start;
 }
 
-private static float easeOutBack(float start, float end, float val){
-	float s= 1.70158f;
+private static float easeOutBack(float start, float end, float val, float overshoot = 1.0f){
+	float s = 1.70158f * overshoot;
 	end -= start;
 	val = (val / 1) - 1;
 	return end * ((val) * val * ((s + 1) * val + s) + 1) + start;
 }
 
-private static float easeInOutBack(float start, float end, float val){
-	float s= 1.70158f;
+private static float easeInOutBack(float start, float end, float val, float overshoot = 1.0f){
+	float s = 1.70158f * overshoot;
 	end -= start;
 	val /= .5f;
 	if ((val) < 1){
-		s *= (1.525f);
+		s *= (1.525f) * overshoot;
 		return end / 2 * (val * val * (((s) + 1) * val - s)) + start;
 	}
 	val -= 2;
-	s *= (1.525f);
+	s *= (1.525f) * overshoot;
 	return end / 2 * ((val) * val * (((s) + 1) * val + s) + 2) + start;
 }
 
-private static float easeInElastic(float start, float end, float val){
+private static float easeInElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f){
 	end -= start;
 	
-	float d = 1f;
-	float p = d * .3f;
-	float s= 0;
-	float a = 0;
+	float p = period;
+	float s = 0f;
+	float a = 0f;
 	
-	if (val == 0) return start;
-	val = val/d;
-	if (val == 1) return start + end;
+	if (val == 0f) return start;
+
+	if (val == 1f) return start + end;
 	
 	if (a == 0f || a < Mathf.Abs(end)){
 		a = end;
-		s = p / 4;
-		}else{
-		s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
+		s = p / 4f;
+	}else{
+		s = p / (2f * Mathf.PI) * Mathf.Asin(end / a);
 	}
-	val = val-1;
-	return -(a * Mathf.Pow(2, 10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p)) + start;
+	
+	if(overshoot>1f && val>0.6f )
+		overshoot = 1f + ((1f-val) / 0.4f * (overshoot-1f));
+	// Debug.Log("ease in elastic val:"+val+" a:"+a+" overshoot:"+overshoot);
+
+	val = val-1f;
+	return start-(a * Mathf.Pow(2f, 10f * val) * Mathf.Sin((val - s) * (2f * Mathf.PI) / p)) * overshoot;
 }		
 
-private static float easeOutElastic(float start, float end, float val){
+private static float easeOutElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f){
 	end -= start;
 	
-	float d = 1f;
-	float p= d * .3f;
-	float s= 0;
-	float a= 0;
+	float p = period;
+	float s = 0f;
+	float a = 0f;
 	
-	if (val == 0) return start;
+	if (val == 0f) return start;
 	
-	val = val / d;
-	if (val == 1) return start + end;
+	// Debug.Log("ease out elastic val:"+val+" a:"+a);
+	if (val == 1f) return start + end;
 	
 	if (a == 0f || a < Mathf.Abs(end)){
 		a = end;
-		s = p / 4;
-		}else{
-		s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
+		s = p / 4f;
+	}else{
+		s = p / (2f * Mathf.PI) * Mathf.Asin(end / a);
 	}
+	if(overshoot>1f && val<0.4f )
+		overshoot = 1f + (val / 0.4f * (overshoot-1f));
+	// Debug.Log("ease out elastic val:"+val+" a:"+a+" overshoot:"+overshoot);
 	
-	return (a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) + end + start);
+	return start + end + a * Mathf.Pow(2f, -10f * val) * Mathf.Sin((val - s) * (2f * Mathf.PI) / p) * overshoot;
 }		
 
-private static float easeInOutElastic(float start, float end, float val)
+private static float easeInOutElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f)
 {
 	end -= start;
 	
-	float d = 1f;
-	float p= d * .3f;
-	float s= 0;
-	float a = 0;
+	float p = period;
+	float s = 0f;
+	float a = 0f;
 	
-	if (val == 0) return start;
+	if (val == 0f) return start;
 	
-	val = val / (d/2);
-	if (val == 2) return start + end;
+	val = val / (1f/2f);
+	if (val == 2f) return start + end;
 	
 	if (a == 0f || a < Mathf.Abs(end)){
 		a = end;
-		s = p / 4;
-		}else{
-		s = p / (2 * Mathf.PI) * Mathf.Asin(end / a);
+		s = p / 4f;
+	}else{
+		s = p / (2f * Mathf.PI) * Mathf.Asin(end / a);
 	}
 	
-	if (val < 1){
-	 val = val-1;
-	 return -0.5f * (a * Mathf.Pow(2, 10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p)) + start;
+	if(overshoot>1f){
+		if( val<0.2f ){
+			overshoot = 1f + (val / 0.2f * (overshoot-1f));
+		}else if( val > 0.8f ){
+			overshoot = 1f + ((1f-val) / 0.2f * (overshoot-1f));
+		}
 	}
-	val = val-1;
-	return a * Mathf.Pow(2, -10 * val) * Mathf.Sin((val * d - s) * (2 * Mathf.PI) / p) * 0.5f + end + start;
+
+	if (val < 1f){
+		val = val-1f;
+		return start - 0.5f * (a * Mathf.Pow(2f, 10f * val) * Mathf.Sin((val - s) * (2f * Mathf.PI) / p)) * overshoot;
+	}
+	val = val-1f;
+	return end + start + a * Mathf.Pow(2f, -10f * val) * Mathf.Sin((val - s) * (2f * Mathf.PI) / p) * 0.5f * overshoot;
 }
 
 // LeanTween Listening/Dispatch
