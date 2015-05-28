@@ -46,10 +46,10 @@ public class TestingEverything : MonoBehaviour {
 	private int rotateRepeatAngle;
 
 	void Start () {
-		LeanTest.timeout = 70f;
+		LeanTest.timeout = 30f;
 		LeanTest.expected = 25;
 
-		LeanTween.init(3 + 1200);
+		LeanTween.init(6 + 1200);
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -84,9 +84,7 @@ public class TestingEverything : MonoBehaviour {
 		// ping pong
 
 		// rotateAround, Repeat, DestroyOnComplete
-		rotateRepeat = rotateRepeatAngle = 0;
-		LeanTween.rotateAround(cube3, Vector3.forward, 360f, 0.1f).setRepeat(3).setOnComplete(rotateRepeatFinished).setOnCompleteOnRepeat(true).setDestroyOnComplete(true);
-		LeanTween.delayedCall(0.1f*8f, rotateRepeatAllFinished);
+		
 
 		// test all onUpdates and onCompletes are removed when tween is initialized
 
@@ -103,23 +101,6 @@ public class TestingEverything : MonoBehaviour {
 
 	IEnumerator timeBasedTesting(){
 		yield return new WaitForEndOfFrame();
-		yield return new WaitForEndOfFrame();
-
-		Time.timeScale = 0.25f;
-		float tweenTime = 0.2f;
-		float start = Time.realtimeSinceStartup;
-		bool onUpdateWasCalled = false;
-		LeanTween.moveX(cube1, -5f, tweenTime).setOnUpdate( (float val)=>{
-			onUpdateWasCalled = true;
-		}).setOnComplete( ()=>{
-			float end = Time.realtimeSinceStartup;
-			float diff = end - start;
-			LeanTest.expect( Mathf.Abs( tweenTime * (1f/Time.timeScale) - diff) < 0.05f, "SCALED TIMING DIFFERENCE", "expected to complete in roughly 0.8f but completed in "+diff );
-			LeanTest.expect( Mathf.Approximately(cube1.transform.position.x, -5f), "SCALED ENDING POSITION", "expected to end at -5f, but it ended at "+cube1.transform.position.x);
-			LeanTest.expect( onUpdateWasCalled, "ON UPDATE FIRED" );
-		});
-
-		yield return new WaitForSeconds(1.0f);
 
 		Time.timeScale = 4f;
 
@@ -134,12 +115,26 @@ public class TestingEverything : MonoBehaviour {
 			cube.transform.position = new Vector3(0,0,i*3);
 			cube.name = "c"+i;
 			groupGOs[i] = cube;
-			groupTweens[i] = LeanTween.move(cube, transform.position + Vector3.one*3f, 0.6f ).setOnComplete(groupTweenFinished);
+		}
+
+		yield return new WaitForEndOfFrame();
+
+		bool hasGroupTweensCheckStarted = false;
+		for(int i = 0; i < groupTweens.Length; i++){
+			groupTweens[i] = LeanTween.move(groupGOs[i], transform.position + Vector3.one*3f, 3f ).setOnComplete( ()=>{
+				if(hasGroupTweensCheckStarted==false){
+					hasGroupTweensCheckStarted = true;
+					LeanTween.delayedCall(gameObject, 0.1f, groupTweensFinished);
+				}
+				groupTweensCnt++;
+			});
 
 			if(LeanTween.description(groupTweens[i].id).trans==groupTweens[i].trans)
 				descriptionMatchCount++;
 		}
-		LeanTween.delayedCall(gameObject, 0.82f, groupTweensFinished);
+
+		while (LeanTween.tweensRunning<groupTweens.Length)
+			yield return null;
 
 		LeanTest.expect( descriptionMatchCount==groupTweens.Length, "GROUP IDS MATCH" );
 		LeanTest.expect( LeanTween.maxSearch<=groupTweens.Length+5, "MAX SEARCH OPTIMIZED", "maxSearch:"+LeanTween.maxSearch );
@@ -152,7 +147,10 @@ public class TestingEverything : MonoBehaviour {
 		});
 		lt4.resume();
 
-		yield return new WaitForSeconds(0.2f);
+		rotateRepeat = rotateRepeatAngle = 0;
+		LeanTween.rotateAround(cube3, Vector3.forward, 360f, 0.1f).setRepeat(3).setOnComplete(rotateRepeatFinished).setOnCompleteOnRepeat(true).setDestroyOnComplete(true);
+		yield return new WaitForEndOfFrame();
+		LeanTween.delayedCall(0.1f*8f, rotateRepeatAllFinished);
 
 		int countBeforeCancel = LeanTween.tweensRunning;
 		lt1.cancel( cube1 );
@@ -191,7 +189,25 @@ public class TestingEverything : MonoBehaviour {
 		LeanTest.expect( LeanTween.isTweening(cube1)==false, "CANCEL TWEEN LTDESCR" );
 		LeanTest.expect( LeanTween.isTweening(cube2)==false, "CANCEL TWEEN LEANTWEEN" );
 
-		
+		yield return new WaitForEndOfFrame();
+		Time.timeScale = 0.25f;
+		float tweenTime = 0.2f;
+		float expectedTime = tweenTime * (1f/Time.timeScale);
+		float start = Time.realtimeSinceStartup;
+		bool onUpdateWasCalled = false;
+		LeanTween.moveX(cube1, -5f, tweenTime).setOnUpdate( (float val)=>{
+			onUpdateWasCalled = true;
+		}).setOnComplete( ()=>{
+			float end = Time.realtimeSinceStartup;
+			float diff = end - start;
+			
+			LeanTest.expect( Mathf.Abs( expectedTime - diff) < 0.05f, "SCALED TIMING DIFFERENCE", "expected to complete in roughly "+expectedTime+" but completed in "+diff );
+			LeanTest.expect( Mathf.Approximately(cube1.transform.position.x, -5f), "SCALED ENDING POSITION", "expected to end at -5f, but it ended at "+cube1.transform.position.x);
+			LeanTest.expect( onUpdateWasCalled, "ON UPDATE FIRED" );
+		});
+
+		yield return new WaitForSeconds( expectedTime );
+		Time.timeScale = 1f;
 
 		int ltCount = 0;
 		GameObject[] allGos = FindObjectsOfType(typeof(GameObject)) as GameObject[];
@@ -282,10 +298,6 @@ public class TestingEverything : MonoBehaviour {
 		LeanTest.expect( rotateRepeatAngle==3, "ROTATE AROUND MULTIPLE", "expected 3 times received "+rotateRepeatAngle+" times" );
 		LeanTest.expect( rotateRepeat==3, "ROTATE REPEAT" );
 		LeanTest.expect( cube3==null, "DESTROY ON COMPLETE", "cube3:"+cube3 );
-	}
-
-	void groupTweenFinished(){
-		groupTweensCnt++;
 	}
 
 	void groupTweensFinished(){
