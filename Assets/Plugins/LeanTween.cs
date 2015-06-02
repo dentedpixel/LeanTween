@@ -2830,7 +2830,7 @@ public static void cancel( GameObject gameObject, bool callComplete ){
 * 
 * @method LeanTween.cancel
 * @param {GameObject} gameObject:GameObject gameObject whose tweens you want to cancel
-* @param {float} id:int unique id that represents that tween
+* @param {int} id:int unique id that represents that tween
 */
 public static void cancel( GameObject gameObject, int uniqueId ){
 	if(uniqueId>=0){
@@ -2861,7 +2861,15 @@ public static void cancel( LTRect ltRect, int uniqueId ){
 	}
 }
 
-private static void cancel( int uniqueId ){
+/**
+* Cancel a specific tween with the provided id
+* 
+* @method LeanTween.cancel
+* @param {int} id:int unique id that represents that tween
+* @example int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
+* LeanTween.cancel( id );
+*/
+public static void cancel( int uniqueId ){
 	if(uniqueId>=0){
 		init();
 		int backId = uniqueId & 0xFFFF;
