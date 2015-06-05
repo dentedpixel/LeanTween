@@ -32,6 +32,8 @@ private var exampleIter:int = 0;
 private var exampleFunctions = [updateValue3Example,loopTestPingPong,loopTestClamp,moveOnACurveExample,punchTest, customTweenExample, moveExample, rotateExample, scaleExample, updateValueExample, alphaExample, moveLocalExample, delayedCallExample, rotateAroundExample];
 private var useEstimatedTime:boolean = true;
 private var ltLogo:GameObject;
+private var cube1:GameObject;
+private var cube2:GameObject;
 
 function cycleThroughExamples(){
 	
@@ -60,16 +62,16 @@ function updateValue3ExampleCallback( val:Vector3 ){
 
 function loopTestClamp(){
 	Debug.Log("loopTestClamp");
-	var cube1:GameObject = GameObject.Find("Cube1");
+	cube1 = GameObject.Find("Cube1");
 	cube1.transform.localScale.z = 1.0;
 	moveId = LeanTween.scaleZ( cube1, 4.0, 1.0).setEase(LeanTweenType.easeOutElastic).setLoopClamp().setRepeat(7).setUseEstimatedTime(useEstimatedTime);
 }
 
 function loopTestPingPong(){
 	Debug.Log("loopTestPingPong");
-	var cube2:GameObject = GameObject.Find("Cube2");
+	cube2 = GameObject.Find("Cube2");
 	cube2.transform.localScale.y = 1.0;
-	pingPongDescr = LeanTween.scaleY( cube2, 4.0, 1.0).setEase(LeanTweenType.easeOutQuad).setRepeat(8).setLoopPingPong().setUseEstimatedTime(useEstimatedTime);
+	pingPongDescr = LeanTween.scaleY( cube2, 4.0, 1.0).setEase(LeanTweenType.easeOutQuad).setLoopPingPong(4).setUseEstimatedTime(useEstimatedTime);
 	Debug.Log("id:"+pingPongDescr.id);
 }
 
@@ -180,5 +182,5 @@ function loopResume(){
 }
 
 function loopCancel(){
-	pingPongDescr.cancel();
+	pingPongDescr.cancel( cube2 );
 }

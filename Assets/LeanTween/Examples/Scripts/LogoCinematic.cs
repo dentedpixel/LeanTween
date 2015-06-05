@@ -13,6 +13,7 @@ public class LogoCinematic : MonoBehaviour {
 		
 	}
 
+	
 	void Start () {
 		//Time.timeScale = 0.2f;
 		
@@ -30,10 +31,17 @@ public class LogoCinematic : MonoBehaviour {
 	}
 
 	void playBoom(){
+<<<<<<< HEAD
 		//AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(-0.001454365f, 0.006141067f, -3.698472f, -3.698472f), new Keyframe(0.004859668f, 1.392618f, -4.544237f, -4.544237f), new Keyframe(0.9999977f, 0.00601998f, -0.1788428f, -0.1788428f));
 		//AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(2.99277E-05f, 0.002244899f, 0.01912267f, 0.01912267f), new Keyframe(0.9984757f, 0.06040816f, 0f, 0f));
 		//AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.002f,0.6f,0f)} ));
 		LeanAudio.playClipAt(boomClip, Vector3.zero);
+=======
+		AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(-0.001454365f, 0.006141067f, -3.698472f, -3.698472f), new Keyframe(0.01393294f, 2f, -3.613532f, -3.613532f), new Keyframe(0.9999977f, 0.00601998f, -0.1788428f, -0.1788428f));
+		AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(2.99277E-05f, 0.002244899f, 0.01912267f, 0.01912267f), new Keyframe(0.9984757f, 0.06040816f, 0f, 0f));
+		AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, new LeanAudioOptions().setVibrato( new Vector3[]{ new Vector3(0.1f,0f,0f)} ).setFrequency(11025));
+		LeanAudio.playClipAt(audioClip, Vector3.zero);
+>>>>>>> upstream/master
 	}
 	
 }

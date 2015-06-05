@@ -29,7 +29,11 @@
                 <h1><a href="http://dentedpixel.com/developer-diary/leantween-speed-comparison-to-itween/"><img src="http://s3.amazonaws.com/dentedpixel.com/LeanTween/leantween-logo.png" title=""></a></h1> <div style="position:absolute; left:146px; top:90px;">- Developed by <a href="http://www.dentedpixel.com">Dented Pixel</a></div>
         </div>
         <div class="yui3-u-1-4 version">
+<<<<<<< HEAD
             <em style="margin-top:2px">API Docs for: LeanTween 2.26</em><br>
+=======
+            <em style="margin-top:2px">API Docs for: LeanTween 2.29</em><br>
+>>>>>>> upstream/master
             <table id="support">
                 <tr>
                 <td>
@@ -74,8 +78,6 @@
                 
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
-                                <li><a href="../classes/LeanAudio.html">LeanAudio</a></li>
-                                <li><a href="../classes/LeanAudioOptions.html">LeanAudioOptions</a></li>
                                 <li><a href="../classes/LeanTween.html">LeanTween</a></li>
                                 <li><a href="../classes/LeanTweenType.html">LeanTweenType</a></li>
                                 <li><a href="../classes/LTBezierPath.html">LTBezierPath</a></li>
@@ -132,7 +134,11 @@
                         
                         
                                 <div class="foundat">
+<<<<<<< HEAD
                                     Defined in: <a href="../files/LeanTween.cs.html#l1153"><code>LeanTween.cs:1153</code></a>
+=======
+                                    Defined in: <a href="../files/LeanTween.cs.html#l899"><code>LeanTween.cs:899</code></a>
+>>>>>>> upstream/master
                                 </div>
                         
                         
@@ -181,7 +187,11 @@
                                     <div class="meta">
                                                 <p>
                                                 Defined in
+<<<<<<< HEAD
                                         <a href="../files/LeanTween.cs.html#l1153"><code>LeanTween.cs:1153</code></a>
+=======
+                                        <a href="../files/LeanTween.cs.html#l899"><code>LeanTween.cs:899</code></a>
+>>>>>>> upstream/master
                                         </p>
                                 
                                 
@@ -297,14 +307,25 @@
                         
                                                     </li>
                                                     <li class="index-item method">
+                                                        <a href="#method_setOvershoot">setOvershoot</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
+                                                        <a href="#method_setPeriod">setPeriod</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
                                                         <a href="#method_setPoint">setPoint</a>
                         
                                                     </li>
                                                     <li class="index-item method">
+<<<<<<< HEAD
+=======
                                                         <a href="#method_setRepeat">setRepeat</a>
                         
                                                     </li>
                                                     <li class="index-item method">
+>>>>>>> upstream/master
                                                         <a href="#method_setUseFrames">setUseFrames</a>
                         
                                                     </li>
@@ -321,7 +342,13 @@
                                             <div id="method_cancel" class="method item">
                                                 <h3 class="name"><code>cancel</code></h3>
                                             
-                                                    <span class="paren">()</span>
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>gameObject:GameObject</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
                                             
                                                     <span class="returns-inline">
                                                         <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
@@ -336,7 +363,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1243"><code>LeanTween.cs:1243</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l992"><code>LeanTween.cs:992</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -348,6 +379,23 @@
                                             
                                                 </div>
                                             
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">gameObject:GameObject</code>
+                                                                    <span class="type">GameObject</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>that the tween is acting upon (this is needed for safety checks)</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                             
                                                     <div class="returns">
                                                         <h4>Returns:</h4>
@@ -359,6 +407,18 @@
                                                         </div>
                                                     </div>
                                             
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LTDescr lt = LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f );<br>
+                                            lt.cancel( gameObject );<br><br>
+                                            Safest way to cancel:<br>
+                                            int id = LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f ).id;<br>
+                                            LeanTween.cancel( id );<br></p>
+                                            
+                                                        </div>
+                                                    </div>
                                             </div>
                                             <div id="method_pause" class="method item">
                                                 <h3 class="name"><code>pause</code></h3>
@@ -378,7 +438,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1530"><code>LeanTween.cs:1530</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1303"><code>LeanTween.cs:1303</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -420,7 +484,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1545"><code>LeanTween.cs:1545</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1318"><code>LeanTween.cs:1318</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -468,7 +536,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1561"><code>LeanTween.cs:1561</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1334"><code>LeanTween.cs:1334</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -541,7 +613,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1580"><code>LeanTween.cs:1580</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1353"><code>LeanTween.cs:1353</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -616,7 +692,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1597"><code>LeanTween.cs:1597</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1396"><code>LeanTween.cs:1396</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -689,7 +769,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1684"><code>LeanTween.cs:1684</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1484"><code>LeanTween.cs:1484</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -741,7 +825,13 @@
                                             <div id="method_setLoopClamp" class="method item">
                                                 <h3 class="name"><code>setLoopClamp</code></h3>
                                             
-                                                    <span class="paren">()</span>
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>loops:int</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
                                             
                                                     <span class="returns-inline">
                                                         <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
@@ -756,7 +846,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1729"><code>LeanTween.cs:1729</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1529"><code>LeanTween.cs:1529</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -768,6 +862,23 @@
                                             
                                                 </div>
                                             
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">loops:int</code>
+                                                                    <span class="type">Int</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>(defaults to -1) how many times you want the loop to happen (-1 for an infinite number of times)</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                             
                                                     <div class="returns">
                                                         <h4>Returns:</h4>
@@ -783,7 +894,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopClamp();</p>
+                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setLoopClamp( 2 );</p>
                                             
                                                         </div>
                                                     </div>
@@ -806,7 +917,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1720"><code>LeanTween.cs:1720</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1520"><code>LeanTween.cs:1520</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -841,7 +956,13 @@
                                             <div id="method_setLoopPingPong" class="method item">
                                                 <h3 class="name"><code>setLoopPingPong</code></h3>
                                             
-                                                    <span class="paren">()</span>
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>loops:int</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
                                             
                                                     <span class="returns-inline">
                                                         <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
@@ -856,7 +977,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1743"><code>LeanTween.cs:1743</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1548"><code>LeanTween.cs:1548</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -868,6 +993,23 @@
                                             
                                                 </div>
                                             
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">loops:int</code>
+                                                                    <span class="type">Int</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>(defaults to -1) how many times you want the loop to happen in both directions (-1 for an infinite number of times). Passing a value of 1 will cause the object to go towards and back from it&#39;s destination once.</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                             
                                                     <div class="returns">
                                                         <h4>Returns:</h4>
@@ -883,7 +1025,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setRepeat(2).setLoopPingPong();</p>
+                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setLoopPingPong( 2 );</p>
                                             
                                                         </div>
                                                     </div>
@@ -912,7 +1054,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1757"><code>LeanTween.cs:1757</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1568"><code>LeanTween.cs:1568</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -985,7 +1131,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1770"><code>LeanTween.cs:1770</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1581"><code>LeanTween.cs:1581</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1058,7 +1208,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1992"><code>LeanTween.cs:1992</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1813"><code>LeanTween.cs:1813</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1131,7 +1285,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l2005"><code>LeanTween.cs:2005</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1826"><code>LeanTween.cs:1826</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1207,7 +1365,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1789"><code>LeanTween.cs:1789</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1600"><code>LeanTween.cs:1600</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1251,7 +1413,11 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );</p>
+                                                            <p>LeanTween.delayedCall(1.5f, enterMiniGameStart).setOnCompleteParam( new object[]{&quot;&quot;+5} );<br><br>
+                                            void enterMiniGameStart( object val ){<br>
+                                            &nbsp;object[] arr = (object [])val;<br>
+                                            &nbsp;int lvl = int.Parse((string)arr[0]);<br>
+                                            }<br></p>
                                             
                                                         </div>
                                                     </div>
@@ -1280,7 +1446,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1803"><code>LeanTween.cs:1803</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1618"><code>LeanTween.cs:1618</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1355,7 +1525,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1848"><code>LeanTween.cs:1848</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1669"><code>LeanTween.cs:1669</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1430,7 +1604,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1882"><code>LeanTween.cs:1882</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1703"><code>LeanTween.cs:1703</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1505,7 +1683,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1902"><code>LeanTween.cs:1902</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1723"><code>LeanTween.cs:1723</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1580,7 +1762,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1917"><code>LeanTween.cs:1917</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1738"><code>LeanTween.cs:1738</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1653,7 +1839,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1936"><code>LeanTween.cs:1936</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1757"><code>LeanTween.cs:1757</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             
@@ -1702,6 +1892,162 @@
                                                         </div>
                                                     </div>
                                             </div>
+                                            <div id="method_setOvershoot" class="method item">
+                                                <h3 class="name"><code>setOvershoot</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>overshoot:float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+<<<<<<< HEAD
+                                                    <a href="../files/LeanTween.cs.html#l1969"><code>LeanTween.cs:1969</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1370"><code>LeanTween.cs:1370</code></a>
+>>>>>>> upstream/master
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Set how far past a tween will overshoot  for certain ease types (compatible:  easeInBack, easeInOutBack, easeOutBack, easeOutElastic, easeInElastic, easeInOutElastic). <br></p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">overshoot:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>how far past the destination it will go before settling in</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.easeOutBack ).setOvershoot(2f);</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_setPeriod" class="method item">
+                                                <h3 class="name"><code>setPeriod</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>period:float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+<<<<<<< HEAD
+                                                    <a href="../files/LeanTween.cs.html#l1655"><code>LeanTween.cs:1655</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1383"><code>LeanTween.cs:1383</code></a>
+>>>>>>> upstream/master
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Set how short the iterations are for certain ease types (compatible: easeOutElastic, easeInElastic, easeInOutElastic). <br></p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">period:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>how short the iterations are that the tween will animate at (default 0.3f)</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.easeOutElastic ).setPeriod(0.3f);</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+<<<<<<< HEAD
+=======
                                             <div id="method_setPoint" class="method item">
                                                 <h3 class="name"><code>setPoint</code></h3>
                                             
@@ -1726,7 +2072,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1969"><code>LeanTween.cs:1969</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1790"><code>LeanTween.cs:1790</code></a>
                                                     </p>
                                             
                                             
@@ -1799,7 +2145,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1655"><code>LeanTween.cs:1655</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1455"><code>LeanTween.cs:1455</code></a>
                                                     </p>
                                             
                                             
@@ -1848,6 +2194,7 @@
                                                         </div>
                                                     </div>
                                             </div>
+>>>>>>> upstream/master
                                             <div id="method_setUseFrames" class="method item">
                                                 <h3 class="name"><code>setUseFrames</code></h3>
                                             
@@ -1872,7 +2219,11 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
+<<<<<<< HEAD
                                                     <a href="../files/LeanTween.cs.html#l1697"><code>LeanTween.cs:1697</code></a>
+=======
+                                                    <a href="../files/LeanTween.cs.html#l1497"><code>LeanTween.cs:1497</code></a>
+>>>>>>> upstream/master
                                                     </p>
                                             
                                             

@@ -28,7 +28,7 @@ public class GeneralBasics2dCS : MonoBehaviour {
 		LeanTween.move( avatarMove, avatarMove.transform.position + new Vector3(2f, -1f, 0f), 2f).setDelay(3f);
 
 		// Chain properties (delay, easing with a set repeating of type ping pong)
-		LeanTween.scale( avatarScale, new Vector3(0.2f, 0.2f, 0.2f), 1f).setDelay(7f).setEase(LeanTweenType.easeInOutCirc).setRepeat(5).setLoopPingPong();
+		LeanTween.scale( avatarScale, new Vector3(0.2f, 0.2f, 0.2f), 1f).setDelay(7f).setEase(LeanTweenType.easeInOutCirc).setLoopPingPong(3);
 
 		// Call methods after a certain time period
 		LeanTween.delayedCall(gameObject, 0.2f, advancedExamples);
@@ -84,7 +84,7 @@ public class GeneralBasics2dCS : MonoBehaviour {
 				);
 
 				// Jump Up and back down
-				LeanTween.moveLocalY(dude,1.17f,1.2f).setDelay(5f + i*0.2f).setLoopPingPong().setRepeat(2).setEase(LeanTweenType.easeInOutQuad);
+				LeanTween.moveLocalY(dude,1.17f,1.2f).setDelay(5f + i*0.2f).setLoopPingPong(1).setEase(LeanTweenType.easeInOutQuad);
 			
 				// Alpha Out, and destroy
 				LeanTween.alpha(dude, 0f, 0.6f).setDelay(9.2f + i*0.4f).setDestroyOnComplete(true).setOnComplete(

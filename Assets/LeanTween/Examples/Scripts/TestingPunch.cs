@@ -21,6 +21,21 @@ public class TestingPunch : MonoBehaviour {
             LeanTween.moveLocalX(gameObject, 5, 1).setOnComplete( () => {
             Debug.Log("on complete move local X");
             }).setOnCompleteOnStart(true);
+<<<<<<< HEAD
+=======
+
+            GameObject light = GameObject.Find("DirectionalLight");
+            Light lt = light.GetComponent<Light>(); 
+        
+            LeanTween.value(lt.gameObject, lt.intensity, 0.0f, 1.5f)
+              .setEase(LeanTweenType.linear)
+              .setLoopPingPong()
+              .setRepeat(-1)
+              .setOnUpdate((float val)=>{
+                
+            lt.intensity = val;
+            });
+>>>>>>> upstream/master
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
@@ -44,8 +59,8 @@ public class TestingPunch : MonoBehaviour {
             LeanTween.moveX( this.gameObject, 1f, 1f).setOnComplete( destroyOnComp ).setOnCompleteParam( this.gameObject ).setOnComplete( ()=>{
                 float end = Time.realtimeSinceStartup;
                 float diff = end - start;
-                Debug.Log("start:"+start+" end:"+end+" diff:"+diff);
-            });
+                Debug.Log("start:"+start+" end:"+end+" diff:"+diff+" x:"+this.gameObject.transform.position.x);
+            }).setEase(LeanTweenType.easeInOutElastic).setOvershoot(8f).setPeriod(0.3f);
         }
 
         if (Input.GetKeyDown(KeyCode.C))
@@ -54,7 +69,7 @@ public class TestingPunch : MonoBehaviour {
 
             Color to = new Color(Random.Range(0f,1f),0f,Random.Range(0f,1f),0.0f);
             GameObject l = GameObject.Find("LCharacter");
-            LeanTween.color( l, to, 4.0f ).setRepeat(2).setLoopPingPong().setEase(LeanTweenType.easeOutBounce);
+            LeanTween.color( l, to, 4.0f ).setLoopPingPong(1).setEase(LeanTweenType.easeOutBounce);
         }
 
         if (Input.GetKeyDown(KeyCode.E))

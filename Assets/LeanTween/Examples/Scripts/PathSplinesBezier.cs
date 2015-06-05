@@ -1,30 +1,31 @@
 using UnityEngine;
 using System.Collections;
 
-public class PathSplines : MonoBehaviour {
+public class PathSplinesBezier : MonoBehaviour {
 
 	public Transform[] trans;
 	
-	LTSpline cr;
+	LTBezierPath cr;
 	private GameObject avatar1;
 
 	void OnEnable(){
 		// create the path
-		cr = new LTSpline( new Vector3[] {trans[0].position, trans[1].position, trans[2].position, trans[3].position, trans[4].position} );
-		// cr = new LTSpline( new Vector3[] {new Vector3(-1f,0f,0f), new Vector3(0f,0f,0f), new Vector3(4f,0f,0f), new Vector3(20f,0f,0f), new Vector3(30f,0f,0f)} );
+		cr = new LTBezierPath( new Vector3[] {trans[0].position, trans[2].position, trans[1].position, trans[3].position, trans[3].position, trans[5].position, trans[4].position, trans[6].position} );
 	}
 
 	void Start () {
 		avatar1 = GameObject.Find("Avatar1");
 
 		// Tween automatically
-		// LeanTween.moveSpline(avatar1, cr.pts, 6.5f).setOrientToPath(true).setRepeat(-1);
+		LTDescr descr = LeanTween.move(avatar1, cr.pts, 6.5f).setOrientToPath(true).setRepeat(-1);
+		Debug.Log("length of path 1:"+cr.length);
+		Debug.Log("length of path 2:"+descr.path.length);
 	}
 	
 	private float iter;
 	void Update () {
 		// Or Update Manually
-		cr.place( avatar1.transform, iter );
+		//cr.place2d( sprite1.transform, iter );
 
 		iter += Time.deltaTime*0.07f;
 		if(iter>1.0f)
