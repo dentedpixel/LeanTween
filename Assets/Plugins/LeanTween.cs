@@ -968,6 +968,9 @@ public class LTDescr {
 	public Action<object> onCompleteObject;
 	public object onCompleteParam;
 	public object onUpdateParam;
+	public Action onStart;
+    public Action<object> onStartObject;
+    public object onStartParam;
 
 	#if LEANTWEEN_1
 	public Hashtable optional;
@@ -1291,6 +1294,10 @@ public class LTDescr {
 				this.onCompleteObject(this.onCompleteParam);
 			}
 		}
+		if (this.onStart != null)
+        {
+            this.onStart();
+        }
 	}
 
 	public LTDescr setFromColor( Color col ){
@@ -1822,7 +1829,20 @@ public class LTDescr {
 		this.onCompleteOnRepeat = isOn;
 		return this;
 	}
-
+	public LTDescr setOnStart(Action onStart) {
+        this.onStart = onStart;
+        return this;
+    }
+    public LTDescr setOnStart(Action<object> onStart) {
+        this.onStartObject = onStart;
+        return this;
+    }
+    public LTDescr setOnStart(Action<object> onStart, object onStartParam) {
+        this.onStartObject = onStart;
+        if (onStartParam != null)
+            this.onStartParam = onStartParam;
+        return this;
+    }
 	/**
 	* Set the onComplete method to be called at the beginning of the tween (it will still be called when it is completed as well)
 	* @method setOnCompleteOnStart
@@ -3486,7 +3506,35 @@ public static LTDescr moveLocal(GameObject gameObject, Vector3[] to, float time)
 
 	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr );
 }
+public static LTDescr move(GameObject gameObject, LTBezierPath to, float time) {
+        descr = options();
 
+        descr.path = to;
+
+
+        return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED, descr);
+    }
+
+public static LTDescr move(GameObject gameObject, LTSpline to, float time) {
+	descr = options();
+	descr.spline = to;
+
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE, descr);
+}
+
+public static LTDescr moveLocal(GameObject gameObject, LTBezierPath to, float time) {
+	descr = options();
+	descr.path = to;
+
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr);
+}
+public static LTDescr moveLocal(GameObject gameObject, LTSpline to, float time) {
+	descr = options();
+	descr.spline = to;
+
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr);
+}
+	
 public static LTDescr moveLocalX(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_LOCAL_X, options() );
 }
