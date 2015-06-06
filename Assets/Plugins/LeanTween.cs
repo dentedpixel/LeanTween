@@ -142,14 +142,6 @@ using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 /**
-	public static float MIN_FREQEUNCY_PERIOD = 0.00001f;
-
-	public static LeanAudioOptions options(){
-		return new LeanAudioOptions();
-	}
-
-			if(f<MIN_FREQEUNCY_PERIOD)
-				f = MIN_FREQEUNCY_PERIOD;
 * Animate GUI Elements by creating this object and passing the *.rect variable to the GUI method<br><br>
 * <strong>Example Javascript: </strong><br>var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br>
 * LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 );<br>
@@ -667,17 +659,24 @@ public class LTSpline {
 		ptsAdj = new Vector3[ precision ];
 		earlierPoint = interp( 0f );
 		int num = 0;
+		for(int i = 0; i < precision; i++){
 			float fract = ((float)(i+1f)) / precision;
+			Vector3 point = interp( fract );
 			float dist = Vector3.Distance(point, earlierPoint);
 			if(dist>=minPrecision){
 				ptsAdj[num] = point;
+
 				earlierPoint = point;
 				// Debug.Log("point:"+point);
 				num++;
-	}
+			}
+		}
+
 		ptsAdjLength = num;
 
 		// Debug.Log("ptsAdjLength:"+ptsAdjLength+" minPrecision:"+minPrecision+" precision:"+precision);
+
+	}
 
 	public Vector3 map( float u ){
 		float t = u * (ptsAdjLength-1);
@@ -695,6 +694,7 @@ public class LTSpline {
 		val = val + (nextVal - val) * diff;
 
 		return val;
+	}
 	
 	public Vector3 interp(float t) {
 		currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
@@ -968,9 +968,6 @@ public class LTDescr {
 	public Action<object> onCompleteObject;
 	public object onCompleteParam;
 	public object onUpdateParam;
-	public Action onStart;
-	public Action<object> onStartObject;
-    public object onStartParam;
 
 	#if LEANTWEEN_1
 	public Hashtable optional;
@@ -1072,10 +1069,6 @@ public class LTDescr {
 		this.onComplete = null;
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
-		this.onStart = null;
-        this.onStartObject = null;
-        this.onStartParam = null;
-		
 		
 		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 		this.rectTransform = null;
@@ -1298,10 +1291,6 @@ public class LTDescr {
 				this.onCompleteObject(this.onCompleteParam);
 			}
 		}
-		if (this.onStart != null)
-        {
-            this.onStart();
-        }
 	}
 
 	public LTDescr setFromColor( Color col ){
@@ -1849,24 +1838,6 @@ public class LTDescr {
 		this.onCompleteOnStart = isOn;
 		return this;
 	}
-	
-	public LTDescr setOnStart(Action onStart)
-    {
-        this.onStart = onStart;
-        return this;
-    }
-    public LTDescr setOnStart(Action<object> onStart)
-    {
-        this.onStartObject = onStart;
-        return this;
-    }
-    public LTDescr setOnStart(Action<object> onStart, object onStartParam)
-    {
-        this.onStartObject = onStart;
-        if (onStartParam != null)
-            this.onStartParam = onStartParam;
-        return this;
-    }
 
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 	public LTDescr setRect( RectTransform rect ){
@@ -2018,11 +1989,6 @@ public static void update() {
 		dtEstimated = Time.realtimeSinceStartup - previousRealTime;
 		if(dtEstimated>0.2f) // a catch put in, when at the start sometimes this number can grow unrealistically large
 			dtEstimated = 0.2f;
-		#else
-		dtEstimated = Time.unscaledDeltaTime;
-		#endif
-
-		
 		previousRealTime = Time.realtimeSinceStartup;
 		#else
 		dtEstimated = Time.unscaledDeltaTime;
@@ -2844,7 +2810,7 @@ public static void cancelAll(bool callComplete){
 * @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
 * LeanTween.cancel( gameObject );
 */
-public static void cancel( GameObject gameObject, bool callComplete = false ){
+public static void cancel( GameObject gameObject ){
 	cancel( gameObject, false);
 }
 public static void cancel( GameObject gameObject, bool callComplete ){
@@ -3521,39 +3487,6 @@ public static LTDescr moveLocal(GameObject gameObject, Vector3[] to, float time)
 	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr );
 }
 
-
-public static LTDescr move(GameObject gameObject, LTBezierPath to, float time)
-    {
-        descr = options();
-        
-            descr.path = to;
-        
-
-        return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED, descr);
-}
-
-public static LTDescr move(GameObject gameObject, LTSpline to, float time)
-{
-	descr = options();
-	descr.spline = to;
-
-	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE, descr);
-}
-
-public static LTDescr moveLocal(GameObject gameObject, LTBezierPath to, float time)
-{
-	descr = options();
-	descr.path = to;        
-
-	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr);
-}
-  public static LTDescr moveLocal(GameObject gameObject, LTSpline to, float time)
-{
-	descr = options();
-	descr.spline = to;
-	
-	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr);
-}
 public static LTDescr moveLocalX(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_LOCAL_X, options() );
 }

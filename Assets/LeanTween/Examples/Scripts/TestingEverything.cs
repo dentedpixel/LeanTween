@@ -46,12 +46,8 @@ public class TestingEverything : MonoBehaviour {
 	private int rotateRepeatAngle;
 
 	void Start () {
-<<<<<<< HEAD
-		LeanTest.expected = 22;
-=======
 		LeanTest.timeout = 30f;
 		LeanTest.expected = 25;
->>>>>>> upstream/master
 
 		LeanTween.init(6 + 1200);
 		// add a listener
@@ -210,21 +206,15 @@ public class TestingEverything : MonoBehaviour {
 			LeanTest.expect( onUpdateWasCalled, "ON UPDATE FIRED" );
 		});
 
-<<<<<<< HEAD
-=======
 		yield return new WaitForSeconds( expectedTime );
 		Time.timeScale = 1f;
 
->>>>>>> upstream/master
 		int ltCount = 0;
 		GameObject[] allGos = FindObjectsOfType(typeof(GameObject)) as GameObject[];
         foreach (GameObject go in allGos) {
             if(go.name == "~LeanTween")
 		     	ltCount++;
         }
-<<<<<<< HEAD
-		LeanTest.debug("RESET CORRECTLY CLEANS UP", ltCount==1 );
-=======
 		LeanTest.expect( ltCount==1, "RESET CORRECTLY CLEANS UP" );
 
 
@@ -296,7 +286,6 @@ public class TestingEverything : MonoBehaviour {
 		}
 
 		LeanTest.expect(inFinalPlace,"AFTER LOTS OF CANCELS");
->>>>>>> upstream/master
 	}
 
 	void rotateRepeatFinished(){
