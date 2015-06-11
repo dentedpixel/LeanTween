@@ -44,10 +44,16 @@ public class TestingEverything : MonoBehaviour {
 	private int groupTweensCnt;
 	private int rotateRepeat;
 	private int rotateRepeatAngle;
+	private GameObject boxNoCollider;
+
+	void Awake(){
+		boxNoCollider = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		Destroy( boxNoCollider.GetComponent( typeof(BoxCollider) ) as Component );
+	}
 
 	void Start () {
-		LeanTest.timeout = 30f;
-		LeanTest.expected = 25;
+		LeanTest.timeout = 45f;
+		LeanTest.expected = 27;
 
 		LeanTween.init(6 + 1200);
 		// add a listener
@@ -81,19 +87,10 @@ public class TestingEverything : MonoBehaviour {
 
 		LeanTween.reset();
 
-		// ping pong
-
-		// rotateAround, Repeat, DestroyOnComplete
-		
-
-		// test all onUpdates and onCompletes are removed when tween is initialized
-
-		// Test LTBezierPath has correct halfway point
 
 		LTSpline cr = new LTSpline( new Vector3[] {new Vector3(-1f,0f,0f), new Vector3(0f,0f,0f), new Vector3(4f,0f,0f), new Vector3(20f,0f,0f), new Vector3(30f,0f,0f)} );
 		cr.place( cube4.transform, 0.5f );
-		// Debug.Log("pos:"+cube4.transform.position);
-		LeanTest.expect( (Vector3.Distance( cube4.transform.position, new Vector3(10f,0f,0f) ) <= 0.7f), "SPLINE POSITIONING", "position is:"+cube4.transform.position+" but should be:(10f,0f,0f)");
+		LeanTest.expect( (Vector3.Distance( cube4.transform.position, new Vector3(10f,0f,0f) ) <= 0.7f), "SPLINE POSITIONING AT HALFWAY", "position is:"+cube4.transform.position+" but should be:(10f,0f,0f)");
 		LeanTween.color(cube4, Color.green, 0.01f);
 
 		StartCoroutine( timeBasedTesting() );
@@ -104,16 +101,34 @@ public class TestingEverything : MonoBehaviour {
 
 		Time.timeScale = 4f;
 
+		// Bezier should end at exact end position not just 99% close to it
+		Vector3[] roundCirc = new Vector3[]{ new Vector3(0f,0f,0f), new Vector3(-9.1f,25.1f,0f), new Vector3(-1.2f,15.9f,0f), new Vector3(-25f,25f,0f), new Vector3(-25f,25f,0f), new Vector3(-50.1f,15.9f,0f), new Vector3(-40.9f,25.1f,0f), new Vector3(-50f,0f,0f), new Vector3(-50f,0f,0f), new Vector3(-40.9f,-25.1f,0f), new Vector3(-50.1f,-15.9f,0f), new Vector3(-25f,-25f,0f), new Vector3(-25f,-25f,0f), new Vector3(0f,-15.9f,0f), new Vector3(-9.1f,-25.1f,0f), new Vector3(0f,0f,0f) };
+		GameObject cubeRound = Instantiate( boxNoCollider );
+		cubeRound.name = "bRound";
+		Vector3 onStartPos = cubeRound.transform.position;
+		LeanTween.moveLocal(cubeRound, roundCirc, 0.5f).setOnComplete( ()=>{
+			LeanTest.expect(cubeRound.transform.position==onStartPos, "BEZIER CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPos+" onEnd:"+cubeRound.transform.position);
+		});
+
+		// Spline should end at exact end position not just 99% close to it
+		Vector3[] roundSpline = new Vector3[]{ new Vector3(0f,0f,0f), new Vector3(0f,0f,0f), new Vector3(2f,0f,0f), new Vector3(0.9f,2f,0f), new Vector3(0f,0f,0f), new Vector3(0f,0f,0f) };
+		GameObject cubeSpline = Instantiate( boxNoCollider );
+		cubeSpline.name = "bSpline";
+		Vector3 onStartPosSpline = cubeSpline.transform.position;
+		LeanTween.moveSplineLocal(cubeSpline, roundSpline, 0.5f).setOnComplete( ()=>{
+			LeanTest.expect(Vector3.Distance(onStartPosSpline, cubeSpline.transform.position) <= 0.01f, "BEZIER CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPosSpline+" onEnd:"+cubeSpline.transform.position+" dist:"+Vector3.Distance(onStartPosSpline, cubeSpline.transform.position));
+		});
+
 		// Groups of tweens testing
 		groupTweens = new LTDescr[ 1200 ];
 		groupGOs = new GameObject[ groupTweens.Length ];
 		groupTweensCnt = 0;
 		int descriptionMatchCount = 0;
 		for(int i = 0; i < groupTweens.Length; i++){
-			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
-			cube.transform.position = new Vector3(0,0,i*3);
+			GameObject cube = Instantiate( boxNoCollider );
 			cube.name = "c"+i;
+			cube.transform.position = new Vector3(0,0,i*3);
+			
 			groupGOs[i] = cube;
 		}
 
@@ -230,8 +245,7 @@ public class TestingEverything : MonoBehaviour {
 		LTDescr[] tweensA = new LTDescr[ cubeCount ];
 		GameObject[] aGOs = new GameObject[ cubeCount ];
 		for(int i = 0; i < aGOs.Length; i++){
-			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
+			GameObject cube = Instantiate( boxNoCollider );
 			cube.transform.position = new Vector3(0,0,i*2f);
 			cube.name = "a"+i;
 			aGOs[i] = cube;
@@ -244,8 +258,7 @@ public class TestingEverything : MonoBehaviour {
 		LTDescr[] tweensB = new LTDescr[ cubeCount ];
 		GameObject[] bGOs = new GameObject[ cubeCount ];
 		for(int i = 0; i < bGOs.Length; i++){
-			GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-			Destroy( cube.GetComponent( typeof(BoxCollider) ) as Component );
+			GameObject cube = Instantiate( boxNoCollider );
 			cube.transform.position = new Vector3(0,0,i*2f);
 			cube.name = "b"+i;
 			bGOs[i] = cube;
