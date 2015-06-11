@@ -624,7 +624,8 @@ public class LTBezierPath {
 */
 [System.Serializable]
 public class LTSpline {
-	public static int SUBDIVIDING_COUNT = 10; // increase for a more accurate constant speed
+	public static int DISTANCE_COUNT = 30; // increase for a more accurate constant speed
+	public static int SUBLINE_COUNT = 50; // increase for a more accurate smoothing of the curves into lines
 
 	public Vector3[] pts;
 	public Vector3[] ptsAdj;
@@ -653,8 +654,8 @@ public class LTSpline {
 			totalDistance += pointDistance;
 		}
 
-		float minPrecision = minSegment / 10f; // number of subdivisions in each segment
-		int precision = (int)(totalDistance / minPrecision) * SUBDIVIDING_COUNT;
+		float minPrecision = minSegment / SUBLINE_COUNT; // number of subdivisions in each segment
+		int precision = (int)Mathf.Ceil(totalDistance / minPrecision) * DISTANCE_COUNT;
 
 		ptsAdj = new Vector3[ precision ];
 		earlierPoint = interp( 0f );
@@ -667,18 +668,26 @@ public class LTSpline {
 				ptsAdj[num] = point;
 
 				earlierPoint = point;
-				// Debug.Log("point:"+point);
+				// Debug.Log("fract:"+fract+" point:"+point);
 				num++;
 			}
 		}
+		// make sure there is a point at the very end
+		/*num++;
+		Vector3 endPoint = interp( 1f );
+		ptsAdj[num] = endPoint;*/
+		// Debug.Log("fract 1f endPoint:"+endPoint);
 
 		ptsAdjLength = num;
+		// Debug.Log("map 1f:"+map(1f)+" end:"+ptsAdj[ ptsAdjLength-1 ]);
 
 		// Debug.Log("ptsAdjLength:"+ptsAdjLength+" minPrecision:"+minPrecision+" precision:"+precision);
 
 	}
 
 	public Vector3 map( float u ){
+		if(u>=1f)
+			return pts[ pts.Length - 2];
 		float t = u * (ptsAdjLength-1);
 		int first = (int)Mathf.Floor( t );
 		int next = (int)Mathf.Ceil( t );
@@ -689,7 +698,7 @@ public class LTSpline {
 		Vector3 nextVal = ptsAdj[ next ];
 		float diff = t - first;
 
-		// Debug.Log("u:"+u+" val:"+val +" nextVal:"+nextVal+" diff:"+diff);
+		// Debug.Log("u:"+u+" val:"+val +" nextVal:"+nextVal+" diff:"+diff+" first:"+first+" next:"+next);
 
 		val = val + (nextVal - val) * diff;
 
@@ -968,6 +977,7 @@ public class LTDescr {
 	public Action<object> onCompleteObject;
 	public object onCompleteParam;
 	public object onUpdateParam;
+	public Action onStart;
 
 	#if LEANTWEEN_1
 	public Hashtable optional;
@@ -1086,6 +1096,10 @@ public class LTDescr {
 		/*if( !this.useEstimatedTime ){
 			this.time = this.time*Time.timeScale;
 		}*/
+
+		if (this.onStart != null){
+            this.onStart();
+        }		 	
 
 		// Initialize From Values
 		switch(this.type){
@@ -1855,6 +1869,11 @@ public class LTDescr {
 		return this;
 	}
 #endif
+
+	public LTDescr setOnStart( Action onStart ){
+        this.onStart = onStart;
+        return this;
+    }
 
 }
 
