@@ -1079,6 +1079,7 @@ public class LTDescr {
 		this.onComplete = null;
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
+		this.onStart = null;
 		
 		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 		this.rectTransform = null;
@@ -1091,11 +1092,6 @@ public class LTDescr {
 	// This method is only for internal use
 	public void init(){
 		this.hasInitiliazed = true;
-
-		// Set time based on current timeScale
-		/*if( !this.useEstimatedTime ){
-			this.time = this.time*Time.timeScale;
-		}*/
 
 		if (this.onStart != null){
             this.onStart();
@@ -1869,7 +1865,18 @@ public class LTDescr {
 		return this;
 	}
 #endif
-
+	
+	/**
+	* Have a method called when the tween starts
+	* @method setOnStart ()
+	* @param {Action<>} onStart:Action<> the method that should be called when the tween is starting ex: tweenStarted( ){ }
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* <i>C#:</i><br>
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnStart( ()=>{ Debug.Log("I started!"); });
+	* <i>Javascript:</i><br>
+	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnStart( function(){ Debug.Log("I started!"); } );
+	*/
 	public LTDescr setOnStart( Action onStart ){
         this.onStart = onStart;
         return this;
