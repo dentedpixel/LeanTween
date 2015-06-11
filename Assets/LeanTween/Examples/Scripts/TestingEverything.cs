@@ -53,7 +53,7 @@ public class TestingEverything : MonoBehaviour {
 
 	void Start () {
 		LeanTest.timeout = 45f;
-		LeanTest.expected = 27;
+		LeanTest.expected = 28;
 
 		LeanTween.init(6 + 1200);
 		// add a listener
@@ -135,11 +135,17 @@ public class TestingEverything : MonoBehaviour {
 		yield return new WaitForEndOfFrame();
 
 		bool hasGroupTweensCheckStarted = false;
+		int setOnStartNum = 0;
 		for(int i = 0; i < groupTweens.Length; i++){
-			groupTweens[i] = LeanTween.move(groupGOs[i], transform.position + Vector3.one*3f, 3f ).setOnComplete( ()=>{
+			groupTweens[i] = LeanTween.move(groupGOs[i], transform.position + Vector3.one*3f, 3f ).setOnStart( ()=>{
+				setOnStartNum++;
+			}).setOnComplete( ()=>{
 				if(hasGroupTweensCheckStarted==false){
 					hasGroupTweensCheckStarted = true;
-					LeanTween.delayedCall(gameObject, 0.1f, groupTweensFinished);
+					LeanTween.delayedCall(gameObject, 0.1f, ()=>{
+						LeanTest.expect( setOnStartNum == groupTweens.Length, "SETONSTART CALLS", "expected:"+groupTweens.Length+" was:"+setOnStartNum);
+						LeanTest.expect( groupTweensCnt==groupTweens.Length, "GROUP FINISH", "expected "+groupTweens.Length+" tweens but got "+groupTweensCnt);
+					});
 				}
 				groupTweensCnt++;
 			});
@@ -165,7 +171,7 @@ public class TestingEverything : MonoBehaviour {
 		rotateRepeat = rotateRepeatAngle = 0;
 		LeanTween.rotateAround(cube3, Vector3.forward, 360f, 0.1f).setRepeat(3).setOnComplete(rotateRepeatFinished).setOnCompleteOnRepeat(true).setDestroyOnComplete(true);
 		yield return new WaitForEndOfFrame();
-		LeanTween.delayedCall(0.1f*8f, rotateRepeatAllFinished);
+		LeanTween.delayedCall(0.1f*8f+1f, rotateRepeatAllFinished);
 
 		int countBeforeCancel = LeanTween.tweensRunning;
 		lt1.cancel( cube1 );
@@ -311,10 +317,6 @@ public class TestingEverything : MonoBehaviour {
 		LeanTest.expect( rotateRepeatAngle==3, "ROTATE AROUND MULTIPLE", "expected 3 times received "+rotateRepeatAngle+" times" );
 		LeanTest.expect( rotateRepeat==3, "ROTATE REPEAT" );
 		LeanTest.expect( cube3==null, "DESTROY ON COMPLETE", "cube3:"+cube3 );
-	}
-
-	void groupTweensFinished(){
-		LeanTest.expect( groupTweensCnt==groupTweens.Length, "GROUP FINISH", "expected "+groupTweens.Length+" tweens but got "+groupTweensCnt);
 	}
 
 	void eventGameObjectCalled( LTEvent e ){
