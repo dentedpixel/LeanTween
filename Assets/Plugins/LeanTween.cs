@@ -3370,6 +3370,20 @@ public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED, descr );
 }
 
+public static LTDescr move(GameObject gameObject, LTBezierPath to, float time) {
+    descr = options();
+    descr.path = to;
+
+    return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED, descr);
+}
+
+public static LTDescr move(GameObject gameObject, LTSpline to, float time) {
+	descr = options();
+	descr.spline = to;
+
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE, descr);
+}
+
 /**
 * Move a GameObject through a set of points
 * 
@@ -3516,6 +3530,19 @@ public static LTDescr moveLocalY(GameObject gameObject, float to, float time){
 
 public static LTDescr moveLocalZ(GameObject gameObject, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.MOVE_LOCAL_Z, options() );
+}
+
+public static LTDescr moveLocal(GameObject gameObject, LTBezierPath to, float time) {
+	descr = options();
+	descr.path = to;
+
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr);
+}
+public static LTDescr moveLocal(GameObject gameObject, LTSpline to, float time) {
+	descr = options();
+	descr.spline = to;
+ 		 
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr);
 }
 
 /**
