@@ -1007,7 +1007,7 @@ public class LTDescr {
 	* @example
 	* LTDescr lt = LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f );<br>
 	* lt.cancel( gameObject );<br><br>
-    * Safest way to cancel:<br>
+    * <strong>Safest/Best way to cancel:</strong><br>
     * int id = LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f ).id;<br>
     * LeanTween.cancel( id );<br>
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
@@ -1416,6 +1416,16 @@ public class LTDescr {
 		return this;
 	}
 
+	/**
+	* Set the end that the GameObject is tweening towards
+	* @method setTo
+	* @param {Vector3} to:Vector3 point at which you want the tween to reach
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LTDescr descr = LeanTween.move( cube, Vector3.up, new Vector3(1f,3f,0f), 1.0f ).setEase( LeanTweenType.easeInOutBounce );<br>
+	* // Later your want to change your destination or your destiation is constantly moving<br>
+	* descr.setTo( new Vector3(5f,10f,3f); );<br>
+	*/
 	public LTDescr setTo( Vector3 to ){
 		if(this.hasInitiliazed){
 			this.to = to;
@@ -1457,6 +1467,17 @@ public class LTDescr {
 		return this;
 	}
 
+	/**
+	* Set the finish time of the tween
+	* @method setTime
+	* @param {float} finishTime:float the length of time in seconds you wish the tween to complete in
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* int tweenId = LeanTween.moveX(gameObject, 5f, 2.0f ).id;<br>
+	* // Later<br>
+	* LTDescr descr = description( tweenId );<br>
+	* descr.setTime( 1f );<br>
+	*/
 	public LTDescr setTime( float time ){
 		this.time = time;
 		return this;
@@ -2359,7 +2380,7 @@ public static void update() {
 			    			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 			    			}
 			    			#endif
-		    				if(tween.onUpdateColor!=null){
+		    				if(dt!=0f && tween.onUpdateColor!=null){
 								tween.onUpdateColor(toColor);
 							}
 						}
@@ -2372,7 +2393,7 @@ public static void update() {
                         else if (tweenAction == TweenAction.CANVAS_COLOR){
                             Color toColor = tweenColor(tween, val);
                             tween.uiImage.color = toColor;
-                            if (tween.onUpdateColor != null){
+                            if (dt!=0f && tween.onUpdateColor != null){
                                 tween.onUpdateColor(toColor);
                             }
                         }
@@ -2382,7 +2403,7 @@ public static void update() {
                         else if (tweenAction == TweenAction.TEXT_COLOR){
                             Color toColor = tweenColor(tween, val);
                             tween.uiText.color = toColor;
-                        	if (tween.onUpdateColor != null){
+                        	if (dt!=0f && tween.onUpdateColor != null){
                                 tween.onUpdateColor(toColor);
                             }
                             if(trans.childCount>0){
@@ -2548,7 +2569,7 @@ public static void update() {
 					}
 					// Debug.Log("tween.delay:"+tween.delay + " tween.passed:"+tween.passed + " tweenAction:"+tweenAction + " to:"+newVect+" axis:"+tween.axis);
 
-					if(tween.hasUpdateCallback){
+					if(dt!=0f && tween.hasUpdateCallback){
 						if(tween.onUpdateFloat!=null){
 							tween.onUpdateFloat(val);
 						}
@@ -2906,7 +2927,6 @@ public static void cancel( int uniqueId ){
 	}
 }
 
-// Deprecated
 public static LTDescr description( int uniqueId ){
 	int backId = uniqueId & 0xFFFF;
 	int backCounter = uniqueId >> 16;

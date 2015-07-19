@@ -36,7 +36,7 @@ public class TestingPunch : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
-            LeanTween.scale(this.gameObject, Vector3.one*3f, 1.0f).setEase(LeanTweenType.easeSpring);            
+            LeanTween.scale(this.gameObject, Vector3.one*3f, 1.0f).setEase(LeanTweenType.punch);            
             print("scale punch!");
         }
  
