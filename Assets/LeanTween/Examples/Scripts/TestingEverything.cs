@@ -53,7 +53,7 @@ public class TestingEverything : MonoBehaviour {
 
 	void Start () {
 		LeanTest.timeout = 45f;
-		LeanTest.expected = 28;
+		LeanTest.expected = 29;
 
 		LeanTween.init(6 + 1200);
 		// add a listener
@@ -101,9 +101,14 @@ public class TestingEverything : MonoBehaviour {
 
 		Time.timeScale = 4f;
 
+		int pauseCount = 0;
+		LTDescr pausedDescr = LeanTween.value( gameObject, 0f, 1f, 1f).setOnUpdate( ( float val )=>{
+			pauseCount++;
+		}).pause();
+
 		// Bezier should end at exact end position not just 99% close to it
 		Vector3[] roundCirc = new Vector3[]{ new Vector3(0f,0f,0f), new Vector3(-9.1f,25.1f,0f), new Vector3(-1.2f,15.9f,0f), new Vector3(-25f,25f,0f), new Vector3(-25f,25f,0f), new Vector3(-50.1f,15.9f,0f), new Vector3(-40.9f,25.1f,0f), new Vector3(-50f,0f,0f), new Vector3(-50f,0f,0f), new Vector3(-40.9f,-25.1f,0f), new Vector3(-50.1f,-15.9f,0f), new Vector3(-25f,-25f,0f), new Vector3(-25f,-25f,0f), new Vector3(0f,-15.9f,0f), new Vector3(-9.1f,-25.1f,0f), new Vector3(0f,0f,0f) };
-		GameObject cubeRound = Instantiate( boxNoCollider );
+		GameObject cubeRound = Instantiate( boxNoCollider ) as GameObject;
 		cubeRound.name = "bRound";
 		Vector3 onStartPos = cubeRound.transform.position;
 		LeanTween.moveLocal(cubeRound, roundCirc, 0.5f).setOnComplete( ()=>{
@@ -112,7 +117,7 @@ public class TestingEverything : MonoBehaviour {
 
 		// Spline should end at exact end position not just 99% close to it
 		Vector3[] roundSpline = new Vector3[]{ new Vector3(0f,0f,0f), new Vector3(0f,0f,0f), new Vector3(2f,0f,0f), new Vector3(0.9f,2f,0f), new Vector3(0f,0f,0f), new Vector3(0f,0f,0f) };
-		GameObject cubeSpline = Instantiate( boxNoCollider );
+		GameObject cubeSpline = Instantiate( boxNoCollider ) as GameObject;
 		cubeSpline.name = "bSpline";
 		Vector3 onStartPosSpline = cubeSpline.transform.position;
 		LeanTween.moveSplineLocal(cubeSpline, roundSpline, 0.5f).setOnComplete( ()=>{
@@ -125,7 +130,7 @@ public class TestingEverything : MonoBehaviour {
 		groupTweensCnt = 0;
 		int descriptionMatchCount = 0;
 		for(int i = 0; i < groupTweens.Length; i++){
-			GameObject cube = Instantiate( boxNoCollider );
+			GameObject cube = Instantiate( boxNoCollider ) as GameObject;
 			cube.name = "c"+i;
 			cube.transform.position = new Vector3(0,0,i*3);
 			
@@ -210,6 +215,8 @@ public class TestingEverything : MonoBehaviour {
 		LeanTest.expect( LeanTween.isTweening(cube1)==false, "CANCEL TWEEN LTDESCR" );
 		LeanTest.expect( LeanTween.isTweening(cube2)==false, "CANCEL TWEEN LEANTWEEN" );
 
+		LeanTest.expect( pauseCount==0, "ON UPDATE NOT CALLED DURING PAUSE", "expect pause count of 0, but got "+pauseCount);
+
 		yield return new WaitForEndOfFrame();
 		Time.timeScale = 0.25f;
 		float tweenTime = 0.2f;
@@ -251,7 +258,7 @@ public class TestingEverything : MonoBehaviour {
 		LTDescr[] tweensA = new LTDescr[ cubeCount ];
 		GameObject[] aGOs = new GameObject[ cubeCount ];
 		for(int i = 0; i < aGOs.Length; i++){
-			GameObject cube = Instantiate( boxNoCollider );
+			GameObject cube = Instantiate( boxNoCollider ) as GameObject;
 			cube.transform.position = new Vector3(0,0,i*2f);
 			cube.name = "a"+i;
 			aGOs[i] = cube;
@@ -264,7 +271,7 @@ public class TestingEverything : MonoBehaviour {
 		LTDescr[] tweensB = new LTDescr[ cubeCount ];
 		GameObject[] bGOs = new GameObject[ cubeCount ];
 		for(int i = 0; i < bGOs.Length; i++){
-			GameObject cube = Instantiate( boxNoCollider );
+			GameObject cube = Instantiate( boxNoCollider ) as GameObject;
 			cube.transform.position = new Vector3(0,0,i*2f);
 			cube.name = "b"+i;
 			bGOs[i] = cube;
