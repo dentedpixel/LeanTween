@@ -882,6 +882,9 @@ public enum TweenAction{
 	CALLBACK_COLOR,
     TEXT_COLOR,
 	CANVAS_COLOR,
+	CANVAS_MOVE_X,
+	CANVAS_MOVE_Y,
+	CANVAS_MOVE_Z,
 	CALLBACK,
 	MOVE,
 	MOVE_LOCAL,
@@ -1278,6 +1281,12 @@ public class LTDescr {
                 break;
 			case TweenAction.CANVAS_MOVE:
 				this.from = this.rectTransform.anchoredPosition3D; break;
+			case TweenAction.CANVAS_MOVE_X:
+				this.from.x = this.rectTransform.anchoredPosition3D.x; break;
+			case TweenAction.CANVAS_MOVE_Y:
+				this.from.x = this.rectTransform.anchoredPosition3D.y; break;
+			case TweenAction.CANVAS_MOVE_Z:
+				this.from.x = this.rectTransform.anchoredPosition3D.z; break;
 			case TweenAction.CANVAS_ROTATEAROUND:
 			case TweenAction.CANVAS_ROTATEAROUND_LOCAL:
 				this.lastVal = 0.0f;
@@ -2439,7 +2448,16 @@ public static void update() {
 							int frame = (int)Mathf.Round( val );
 							// Debug.Log("frame:"+frame+" val:"+val);
 							tween.uiImage.sprite = tween.sprites[ frame ];
-					    }
+					    }else if(tweenAction==TweenAction.CANVAS_MOVE_X){
+					    	Vector3 current = tween.rectTransform.anchoredPosition3D;
+							tween.rectTransform.anchoredPosition3D = new Vector3(val, current.y, current.z);
+						}else if(tweenAction==TweenAction.CANVAS_MOVE_Y){
+					    	Vector3 current = tween.rectTransform.anchoredPosition3D;
+							tween.rectTransform.anchoredPosition3D = new Vector3(current.x, val, current.z);
+						}else if(tweenAction==TweenAction.CANVAS_MOVE_Z){
+					    	Vector3 current = tween.rectTransform.anchoredPosition3D;
+							tween.rectTransform.anchoredPosition3D = new Vector3(current.x, current.y, val);
+						}
 						#endif
 						
 					}else if(tweenAction>=TweenAction.MOVE){
@@ -3994,6 +4012,48 @@ public static LTDescr delayedSound( GameObject gameObject, AudioClip audio, Vect
 */
 public static LTDescr move(RectTransform rectTrans, Vector3 to, float time){
 	return pushNewTween( rectTrans.gameObject, to, time, TweenAction.CANVAS_MOVE, options().setRect( rectTrans ) );
+}
+
+/**
+* Move a RectTransform object affecting x-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+* 
+* @method LeanTween.moveX (RectTransform)
+* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+* @param {float} to:float The final x location with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.moveX(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);
+*/
+public static LTDescr moveX(RectTransform rectTrans, float to, float time){
+	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_MOVE_X, options().setRect( rectTrans ) );
+}
+
+/**
+* Move a RectTransform object affecting y-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+* 
+* @method LeanTween.moveY (RectTransform)
+* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+* @param {float} to:float The final y location with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.moveY(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);
+*/
+public static LTDescr moveY(RectTransform rectTrans, float to, float time){
+	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_MOVE_Y, options().setRect( rectTrans ) );
+}
+
+/**
+* Move a RectTransform object affecting z-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+* 
+* @method LeanTween.moveZ (RectTransform)
+* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+* @param {float} to:float The final x location with which to tween to
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.moveZ(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);
+*/
+public static LTDescr moveZ(RectTransform rectTrans, float to, float time){
+	return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, TweenAction.CANVAS_MOVE_Z, options().setRect( rectTrans ) );
 }
 
 /**

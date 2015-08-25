@@ -102,7 +102,7 @@ public class TestingEverything : MonoBehaviour {
 		Time.timeScale = 4f;
 
 		int pauseCount = 0;
-		LTDescr pausedDescr = LeanTween.value( gameObject, 0f, 1f, 1f).setOnUpdate( ( float val )=>{
+		LeanTween.value( gameObject, 0f, 1f, 1f).setOnUpdate( ( float val )=>{
 			pauseCount++;
 		}).pause();
 
