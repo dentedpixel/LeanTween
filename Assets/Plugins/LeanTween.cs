@@ -3887,7 +3887,7 @@ public static LTDescr value(GameObject gameObject, Color from, Color to, float t
 }
 
 /**
-* Tween any particular value, it does not need to be tied to any particular type or GameObject
+* Tween any float value, it does not need to be tied to any particular type or GameObject
 * 
 * @method LeanTween.value (float)
 * @param {GameObject} GameObject gameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
@@ -3912,6 +3912,34 @@ public static LTDescr value(GameObject gameObject, Color from, Color to, float t
 
 public static LTDescr value(GameObject gameObject, Action<float> callOnUpdate, float from, float to, float time){
 	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate) );
+}
+
+/**
+* Tweens any float value, it does not need to be tied to any particular type or GameObject
+* 
+* @method LeanTween.value (float)
+* @param {GameObject} GameObject gameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
+* @param {Action<float, float>} callOnUpdateRatio:Action<float,float> Function that's called every Update frame. It must accept two float values ex: function updateValue( float val, float ratio){ }
+* @param {float} float from The original value to start the tween from
+* @param {float} float to The value to end the tween on
+* @param {float} float time The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Example Javascript: </i><br>
+* LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br>
+* function updateValueExampleCallback( val:float, ratio:float ){<br>
+* &nbsp; Debug.Log("tweened value:"+val+" percent complete:"+ratio*100);<br>
+* }<br>
+* <br>
+* <i>Example C#: </i> <br>
+* LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br>
+* void updateValueExampleCallback( float val, float ratio ){<br>
+* &nbsp; Debug.Log("tweened value:"+val+" percent complete:"+ratio*100);<br>
+* }<br>
+*/
+
+public static LTDescr value(GameObject gameObject, Action<float, float> callOnUpdateRatio, float from, float to, float time){
+    return pushNewTween(gameObject, new Vector3(to, 0, 0), time, TweenAction.CALLBACK, options().setTo(new Vector3(to, 0, 0)).setFrom(new Vector3(from, 0, 0)).setOnUpdateRatio(callOnUpdateRatio));
 }
 
 /**
