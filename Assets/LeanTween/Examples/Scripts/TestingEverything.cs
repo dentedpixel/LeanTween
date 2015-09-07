@@ -63,6 +63,10 @@ public class TestingEverything : MonoBehaviour {
 
 		LeanTest.expect(LeanTween.isTweening(cube1) == false, "OBJECT NOT TWEEENING AT BEGINNING" );
 
+		LeanTween.scaleX( cube4, 2f, 0f).setOnComplete( ()=>{
+			LeanTest.expect( cube4.transform.localScale.x == 2f, "TWEENED WITH ZERO TIME" );
+		});
+
 		// dispatch event that is received
 		LeanTween.dispatchEvent(0);
 		LeanTest.expect( eventGameObjectWasCalled, "EVENT GAMEOBJECT RECEIVED" );

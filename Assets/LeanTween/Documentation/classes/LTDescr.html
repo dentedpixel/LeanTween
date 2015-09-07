@@ -29,7 +29,7 @@
                 <h1><a href="http://dentedpixel.com/developer-diary/leantween-speed-comparison-to-itween/"><img src="http://s3.amazonaws.com/dentedpixel.com/LeanTween/leantween-logo.png" title=""></a></h1> <div style="position:absolute; left:146px; top:90px;">- Developed by <a href="http://www.dentedpixel.com">Dented Pixel</a></div>
         </div>
         <div class="yui3-u-1-4 version">
-            <em style="margin-top:2px">API Docs for: LeanTween 2.29</em><br>
+            <em style="margin-top:2px">API Docs for: LeanTween 2.30</em><br>
             <table id="support">
                 <tr>
                 <td>
@@ -130,7 +130,7 @@
                         
                         
                                 <div class="foundat">
-                                    Defined in: <a href="../files/LeanTween.cs.html#l911"><code>LeanTween.cs:911</code></a>
+                                    Defined in: <a href="../files/LeanTween.cs.html#l200"><code>LeanTween.cs:200</code></a>
                                 </div>
                         
                         
@@ -149,16 +149,19 @@
                         You can pass the optional parameters in any order, and chain on as many as you wish.<br>
                         You can also <strong>pass parameters at a later time</strong> by saving a reference to what is returned.<br>
                         <br>
-                        &nbsp;&nbsp;<i>Example:</i><br>
-                        &nbsp;&nbsp;<a href="LTDescr.html">LTDescr</a> d = LeanTween.moveX(gameObject, 1f, 1f);<br>
-                        &nbsp;&nbsp;&nbsp; ...later set some parameters<br>
-                        &nbsp;&nbsp;d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br>
+                        Retrieve a <strong>unique id</strong> for the tween by using the &quot;id&quot; property. You can pass this to LeanTween.pause, LeanTween.resume, LeanTween.cancel, LeanTween.isTweening methods<br>
                         <br>
-                        Retrieve a <strong>unique id</strong> for the tween by using the &quot;id&quot; property. You can pass this to LeanTween.pause, LeanTween.resume, LeanTween.cancel methods<br>
-                        <br>
-                        &nbsp;&nbsp;<i>Example:</i><br>
-                        &nbsp;&nbsp;int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br>
-                        &nbsp;&nbsp;LeanTween.pause( id );<br></p>
+                        &nbsp;&nbsp;<h4>Example:</h4>
+                        &nbsp;&nbsp;int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br></p>
+                        <p><div style="color:gray">&nbsp;&nbsp;// pause a specific tween</div>
+                        &nbsp;&nbsp;LeanTween.pause(id);<br></p>
+                        <p><div style="color:gray">&nbsp;&nbsp;// resume later</div>
+                        &nbsp;&nbsp;LeanTween.resume(id);<br></p>
+                        <p><div style="color:gray">&nbsp;&nbsp;// check if it is tweening before kicking of a new tween</div>
+                        &nbsp;&nbsp;if( LeanTween.isTweening( id ) ){<br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;    LeanTween.cancel( id );<br>
+                        &nbsp;&nbsp; &nbsp;&nbsp;    LeanTween.moveZ(gameObject, 10f, 3f);<br>
+                        &nbsp;&nbsp;}<br></p>
                         
                         </div>
                         
@@ -179,7 +182,7 @@
                                     <div class="meta">
                                                 <p>
                                                 Defined in
-                                        <a href="../files/LeanTween.cs.html#l911"><code>LeanTween.cs:911</code></a>
+                                        <a href="../files/LeanTween.cs.html#l200"><code>LeanTween.cs:200</code></a>
                                         </p>
                                 
                                 
@@ -360,7 +363,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1005"><code>LeanTween.cs:1005</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l298"><code>LeanTween.cs:298</code></a>
                                                     </p>
                                             
                                             
@@ -431,7 +434,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1322"><code>LeanTween.cs:1322</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l615"><code>LeanTween.cs:615</code></a>
                                                     </p>
                                             
                                             
@@ -473,7 +476,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1337"><code>LeanTween.cs:1337</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l630"><code>LeanTween.cs:630</code></a>
                                                     </p>
                                             
                                             
@@ -521,7 +524,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1353"><code>LeanTween.cs:1353</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l646"><code>LeanTween.cs:646</code></a>
                                                     </p>
                                             
                                             
@@ -594,7 +597,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1372"><code>LeanTween.cs:1372</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l665"><code>LeanTween.cs:665</code></a>
                                                     </p>
                                             
                                             
@@ -669,7 +672,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1415"><code>LeanTween.cs:1415</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l708"><code>LeanTween.cs:708</code></a>
                                                     </p>
                                             
                                             
@@ -742,7 +745,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1524"><code>LeanTween.cs:1524</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l817"><code>LeanTween.cs:817</code></a>
                                                     </p>
                                             
                                             
@@ -815,7 +818,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1569"><code>LeanTween.cs:1569</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l862"><code>LeanTween.cs:862</code></a>
                                                     </p>
                                             
                                             
@@ -882,7 +885,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1560"><code>LeanTween.cs:1560</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l853"><code>LeanTween.cs:853</code></a>
                                                     </p>
                                             
                                             
@@ -938,7 +941,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1588"><code>LeanTween.cs:1588</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l881"><code>LeanTween.cs:881</code></a>
                                                     </p>
                                             
                                             
@@ -1011,7 +1014,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1608"><code>LeanTween.cs:1608</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l901"><code>LeanTween.cs:901</code></a>
                                                     </p>
                                             
                                             
@@ -1084,7 +1087,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1621"><code>LeanTween.cs:1621</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l914"><code>LeanTween.cs:914</code></a>
                                                     </p>
                                             
                                             
@@ -1157,7 +1160,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1853"><code>LeanTween.cs:1853</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1146"><code>LeanTween.cs:1146</code></a>
                                                     </p>
                                             
                                             
@@ -1230,7 +1233,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1866"><code>LeanTween.cs:1866</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1159"><code>LeanTween.cs:1159</code></a>
                                                     </p>
                                             
                                             
@@ -1306,7 +1309,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1640"><code>LeanTween.cs:1640</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l933"><code>LeanTween.cs:933</code></a>
                                                     </p>
                                             
                                             
@@ -1383,7 +1386,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1899"><code>LeanTween.cs:1899</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1192"><code>LeanTween.cs:1192</code></a>
                                                     </p>
                                             
                                             
@@ -1459,7 +1462,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1658"><code>LeanTween.cs:1658</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l951"><code>LeanTween.cs:951</code></a>
                                                     </p>
                                             
                                             
@@ -1534,7 +1537,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1709"><code>LeanTween.cs:1709</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1002"><code>LeanTween.cs:1002</code></a>
                                                     </p>
                                             
                                             
@@ -1609,7 +1612,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1743"><code>LeanTween.cs:1743</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1036"><code>LeanTween.cs:1036</code></a>
                                                     </p>
                                             
                                             
@@ -1684,7 +1687,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1763"><code>LeanTween.cs:1763</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1056"><code>LeanTween.cs:1056</code></a>
                                                     </p>
                                             
                                             
@@ -1759,7 +1762,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1778"><code>LeanTween.cs:1778</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1071"><code>LeanTween.cs:1071</code></a>
                                                     </p>
                                             
                                             
@@ -1832,7 +1835,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1797"><code>LeanTween.cs:1797</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1090"><code>LeanTween.cs:1090</code></a>
                                                     </p>
                                             
                                             
@@ -1905,7 +1908,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1389"><code>LeanTween.cs:1389</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l682"><code>LeanTween.cs:682</code></a>
                                                     </p>
                                             
                                             
@@ -1978,7 +1981,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1402"><code>LeanTween.cs:1402</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l695"><code>LeanTween.cs:695</code></a>
                                                     </p>
                                             
                                             
@@ -2051,7 +2054,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1830"><code>LeanTween.cs:1830</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1123"><code>LeanTween.cs:1123</code></a>
                                                     </p>
                                             
                                             
@@ -2124,7 +2127,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1495"><code>LeanTween.cs:1495</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l788"><code>LeanTween.cs:788</code></a>
                                                     </p>
                                             
                                             
@@ -2197,7 +2200,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1479"><code>LeanTween.cs:1479</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l772"><code>LeanTween.cs:772</code></a>
                                                     </p>
                                             
                                             
@@ -2273,7 +2276,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1428"><code>LeanTween.cs:1428</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l721"><code>LeanTween.cs:721</code></a>
                                                     </p>
                                             
                                             
@@ -2348,7 +2351,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1537"><code>LeanTween.cs:1537</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l830"><code>LeanTween.cs:830</code></a>
                                                     </p>
                                             
                                             

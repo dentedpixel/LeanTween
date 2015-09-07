@@ -29,7 +29,7 @@
                 <h1><a href="http://dentedpixel.com/developer-diary/leantween-speed-comparison-to-itween/"><img src="http://s3.amazonaws.com/dentedpixel.com/LeanTween/leantween-logo.png" title=""></a></h1> <div style="position:absolute; left:146px; top:90px;">- Developed by <a href="http://www.dentedpixel.com">Dented Pixel</a></div>
         </div>
         <div class="yui3-u-1-4 version">
-            <em style="margin-top:2px">API Docs for: LeanTween 2.29</em><br>
+            <em style="margin-top:2px">API Docs for: LeanTween 2.30</em><br>
             <table id="support">
                 <tr>
                 <td>
@@ -130,7 +130,7 @@
                         
                         
                                 <div class="foundat">
-                                    Defined in: <a href="../files/LeanTween.cs.html#l1917"><code>LeanTween.cs:1917</code></a>
+                                    Defined in: <a href="../files/LeanTween.cs.html#l1210"><code>LeanTween.cs:1210</code></a>
                                 </div>
                         
                         
@@ -145,13 +145,15 @@
                         <i>Example:</i><br>
                         LeanTween.moveX( gameObject, 1f, 1f).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInQuad ).setDelay(1f);<br>
                         <br>
-                        You can pass the optional parameters in any order, and chain on as many as you wish.<br>
-                        You can also pass parameters at a later time by saving a reference to what is returned.<br>
-                        <br>
-                        <i>Example:</i><br>
-                        <a href="LTDescr.html">LTDescr</a> d = LeanTween.moveX(gameObject, 1f, 1f);<br>
-                         &nbsp; ...later set some parameters<br>
-                        d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br></p>
+                        You can pass the optional parameters in any order, and chain on as many as you wish!<br><br>
+                        You can also modify this tween later, just save the unique id of the tween.<br></p>
+                        <p><h4>Example:</h4>
+                        int id = LeanTween.moveX(gameObject, 1f, 1f).id;<br>
+                        <a href="LTDescr.html">LTDescr</a> d = LeanTween.<a href="#method_LeanTween.descr">descr</a>( id );<br><br>
+                        if(d!=null){ <span style="color:gray">// if the tween has already finished it will return null</span><br>
+                        <span style="color:gray">&nbsp;&nbsp; // change some parameters</span><br>
+                        &nbsp;&nbsp; d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br>
+                        }</p>
                         
                         </div>
                         
@@ -217,6 +219,10 @@
                                                     </li>
                                                     <li class="index-item method">
                                                         <a href="#method_LeanTween.color">LeanTween.color</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
+                                                        <a href="#method_LeanTween.descr">LeanTween.descr</a>
                         
                                                     </li>
                                                     <li class="index-item method">
@@ -480,7 +486,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4969"><code>LeanTween.cs:4969</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l4279"><code>LeanTween.cs:4279</code></a>
                                                     </p>
                                             
                                             
@@ -574,7 +580,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3252"><code>LeanTween.cs:3252</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2562"><code>LeanTween.cs:2562</code></a>
                                                     </p>
                                             
                                             
@@ -675,7 +681,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3267"><code>LeanTween.cs:3267</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2577"><code>LeanTween.cs:2577</code></a>
                                                     </p>
                                             
                                             
@@ -776,7 +782,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4117"><code>LeanTween.cs:4117</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3427"><code>LeanTween.cs:3427</code></a>
                                                     </p>
                                             
                                             
@@ -877,7 +883,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4131"><code>LeanTween.cs:4131</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3441"><code>LeanTween.cs:3441</code></a>
                                                     </p>
                                             
                                             
@@ -978,7 +984,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3301"><code>LeanTween.cs:3301</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2611"><code>LeanTween.cs:2611</code></a>
                                                     </p>
                                             
                                             
@@ -1053,6 +1059,9 @@
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
                                                             <li class="arg">
+                                                                    <code>ltRect:LTRect</code>
+                                                            </li>
+                                                            <li class="arg">
                                                                     <code>id:int</code>
                                                             </li>
                                                         </ul><span class="paren">)</span>
@@ -1068,7 +1077,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2929"><code>LeanTween.cs:2929</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2206"><code>LeanTween.cs:2206</code></a>
                                                     </p>
                                             
                                             
@@ -1085,8 +1094,19 @@
                                             
                                                         <ul class="params-list">
                                                             <li class="param">
+                                                                    <code class="param-name">ltRect:LTRect</code>
+                                                                    <span class="type"><a href="../classes/LTRect.html" class="crosslink">LTRect</a></span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>LTRect object whose tweens you want to cancel</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
                                                                     <code class="param-name">id:int</code>
-                                                                    <span class="type">Int</span>
+                                                                    <span class="type">Float</span>
                                             
                                             
                                                                 <div class="param-description">
@@ -1099,15 +1119,6 @@
                                                     </div>
                                             
                                             
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p> int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
-                                            LeanTween.cancel( id );</p>
-                                            
-                                                        </div>
-                                                    </div>
                                             </div>
                                             <div id="method_LeanTween.cancel" class="method item">
                                                 <h3 class="name"><code>LeanTween.cancel</code></h3>
@@ -1133,7 +1144,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2869"><code>LeanTween.cs:2869</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2164"><code>LeanTween.cs:2164</code></a>
                                                     </p>
                                             
                                             
@@ -1191,73 +1202,6 @@
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
                                                             <li class="arg">
-                                                                    <code>ltRect:LTRect</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>id:int</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2911"><code>LeanTween.cs:2911</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Cancel a specific tween with the provided id</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">ltRect:LTRect</code>
-                                                                    <span class="type"><a href="../classes/LTRect.html" class="crosslink">LTRect</a></span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>LTRect object whose tweens you want to cancel</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">id:int</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>unique id that represents that tween</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                            
-                                            </div>
-                                            <div id="method_LeanTween.cancel" class="method item">
-                                                <h3 class="name"><code>LeanTween.cancel</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
                                                                     <code>gameObject:GameObject</code>
                                                             </li>
                                                             <li class="arg">
@@ -1276,7 +1220,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2893"><code>LeanTween.cs:2893</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2188"><code>LeanTween.cs:2188</code></a>
                                                     </p>
                                             
                                             
@@ -1319,6 +1263,68 @@
                                             
                                             
                                             </div>
+                                            <div id="method_LeanTween.cancel" class="method item">
+                                                <h3 class="name"><code>LeanTween.cancel</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>id:int</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l2224"><code>LeanTween.cs:2224</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Cancel a specific tween with the provided id</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">id:int</code>
+                                                                    <span class="type">Int</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>unique id that represents that tween</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p> int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
+                                            LeanTween.cancel( id );</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
                                             <div id="method_LeanTween.cancelAll" class="method item">
                                                 <h3 class="name"><code>LeanTween.cancelAll</code></h3>
                                             
@@ -1340,7 +1346,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2849"><code>LeanTween.cs:2849</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2144"><code>LeanTween.cs:2144</code></a>
                                                     </p>
                                             
                                             
@@ -1411,7 +1417,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3320"><code>LeanTween.cs:3320</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2630"><code>LeanTween.cs:2630</code></a>
                                                     </p>
                                             
                                             
@@ -1482,6 +1488,71 @@
                                                         </div>
                                                     </div>
                                             </div>
+                                            <div id="method_LeanTween.descr" class="method item">
+                                                <h3 class="name"><code>LeanTween.descr</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>id:int</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l2243"><code>LeanTween.cs:2243</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Retrieve a tweens LTDescr object to modify</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">id:int</code>
+                                                                    <span class="type">Int</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>unique id that represents that tween</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p> int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).setOnComplete( oldMethod ).id; <br><br></p>
+                                            <p><div style="color:gray">// later I want decide I want to change onComplete method </div>
+                                            LTDescr descr = LeanTween.descr( id );<br>
+                                            if(descr!=null) <span style="color:gray">// if the tween has already finished it will come back null</span><br>
+                                            &nbsp;&nbsp;descr.setOnComplete( newMethod );<br></p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
                                             <div id="method_LeanTween.dispatchEvent" class="method item">
                                                 <h3 class="name"><code>LeanTween.dispatchEvent</code></h3>
                                             
@@ -1503,7 +1574,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l5045"><code>LeanTween.cs:5045</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l4355"><code>LeanTween.cs:4355</code></a>
                                                     </p>
                                             
                                             
@@ -1567,7 +1638,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l5056"><code>LeanTween.cs:5056</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l4366"><code>LeanTween.cs:4366</code></a>
                                                     </p>
                                             
                                             
@@ -1643,7 +1714,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1983"><code>LeanTween.cs:1983</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1278"><code>LeanTween.cs:1278</code></a>
                                                     </p>
                                             
                                             
@@ -1704,7 +1775,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3105"><code>LeanTween.cs:3105</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2415"><code>LeanTween.cs:2415</code></a>
                                                     </p>
                                             
                                             
@@ -1742,6 +1813,59 @@
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
                                                             <li class="arg">
+                                                                    <code>gameObject:GameObject</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l2372"><code>LeanTween.cs:2372</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Test whether or not a tween is active on a GameObject</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">gameObject:GameObject</code>
+                                                                    <span class="type">GameObject</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>GameObject that you want to test if it is tweening</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                            
+                                            </div>
+                                            <div id="method_LeanTween.isTweening" class="method item">
+                                                <h3 class="name"><code>LeanTween.isTweening</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
                                                                     <code>id:int</code>
                                                             </li>
                                                         </ul><span class="paren">)</span>
@@ -1757,7 +1881,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3084"><code>LeanTween.cs:3084</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2394"><code>LeanTween.cs:2394</code></a>
                                                     </p>
                                             
                                             
@@ -1799,59 +1923,6 @@
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanTween.isTweening" class="method item">
-                                                <h3 class="name"><code>LeanTween.isTweening</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>gameObject:GameObject</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3062"><code>LeanTween.cs:3062</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Test whether or not a tween is active on a GameObject</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">gameObject:GameObject</code>
-                                                                    <span class="type">GameObject</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>GameObject that you want to test if it is tweening</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                            
-                                            </div>
                                             <div id="method_LeanTween.move" class="method item">
                                                 <h3 class="name"><code>LeanTween.move</code></h3>
                                             
@@ -1882,7 +1953,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3394"><code>LeanTween.cs:3394</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2704"><code>LeanTween.cs:2704</code></a>
                                                     </p>
                                             
                                             
@@ -1986,7 +2057,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3376"><code>LeanTween.cs:3376</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2686"><code>LeanTween.cs:2686</code></a>
                                                     </p>
                                             
                                             
@@ -2087,7 +2158,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3474"><code>LeanTween.cs:3474</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2784"><code>LeanTween.cs:2784</code></a>
                                                     </p>
                                             
                                             
@@ -2180,7 +2251,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4003"><code>LeanTween.cs:4003</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3313"><code>LeanTween.cs:3313</code></a>
                                                     </p>
                                             
                                             
@@ -2281,7 +2352,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3544"><code>LeanTween.cs:3544</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2854"><code>LeanTween.cs:2854</code></a>
                                                     </p>
                                             
                                             
@@ -2388,7 +2459,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3530"><code>LeanTween.cs:3530</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2840"><code>LeanTween.cs:2840</code></a>
                                                     </p>
                                             
                                             
@@ -2492,7 +2563,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3432"><code>LeanTween.cs:3432</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2742"><code>LeanTween.cs:2742</code></a>
                                                     </p>
                                             
                                             
@@ -2596,7 +2667,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3453"><code>LeanTween.cs:3453</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2763"><code>LeanTween.cs:2763</code></a>
                                                     </p>
                                             
                                             
@@ -2700,7 +2771,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3491"><code>LeanTween.cs:3491</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2801"><code>LeanTween.cs:2801</code></a>
                                                     </p>
                                             
                                             
@@ -2793,7 +2864,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4017"><code>LeanTween.cs:4017</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3327"><code>LeanTween.cs:3327</code></a>
                                                     </p>
                                             
                                             
@@ -2894,7 +2965,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3504"><code>LeanTween.cs:3504</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2814"><code>LeanTween.cs:2814</code></a>
                                                     </p>
                                             
                                             
@@ -2987,7 +3058,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4031"><code>LeanTween.cs:4031</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3341"><code>LeanTween.cs:3341</code></a>
                                                     </p>
                                             
                                             
@@ -3088,7 +3159,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3517"><code>LeanTween.cs:3517</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2827"><code>LeanTween.cs:2827</code></a>
                                                     </p>
                                             
                                             
@@ -3181,7 +3252,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4045"><code>LeanTween.cs:4045</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3355"><code>LeanTween.cs:3355</code></a>
                                                     </p>
                                             
                                             
@@ -3273,7 +3344,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2966"><code>LeanTween.cs:2966</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2276"><code>LeanTween.cs:2276</code></a>
                                                     </p>
                                             
                                             
@@ -3337,7 +3408,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2985"><code>LeanTween.cs:2985</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2295"><code>LeanTween.cs:2295</code></a>
                                                     </p>
                                             
                                             
@@ -3384,7 +3455,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3000"><code>LeanTween.cs:3000</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2310"><code>LeanTween.cs:2310</code></a>
                                                     </p>
                                             
                                             
@@ -3426,7 +3497,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3235"><code>LeanTween.cs:3235</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2545"><code>LeanTween.cs:2545</code></a>
                                                     </p>
                                             
                                             
@@ -3513,7 +3584,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l5018"><code>LeanTween.cs:5018</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l4328"><code>LeanTween.cs:4328</code></a>
                                                     </p>
                                             
                                             
@@ -3598,7 +3669,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3048"><code>LeanTween.cs:3048</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2358"><code>LeanTween.cs:2358</code></a>
                                                     </p>
                                             
                                             
@@ -3651,7 +3722,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3029"><code>LeanTween.cs:3029</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2339"><code>LeanTween.cs:2339</code></a>
                                                     </p>
                                             
                                             
@@ -3709,7 +3780,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3012"><code>LeanTween.cs:3012</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2322"><code>LeanTween.cs:2322</code></a>
                                                     </p>
                                             
                                             
@@ -3754,7 +3825,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3593"><code>LeanTween.cs:3593</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2903"><code>LeanTween.cs:2903</code></a>
                                                     </p>
                                             
                                             
@@ -3858,7 +3929,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3608"><code>LeanTween.cs:3608</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2918"><code>LeanTween.cs:2918</code></a>
                                                     </p>
                                             
                                             
@@ -3972,7 +4043,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4059"><code>LeanTween.cs:4059</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3369"><code>LeanTween.cs:3369</code></a>
                                                     </p>
                                             
                                             
@@ -4076,7 +4147,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3678"><code>LeanTween.cs:3678</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2988"><code>LeanTween.cs:2988</code></a>
                                                     </p>
                                             
                                             
@@ -4192,7 +4263,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4073"><code>LeanTween.cs:4073</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3383"><code>LeanTween.cs:3383</code></a>
                                                     </p>
                                             
                                             
@@ -4307,7 +4378,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3695"><code>LeanTween.cs:3695</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3005"><code>LeanTween.cs:3005</code></a>
                                                     </p>
                                             
                                             
@@ -4423,7 +4494,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4088"><code>LeanTween.cs:4088</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3398"><code>LeanTween.cs:3398</code></a>
                                                     </p>
                                             
                                             
@@ -4535,7 +4606,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3626"><code>LeanTween.cs:3626</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2936"><code>LeanTween.cs:2936</code></a>
                                                     </p>
                                             
                                             
@@ -4628,7 +4699,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3639"><code>LeanTween.cs:3639</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2949"><code>LeanTween.cs:2949</code></a>
                                                     </p>
                                             
                                             
@@ -4721,7 +4792,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3652"><code>LeanTween.cs:3652</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2962"><code>LeanTween.cs:2962</code></a>
                                                     </p>
                                             
                                             
@@ -4814,7 +4885,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3665"><code>LeanTween.cs:3665</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2975"><code>LeanTween.cs:2975</code></a>
                                                     </p>
                                             
                                             
@@ -4907,7 +4978,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3712"><code>LeanTween.cs:3712</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3022"><code>LeanTween.cs:3022</code></a>
                                                     </p>
                                             
                                             
@@ -5000,7 +5071,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3725"><code>LeanTween.cs:3725</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3035"><code>LeanTween.cs:3035</code></a>
                                                     </p>
                                             
                                             
@@ -5113,7 +5184,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4103"><code>LeanTween.cs:4103</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3413"><code>LeanTween.cs:3413</code></a>
                                                     </p>
                                             
                                             
@@ -5214,7 +5285,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3752"><code>LeanTween.cs:3752</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3062"><code>LeanTween.cs:3062</code></a>
                                                     </p>
                                             
                                             
@@ -5307,7 +5378,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3765"><code>LeanTween.cs:3765</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3075"><code>LeanTween.cs:3075</code></a>
                                                     </p>
                                             
                                             
@@ -5400,7 +5471,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3778"><code>LeanTween.cs:3778</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3088"><code>LeanTween.cs:3088</code></a>
                                                     </p>
                                             
                                             
@@ -5493,7 +5564,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3285"><code>LeanTween.cs:3285</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2595"><code>LeanTween.cs:2595</code></a>
                                                     </p>
                                             
                                             
@@ -5594,7 +5665,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3336"><code>LeanTween.cs:3336</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2646"><code>LeanTween.cs:2646</code></a>
                                                     </p>
                                             
                                             
@@ -5671,129 +5742,6 @@
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
                                                             <li class="arg">
-                                                                    <code>gameObject:GameObject</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>from:Color</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>to:Color</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>time:float</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3863"><code>LeanTween.cs:3863</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Tween any particular value (Color)</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">gameObject:GameObject</code>
-                                                                    <span class="type">GameObject</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>Gameobject that you wish to attach the tween to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">from:Color</code>
-                                                                    <span class="type">Color</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The original value to start the tween from</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">to:Color</code>
-                                                                    <span class="type">Color</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The final Color with which to tween to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">time:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The time to complete the tween in</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
-                                                                <p>LTDescr an object that distinguishes the tween</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p><i>Example Javascript: </i><br>
-                                            LeanTween.value( gameObject, Color.red, Color.yellow, 5f).setOnUpdate( function( val:Color ){ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
-                                            } );<br>
-                                            <br>
-                                            <i>Example C#: </i> <br>
-                                            LeanTween.value( gameObject, Color.red, Color.yellow, 5f).setOnUpdate( (Color val)=&gt;{ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
-                                            } );<br></p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_LeanTween.value (Color)" class="method item">
-                                                <h3 class="name"><code>LeanTween.value (Color)</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
                                                                     <code>GameObject</code>
                                                             </li>
                                                             <li class="arg">
@@ -5824,7 +5772,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3917"><code>LeanTween.cs:3917</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3227"><code>LeanTween.cs:3227</code></a>
                                                     </p>
                                             
                                             
@@ -5927,8 +5875,8 @@
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanTween.value (float)" class="method item">
-                                                <h3 class="name"><code>LeanTween.value (float)</code></h3>
+                                            <div id="method_LeanTween.value (Color)" class="method item">
+                                                <h3 class="name"><code>LeanTween.value (Color)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -5936,10 +5884,10 @@
                                                                     <code>gameObject:GameObject</code>
                                                             </li>
                                                             <li class="arg">
-                                                                    <code>from:float</code>
+                                                                    <code>from:Color</code>
                                                             </li>
                                                             <li class="arg">
-                                                                    <code>to:float</code>
+                                                                    <code>to:Color</code>
                                                             </li>
                                                             <li class="arg">
                                                                     <code>time:float</code>
@@ -5960,7 +5908,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3791"><code>LeanTween.cs:3791</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3173"><code>LeanTween.cs:3173</code></a>
                                                     </p>
                                             
                                             
@@ -5968,7 +5916,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Tween any particular value (float)</p>
+                                                    <p>Tween any particular value (Color)</p>
                                             
                                                 </div>
                                             
@@ -5988,8 +5936,8 @@
                                             
                                                             </li>
                                                             <li class="param">
-                                                                    <code class="param-name">from:float</code>
-                                                                    <span class="type">Float</span>
+                                                                    <code class="param-name">from:Color</code>
+                                                                    <span class="type">Color</span>
                                             
                                             
                                                                 <div class="param-description">
@@ -5999,12 +5947,12 @@
                                             
                                                             </li>
                                                             <li class="param">
-                                                                    <code class="param-name">to:float</code>
-                                                                    <span class="type">Vector3</span>
+                                                                    <code class="param-name">to:Color</code>
+                                                                    <span class="type">Color</span>
                                             
                                             
                                                                 <div class="param-description">
-                                                                    <p>The final float with which to tween to</p>
+                                                                    <p>The final Color with which to tween to</p>
                                             
                                                                 </div>
                                             
@@ -6038,12 +5986,12 @@
                                             
                                                         <div class="example-content">
                                                             <p><i>Example Javascript: </i><br>
-                                            LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( function( val:float ){ <br>
+                                            LeanTween.value( gameObject, Color.red, Color.yellow, 5f).setOnUpdate( function( val:Color ){ <br>
                                             &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br>
                                             <br>
                                             <i>Example C#: </i> <br>
-                                            LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( (float val)=&gt;{ <br>
+                                            LeanTween.value( gameObject, Color.red, Color.yellow, 5f).setOnUpdate( (Color val)=&gt;{ <br>
                                             &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br></p>
                                             
@@ -6086,7 +6034,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3889"><code>LeanTween.cs:3889</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3199"><code>LeanTween.cs:3199</code></a>
                                                     </p>
                                             
                                             
@@ -6189,6 +6137,129 @@
                                                         </div>
                                                     </div>
                                             </div>
+                                            <div id="method_LeanTween.value (float)" class="method item">
+                                                <h3 class="name"><code>LeanTween.value (float)</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>gameObject:GameObject</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>from:float</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>to:float</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>time:float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l3101"><code>LeanTween.cs:3101</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Tween any particular value (float)</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">gameObject:GameObject</code>
+                                                                    <span class="type">GameObject</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>Gameobject that you wish to attach the tween to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">from:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The original value to start the tween from</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">to:float</code>
+                                                                    <span class="type">Vector3</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The final float with which to tween to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">time:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The time to complete the tween in</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p><i>Example Javascript: </i><br>
+                                            LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( function( val:float ){ <br>
+                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                            } );<br>
+                                            <br>
+                                            <i>Example C#: </i> <br>
+                                            LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( (float val)=&gt;{ <br>
+                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                            } );<br></p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
                                             <div id="method_LeanTween.value (float,object)" class="method item">
                                                 <h3 class="name"><code>LeanTween.value (float,object)</code></h3>
                                             
@@ -6225,7 +6296,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3976"><code>LeanTween.cs:3976</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3286"><code>LeanTween.cs:3286</code></a>
                                                     </p>
                                             
                                             
@@ -6319,9 +6390,6 @@
                                                                     <code>gameObject:GameObject</code>
                                                             </li>
                                                             <li class="arg">
-                                                                    <code>callOnUpdate:Action&lt;Vector2&gt;</code>
-                                                            </li>
-                                                            <li class="arg">
                                                                     <code>from:Vector2</code>
                                                             </li>
                                                             <li class="arg">
@@ -6346,125 +6414,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3946"><code>LeanTween.cs:3946</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Tween any particular value (Vector2), this could be used to tween an arbitrary value like offset property</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">gameObject:GameObject</code>
-                                                                    <span class="type">GameObject</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>Gameobject that you wish to attach the tween to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">callOnUpdate:Action&lt;Vector2&gt;</code>
-                                                                    <span class="type">Action<Vector2></span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( Vector3 val ){ }</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">from:Vector2</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The original value to start the tween from</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">to:Vector2</code>
-                                                                    <span class="type">Vector2</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The final Vector3 with which to tween to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">time:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The time to complete the tween in</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
-                                                                <p>LTDescr an object that distinguishes the tween</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
-                                            </div>
-                                            <div id="method_LeanTween.value (Vector2)" class="method item">
-                                                <h3 class="name"><code>LeanTween.value (Vector2)</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>gameObject:GameObject</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>from:Vector2</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>to:Vector2</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>time:float</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3815"><code>LeanTween.cs:3815</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3125"><code>LeanTween.cs:3125</code></a>
                                                     </p>
                                             
                                             
@@ -6554,6 +6504,248 @@
                                                         </div>
                                                     </div>
                                             </div>
+                                            <div id="method_LeanTween.value (Vector2)" class="method item">
+                                                <h3 class="name"><code>LeanTween.value (Vector2)</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>gameObject:GameObject</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>callOnUpdate:Action&lt;Vector2&gt;</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>from:Vector2</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>to:Vector2</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>time:float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l3256"><code>LeanTween.cs:3256</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Tween any particular value (Vector2), this could be used to tween an arbitrary value like offset property</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">gameObject:GameObject</code>
+                                                                    <span class="type">GameObject</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>Gameobject that you wish to attach the tween to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">callOnUpdate:Action&lt;Vector2&gt;</code>
+                                                                    <span class="type">Action<Vector2></span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( Vector3 val ){ }</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">from:Vector2</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The original value to start the tween from</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">to:Vector2</code>
+                                                                    <span class="type">Vector2</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The final Vector3 with which to tween to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">time:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The time to complete the tween in</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                            </div>
+                                            <div id="method_LeanTween.value (Vector3)" class="method item">
+                                                <h3 class="name"><code>LeanTween.value (Vector3)</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>gameObject:GameObject</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>callOnUpdate:Action&lt;Vector3&gt;</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>from:Vector3</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>to:Vector3</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>time:float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l3271"><code>LeanTween.cs:3271</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Tween any particular value (Vector3), this could be used to tween an arbitrary property that uses a Vector</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">gameObject:GameObject</code>
+                                                                    <span class="type">GameObject</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>Gameobject that you wish to attach the tween to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">callOnUpdate:Action&lt;Vector3&gt;</code>
+                                                                    <span class="type">Action<Vector3></span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( Vector3 val ){ }</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">from:Vector3</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The original value to start the tween from</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">to:Vector3</code>
+                                                                    <span class="type">Vector3</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The final Vector3 with which to tween to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">time:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The time to complete the tween in</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                            </div>
                                             <div id="method_LeanTween.value (Vector3)" class="method item">
                                                 <h3 class="name"><code>LeanTween.value (Vector3)</code></h3>
                                             
@@ -6587,7 +6779,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3839"><code>LeanTween.cs:3839</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3149"><code>LeanTween.cs:3149</code></a>
                                                     </p>
                                             
                                             
@@ -6676,127 +6868,6 @@
                                             
                                                         </div>
                                                     </div>
-                                            </div>
-                                            <div id="method_LeanTween.value (Vector3)" class="method item">
-                                                <h3 class="name"><code>LeanTween.value (Vector3)</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>gameObject:GameObject</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>callOnUpdate:Action&lt;Vector3&gt;</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>from:Vector3</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>to:Vector3</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>time:float</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3961"><code>LeanTween.cs:3961</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Tween any particular value (Vector3), this could be used to tween an arbitrary property that uses a Vector</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">gameObject:GameObject</code>
-                                                                    <span class="type">GameObject</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>Gameobject that you wish to attach the tween to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">callOnUpdate:Action&lt;Vector3&gt;</code>
-                                                                    <span class="type">Action<Vector3></span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The function that is called on every Update frame, this function needs to accept a float value ex: function updateValue( Vector3 val ){ }</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">from:Vector3</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The original value to start the tween from</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">to:Vector3</code>
-                                                                    <span class="type">Vector3</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The final Vector3 with which to tween to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">time:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The time to complete the tween in</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
-                                                                <p>LTDescr an object that distinguishes the tween</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
                                             </div>
                                     </div>
                         
