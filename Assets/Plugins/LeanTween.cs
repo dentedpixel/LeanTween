@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.29 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.30 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -209,16 +209,15 @@ public enum LeanTweenType{
 * You can pass the optional parameters in any order, and chain on as many as you wish.<br>
 * You can also <strong>pass parameters at a later time</strong> by saving a reference to what is returned.<br>
 * <br>
-* Retrieve a <strong>unique id</strong> for the tween by using the "id" property. You can pass this to LeanTween.pause, LeanTween.resume, LeanTween.cancel methods<br>
+* Retrieve a <strong>unique id</strong> for the tween by using the "id" property. You can pass this to LeanTween.pause, LeanTween.resume, LeanTween.cancel, LeanTween.isTweening methods<br>
 * <br>
 * &nbsp;&nbsp;<h4>Example:</h4>
 * &nbsp;&nbsp;int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br>
-* &nbsp;&nbsp;<div style="color:gray">// pause a specific tween</div>
+* <div style="color:gray">&nbsp;&nbsp;// pause a specific tween</div>
 * &nbsp;&nbsp;LeanTween.pause(id);<br>
-* &nbsp;&nbsp;<div style="color:gray">// resume later</div>
+* <div style="color:gray">&nbsp;&nbsp;// resume later</div>
 * &nbsp;&nbsp;LeanTween.resume(id);<br>
-* &nbsp;&nbsp;<br>
-* &nbsp;&nbsp;<div style="color:gray">// check if it is tweening before kicking of a new tween</div>
+* <div style="color:gray">&nbsp;&nbsp;// check if it is tweening before kicking of a new tween</div>
 * &nbsp;&nbsp;if( LeanTween.isTweening( id ) ){<br>
 * &nbsp;&nbsp; &nbsp;&nbsp;	LeanTween.cancel( id );<br>
 * &nbsp;&nbsp; &nbsp;&nbsp;	LeanTween.moveZ(gameObject, 10f, 3f);<br>
@@ -1216,13 +1215,15 @@ public class LTDescr {
 * <i>Example:</i><br>
 * LeanTween.moveX( gameObject, 1f, 1f).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInQuad ).setDelay(1f);<br>
 * <br>
-* You can pass the optional parameters in any order, and chain on as many as you wish.<br>
-* You can also pass parameters at a later time by saving a reference to what is returned.<br>
-* <br>
-* <i>Example:</i><br>
-* <a href="LTDescr.html">LTDescr</a> d = LeanTween.moveX(gameObject, 1f, 1f);<br>
-*  &nbsp; ...later set some parameters<br>
-* d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br>
+* You can pass the optional parameters in any order, and chain on as many as you wish!<br><br>
+* You can also modify this tween later, just save the unique id of the tween.<br>
+* <h4>Example:</h4>
+* int id = LeanTween.moveX(gameObject, 1f, 1f).id;<br>
+* <a href="LTDescr.html">LTDescr</a> d = LeanTween.<a href="#method_LeanTween.descr">descr</a>( id );<br><br>
+* if(d!=null){ <span style="color:gray">// if the tween has already finished it will return null</span><br>
+* <span style="color:gray">&nbsp;&nbsp; // change some parameters</span><br>
+* &nbsp;&nbsp; d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br>
+* }
 *
 * @class LeanTween
 */
@@ -2144,8 +2145,7 @@ public static float closestRot( float from, float to ){
 * Cancels all tweens 
 * 
 * @method LeanTween.cancelAll
-* @param {callComplete} callComplete:bool if true, then the onComplete event will be
-*                                         fired if it exists
+* @param {bool} callComplete:bool if true, then the all onComplets will run before canceling
 * @example LeanTween.cancelAll(true); <br>
 */
 public static void cancelAll(bool callComplete){
@@ -2165,7 +2165,7 @@ public static void cancelAll(bool callComplete){
 * 
 * @method LeanTween.cancel
 * @param {GameObject} gameObject:GameObject gameObject whose tweens you wish to cancel
-* @param {bool} callOnComplete:IF true,then any complete actions will also be called
+* @param {bool} callOnComplete:bool (optional) whether to call the onComplete method before canceling
 * @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
 * LeanTween.cancel( gameObject );
 */
@@ -2225,21 +2225,39 @@ public static void cancel( LTRect ltRect, int uniqueId ){
 * 
 * @method LeanTween.cancel
 * @param {int} id:int unique id that represents that tween
+* @param {bool} callComplete:int (optional) whether to call the onComplete method before canceling
 * @example int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
 * LeanTween.cancel( id );
 */
 public static void cancel( int uniqueId ){
+	cancel( uniqueId, false);
+}
+public static void cancel( int uniqueId, bool callComplete ){
 	if(uniqueId>=0){
 		init();
 		int backId = uniqueId & 0xFFFF;
 		int backCounter = uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-		if(tweens[backId].hasInitiliazed && tweens[backId].counter==backCounter)
+		if(tweens[backId].hasInitiliazed && tweens[backId].counter==backCounter){
+			if(callComplete && tweens[backId].onComplete != null)
+                tweens[backId].onComplete();
 			removeTween((int)backId);
+		}
 	}
 }
 
-public static LTDescr description( int uniqueId ){
+/**
+* Retrieve a tweens LTDescr object to modify
+* 
+* @method LeanTween.descr
+* @param {int} id:int unique id that represents that tween
+* @example int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).setOnComplete( oldMethod ).id; <br><br>
+* <div style="color:gray">// later I want decide I want to change onComplete method </div>
+* LTDescr descr = LeanTween.descr( id );<br>
+* if(descr!=null) <span style="color:gray">// if the tween has already finished it will come back null</span><br>
+* &nbsp;&nbsp;descr.setOnComplete( newMethod );<br>
+*/
+public static LTDescr descr( int uniqueId ){
 	int backId = uniqueId & 0xFFFF;
 	int backCounter = uniqueId >> 16;
 
@@ -2250,6 +2268,10 @@ public static LTDescr description( int uniqueId ){
 			return tweens[i];
 	}
 	return null;
+}
+
+public static LTDescr description( int uniqueId ){
+	return descr( uniqueId );
 }
 
 [System.Obsolete("Use 'pause( id )' instead")]
@@ -2509,7 +2531,7 @@ public static GameObject tweenEmpty{
 }
 
 public static int startSearch = 0;
-public static LTDescr descr;
+public static LTDescr d;
 
 private static LTDescr pushNewTween( GameObject gameObject, Vector3 to, float time, TweenAction tweenAction, LTDescr tween ){
 	init(maxTweens);
@@ -2700,27 +2722,27 @@ public static LTDescr move(GameObject gameObject, Vector2 to, float time){
 * LeanTween.move(gameObject, new Vector3[]{new Vector3(0f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);;<br>
 */	
 public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
-	descr = options();
-	if(descr.path==null)
-		descr.path = new LTBezierPath( to );
+	d = options();
+	if(d.path==null)
+		d.path = new LTBezierPath( to );
 	else 
-		descr.path.setPoints( to );
+		d.path.setPoints( to );
 
-	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED, descr );
+	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED, d );
 }
 
 public static LTDescr move(GameObject gameObject, LTBezierPath to, float time) {
-    descr = options();
-    descr.path = to;
+    d = options();
+    d.path = to;
 
-    return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED, descr);
+    return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED, d);
 }
 
 public static LTDescr move(GameObject gameObject, LTSpline to, float time) {
-	descr = options();
-	descr.spline = to;
+	d = options();
+	d.spline = to;
 
-	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE, descr);
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE, d);
 }
 
 /**
@@ -2738,10 +2760,10 @@ public static LTDescr move(GameObject gameObject, LTSpline to, float time) {
 * LeanTween.moveSpline(gameObject, new Vector3[]{new Vector3(0f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 */
 public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time){
-	descr = options();
-	descr.spline = new LTSpline( to );
+	d = options();
+	d.spline = new LTSpline( to );
 
-	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE, descr );
+	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE, d );
 }
 
 /**
@@ -2759,10 +2781,10 @@ public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time
 * LeanTween.moveSpline(gameObject, new Vector3[]{new Vector3(0f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,1f)}, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 */
 public static LTDescr moveSplineLocal(GameObject gameObject, Vector3[] to, float time){
-	descr = options();
-	descr.spline = new LTSpline( to );
+	d = options();
+	d.spline = new LTSpline( to );
 
-	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr );
+	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, d );
 }
 
 /**
@@ -2850,13 +2872,13 @@ public static LTDescr moveLocal(GameObject gameObject, Vector3 to, float time){
 * LeanTween.move(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 */
 public static LTDescr moveLocal(GameObject gameObject, Vector3[] to, float time){
-	descr = options();
-	if(descr.path==null)
-		descr.path = new LTBezierPath( to );
+	d = options();
+	if(d.path==null)
+		d.path = new LTBezierPath( to );
 	else 
-		descr.path.setPoints( to );
+		d.path.setPoints( to );
 
-	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr );
+	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED_LOCAL, d );
 }
 
 public static LTDescr moveLocalX(GameObject gameObject, float to, float time){
@@ -2872,16 +2894,16 @@ public static LTDescr moveLocalZ(GameObject gameObject, float to, float time){
 }
 
 public static LTDescr moveLocal(GameObject gameObject, LTBezierPath to, float time) {
-	descr = options();
-	descr.path = to;
+	d = options();
+	d.path = to;
 
-	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED_LOCAL, descr);
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED_LOCAL, d);
 }
 public static LTDescr moveLocal(GameObject gameObject, LTSpline to, float time) {
-	descr = options();
-	descr.spline = to;
+	d = options();
+	d.spline = to;
  		 
-	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, descr);
+	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, d);
 }
 
 /**
