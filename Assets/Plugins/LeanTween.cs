@@ -295,19 +295,7 @@ public class LTDescr {
 
 	}
 
-	/**
-	* Cancel a tween
-	* 
-	* @method cancel
-	* @param {GameObject} gameObject:GameObject that the tween is acting upon (this is needed for safety checks)
-	* @example
-	* LTDescr lt = LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f );<br>
-	* lt.cancel( gameObject );<br><br>
-    * <strong>Safest/Best way to cancel:</strong><br>
-    * int id = LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f ).id;<br>
-    * LeanTween.cancel( id );<br>
-	* @return {LTDescr} LTDescr an object that distinguishes the tween
-	*/
+	[System.Obsolete("Use 'LeanTween.cancel( id )' instead")]
 	public LTDescr cancel( GameObject gameObject ){
 		// Debug.Log("canceling id:"+this._id+" this.uniqueId:"+this.uniqueId+" go:"+this.trans.gameObject);
 		if(gameObject==this.trans.gameObject)
@@ -315,12 +303,12 @@ public class LTDescr {
 		return this;
 	}
 
-	[System.Obsolete("Use 'cancel( gameObject )' instead")]
+	/*[System.Obsolete("Use 'LeanTween.cancel( id )' instead")]
 	public LTDescr cancel(){
 		// Debug.Log("canceling id:"+this._id+" this.uniqueId:"+this.uniqueId+" go:"+this.trans.gameObject);
 		LeanTween.removeTween((int)this._id);
 		return this;
-	}
+	}*/
 
 	public int uniqueId{
 		get{ 
@@ -1240,7 +1228,7 @@ private static int tweenMaxSearch = -1;
 private static int maxTweens = 400;
 private static int frameRendered= -1;
 private static GameObject _tweenEmpty;
-private static float dtEstimated;
+private static float dtEstimated = -1f;
 public static float dtManual;
 #if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5
 private static float previousRealTime;
@@ -1342,7 +1330,12 @@ public static void update() {
 			dtEstimated = 0.2f;
 		previousRealTime = Time.realtimeSinceStartup;
 		#else
-		dtEstimated = Time.unscaledDeltaTime;
+		if(dtEstimated<0f){
+			dtEstimated = 0f;
+		}else{
+			dtEstimated = Time.unscaledDeltaTime;
+		}
+		// Debug.Log("Time.unscaledDeltaTime:"+Time.unscaledDeltaTime);
 		#endif
 
 		dtActual = Time.deltaTime;
@@ -2145,7 +2138,7 @@ public static float closestRot( float from, float to ){
 * Cancels all tweens 
 * 
 * @method LeanTween.cancelAll
-* @param {bool} callComplete:bool if true, then the all onComplets will run before canceling
+* @param {bool} callComplete:bool (optional) if true, then the all onComplets will run before canceling
 * @example LeanTween.cancelAll(true); <br>
 */
 public static void cancelAll(bool callComplete){
@@ -2172,25 +2165,18 @@ public static void cancelAll(bool callComplete){
 public static void cancel( GameObject gameObject ){
 	cancel( gameObject, false);
 }
-public static void cancel( GameObject gameObject, bool callComplete ){
+public static void cancel( GameObject gameObject, bool callOnComplete ){
 	init();
 	Transform trans = gameObject.transform;
 	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].trans==trans){
-            if (callComplete && tweens[i].onComplete != null)
+            if (callOnComplete && tweens[i].onComplete != null)
                 tweens[i].onComplete();
 			removeTween(i);
 		}
 	}
 }
 
-/**
-* Cancel a specific tween with the provided id
-* 
-* @method LeanTween.cancel
-* @param {GameObject} gameObject:GameObject gameObject whose tweens you want to cancel
-* @param {int} id:int unique id that represents that tween
-*/
 public static void cancel( GameObject gameObject, int uniqueId ){
 	if(uniqueId>=0){
 		init();
@@ -2202,13 +2188,6 @@ public static void cancel( GameObject gameObject, int uniqueId ){
 	}
 }
 
-/**
-* Cancel a specific tween with the provided id
-* 
-* @method LeanTween.cancel
-* @param {LTRect} ltRect:LTRect LTRect object whose tweens you want to cancel
-* @param {float} id:int unique id that represents that tween
-*/
 public static void cancel( LTRect ltRect, int uniqueId ){
 	if(uniqueId>=0){
 		init();
@@ -2225,21 +2204,21 @@ public static void cancel( LTRect ltRect, int uniqueId ){
 * 
 * @method LeanTween.cancel
 * @param {int} id:int unique id that represents that tween
-* @param {bool} callComplete:int (optional) whether to call the onComplete method before canceling
+* @param {bool} callOnComplete:int (optional) whether to call the onComplete method before canceling
 * @example int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
 * LeanTween.cancel( id );
 */
 public static void cancel( int uniqueId ){
 	cancel( uniqueId, false);
 }
-public static void cancel( int uniqueId, bool callComplete ){
+public static void cancel( int uniqueId, bool callOnComplete ){
 	if(uniqueId>=0){
 		init();
 		int backId = uniqueId & 0xFFFF;
 		int backCounter = uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-		if(tweens[backId].hasInitiliazed && tweens[backId].counter==backCounter){
-			if(callComplete && tweens[backId].onComplete != null)
+		if(tweens[backId].counter==backCounter){
+			if(callOnComplete && tweens[backId].onComplete != null)
                 tweens[backId].onComplete();
 			removeTween((int)backId);
 		}
@@ -2418,12 +2397,6 @@ public static bool isTweening( int uniqueId ){
 	return false;
 }
 
-/**
-* Test whether or not a tween is active on a LTRect
-* 
-* @method LeanTween.isTweening
-* @param {LTRect} ltRect:LTRect LTRect that you want to test if it is tweening
-*/
 public static bool isTweening( LTRect ltRect ){
 	for( int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].ltRect==ltRect)

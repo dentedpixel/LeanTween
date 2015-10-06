@@ -37,7 +37,7 @@ public class GeneralBasics2dCS : MonoBehaviour {
 	GameObject createSpriteDude( string name, Vector3 pos, bool hasParticles = true ){
 		GameObject go = new GameObject(name);
 		SpriteRenderer ren = go.AddComponent<SpriteRenderer>();
-		go.GetComponent<Renderer>().material.color = new Color(0f,181f/255f,1f);
+		go.GetComponent<SpriteRenderer>().color = new Color(0f,181f/255f,1f);
 		ren.sprite = Sprite.Create( dudeTexture, new Rect(0.0f,0.0f,256.0f,256.0f), new Vector2(0.5f,0f), 256f);
 		go.transform.position = pos;
 

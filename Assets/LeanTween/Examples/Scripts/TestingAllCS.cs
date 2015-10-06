@@ -17,7 +17,7 @@ public class TestingAllCS : MonoBehaviour {
 	private bool useEstimatedTime = true;
 	private GameObject ltLogo;
 	private TimingType timingType = TimingType.SteadyNormalTime;
-	private LTDescr descrTimeScaleChange;
+	private int descrTimeScaleChangeId;
 	private Vector3 origin;
 
 	public enum TimingType{
@@ -69,14 +69,13 @@ public class TestingAllCS : MonoBehaviour {
 				Time.timeScale = 0.5f;
 
 			if(timingType==TimingType.VariableTimeScale){
-				descrTimeScaleChange = LeanTween.value( gameObject, 0.01f, 10.0f, 3f).setOnUpdate( (float val)=>{
+				descrTimeScaleChangeId = LeanTween.value( gameObject, 0.01f, 10.0f, 3f).setOnUpdate( (float val)=>{
 					//Debug.Log("timeScale val:"+val);
 					Time.timeScale = val;
-				}).setEase(LeanTweenType.easeInQuad).setUseEstimatedTime(true).setRepeat(-1);
+				}).setEase(LeanTweenType.easeInQuad).setUseEstimatedTime(true).setRepeat(-1).id;
 			}else{
 				Debug.Log("cancel variable time");
-				if(descrTimeScaleChange!=null)
-					descrTimeScaleChange.cancel( gameObject );
+				LeanTween.cancel( descrTimeScaleChangeId );
 			}
 		}
 		gameObject.BroadcastMessage( exampleFunctions[ exampleIter ] );

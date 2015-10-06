@@ -35,7 +35,7 @@ public class TestingEverything : MonoBehaviour {
 
 
 	private bool eventGameObjectWasCalled = false, eventGeneralWasCalled = false;
-	private LTDescr lt1;
+	private int lt1Id;
 	private LTDescr lt2;
 	private LTDescr lt3;
 	private LTDescr lt4;
@@ -45,6 +45,8 @@ public class TestingEverything : MonoBehaviour {
 	private int rotateRepeat;
 	private int rotateRepeatAngle;
 	private GameObject boxNoCollider;
+	private float timeElapsedNormalTimeScale;
+	private float timeElapsedIgnoreTimeScale;
 
 	void Awake(){
 		boxNoCollider = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -53,9 +55,9 @@ public class TestingEverything : MonoBehaviour {
 
 	void Start () {
 		LeanTest.timeout = 45f;
-		LeanTest.expected = 29;
+		LeanTest.expected = 30;
 
-		LeanTween.init(6 + 1200);
+		LeanTween.init(10 + 1200);
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -86,7 +88,7 @@ public class TestingEverything : MonoBehaviour {
 		// remove listener
 		LeanTest.expect( LeanTween.removeListener( 1, eventGeneralCalled), "EVENT ALL REMOVED" );
 
-		lt1 = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f );
+		lt1Id = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f ).id;
 		LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
 
 		LeanTween.reset();
@@ -95,13 +97,31 @@ public class TestingEverything : MonoBehaviour {
 		LTSpline cr = new LTSpline( new Vector3[] {new Vector3(-1f,0f,0f), new Vector3(0f,0f,0f), new Vector3(4f,0f,0f), new Vector3(20f,0f,0f), new Vector3(30f,0f,0f)} );
 		cr.place( cube4.transform, 0.5f );
 		LeanTest.expect( (Vector3.Distance( cube4.transform.position, new Vector3(10f,0f,0f) ) <= 0.7f), "SPLINE POSITIONING AT HALFWAY", "position is:"+cube4.transform.position+" but should be:(10f,0f,0f)");
-		LeanTween.color(cube4, Color.green, 0.01f);
+		LeanTween.color(cube4, Color.green, 0.01f);	
+
+		// OnStart Speed Test for ignoreTimeScale vs normal timeScale
+		GameObject cube = Instantiate( boxNoCollider ) as GameObject;
+		cube.name = "normalTimeScale";
+		float timeElapsedNormal = Time.time;
+		LeanTween.moveX(cube, 5f, 1f).setIgnoreTimeScale( false ).setOnComplete( ()=>{
+			timeElapsedNormalTimeScale = Time.time;
+		});
+
+		cube = Instantiate( boxNoCollider ) as GameObject;
+		cube.name = "ignoreTimeScale";
+		LeanTween.moveX(cube, 5f, 1f).setIgnoreTimeScale( true ).setOnComplete( ()=>{
+			timeElapsedIgnoreTimeScale = Time.time;
+		});
 
 		StartCoroutine( timeBasedTesting() );
 	}
 
 	IEnumerator timeBasedTesting(){
+		yield return new WaitForSeconds(1);
+		
 		yield return new WaitForEndOfFrame();
+
+		LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.07f, "START IGNORE TIMING", "timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
 
 		Time.timeScale = 4f;
 
@@ -128,6 +148,9 @@ public class TestingEverything : MonoBehaviour {
 			LeanTest.expect(Vector3.Distance(onStartPosSpline, cubeSpline.transform.position) <= 0.01f, "BEZIER CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPosSpline+" onEnd:"+cubeSpline.transform.position+" dist:"+Vector3.Distance(onStartPosSpline, cubeSpline.transform.position));
 		});
 
+
+		
+		
 		// Groups of tweens testing
 		groupTweens = new LTDescr[ 1200 ];
 		groupGOs = new GameObject[ groupTweens.Length ];
@@ -183,7 +206,7 @@ public class TestingEverything : MonoBehaviour {
 		LeanTween.delayedCall(0.1f*8f+1f, rotateRepeatAllFinished);
 
 		int countBeforeCancel = LeanTween.tweensRunning;
-		lt1.cancel( cube1 );
+		LeanTween.cancel( lt1Id );
 		LeanTest.expect( countBeforeCancel==LeanTween.tweensRunning, "CANCEL AFTER RESET SHOULD FAIL", "expected "+countBeforeCancel+" but got "+LeanTween.tweensRunning);
 		LeanTween.cancel(cube2);
 
@@ -259,47 +282,47 @@ public class TestingEverything : MonoBehaviour {
 		Time.timeScale = 4f;
 		int cubeCount = 10;
 
-		LTDescr[] tweensA = new LTDescr[ cubeCount ];
+		int[] tweensA = new int[ cubeCount ];
 		GameObject[] aGOs = new GameObject[ cubeCount ];
 		for(int i = 0; i < aGOs.Length; i++){
 			GameObject cube = Instantiate( boxNoCollider ) as GameObject;
 			cube.transform.position = new Vector3(0,0,i*2f);
 			cube.name = "a"+i;
 			aGOs[i] = cube;
-			tweensA[i] = LeanTween.move(cube, cube.transform.position + new Vector3(10f,0,0), 0.5f + 1f * (1.0f/(float)aGOs.Length) );
+			tweensA[i] = LeanTween.move(cube, cube.transform.position + new Vector3(10f,0,0), 0.5f + 1f * (1.0f/(float)aGOs.Length) ).id;
 			LeanTween.color(cube, Color.red, 0.01f);
 		}
 
 		yield return new WaitForSeconds(1.0f);
 
-		LTDescr[] tweensB = new LTDescr[ cubeCount ];
+		int[] tweensB = new int[ cubeCount ];
 		GameObject[] bGOs = new GameObject[ cubeCount ];
 		for(int i = 0; i < bGOs.Length; i++){
 			GameObject cube = Instantiate( boxNoCollider ) as GameObject;
 			cube.transform.position = new Vector3(0,0,i*2f);
 			cube.name = "b"+i;
 			bGOs[i] = cube;
-			tweensB[i] = LeanTween.move(cube, cube.transform.position + new Vector3(10f,0,0), 2f);
+			tweensB[i] = LeanTween.move(cube, cube.transform.position + new Vector3(10f,0,0), 2f).id;
 		}
 
 		for(int i = 0; i < aGOs.Length; i++){
-			tweensA[i].cancel( aGOs[i] );
+			LeanTween.cancel( aGOs[i] );
 			GameObject cube = aGOs[i];
-			tweensA[i] = LeanTween.move(cube, new Vector3(0,0,i*2f), 2f);
+			tweensA[i] = LeanTween.move(cube, new Vector3(0,0,i*2f), 2f).id;
 		}
 
 		yield return new WaitForSeconds(0.5f);
 
 		for(int i = 0; i < aGOs.Length; i++){
-			tweensA[i].cancel( aGOs[i] );
+			LeanTween.cancel( aGOs[i] );
 			GameObject cube = aGOs[i];
-			tweensA[i] = LeanTween.move(cube, new Vector3(0,0,i*2f) + new Vector3(10f,0,0), 2f );
+			tweensA[i] = LeanTween.move(cube, new Vector3(0,0,i*2f) + new Vector3(10f,0,0), 2f ).id;
 		}
 
 		for(int i = 0; i < bGOs.Length; i++){
-			tweensB[i].cancel( bGOs[i] );
+			LeanTween.cancel( bGOs[i] );
 			GameObject cube = bGOs[i];
-			tweensB[i] = LeanTween.move(cube, new Vector3(0,0,i*2f), 2f );
+			tweensB[i] = LeanTween.move(cube, new Vector3(0,0,i*2f), 2f ).id;
 		}
 
 		yield return new WaitForSeconds(2.1f);

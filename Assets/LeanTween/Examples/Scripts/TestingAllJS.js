@@ -1,4 +1,4 @@
-#pragma strict
+ #pragma strict
 
 public var customAnimationCurve:AnimationCurve;
 public var shakeCurve:AnimationCurve;
@@ -71,8 +71,7 @@ function loopTestPingPong(){
 	Debug.Log("loopTestPingPong");
 	cube2 = GameObject.Find("Cube2");
 	cube2.transform.localScale.y = 1.0;
-	pingPongDescr = LeanTween.scaleY( cube2, 4.0, 1.0).setEase(LeanTweenType.easeOutQuad).setLoopPingPong(4).setUseEstimatedTime(useEstimatedTime);
-	Debug.Log("id:"+pingPongDescr.id);
+	pingPongDescrId = LeanTween.scaleY( cube2, 4.0, 1.0).setEase(LeanTweenType.easeOutQuad).setLoopPingPong(4).setUseEstimatedTime(useEstimatedTime).id;
 }
 
 function moveOnACurveExample(){
@@ -171,7 +170,7 @@ function scaleXExample(){
 }
 
 private var moveId:LTDescr;
-private var pingPongDescr:LTDescr;
+private var pingPongDescrId:int;
 
 function loopPause(){
 	moveId.pause();
@@ -182,5 +181,5 @@ function loopResume(){
 }
 
 function loopCancel(){
-	pingPongDescr.cancel( cube2 );
+	LeanTween.cancel( pingPongDescrId );
 }
