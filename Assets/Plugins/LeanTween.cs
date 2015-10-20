@@ -2141,6 +2141,9 @@ public static float closestRot( float from, float to ){
 * @param {bool} callComplete:bool (optional) if true, then the all onComplets will run before canceling
 * @example LeanTween.cancelAll(true); <br>
 */
+public static void cancelAll(){
+	cancelAll(false);
+}
 public static void cancelAll(bool callComplete){
     init();
     for (int i = 0; i <= tweenMaxSearch; i++)
