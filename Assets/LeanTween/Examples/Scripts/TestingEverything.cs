@@ -55,7 +55,7 @@ public class TestingEverything : MonoBehaviour {
 
 	void Start () {
 		LeanTest.timeout = 45f;
-		LeanTest.expected = 30;
+		LeanTest.expected = 31;
 
 		LeanTween.init(10 + 1200);
 		// add a listener
@@ -102,10 +102,13 @@ public class TestingEverything : MonoBehaviour {
 		// OnStart Speed Test for ignoreTimeScale vs normal timeScale
 		GameObject cube = Instantiate( boxNoCollider ) as GameObject;
 		cube.name = "normalTimeScale";
-		float timeElapsedNormal = Time.time;
-		LeanTween.moveX(cube, 5f, 1f).setIgnoreTimeScale( false ).setOnComplete( ()=>{
+		// float timeElapsedNormal = Time.time;
+		LeanTween.moveX(cube, 12f, 1f).setIgnoreTimeScale( false ).setOnComplete( ()=>{
 			timeElapsedNormalTimeScale = Time.time;
 		});
+
+		LTDescr[] descr = LeanTween.descriptions( cube );
+		LeanTest.expect( descr.Length >= 0 && descr[0].to.x == 12f, "WE CAN RETRIEVE A DESCRIPTION");
 
 		cube = Instantiate( boxNoCollider ) as GameObject;
 		cube.name = "ignoreTimeScale";
@@ -121,7 +124,7 @@ public class TestingEverything : MonoBehaviour {
 		
 		yield return new WaitForEndOfFrame();
 
-		LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.07f, "START IGNORE TIMING", "timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
+		LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.07f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
 
 		Time.timeScale = 4f;
 

@@ -1193,6 +1193,13 @@ public class LTDescr {
         return this;
     }
 
+
+    public LTDescr setDirection( float direction ){
+    	if(direction!=1f || direction!=-1f)
+    		Debug.LogWarning("You passed an incorrect value for direction:"+direction+". Direction values can only be -1f or 1f");
+    	this.direction = direction > 0 ? 1f : -1f;
+    	return this;
+    }
 }
 
 /**
@@ -2255,6 +2262,29 @@ public static LTDescr descr( int uniqueId ){
 public static LTDescr description( int uniqueId ){
 	return descr( uniqueId );
 }
+
+/**
+* Retrieve a tweens LTDescr object to modify
+* 
+* @method LeanTween.descriptions
+* @param {GameObject} id:GameObject object whose tween descriptions you want to retrieve
+* @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).setOnComplete( oldMethod ); <br><br>
+* <div style="color:gray">// later I want decide I want to change onComplete method </div>
+* LTDescr[] descr = LeanTween.descriptions( gameObject );<br>
+* if(descr.Length>0) <span style="color:gray">// make sure there is a valid description for this target</span><br>
+* &nbsp;&nbsp;descr[0].setOnComplete( newMethod );<span style="color:gray">// in this case we only ever expect there to be one tween on this object</span><br>
+*/
+public static LTDescr[] descriptions(GameObject gameObject = null) {
+        if (gameObject == null) return null;
+
+        List<LTDescr> descrs = new List<LTDescr>();
+        Transform trans = gameObject.transform;
+        for (int i = 0; i <= tweenMaxSearch; i++) {
+            if (tweens[i].toggle && tweens[i].trans == trans)
+                descrs.Add( tweens[i] );
+        }
+        return descrs.ToArray();
+    }
 
 [System.Obsolete("Use 'pause( id )' instead")]
 public static void pause( GameObject gameObject, int uniqueId ){
