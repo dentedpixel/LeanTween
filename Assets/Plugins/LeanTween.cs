@@ -1193,13 +1193,50 @@ public class LTDescr {
         return this;
     }
 
+    /**
+	* Set the direction of a tween -1f for backwards 1f for forwards (currently only bezier and spline paths are supported)
+	* @method setDirection ()
+	* @param {float} direction:float the direction that the tween should run, -1f for backwards 1f for forwards
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+    * LeanTween.moveSpline(gameObject, new Vector3[]{new Vector3(0f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,0f),new Vector3(1f,0f,1f)}, 1.5f).setDirection(-1f);<br>
+	*/
 
     public LTDescr setDirection( float direction ){
-    	if(direction!=1f || direction!=-1f)
-    		Debug.LogWarning("You passed an incorrect value for direction:"+direction+". Direction values can only be -1f or 1f");
-    	this.direction = direction > 0 ? 1f : -1f;
+    	if(this.direction!=-1f && this.direction!=1f){
+    		Debug.LogWarning("You have passed an incorrect direction of '"+direction+"', direction must be -1f or 1f");
+    		return this;
+    	}
+
+    	if(this.direction!=direction){
+	    	// Debug.Log("reverse path:"+this.path+" spline:"+this.spline);
+	    	if(this.path!=null){
+	    		this.path = new LTBezierPath( LTUtility.reverse( this.path.pts ) );
+			}else if(this.spline!=null){
+				this.spline = new LTSpline( LTUtility.reverse( this.spline.pts ) );
+			}
+		}
+    	
     	return this;
     }
+}
+
+public class LTUtility {
+
+
+	public static Vector3[] reverse( Vector3[] arr ){
+		
+		int k = arr.Length - 1;
+		for(int i=0;i<=(arr.Length/2);i++)
+		{
+		   Vector3 temp = arr[i];
+		   arr[i]=arr[k];
+		   arr[k]=temp;
+		   k--;
+		}
+
+		return arr;
+	}
 }
 
 /**
@@ -2264,7 +2301,7 @@ public static LTDescr description( int uniqueId ){
 }
 
 /**
-* Retrieve a tweens LTDescr object to modify
+* Retrieve a tweens LTDescr object(s) to modify
 * 
 * @method LeanTween.descriptions
 * @param {GameObject} id:GameObject object whose tween descriptions you want to retrieve

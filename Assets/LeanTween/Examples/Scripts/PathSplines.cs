@@ -18,13 +18,13 @@ public class PathSplines : MonoBehaviour {
 		avatar1 = GameObject.Find("Avatar1");
 
 		// Tween automatically
-		// LeanTween.moveSpline(avatar1, cr.pts, 6.5f).setOrientToPath(true).setRepeat(-1);
+		LeanTween.moveSpline(avatar1, cr.pts, 6.5f).setOrientToPath(true).setRepeat(-1).setDirection(-1f);
 	}
 	
 	private float iter;
 	void Update () {
 		// Or Update Manually
-		cr.place( avatar1.transform, iter );
+		// cr.place( avatar1.transform, iter );
 
 		iter += Time.deltaTime*0.07f;
 		if(iter>1.0f)
