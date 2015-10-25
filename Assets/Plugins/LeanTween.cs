@@ -137,7 +137,8 @@ using System.Collections;
 using System;
 using System.Runtime.InteropServices;
 using System.Collections.Generic;
-public enum TweenAction
+public enum TweenAction
+{
     MOVE_X,
     MOVE_Y,
     MOVE_Z,
@@ -187,7 +188,8 @@ public enum TweenAction
     CANVAS_MOVE,
     CANVAS_SCALE,
 }
-public enum LeanTweenType
+public enum LeanTweenType
+{
     notUsed, linear, easeOutQuad, easeInQuad, easeInOutQuad, easeInCubic, easeOutCubic, easeInOutCubic, easeInQuart, easeOutQuart, easeInOutQuart,
     easeInQuint, easeOutQuint, easeInOutQuint, easeInSine, easeOutSine, easeInOutSine, easeInExpo, easeOutExpo, easeInOutExpo, easeInCirc, easeOutCirc, easeInOutCirc,
     easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, easeSpring, easeShake, punch, once, clamp, pingPong, animationCurve
@@ -220,7 +222,8 @@ public enum LeanTweenType
 * @class LTDescr
 * @constructor
 */
-public class LTDescr
+public class LTDescr
+{
     public bool toggle;
     public bool useEstimatedTime;
     public bool useFrames;
@@ -1250,7 +1253,8 @@ public class LTDescr
         return this;
     }
 }
-public class LTUtility
+public class LTUtility
+{
     public static Vector3[] reverse(Vector3[] arr)
     {
         int k = arr.Length - 1;
@@ -1284,7 +1288,8 @@ public class LTUtility
 *
 * @class LeanTween
 */
-public class LeanTween : MonoBehaviour
+public class LeanTween : MonoBehaviour
+{
     public static bool throwErrors = true;
     public static float tau = Mathf.PI * 2.0f;
     private static LTDescr[] tweens;
@@ -1352,7 +1357,7 @@ private static float previousRealTime;
             _tweenEmpty.AddComponent(typeof(LeanTween));
             _tweenEmpty.isStatic = true;
 #if !UNITY_EDITOR
-		_tweenEmpty.hideFlags = HideFlags.HideAndDontSave;
+            _tweenEmpty.hideFlags = HideFlags.HideAndDontSave;
 #endif
             DontDestroyOnLoad(_tweenEmpty);
             for (int i = 0; i < maxTweens; i++)
@@ -4680,7 +4685,8 @@ public static int alpha(GameObject gameObject, float to, float time, object[] op
         }
     }
 } // End LeanTween class
-public class LTBezier
+public class LTBezier
+{
     public float length;
     private Vector3 a;
     private Vector3 aa;
@@ -4752,7 +4758,8 @@ public class LTBezier
 * LeanTween.move(lt, ltPath.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
 * Vector3 pt = ltPath.point( 0.6f ); // retrieve a point along the path
 */
-public class LTBezierPath
+public class LTBezierPath
+{
     public Vector3[] pts;
     public float length;
     public bool orientToPath;
@@ -4917,7 +4924,8 @@ public class LTBezierPath
 * Vector3 pt = ltSpline.point( 0.6f ); // retrieve a point along the path
 */
 [System.Serializable]
-public class LTSpline
+public class LTSpline
+{
     public static int DISTANCE_COUNT = 30; // increase for a more accurate constant speed
     public static int SUBLINE_COUNT = 50; // increase for a more accurate smoothing of the curves into lines
     public Vector3[] pts;
@@ -5150,7 +5158,8 @@ public class LTSpline
 * @param {float} rotation:float (Optional) initial rotation in degrees (0-360) 
 */
 [System.Serializable]
-public class LTRect : System.Object
+public class LTRect : System.Object
+{
     /**
     * Pass this value to the GUI Methods
     * 
@@ -5379,7 +5388,8 @@ public class LTRect : System.Object
 * @constructor
 * @param {object} data:object Data that has been passed from the dispatchEvent method
 */
-public class LTEvent
+public class LTEvent
+{
     public int id;
     public object data;
     public LTEvent(int id, object data)
@@ -5388,7 +5398,8 @@ public class LTEvent
         this.data = data;
     }
 }
-public class LTGUI
+public class LTGUI
+{
     public static int RECT_LEVELS = 5;
     public static int RECTS_PER_LEVEL = 10;
     public static int BUTTONS_MAX = 24;
