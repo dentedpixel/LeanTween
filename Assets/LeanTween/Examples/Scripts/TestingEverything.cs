@@ -55,9 +55,9 @@ public class TestingEverything : MonoBehaviour {
 
 	void Start () {
 		LeanTest.timeout = 45f;
-		LeanTest.expected = 31;
+		LeanTest.expected = 32;
 
-		LeanTween.init(10 + 1200);
+		LeanTween.init(12 + 1200);
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -116,6 +116,19 @@ public class TestingEverything : MonoBehaviour {
 			timeElapsedIgnoreTimeScale = Time.time;
 		});
 
+		GameObject cubeDest = Instantiate( boxNoCollider ) as GameObject;
+		cubeDest.name = "cubeDest";
+		Vector3 cubeDestEnd = new Vector3(100f,20f,0f);
+		LeanTween.move( cubeDest, cubeDestEnd, 0.7f);
+		GameObject cubeToTrans = Instantiate( boxNoCollider ) as GameObject;
+		cubeToTrans.name = "cubeToTrans";
+
+		LeanTween.move( cubeToTrans, cubeDest.transform, 0.8f).setEase( LeanTweenType.easeOutElastic ).setOnComplete( ()=>{
+			LeanTest.expect( cubeToTrans.transform.position == cubeDestEnd, "MOVE TO TRANSFORM WORKS");
+		});
+		
+
+
 		StartCoroutine( timeBasedTesting() );
 	}
 
@@ -124,7 +137,7 @@ public class TestingEverything : MonoBehaviour {
 		
 		yield return new WaitForEndOfFrame();
 
-		LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.07f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
+		LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.15f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
 
 		Time.timeScale = 4f;
 

@@ -177,6 +177,7 @@ public enum TweenAction{
 	CALLBACK,
 	MOVE,
 	MOVE_LOCAL,
+	MOVE_TO_TRANSFORM,
 	ROTATE,
 	ROTATE_LOCAL,
 	SCALE,
@@ -248,6 +249,7 @@ public class LTDescr {
 	public float period;
 	public bool destroyOnComplete;
 	public Transform trans;
+	public Transform toTrans;
 	public LTRect ltRect;
 	public Vector3 from;
 	public Vector3 to;
@@ -384,6 +386,7 @@ public class LTDescr {
 		// Initialize From Values
 		switch(this.type){
 			case TweenAction.MOVE:
+			case TweenAction.MOVE_TO_TRANSFORM:
 				this.from = trans.position; break;
 			case TweenAction.MOVE_X:
 				this.from.x = trans.position.x; break;
@@ -724,6 +727,11 @@ public class LTDescr {
 			this.to = to;
 		}
 		
+		return this;
+	}
+
+	public LTDescr setTo( Transform to ){
+		this.toTrans = to;
 		return this;
 	}
 
@@ -1419,6 +1427,11 @@ public static void update() {
 					continue;
 				}
 				// Debug.Log("i:"+i+" tween:"+tween+" dt:"+dt);
+
+				if (tweenAction == TweenAction.MOVE_TO_TRANSFORM) {
+                    tween.to = tween.toTrans.position;
+                    tween.diff = tween.to - tween.from;
+                }
 				
 				// Check for tween finished
 				isTweenFinished = false;
@@ -1888,6 +1901,8 @@ public static void update() {
 							trans.position = newVect;
 					    }else if(tweenAction==TweenAction.MOVE_LOCAL){
 							trans.localPosition = newVect;
+					    }else if(tweenAction==TweenAction.MOVE_TO_TRANSFORM){
+							trans.position = newVect;
 					    }else if(tweenAction==TweenAction.ROTATE){
 					    	/*if(tween.hasPhysics){
 					    		trans.gameObject.rigidbody.MoveRotation(Quaternion.Euler( newVect ));
@@ -2182,7 +2197,7 @@ public static float closestRot( float from, float to ){
 * Cancels all tweens 
 * 
 * @method LeanTween.cancelAll
-* @param {bool} callComplete:bool (optional) if true, then the all onComplets will run before canceling
+* @param {bool} callComplete:bool (optional) if true, then the all onCompletes will run before canceling
 * @example LeanTween.cancelAll(true); <br>
 */
 public static void cancelAll(){
@@ -2947,6 +2962,22 @@ public static LTDescr moveLocal(GameObject gameObject, LTSpline to, float time) 
 	d.spline = to;
  		 
 	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, d);
+}
+
+/**
+* Move a GameObject to another transform
+* It goes without saying that unless the transform is static the tween may not reach it's destination
+* 
+* @method LeanTween.move
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {Vector3} vec:Vector3 to The final positin with which to move to
+* @param {float} time:float time The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.move(gameObject, new Vector3(0f,-3f,5f), 2.0f) .setEase( LeanTweenType.easeOutQuad );
+*/
+public static LTDescr move(GameObject gameObject, Transform to, float time)
+{
+    return pushNewTween(gameObject, Vector3.zero, time, TweenAction.MOVE_TO_TRANSFORM, options().setTo(to) );
 }
 
 /**
