@@ -171,7 +171,7 @@ public class TestingAllCS : MonoBehaviour {
 		Debug.Log("updateValueExample");
 		Hashtable pass = new Hashtable();
 		pass.Add("message", "hi");
-		LeanTween.value( gameObject, updateValueExampleCallback, ltLogo.transform.eulerAngles.y, 270f, 1f ).setEase(LeanTweenType.easeOutElastic).setOnUpdateParam(pass).setUseEstimatedTime(useEstimatedTime);
+		LeanTween.value( gameObject, (Action<float,object>)updateValueExampleCallback, ltLogo.transform.eulerAngles.y, 270f, 1f ).setEase(LeanTweenType.easeOutElastic).setOnUpdateParam(pass).setUseEstimatedTime(useEstimatedTime);
 	}
 	
 	public void updateValueExampleCallback( float val, object hash ){

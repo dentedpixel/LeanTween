@@ -22,7 +22,7 @@ public class PathSpline2d : MonoBehaviour {
 		#endif
 		// LeanTween.moveSpline( ltLogo2, new Vector3[] {trans[0].position, trans[1].position, trans[2].position, trans[3].position, trans[4].position}, 1f).setEase(LeanTweenType.easeInOutQuad).setLoopPingPong().setOrientToPath(true);
 
-		LTDescr zoomInPath_LT = LeanTween.moveSpline(sprite2, new Vector3[]{Vector3.zero, Vector3.zero, new Vector3(1,1,1), new Vector3(2,1,1), new Vector3(2,1,1)}, 1.5f).setOrientToPath2d(true);
+		ILTDescr zoomInPath_LT = LeanTween.moveSpline(sprite2, new Vector3[]{Vector3.zero, Vector3.zero, new Vector3(1,1,1), new Vector3(2,1,1), new Vector3(2,1,1)}, 1.5f).setOrientToPath2d(true);
 		zoomInPath_LT.setUseEstimatedTime(true);
 	}
 	

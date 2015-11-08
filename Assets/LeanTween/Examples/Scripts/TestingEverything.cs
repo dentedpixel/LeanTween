@@ -4,7 +4,7 @@ using System.Collections;
 public class TempTestingCancel : MonoBehaviour {
     public bool isTweening = false;
     public bool tweenOverride = false;
-    private LTDescr tween;
+    private ILTDescr tween;
  
     // Use this for initialization
     void Start () {
@@ -36,10 +36,10 @@ public class TestingEverything : MonoBehaviour {
 
 	private bool eventGameObjectWasCalled = false, eventGeneralWasCalled = false;
 	private int lt1Id;
-	private LTDescr lt2;
-	private LTDescr lt3;
-	private LTDescr lt4;
-	private LTDescr[] groupTweens;
+	private ILTDescr lt2;
+	private ILTDescr lt3;
+	private ILTDescr lt4;
+	private ILTDescr[] groupTweens;
 	private GameObject[] groupGOs;
 	private int groupTweensCnt;
 	private int rotateRepeat;
@@ -107,7 +107,7 @@ public class TestingEverything : MonoBehaviour {
 			timeElapsedNormalTimeScale = Time.time;
 		});
 
-		LTDescr[] descr = LeanTween.descriptions( cube );
+		ILTDescr[] descr = LeanTween.descriptions( cube );
 		LeanTest.expect( descr.Length >= 0 && descr[0].to.x == 12f, "WE CAN RETRIEVE A DESCRIPTION");
 
 		cube = Instantiate( boxNoCollider ) as GameObject;
