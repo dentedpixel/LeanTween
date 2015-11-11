@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public interface ILTDescr
+public interface LTDescr
 {
 	bool toggle { get; set; }
 	bool useEstimatedTime { get; set; }
@@ -51,73 +51,73 @@ public interface ILTDescr
 	object onCompleteParam { get; set; }
 	object onUpdateParam { get; set; }
 	Action onStart { get; set; }
-
-	ILTDescr cancel(UnityEngine.GameObject gameObject);
+	[System.Obsolete("Use 'LeanTween.cancel( id )' instead")]
+	LTDescr cancel(UnityEngine.GameObject gameObject);
 	void cleanup();
+	int uniqueId { get; }
 	int id { get; }
 	void init();
-	ILTDescr pause();
+	LTDescr pause();
 	void reset();
-	ILTDescr resume();
-	ILTDescr setAudio(object audio);
-	ILTDescr setAxis(UnityEngine.Vector3 axis);
-	ILTDescr setDelay(float delay);
-	ILTDescr setDestroyOnComplete(bool doesDestroy);
-	ILTDescr setDiff(UnityEngine.Vector3 diff);
-	ILTDescr setDirection(float direction);
-	ILTDescr setEase(LeanTweenType easeType);
-	ILTDescr setEase(UnityEngine.AnimationCurve easeCurve);
-	ILTDescr setFrameRate(float frameRate);
-	ILTDescr setFrom(float from);
-	ILTDescr setFrom(UnityEngine.Vector3 from);
-	ILTDescr setFromColor(UnityEngine.Color col);
-	ILTDescr setHasInitialized(bool has);
-	ILTDescr setId(uint id);
-	ILTDescr setIgnoreTimeScale(bool useUnScaledTime);
-	ILTDescr setLoopClamp();
-	ILTDescr setLoopClamp(int loops);
-	ILTDescr setLoopCount(int loopCount);
-	ILTDescr setLoopOnce();
-	ILTDescr setLoopPingPong();
-	ILTDescr setLoopPingPong(int loops);
-	ILTDescr setLoopType(LeanTweenType loopType);
-	ILTDescr setOnComplete(Action onComplete);
-	ILTDescr setOnComplete(Action<object> onComplete);
-	ILTDescr setOnComplete(Action<object> onComplete, object onCompleteParam);
-	ILTDescr setOnCompleteOnRepeat(bool isOn);
-	ILTDescr setOnCompleteOnStart(bool isOn);
-	ILTDescr setOnCompleteParam(object onCompleteParam);
-	ILTDescr setOnStart(Action onStart);
-	ILTDescr setOnUpdate(Action<float, object> onUpdate, object onUpdateParam = null);
-	ILTDescr setOnUpdate(Action<float> onUpdate);
-	ILTDescr setOnUpdate(Action<UnityEngine.Color> onUpdate);
-	ILTDescr setOnUpdate(Action<UnityEngine.Vector2> onUpdate, object onUpdateParam = null);
-	ILTDescr setOnUpdate(Action<UnityEngine.Vector3, object> onUpdate, object onUpdateParam = null);
-	ILTDescr setOnUpdate(Action<UnityEngine.Vector3> onUpdate, object onUpdateParam = null);
-	ILTDescr setOnUpdateColor(Action<UnityEngine.Color> onUpdate);
-	ILTDescr setOnUpdateObject(Action<float, object> onUpdate);
-	ILTDescr setOnUpdateParam(object onUpdateParam);
-	ILTDescr setOnUpdateRatio(Action<float, float> onUpdate);
-	ILTDescr setOnUpdateVector2(Action<UnityEngine.Vector2> onUpdate);
-	ILTDescr setOnUpdateVector3(Action<UnityEngine.Vector3> onUpdate);
-	ILTDescr setOrientToPath(bool doesOrient);
-	ILTDescr setOrientToPath2d(bool doesOrient2d);
-	ILTDescr setOvershoot(float overshoot);
-	ILTDescr setPath(LTBezierPath path);
-	ILTDescr setPeriod(float period);
-	ILTDescr setPoint(UnityEngine.Vector3 point);
-	ILTDescr setRect(LTRect rect);
-	ILTDescr setRect(UnityEngine.Rect rect);
-	ILTDescr setRect(UnityEngine.RectTransform rect);
-	ILTDescr setRepeat(int repeat);
-	ILTDescr setSprites(UnityEngine.Sprite[] sprites);
-	ILTDescr setTime(float time);
-	ILTDescr setTo(UnityEngine.Transform to);
-	ILTDescr setTo(UnityEngine.Vector3 to);
-	ILTDescr setUseEstimatedTime(bool useEstimatedTime);
-	ILTDescr setUseFrames(bool useFrames);
-	ILTDescr setUseManualTime(bool useManualTime);
+	LTDescr resume();
+	LTDescr setAudio(object audio);
+	LTDescr setAxis(UnityEngine.Vector3 axis);
+	LTDescr setDelay(float delay);
+	LTDescr setDestroyOnComplete(bool doesDestroy);
+	LTDescr setDiff(UnityEngine.Vector3 diff);
+	LTDescr setDirection(float direction);
+	LTDescr setEase(LeanTweenType easeType);
+	LTDescr setEase(UnityEngine.AnimationCurve easeCurve);
+	LTDescr setFrameRate(float frameRate);
+	LTDescr setFrom(float from);
+	LTDescr setFrom(UnityEngine.Vector3 from);
+	LTDescr setFromColor(UnityEngine.Color col);
+	LTDescr setHasInitialized(bool has);
+	LTDescr setId(uint id);
+	LTDescr setIgnoreTimeScale(bool useUnScaledTime);
+	LTDescr setLoopClamp();
+	LTDescr setLoopClamp(int loops);
+	LTDescr setLoopCount(int loopCount);
+	LTDescr setLoopOnce();
+	LTDescr setLoopPingPong();
+	LTDescr setLoopPingPong(int loops);
+	LTDescr setLoopType(LeanTweenType loopType);
+	LTDescr setOnComplete(Action onComplete);
+	LTDescr setOnComplete(Action<object> onComplete);
+	LTDescr setOnComplete(Action<object> onComplete, object onCompleteParam);
+	LTDescr setOnCompleteOnRepeat(bool isOn);
+	LTDescr setOnCompleteOnStart(bool isOn);
+	LTDescr setOnCompleteParam(object onCompleteParam);
+	LTDescr setOnStart(Action onStart);
+	LTDescr setOnUpdate(Action<float, object> onUpdate, object onUpdateParam = null);
+	LTDescr setOnUpdate(Action<float> onUpdate);
+	LTDescr setOnUpdate(Action<UnityEngine.Color> onUpdate);
+	LTDescr setOnUpdate(Action<UnityEngine.Vector2> onUpdate, object onUpdateParam = null);
+	LTDescr setOnUpdate(Action<UnityEngine.Vector3, object> onUpdate, object onUpdateParam = null);
+	LTDescr setOnUpdate(Action<UnityEngine.Vector3> onUpdate, object onUpdateParam = null);
+	LTDescr setOnUpdateColor(Action<UnityEngine.Color> onUpdate);
+	LTDescr setOnUpdateObject(Action<float, object> onUpdate);
+	LTDescr setOnUpdateParam(object onUpdateParam);
+	LTDescr setOnUpdateRatio(Action<float, float> onUpdate);
+	LTDescr setOnUpdateVector2(Action<UnityEngine.Vector2> onUpdate);
+	LTDescr setOnUpdateVector3(Action<UnityEngine.Vector3> onUpdate);
+	LTDescr setOrientToPath(bool doesOrient);
+	LTDescr setOrientToPath2d(bool doesOrient2d);
+	LTDescr setOvershoot(float overshoot);
+	LTDescr setPath(LTBezierPath path);
+	LTDescr setPeriod(float period);
+	LTDescr setPoint(UnityEngine.Vector3 point);
+	LTDescr setRect(LTRect rect);
+	LTDescr setRect(UnityEngine.Rect rect);
+	LTDescr setRect(UnityEngine.RectTransform rect);
+	LTDescr setRepeat(int repeat);
+	LTDescr setSprites(UnityEngine.Sprite[] sprites);
+	LTDescr setTime(float time);
+	LTDescr setTo(UnityEngine.Transform to);
+	LTDescr setTo(UnityEngine.Vector3 to);
+	LTDescr setUseEstimatedTime(bool useEstimatedTime);
+	LTDescr setUseFrames(bool useFrames);
+	LTDescr setUseManualTime(bool useManualTime);
 	string ToString();
-	int uniqueId { get; }
 }
 
