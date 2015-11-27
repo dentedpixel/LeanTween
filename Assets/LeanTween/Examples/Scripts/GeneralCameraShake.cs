@@ -11,7 +11,11 @@ public class GeneralCameraShake : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		avatarBig = GameObject.Find("AvatarBig");
-		boomAudioClip = createAudio( boomAudioCurve, 50);
+
+		AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(8.130963E-06f, 0.06526042f, 0f, -1f), new Keyframe(0.0007692695f, 2.449077f, 9.078861f, 9.078861f), new Keyframe(0.01541314f, 0.9343268f, -40f, -40f), new Keyframe(0.05169491f, 0.03835937f, -0.08621139f, -0.08621139f));
+		AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.003005181f, 0f, 0f), new Keyframe(0.01507768f, 0.002227979f, 0f, 0f));
+		boomAudioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.1f,0f,0f)} ));
+		
 
 		bigGuyJump();	
 	}
@@ -64,7 +68,7 @@ public class GeneralCameraShake : MonoBehaviour {
 		        }
 
 		        // Play BOOM!
-				playAudio(boomAudioClip, transform.position, height*0.2f, 0.34f);
+		        LeanAudio.play(boomAudioClip, transform.position, height*0.2f); // Like this sound? : http://leanaudioplay.dentedpixel.com/?d=a:fvb:8,0,0.003005181,0,0,0.01507768,0.002227979,0,0,8~8,8.130963E-06,0.06526042,0,-1,0.0007692695,2.449077,9.078861,9.078861,0.01541314,0.9343268,-40,-40,0.05169491,0.03835937,-0.08621139,-0.08621139,8~0.1,0,0,~44100
 		        
 		        // Have the jump happen again 2 seconds from now
 		        LeanTween.delayedCall(2f, bigGuyJump);
@@ -73,53 +77,5 @@ public class GeneralCameraShake : MonoBehaviour {
 		jumpIter += 5.2f;
 	}
 
-
-
-	/******************************
-	* Dynamic Audio Creation Stuff
-	******************************/
-	public AnimationCurve boomAudioCurve;
-
-	AudioClip createAudio( AnimationCurve curve, int granularity){
-		int frequency = 440*granularity;
-		float[] audioArr = new float[granularity];
-
-		float curveTime = curve[ curve.length - 1 ].time;
-		// Debug.Log("curveTime:"+curveTime+" AudioSettings.outputSampleRate:"+AudioSettings.outputSampleRate);
-		for(int i = 0; i < audioArr.Length; i++){
-			float pt = (float)i/(float)audioArr.Length * curveTime;
-			audioArr[i] = curve.Evaluate( pt );
-			// Debug.Log("pt:"+pt+" i:"+i+" val:"+audioArr[i]+" len:"+audioArr.Length);
-		}
-		
-		int lengthSamples =  (int)( (float)frequency * curveTime );
-		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5 && !UNITY_4_6
-		AudioClip audioClip = AudioClip.Create("", lengthSamples, 1, frequency, false);
-		#else
-		bool is3dSound = true;
-		AudioClip audioClip = AudioClip.Create("", lengthSamples, 1, frequency, is3dSound, false);
-		#endif
-		audioClip.SetData(audioArr, 0);
-		return audioClip;
-	}
-
-	void playAudio( AudioClip audioClip, Vector3 pos, float volume, float pitch ){
-		// Debug.Log("audioClip length:"+audioClip.length);
-		AudioSource audioSource = PlayClipAt(audioClip, pos);
-		audioSource.minDistance = 1f;
-		audioSource.pitch = pitch;
-		audioSource.volume = volume;
-	}
-
-	AudioSource PlayClipAt(AudioClip clip, Vector3 pos ) {
-		GameObject tempGO = new GameObject(); // create the temp object
-		tempGO.transform.position = pos; // set its position
-		AudioSource aSource = tempGO.AddComponent<AudioSource>(); // add an audio source
-		aSource.clip = clip; // define the clip
-		aSource.Play(); // start the sound
-		Destroy(tempGO, clip.length); // destroy object after clip duration
-		return aSource; // return the AudioSource reference
-	}
-	
 }
 #endif
