@@ -123,7 +123,7 @@ public class TestingEverything : MonoBehaviour {
 		GameObject cubeToTrans = Instantiate( boxNoCollider ) as GameObject;
 		cubeToTrans.name = "cubeToTrans";
 
-		LeanTween.move( cubeToTrans, cubeDest.transform, 0.8f).setEase( LeanTweenType.easeOutElastic ).setOnComplete( ()=>{
+		LeanTween.move( cubeToTrans, cubeDest.transform, 1.2f).setEase( LeanTweenType.easeOutQuad ).setOnComplete( ()=>{
 			LeanTest.expect( cubeToTrans.transform.position == cubeDestEnd, "MOVE TO TRANSFORM WORKS");
 		});
 		

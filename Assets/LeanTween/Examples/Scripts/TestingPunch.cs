@@ -4,6 +4,7 @@ using System.Collections;
 public class TestingPunch : MonoBehaviour {
 
     public AnimationCurve exportCurve;
+    public float overShootValue = 1f;
 	
 	void Start () {
 	   //LeanTween.rotateAround(gameObject, gameObject.transform.rotation.eulerAngles, 360f, 5f).setDelay(1f).setEase(LeanTweenType.easeOutBounce);
@@ -36,8 +37,26 @@ public class TestingPunch : MonoBehaviour {
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
-            LeanTween.scale(this.gameObject, Vector3.one*3f, 1.0f).setEase(LeanTweenType.punch);            
             print("scale punch!");
+
+            tweenStatically( this.gameObject );
+
+            LeanTween.scale(this.gameObject, new Vector3(1.15f, 1.15f, 1.15f), 0.6f);
+
+            LeanTween.rotateAround(this.gameObject, Vector3.forward, -360f, 0.3f).setOnComplete(() =>
+            {
+                LeanTween.rotateAround(this.gameObject, Vector3.forward, -360f, 0.4f).setOnComplete(() =>
+                {
+                    LeanTween.scale(this.gameObject, new Vector3(1f, 1f, 1f), 0.1f);
+
+                    LeanTween.value(this.gameObject, (v) =>
+                    {
+                        
+                    }, 0, 1, 0.3f).setDelay(1);
+
+                });
+
+            });
         }
  
         if (Input.GetKeyDown(KeyCode.R))
@@ -57,7 +76,7 @@ public class TestingPunch : MonoBehaviour {
                 float end = Time.realtimeSinceStartup;
                 float diff = end - start;
                 Debug.Log("start:"+start+" end:"+end+" diff:"+diff+" x:"+this.gameObject.transform.position.x);
-            }).setEase(LeanTweenType.easeInOutElastic).setOvershoot(8f).setPeriod(0.3f);
+            }).setEase(LeanTweenType.easeInBack).setOvershoot( overShootValue ).setPeriod(0.3f);
         }
 
         if (Input.GetKeyDown(KeyCode.C))
@@ -103,6 +122,13 @@ public class TestingPunch : MonoBehaviour {
             #endif
         }
 	}
+
+    static void tweenStatically( GameObject gameObject ){
+        Debug.Log("Starting to tween...");
+        LeanTween.value(gameObject, (val)=>{
+            Debug.Log("tweening val:"+val);
+        }, 0f, 1f, 1f);
+    }
 
     void enterMiniGameStart( object val ){
         object[] arr = (object [])val;

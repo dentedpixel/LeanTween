@@ -825,7 +825,7 @@ kbd .cmd { font-family: Monaco, Helvetica; }
 }
 
 #support{
-    margin-top:-4px;
+    margin-top:8px;
 }
 
 #support td{
