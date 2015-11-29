@@ -779,6 +779,8 @@ public class LTDescr {
 	* descr.setTime( 1f );<br>
 	*/
 	public LTDescr setTime( float time ){
+		float passedTimeRatio = this.passed / this.time;
+		this.passed = time * passedTimeRatio;
 		this.time = time;
 		return this;
 	}

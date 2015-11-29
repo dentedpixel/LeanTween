@@ -55,9 +55,9 @@ public class TestingEverything : MonoBehaviour {
 
 	void Start () {
 		LeanTest.timeout = 45f;
-		LeanTest.expected = 32;
+		LeanTest.expected = 33;
 
-		LeanTween.init(12 + 1200);
+		LeanTween.init(14 + 1200);
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -127,7 +127,18 @@ public class TestingEverything : MonoBehaviour {
 			LeanTest.expect( cubeToTrans.transform.position == cubeDestEnd, "MOVE TO TRANSFORM WORKS");
 		});
 		
+		GameObject jumpCube = Instantiate( boxNoCollider ) as GameObject;
+		jumpCube.name = "jumpTime";
+		int jumpTimeId = LeanTween.moveX( jumpCube, 1f, 1f).id;
 
+		LeanTween.delayedCall(jumpCube, 0.2f, ()=>{
+			LTDescr d = LeanTween.descr( jumpTimeId );
+			float beforeX = jumpCube.transform.position.x;
+			d.setTime( 0.5f );
+			LeanTween.delayedCall( 0.01f, ()=>{ }).setOnStart( ()=>{
+				LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < 0.01f , "CHANGING TIME DOESN'T JUMP AHEAD");
+			});
+		});
 
 		StartCoroutine( timeBasedTesting() );
 	}
