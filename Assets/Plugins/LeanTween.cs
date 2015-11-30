@@ -4732,10 +4732,21 @@ public class LTBezierPath {
 	* ltPath.placeLocal( transform, 0.6f, Vector3.left );
 	*/
 	public void placeLocal( Transform transform, float ratio, Vector3 worldUp ){
+		ratio = getRationInOneRange (ratio);
 		transform.localPosition = point( ratio );
-		ratio += 0.001f;
+		ratio = getRationInOneRange (ratio + 0.001f);
 		if(ratio<=1.0f)
 			transform.LookAt( transform.parent.TransformPoint( point( ratio ) ), worldUp );
+	}
+
+	public float getRationInOneRange(float ratio){
+		if (ratio >= 0.0f && ratio <= 1.0f) {
+			return ratio;
+		} else if (ratio < 0.0f) {
+			return Mathf.Ceil(ratio) - ratio;	//if -1.4 => it returns 0.4
+		} else {
+			return ratio - Mathf.Floor(ratio);	//if 1.4 => it return 0.4
+		}
 	}
 
 	public void gizmoDraw(float t = -1.0f)
