@@ -55,9 +55,9 @@ public class TestingEverything : MonoBehaviour {
 
 	void Start () {
 		LeanTest.timeout = 45f;
-		LeanTest.expected = 31;
+		LeanTest.expected = 33;
 
-		LeanTween.init(10 + 1200);
+		LeanTween.init(14 + 1200);
 		// add a listener
 		LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -116,6 +116,30 @@ public class TestingEverything : MonoBehaviour {
 			timeElapsedIgnoreTimeScale = Time.time;
 		});
 
+		GameObject cubeDest = Instantiate( boxNoCollider ) as GameObject;
+		cubeDest.name = "cubeDest";
+		Vector3 cubeDestEnd = new Vector3(100f,20f,0f);
+		LeanTween.move( cubeDest, cubeDestEnd, 0.7f);
+		GameObject cubeToTrans = Instantiate( boxNoCollider ) as GameObject;
+		cubeToTrans.name = "cubeToTrans";
+
+		LeanTween.move( cubeToTrans, cubeDest.transform, 1.2f).setEase( LeanTweenType.easeOutQuad ).setOnComplete( ()=>{
+			LeanTest.expect( cubeToTrans.transform.position == cubeDestEnd, "MOVE TO TRANSFORM WORKS");
+		});
+		
+		GameObject jumpCube = Instantiate( boxNoCollider ) as GameObject;
+		jumpCube.name = "jumpTime";
+		int jumpTimeId = LeanTween.moveX( jumpCube, 1f, 1f).id;
+
+		LeanTween.delayedCall(jumpCube, 0.2f, ()=>{
+			LTDescr d = LeanTween.descr( jumpTimeId );
+			float beforeX = jumpCube.transform.position.x;
+			d.setTime( 0.5f );
+			LeanTween.delayedCall( 0.01f, ()=>{ }).setOnStart( ()=>{
+				LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < 0.01f , "CHANGING TIME DOESN'T JUMP AHEAD");
+			});
+		});
+
 		StartCoroutine( timeBasedTesting() );
 	}
 
@@ -124,7 +148,7 @@ public class TestingEverything : MonoBehaviour {
 		
 		yield return new WaitForEndOfFrame();
 
-		LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.07f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
+		LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.15f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
 
 		Time.timeScale = 4f;
 

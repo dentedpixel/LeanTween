@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.30 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.31 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -136,9 +136,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 * @property {integer} punch
 */
 using UnityEngine;
-using System.Collections;
 using System;
-using System.Runtime.InteropServices;
 using System.Collections.Generic;
 
 public enum TweenAction{
@@ -166,6 +164,7 @@ public enum TweenAction{
 	ALPHA,
     TEXT_ALPHA,
     CANVAS_ALPHA,
+    CANVASGROUP_ALPHA,
     ALPHA_VERTEX,
 	COLOR,
 	CALLBACK_COLOR,
@@ -177,6 +176,7 @@ public enum TweenAction{
 	CALLBACK,
 	MOVE,
 	MOVE_LOCAL,
+	MOVE_TO_TRANSFORM,
 	ROTATE,
 	ROTATE_LOCAL,
 	SCALE,
@@ -248,6 +248,7 @@ public class LTDescr {
 	public float period;
 	public bool destroyOnComplete;
 	public Transform trans;
+	public Transform toTrans;
 	public LTRect ltRect;
 	public Vector3 from;
 	public Vector3 to;
@@ -384,6 +385,7 @@ public class LTDescr {
 		// Initialize From Values
 		switch(this.type){
 			case TweenAction.MOVE:
+			case TweenAction.MOVE_TO_TRANSFORM:
 				this.from = trans.position; break;
 			case TweenAction.MOVE_X:
 				this.from.x = trans.position.x; break;
@@ -549,6 +551,9 @@ public class LTDescr {
                 this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
                 if(this.uiImage != null)
 	               this.setFromColor( this.uiImage.color );
+                break;
+            case TweenAction.CANVASGROUP_ALPHA:
+				this.from.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
                 break;
             case TweenAction.TEXT_ALPHA:
                 this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
@@ -727,6 +732,11 @@ public class LTDescr {
 		return this;
 	}
 
+	public LTDescr setTo( Transform to ){
+		this.toTrans = to;
+		return this;
+	}
+
 	public LTDescr setFrom( Vector3 from ){
 		if(this.trans)
 			this.init();
@@ -769,6 +779,8 @@ public class LTDescr {
 	* descr.setTime( 1f );<br>
 	*/
 	public LTDescr setTime( float time ){
+		float passedTimeRatio = this.passed / this.time;
+		this.passed = time * passedTimeRatio;
 		this.time = time;
 		return this;
 	}
@@ -1419,6 +1431,11 @@ public static void update() {
 					continue;
 				}
 				// Debug.Log("i:"+i+" tween:"+tween+" dt:"+dt);
+
+				if (tweenAction == TweenAction.MOVE_TO_TRANSFORM) {
+                    tween.to = tween.toTrans.position;
+                    tween.diff = tween.to - tween.from;
+                }
 				
 				// Check for tween finished
 				isTweenFinished = false;
@@ -1738,6 +1755,10 @@ public static void update() {
                                 tween.onUpdateColor(toColor);
                             }
                         }
+                        else if (tweenAction == TweenAction.CANVASGROUP_ALPHA){
+                        	CanvasGroup canvasGroup = tween.trans.GetComponent<CanvasGroup>();
+                            canvasGroup.alpha = val;
+                        }
                         else if (tweenAction == TweenAction.TEXT_ALPHA){
                         	textAlphaRecursive( trans, val );
                         }
@@ -1888,6 +1909,8 @@ public static void update() {
 							trans.position = newVect;
 					    }else if(tweenAction==TweenAction.MOVE_LOCAL){
 							trans.localPosition = newVect;
+					    }else if(tweenAction==TweenAction.MOVE_TO_TRANSFORM){
+							trans.position = newVect;
 					    }else if(tweenAction==TweenAction.ROTATE){
 					    	/*if(tween.hasPhysics){
 					    		trans.gameObject.rigidbody.MoveRotation(Quaternion.Euler( newVect ));
@@ -2182,7 +2205,7 @@ public static float closestRot( float from, float to ){
 * Cancels all tweens 
 * 
 * @method LeanTween.cancelAll
-* @param {bool} callComplete:bool (optional) if true, then the all onComplets will run before canceling
+* @param {bool} callComplete:bool (optional) if true, then the all onCompletes will run before canceling
 * @example LeanTween.cancelAll(true); <br>
 */
 public static void cancelAll(){
@@ -2644,16 +2667,34 @@ public static LTDescr alpha(LTRect ltRect, float to, float time){
 /**
 * Fade a Unity UI Object
 * 
-* @method LeanTween.textAlpha
-* @param {RectTransform} rectTransform:RectTransform RectTransform that you wish to fade
+* @method LeanTween.alphaText
+* @param {RectTransform} rectTransform:RectTransform RectTransform associated with the Text Component you wish to fade
 * @param {float} to:float the final alpha value (0-1)
 * @param {float} time:float The time with which to fade the object
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
-* LeanTween.textAlpha(gameObject.GetComponent&lt;RectTransform&gt;(), 1f, 1f) .setEase(LeanTweenType.easeInCirc);
+* LeanTween.alphaText(gameObject.GetComponent&lt;RectTransform&gt;(), 1f, 1f) .setEase(LeanTweenType.easeInCirc);
 */	
 public static LTDescr textAlpha(RectTransform rectTransform, float to, float time){
     return pushNewTween(rectTransform.gameObject, new Vector3(to,0,0), time, TweenAction.TEXT_ALPHA, options());
+}
+public static LTDescr alphaText(RectTransform rectTransform, float to, float time){
+    return pushNewTween(rectTransform.gameObject, new Vector3(to,0,0), time, TweenAction.TEXT_ALPHA, options());
+}
+
+/**
+* Fade a Unity UI Canvas Group
+* 
+* @method LeanTween.alphaCanvas
+* @param {RectTransform} rectTransform:RectTransform RectTransform that the CanvasGroup is attached to
+* @param {float} to:float the final alpha value (0-1)
+* @param {float} time:float The time with which to fade the object
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* LeanTween.alphaCanvas(gameObject.GetComponent&lt;RectTransform&gt;(), 0f, 1f) .setLoopPingPong();
+*/	
+public static LTDescr alphaCanvas(CanvasGroup canvasGroup, float to, float time){
+    return pushNewTween(canvasGroup.gameObject, new Vector3(to,0,0), time, TweenAction.CANVASGROUP_ALPHA, options());
 }
 #endif
 
@@ -2695,15 +2736,18 @@ public static LTDescr color(GameObject gameObject, Color to, float time){
 /**
 * Change the color a Unity UI Object
 * 
-* @method LeanTween.textColor
-* @param {RectTransform} rectTransform:RectTransform RectTransform that you wish to fade
+* @method LeanTween.colorText
+* @param {RectTransform} rectTransform:RectTransform RectTransform attached to the Text Component whose color you want to change
 * @param {Color} to:Color the final alpha value ex: Color.Red, new Color(1.0f,1.0f,0.0f,0.8f)
 * @param {float} time:float The time with which to fade the object
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 * @example
-* LeanTween.textColor(gameObject.GetComponent&lt;RectTransform&gt;(), Color.yellow, 1f) .setDelay(1f);
+* LeanTween.colorText(gameObject.GetComponent&lt;RectTransform&gt;(), Color.yellow, 1f) .setDelay(1f);
 */
 public static LTDescr textColor(RectTransform rectTransform, Color to, float time){
+    return pushNewTween(rectTransform.gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.TEXT_COLOR, options().setPoint(new Vector3(to.r, to.g, to.b)));
+}
+public static LTDescr colorText(RectTransform rectTransform, Color to, float time){
     return pushNewTween(rectTransform.gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.TEXT_COLOR, options().setPoint(new Vector3(to.r, to.g, to.b)));
 }
 #endif
@@ -2947,6 +2991,21 @@ public static LTDescr moveLocal(GameObject gameObject, LTSpline to, float time) 
 	d.spline = to;
  		 
 	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, d);
+}
+
+/**
+* Move a GameObject to another transform
+* 
+* @method LeanTween.move
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {Transform} destination:Transform Transform whose position the tween will finally end on
+* @param {float} time:float time The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.move(gameObject, anotherTransform, 2.0f) .setEase( LeanTweenType.easeOutQuad );
+*/
+public static LTDescr move(GameObject gameObject, Transform to, float time)
+{
+    return pushNewTween(gameObject, Vector3.zero, time, TweenAction.MOVE_TO_TRANSFORM, options().setTo(to) );
 }
 
 /**
@@ -3372,7 +3431,7 @@ public static LTDescr value(GameObject gameObject, Action<Vector3> callOnUpdate,
 * @return {LTDescr} LTDescr an object that distinguishes the tween
 */
 public static LTDescr value(GameObject gameObject, Action<float,object> callOnUpdate, float from, float to, float time){
-	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdateObject(callOnUpdate) );
+	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.CALLBACK, options().setTo( new Vector3(to,0,0) ).setFrom( new Vector3(from,0,0) ).setOnUpdate(callOnUpdate, gameObject) );
 }
 
 public static LTDescr delayedSound( AudioClip audio, Vector3 pos, float volume ){
@@ -4673,10 +4732,21 @@ public class LTBezierPath {
 	* ltPath.placeLocal( transform, 0.6f, Vector3.left );
 	*/
 	public void placeLocal( Transform transform, float ratio, Vector3 worldUp ){
+		ratio = getRationInOneRange (ratio);
 		transform.localPosition = point( ratio );
-		ratio += 0.001f;
+		ratio = getRationInOneRange (ratio + 0.001f);
 		if(ratio<=1.0f)
 			transform.LookAt( transform.parent.TransformPoint( point( ratio ) ), worldUp );
+	}
+
+	public float getRationInOneRange(float ratio){
+		if (ratio >= 0.0f && ratio <= 1.0f) {
+			return ratio;
+		} else if (ratio < 0.0f) {
+			return Mathf.Ceil(ratio) - ratio;	//if -1.4 => it returns 0.4
+		} else {
+			return ratio - Mathf.Floor(ratio);	//if 1.4 => it return 0.4
+		}
 	}
 
 	public void gizmoDraw(float t = -1.0f)
