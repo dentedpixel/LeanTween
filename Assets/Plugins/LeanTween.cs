@@ -556,7 +556,7 @@ public class LTDescrImpl : LTDescr {
 	               this.setFromColor( this.uiImage.color );
                 break;
             case TweenAction.CANVASGROUP_ALPHA:
-				this.from.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
+				this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
                 break;
             case TweenAction.TEXT_ALPHA:
                 this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
@@ -569,7 +569,7 @@ public class LTDescrImpl : LTDescr {
                     this.setFromColor( this.uiText.color );
                 break;
 			case TweenAction.CANVAS_MOVE:
-				this.from = this.rectTransform.anchoredPosition3D; break;
+				this.fromInternal = this.rectTransform.anchoredPosition3D; break;
 			case TweenAction.CANVAS_MOVE_X:
 				this.fromInternal.x = this.rectTransform.anchoredPosition3D.x; break;
 			case TweenAction.CANVAS_MOVE_Y:
