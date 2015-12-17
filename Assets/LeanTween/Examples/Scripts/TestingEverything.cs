@@ -179,7 +179,7 @@ public class TestingEverything : MonoBehaviour {
 		
 		
 		// Groups of tweens testing
-		groupTweens = new LTDescr[ 1200 ];
+		groupTweens = new LTDescrImpl[ 1200 ];
 		groupGOs = new GameObject[ groupTweens.Length ];
 		groupTweensCnt = 0;
 		int descriptionMatchCount = 0;
