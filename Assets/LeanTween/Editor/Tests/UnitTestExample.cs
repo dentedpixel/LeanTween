@@ -5,7 +5,7 @@ using NSubstitute;
 using System;
 
 [TestFixture]
-public class UnitTestExample : UnityUnitTest
+public class UnitTestExample
 {
 	private TweeningCounter counter;
 	private ILeanTween tweener;
@@ -16,7 +16,7 @@ public class UnitTestExample : UnityUnitTest
 	{
 		// Create collaborators
 		this.tweener = Substitute.For<ILeanTween>();
-		this.tweeningObject = base.CreateGameObject("Tweenee");
+		this.tweeningObject = new GameObject("Tweenee");
 
 		// Create the object under test
 		this.counter = new TweeningCounter(this.tweener, this.tweeningObject);
