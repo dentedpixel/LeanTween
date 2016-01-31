@@ -6,4 +6,4 @@ Full Documentation:
 
 Getting Started
 	
-	There are many examples included! Look in the “LeanTween/LeanTweenExamples" folder to see many of the methods outlined. For additional examples unzip the 4.6_Examples.zip package.
+	There are many examples included! Look in the “LeanTween/LeanTweenExamples" folder to see many of the methods outlined. 

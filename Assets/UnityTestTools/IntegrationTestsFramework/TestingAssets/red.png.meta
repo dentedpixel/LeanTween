@@ -1,6 +1,9 @@
 fileFormatVersion: 2
 guid: 591632297e74ba34fa4c65d1265d370a
+timeCreated: 1454260679
+licenseType: Free
 TextureImporter:
+  fileIDToRecycleName: {}
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -14,14 +17,17 @@ TextureImporter:
   bumpmap:
     convertToNormalMap: 0
     externalNormalMap: 0
-    heightScale: .25
+    heightScale: 0.25
     normalMapFilter: 0
   isReadable: 0
   grayScaleToAlpha: 0
   generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
   seamlessCubemap: 0
   textureFormat: -1
-  maxTextureSize: 1024
+  maxTextureSize: 2048
   textureSettings:
     filterMode: -1
     aniso: -1
@@ -29,25 +35,23 @@ TextureImporter:
     wrapMode: -1
   nPOTScale: 1
   lightmap: 0
+  rGBM: 0
   compressionQuality: 50
+  allowsAlphaSplitting: 0
   spriteMode: 0
-  autoDetectMinSpriteSize: 4
-  gridPadding: 0
-  gridOffsetX: 0
-  gridOffsetY: 0
-  gridSizeX: 64
-  gridSizeY: 64
   spriteExtrude: 1
+  spriteMeshType: 1
   alignment: 0
-  spritePivot: {x: .5, y: .5}
-  spriteAtlasHint: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
-  generateSpritePolygon: 0
-  spritePolygonAlphaCutoff: 254
-  spritePolygonDetail: .5
   alphaIsTransparency: 0
   textureType: -1
   buildTargetSettings: []
   spriteSheet:
-    spriteFrames: []
+    sprites: []
+    outline: []
+  spritePackingTag: 
   userData: 
+  assetBundleName: 
+  assetBundleVariant: 
