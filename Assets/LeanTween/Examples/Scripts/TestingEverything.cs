@@ -55,7 +55,7 @@ public class TestingEverything : MonoBehaviour {
 
 	void Start () {
 		LeanTest.timeout = 45f;
-		LeanTest.expected = 33;
+		LeanTest.expected = 34;
 
 		LeanTween.init(14 + 1200);
 		// add a listener
@@ -126,7 +126,15 @@ public class TestingEverything : MonoBehaviour {
 		LeanTween.move( cubeToTrans, cubeDest.transform, 1.2f).setEase( LeanTweenType.easeOutQuad ).setOnComplete( ()=>{
 			LeanTest.expect( cubeToTrans.transform.position == cubeDestEnd, "MOVE TO TRANSFORM WORKS");
 		});
+
+		GameObject cubeDestroy = Instantiate( boxNoCollider ) as GameObject;
+		cubeDestroy.name = "cubeDestroy";
+		LeanTween.moveX( cubeDestroy, 200f, 0.05f).setDelay(0.02f).setDestroyOnComplete(true);
+		LeanTween.moveX( cubeDestroy, 200f, 0.1f).setDestroyOnComplete(true).setOnComplete( ()=>{
+			LeanTest.expect(true, "TWO DESTROY ON COMPLETE'S SUCCEED");
+		});
 		
+		// This test works when it is positioned last in the test queue (probably worth fixing when you have time)
 		GameObject jumpCube = Instantiate( boxNoCollider ) as GameObject;
 		jumpCube.name = "jumpTime";
 		int jumpTimeId = LeanTween.moveX( jumpCube, 1f, 1f).id;
@@ -136,10 +144,11 @@ public class TestingEverything : MonoBehaviour {
 			float beforeX = jumpCube.transform.position.x;
 			d.setTime( 0.5f );
 			LeanTween.delayedCall( 0.01f, ()=>{ }).setOnStart( ()=>{
-				LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < 0.01f , "CHANGING TIME DOESN'T JUMP AHEAD");
+				LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < 0.01f , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ));
 			});
 		});
 
+		
 		StartCoroutine( timeBasedTesting() );
 	}
 
@@ -174,9 +183,6 @@ public class TestingEverything : MonoBehaviour {
 		LeanTween.moveSplineLocal(cubeSpline, roundSpline, 0.5f).setOnComplete( ()=>{
 			LeanTest.expect(Vector3.Distance(onStartPosSpline, cubeSpline.transform.position) <= 0.01f, "BEZIER CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPosSpline+" onEnd:"+cubeSpline.transform.position+" dist:"+Vector3.Distance(onStartPosSpline, cubeSpline.transform.position));
 		});
-
-
-		
 		
 		// Groups of tweens testing
 		groupTweens = new LTDescr[ 1200 ];
@@ -224,7 +230,7 @@ public class TestingEverything : MonoBehaviour {
 		float previousXlt4 = cube4.transform.position.x;
 		lt4 = LeanTween.moveX( cube4, 5.0f, 1.1f).setOnComplete( ()=>{
 			LeanTest.expect( cube4!=null && previousXlt4!=cube4.transform.position.x, "RESUME OUT OF ORDER", "cube4:"+cube4+" previousXlt4:"+previousXlt4+" cube4.transform.position.x:"+(cube4!=null ? cube4.transform.position.x : 0));
-		});
+		}).setDestroyOnComplete( true );
 		lt4.resume();
 
 		rotateRepeat = rotateRepeatAngle = 0;
@@ -299,8 +305,13 @@ public class TestingEverything : MonoBehaviour {
         }
 		LeanTest.expect( ltCount==1, "RESET CORRECTLY CLEANS UP" );
 
+		
+
 
 		lotsOfCancels();
+
+
+		
 	}
 
 	IEnumerator lotsOfCancels(){

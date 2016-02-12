@@ -33,7 +33,7 @@ public class LeanAudioStream {
 * @class LeanAudio
 * @constructor
 */
-public class LeanAudio : MonoBehaviour {
+public class LeanAudio : object {
 
 	public static float MIN_FREQEUNCY_PERIOD = 0.000115f;
 	public static int PROCESSING_ITERATIONS_MAX = 50000;
@@ -220,15 +220,29 @@ public class LeanAudio : MonoBehaviour {
 		return audioClip;
 	}
 
-	public static AudioSource play( AudioClip audio, Vector3 pos = default(Vector3), float volume = 1f, float pitch = 1f ){
+	public static void play( AudioClip audio ){
+		playClipAt( audio, Vector3.zero ); 
+	}
+
+	public static void play( AudioClip audio, Vector3 pos ){
+		playClipAt( audio, pos ); 
+	}
+
+	public static void play( AudioClip audio, Vector3 pos, float volume ){
+		// Debug.Log("audio length:"+audio.length);
+		AudioSource audioSource = playClipAt(audio, pos);
+		audioSource.minDistance = 1f;
+		//audioSource.pitch = pitch;
+		audioSource.volume = volume;
+	}
+
+	public static AudioSource playClipAt( AudioClip clip, Vector3 pos ) {
 		GameObject tempGO = new GameObject(); // create the temp object
 		tempGO.transform.position = pos; // set its position
 		AudioSource aSource = tempGO.AddComponent<AudioSource>(); // add an audio source
-		aSource.volume = volume;
-		aSource.pitch = pitch;
-		aSource.clip = audio; // define the clip
+		aSource.clip = clip; // define the clip
 		aSource.Play(); // start the sound
-		Destroy(tempGO, audio.length); // destroy object after clip duration
+		GameObject.Destroy(tempGO, clip.length); // destroy object after clip duration
 		return aSource; // return the AudioSource reference
 	}
 

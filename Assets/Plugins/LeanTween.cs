@@ -1,6 +1,6 @@
 // Copyright (c) 2015 Russell Savage - Dented Pixel
 // 
-// LeanTween version 2.31 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.32 - http://dentedpixel.com/developer-diary/
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -2161,7 +2161,7 @@ public static void removeTween( int i ){
 			//	Debug.Log("destroy i:"+i+" id:"+tweens[i].ltRect.id);
 				LTGUI.destroy( tweens[i].ltRect.id );
 			}else{ // check if equal to tweenEmpty
-				if(tweens[i].trans.gameObject!=_tweenEmpty){
+				if(tweens[i].trans!=null && tweens[i].trans.gameObject!=_tweenEmpty){
 					Destroy(tweens[i].trans.gameObject);
 				}
 			}
@@ -5264,6 +5264,14 @@ public class LTEvent {
 	public LTEvent(int id, object data){
 		this.id = id;
 		this.data = data;
+	}
+}
+
+public class LTUI{
+
+	public static void setXY( GameObject gameObject, float x, float y){
+		RectTransform rect = gameObject.GetComponent<RectTransform>();
+		rect.anchoredPosition3D = new Vector3(x,y,0f);
 	}
 }
 
