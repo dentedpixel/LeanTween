@@ -54,8 +54,8 @@ public class TestingEverything : MonoBehaviour {
 	}
 
 	void Start () {
-		LeanTest.timeout = 45f;
-		LeanTest.expected = 34;
+		LeanTest.timeout = 46f;
+		LeanTest.expected = 35;
 
 		LeanTween.init(14 + 1200);
 		// add a listener
@@ -132,6 +132,12 @@ public class TestingEverything : MonoBehaviour {
 		LeanTween.moveX( cubeDestroy, 200f, 0.05f).setDelay(0.02f).setDestroyOnComplete(true);
 		LeanTween.moveX( cubeDestroy, 200f, 0.1f).setDestroyOnComplete(true).setOnComplete( ()=>{
 			LeanTest.expect(true, "TWO DESTROY ON COMPLETE'S SUCCEED");
+		});
+
+		GameObject cubeSpline = Instantiate( boxNoCollider ) as GameObject;
+		cubeSpline.name = "cubeSpline";
+		LeanTween.moveSpline(cubeSpline, new Vector3[]{new Vector3(0.5f,0f,0.5f),new Vector3(0.75f,0f,0.75f),new Vector3(1f,0f,1f),new Vector3(1f,0f,1f)}, 0.1f).setOnComplete( ()=>{
+			LeanTest.expect(Vector3.Distance(new Vector3(1f,0f,1f), cubeSpline.transform.position) < 0.01f, "SPLINE WITH TWO POINTS SUCCEEDS");
 		});
 		
 		// This test works when it is positioned last in the test queue (probably worth fixing when you have time)

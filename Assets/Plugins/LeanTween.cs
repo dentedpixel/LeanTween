@@ -4794,6 +4794,12 @@ public class LTSpline {
 	private float totalLength;
 	
 	public LTSpline(params Vector3[] pts) {
+		// Debug.Log("pts.Length:"+pts.Length);
+		if(pts.Length<4){
+			LeanTween.logError( "LeanTween - When passing values for a spline path, you must pass four or more values!" );
+			return;
+		}
+
 		this.pts = new Vector3[pts.Length];
 		System.Array.Copy(pts, this.pts, pts.Length);
 
@@ -4813,6 +4819,8 @@ public class LTSpline {
 
 		float minPrecision = minSegment / SUBLINE_COUNT; // number of subdivisions in each segment
 		int precision = (int)Mathf.Ceil(totalDistance / minPrecision) * DISTANCE_COUNT;
+		if(precision<=1) // precision has to be greater than zero
+			precision = 2;
 
 		ptsAdj = new Vector3[ precision ];
 		earlierPoint = interp( 0f );
@@ -4849,8 +4857,11 @@ public class LTSpline {
 		int first = (int)Mathf.Floor( t );
 		int next = (int)Mathf.Ceil( t );
 
+		if(first<0)
+			first = 0;
+
 		Vector3 val = ptsAdj[ first ];
-		
+
 
 		Vector3 nextVal = ptsAdj[ next ];
 		float diff = t - first;
@@ -4866,7 +4877,7 @@ public class LTSpline {
 		currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
 		float u = t * (float) numSections - (float) currPt;
 				
-		// Debug.Log("currPt:"+currPt+" numSections:"+numSections+" pts.Length :"+pts.Length );
+		//Debug.Log("currPt:"+currPt+" numSections:"+numSections+" pts.Length :"+pts.Length );
 		Vector3 a = pts[currPt];
 		Vector3 b = pts[currPt + 1];
 		Vector3 c = pts[currPt + 2];
