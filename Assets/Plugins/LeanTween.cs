@@ -5278,14 +5278,6 @@ public class LTEvent {
 	}
 }
 
-public class LTUI{
-
-	public static void setXY( GameObject gameObject, float x, float y){
-		RectTransform rect = gameObject.GetComponent<RectTransform>();
-		rect.anchoredPosition3D = new Vector3(x,y,0f);
-	}
-}
-
 public class LTGUI {
 	public static int RECT_LEVELS = 5;
 	public static int RECTS_PER_LEVEL = 10;

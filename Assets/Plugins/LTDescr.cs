@@ -68,7 +68,6 @@ public interface LTDescr
 	LTDescr setDirection(float direction);
 	LTDescr setEase(LeanTweenType easeType);
 	LTDescr setEase(UnityEngine.AnimationCurve easeCurve);
-	LTDescr setFrameRate(float frameRate);
 	LTDescr setFrom(float from);
 	LTDescr setFrom(UnityEngine.Vector3 from);
 	LTDescr setFromColor(UnityEngine.Color col);
@@ -109,9 +108,12 @@ public interface LTDescr
 	LTDescr setPoint(UnityEngine.Vector3 point);
 	LTDescr setRect(LTRect rect);
 	LTDescr setRect(UnityEngine.Rect rect);
-	LTDescr setRect(UnityEngine.RectTransform rect);
 	LTDescr setRepeat(int repeat);
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+	LTDescr setRect(UnityEngine.RectTransform rect);
 	LTDescr setSprites(UnityEngine.Sprite[] sprites);
+	LTDescr setFrameRate(float frameRate);
+	#endif
 	LTDescr setTime(float time);
 	LTDescr setTo(UnityEngine.Transform to);
 	LTDescr setTo(UnityEngine.Vector3 to);
