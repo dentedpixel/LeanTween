@@ -1227,12 +1227,17 @@ public class LTDescrImpl : LTDescr {
     	}
 
     	if(this.direction!=direction){
-	    	// Debug.Log("reverse path:"+this.path+" spline:"+this.spline);
-	    	if(this.path!=null){
-	    		this.path = new LTBezierPath( LTUtility.reverse( this.path.pts ) );
-			}else if(this.spline!=null){
-				this.spline = new LTSpline( LTUtility.reverse( this.spline.pts ) );
-			}
+	    	// Debug.Log("reverse path:"+this.path+" spline:"+this.spline+" hasInitiliazed:"+this.hasInitiliazed);
+	    	if(this.hasInitiliazed){
+	    		this.direction = direction;
+    		}else{
+    			if(this.path!=null){
+		    		this.path = new LTBezierPath( LTUtility.reverse( this.path.pts ) );
+				}else if(this.spline!=null){
+					this.spline = new LTSpline( LTUtility.reverse( this.spline.pts ) );
+				}
+				// this.passed = this.time - this.passed;
+    		}
 		}
     	
     	return this;
