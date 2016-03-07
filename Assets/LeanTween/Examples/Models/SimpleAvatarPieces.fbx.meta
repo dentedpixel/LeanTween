@@ -1,7 +1,202 @@
 fileFormatVersion: 2
 guid: f9f32fdb4bc7744849a33427aedb8702
 ModelImporter:
+  serializedVersion: 19
   fileIDToRecycleName:
+    100000: //RootNode
+    100002: SimpleAvatarBody
+    100004: SimpleAvatarBody.001
+    100006: SimpleAvatarBody.002
+    100008: SimpleAvatarBody.003
+    100010: SimpleAvatarBody.004
+    100012: SimpleAvatarBody.005
+    100014: SimpleAvatarBody.006
+    100016: SimpleAvatarBody.007
+    100018: SimpleAvatarBody.008
+    100020: SimpleAvatarBody.009
+    100022: SimpleAvatarBody.010
+    100024: SimpleAvatarBody.011
+    100026: SimpleAvatarBody.012
+    100028: SimpleAvatarBody.013
+    100030: SimpleAvatarBody.014
+    100032: SimpleAvatarBody.015
+    100034: SimpleAvatarBody.016
+    100036: SimpleAvatarBody.017
+    100038: SimpleAvatarBody.018
+    100040: SimpleAvatarBody.019
+    100042: SimpleAvatarBody.020
+    100044: SimpleAvatarBody.021
+    100046: SimpleAvatarBody.022
+    100048: SimpleAvatarBody.023
+    100050: SimpleAvatarBody.024
+    100052: SimpleAvatarBody.025
+    100054: SimpleAvatarBody.026
+    100056: SimpleAvatarBody.027
+    100058: SimpleAvatarBody.028
+    100060: SimpleAvatarBody.029
+    100062: SimpleAvatarBody.030
+    100064: SimpleAvatarBody.031
+    100066: SimpleAvatarBody.032
+    100068: SimpleAvatarBody.033
+    100070: SimpleAvatarBody.034
+    100072: SimpleAvatarBody.035
+    100074: SimpleAvatarBody.036
+    100076: SimpleAvatarBody.037
+    100078: SimpleAvatarBody.038
+    100080: SimpleAvatarBody.039
+    100082: SimpleAvatarBody.040
+    100084: SimpleAvatarBody.041
+    100086: SimpleAvatarBody.042
+    100088: SimpleAvatarBody.043
+    100090: SimpleAvatarBodyRim
+    100092: SimpleAvatarBody.046
+    100094: SimpleAvatarBody.047
+    100096: SimpleAvatarBody.048
+    400000: //RootNode
+    400002: SimpleAvatarBody
+    400004: SimpleAvatarBody.001
+    400006: SimpleAvatarBody.002
+    400008: SimpleAvatarBody.003
+    400010: SimpleAvatarBody.004
+    400012: SimpleAvatarBody.005
+    400014: SimpleAvatarBody.006
+    400016: SimpleAvatarBody.007
+    400018: SimpleAvatarBody.008
+    400020: SimpleAvatarBody.009
+    400022: SimpleAvatarBody.010
+    400024: SimpleAvatarBody.011
+    400026: SimpleAvatarBody.012
+    400028: SimpleAvatarBody.013
+    400030: SimpleAvatarBody.014
+    400032: SimpleAvatarBody.015
+    400034: SimpleAvatarBody.016
+    400036: SimpleAvatarBody.017
+    400038: SimpleAvatarBody.018
+    400040: SimpleAvatarBody.019
+    400042: SimpleAvatarBody.020
+    400044: SimpleAvatarBody.021
+    400046: SimpleAvatarBody.022
+    400048: SimpleAvatarBody.023
+    400050: SimpleAvatarBody.024
+    400052: SimpleAvatarBody.025
+    400054: SimpleAvatarBody.026
+    400056: SimpleAvatarBody.027
+    400058: SimpleAvatarBody.028
+    400060: SimpleAvatarBody.029
+    400062: SimpleAvatarBody.030
+    400064: SimpleAvatarBody.031
+    400066: SimpleAvatarBody.032
+    400068: SimpleAvatarBody.033
+    400070: SimpleAvatarBody.034
+    400072: SimpleAvatarBody.035
+    400074: SimpleAvatarBody.036
+    400076: SimpleAvatarBody.037
+    400078: SimpleAvatarBody.038
+    400080: SimpleAvatarBody.039
+    400082: SimpleAvatarBody.040
+    400084: SimpleAvatarBody.041
+    400086: SimpleAvatarBody.042
+    400088: SimpleAvatarBody.043
+    400090: SimpleAvatarBodyRim
+    400092: SimpleAvatarBody.046
+    400094: SimpleAvatarBody.047
+    400096: SimpleAvatarBody.048
+    2300000: SimpleAvatarBody
+    2300002: SimpleAvatarBody.001
+    2300004: SimpleAvatarBody.002
+    2300006: SimpleAvatarBody.003
+    2300008: SimpleAvatarBody.004
+    2300010: SimpleAvatarBody.005
+    2300012: SimpleAvatarBody.006
+    2300014: SimpleAvatarBody.007
+    2300016: SimpleAvatarBody.008
+    2300018: SimpleAvatarBody.009
+    2300020: SimpleAvatarBody.010
+    2300022: SimpleAvatarBody.011
+    2300024: SimpleAvatarBody.012
+    2300026: SimpleAvatarBody.013
+    2300028: SimpleAvatarBody.014
+    2300030: SimpleAvatarBody.015
+    2300032: SimpleAvatarBody.016
+    2300034: SimpleAvatarBody.017
+    2300036: SimpleAvatarBody.018
+    2300038: SimpleAvatarBody.019
+    2300040: SimpleAvatarBody.020
+    2300042: SimpleAvatarBody.021
+    2300044: SimpleAvatarBody.022
+    2300046: SimpleAvatarBody.023
+    2300048: SimpleAvatarBody.024
+    2300050: SimpleAvatarBody.025
+    2300052: SimpleAvatarBody.026
+    2300054: SimpleAvatarBody.027
+    2300056: SimpleAvatarBody.028
+    2300058: SimpleAvatarBody.029
+    2300060: SimpleAvatarBody.030
+    2300062: SimpleAvatarBody.031
+    2300064: SimpleAvatarBody.032
+    2300066: SimpleAvatarBody.033
+    2300068: SimpleAvatarBody.034
+    2300070: SimpleAvatarBody.035
+    2300072: SimpleAvatarBody.036
+    2300074: SimpleAvatarBody.037
+    2300076: SimpleAvatarBody.038
+    2300078: SimpleAvatarBody.039
+    2300080: SimpleAvatarBody.040
+    2300082: SimpleAvatarBody.041
+    2300084: SimpleAvatarBody.042
+    2300086: SimpleAvatarBody.043
+    2300088: SimpleAvatarBodyRim
+    2300090: SimpleAvatarBody.046
+    2300092: SimpleAvatarBody.047
+    2300094: SimpleAvatarBody.048
+    3300000: SimpleAvatarBody
+    3300002: SimpleAvatarBody.001
+    3300004: SimpleAvatarBody.002
+    3300006: SimpleAvatarBody.003
+    3300008: SimpleAvatarBody.004
+    3300010: SimpleAvatarBody.005
+    3300012: SimpleAvatarBody.006
+    3300014: SimpleAvatarBody.007
+    3300016: SimpleAvatarBody.008
+    3300018: SimpleAvatarBody.009
+    3300020: SimpleAvatarBody.010
+    3300022: SimpleAvatarBody.011
+    3300024: SimpleAvatarBody.012
+    3300026: SimpleAvatarBody.013
+    3300028: SimpleAvatarBody.014
+    3300030: SimpleAvatarBody.015
+    3300032: SimpleAvatarBody.016
+    3300034: SimpleAvatarBody.017
+    3300036: SimpleAvatarBody.018
+    3300038: SimpleAvatarBody.019
+    3300040: SimpleAvatarBody.020
+    3300042: SimpleAvatarBody.021
+    3300044: SimpleAvatarBody.022
+    3300046: SimpleAvatarBody.023
+    3300048: SimpleAvatarBody.024
+    3300050: SimpleAvatarBody.025
+    3300052: SimpleAvatarBody.026
+    3300054: SimpleAvatarBody.027
+    3300056: SimpleAvatarBody.028
+    3300058: SimpleAvatarBody.029
+    3300060: SimpleAvatarBody.030
+    3300062: SimpleAvatarBody.031
+    3300064: SimpleAvatarBody.032
+    3300066: SimpleAvatarBody.033
+    3300068: SimpleAvatarBody.034
+    3300070: SimpleAvatarBody.035
+    3300072: SimpleAvatarBody.036
+    3300074: SimpleAvatarBody.037
+    3300076: SimpleAvatarBody.038
+    3300078: SimpleAvatarBody.039
+    3300080: SimpleAvatarBody.040
+    3300082: SimpleAvatarBody.041
+    3300084: SimpleAvatarBody.042
+    3300086: SimpleAvatarBody.043
+    3300088: SimpleAvatarBodyRim
+    3300090: SimpleAvatarBody.046
+    3300092: SimpleAvatarBody.047
+    3300094: SimpleAvatarBody.048
     4300000: SimpleAvatarBody.048
     4300002: SimpleAvatarBody.047
     4300004: SimpleAvatarBody.046
@@ -49,671 +244,69 @@ ModelImporter:
     4300088: SimpleAvatarBody.003
     4300090: SimpleAvatarBody.002
     4300092: SimpleAvatarBody.001
-  serializedVersion: 10
+    4300094: SimpleAvatarBody
+    11100000: //RootNode
   materials:
     importMaterials: 1
     materialName: 0
     materialSearch: 1
   animations:
-    generateAnimations: 3
+    legacyGenerateAnimations: 3
     bakeSimulation: 0
-    splitAnimations: 1
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
     animationCompression: 1
-    animationRotationError: .5
-    animationPositionError: .5
-    animationScaleError: .5
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
     animationWrapMode: 0
+    extraExposedTransformPaths: []
     clipAnimations: []
+    isReadable: 1
   meshes:
     lODScreenPercentages: []
-    globalScale: .00999999978
+    globalScale: 0.01
     meshCompression: 0
     addColliders: 0
+    importBlendShapes: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
-    optimizeMesh: 0
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
     secondaryUVAngleDistortion: 8
     secondaryUVAreaDistortion: 15.000001
     secondaryUVHardAngle: 88
     secondaryUVPackMargin: 4
+    useFileScale: 0
   tangentSpace:
     normalSmoothAngle: 60
-    splitTangentsAcrossUV: 1
     normalImportMode: 0
-    tangentImportMode: 1
-  textMetaNamesToFileIDs:
-    //RootNode:
-      data:
-        first: 1
-        second: a0860100
-      data:
-        first: 4
-        second: 801a0600
-      data:
-        first: 111
-        second: 605fa900
-    SimpleAvatarBody:
-      data:
-        first: 1
-        second: a2860100
-      data:
-        first: 4
-        second: 821a0600
-      data:
-        first: 23
-        second: 60182300
-      data:
-        first: 33
-        second: a05a3200
-    SimpleAvatarBody.001:
-      data:
-        first: 1
-        second: a4860100
-      data:
-        first: 4
-        second: 841a0600
-      data:
-        first: 23
-        second: 62182300
-      data:
-        first: 33
-        second: a25a3200
-    SimpleAvatarBody.002:
-      data:
-        first: 1
-        second: a6860100
-      data:
-        first: 4
-        second: 861a0600
-      data:
-        first: 23
-        second: 64182300
-      data:
-        first: 33
-        second: a45a3200
-    SimpleAvatarBody.003:
-      data:
-        first: 1
-        second: a8860100
-      data:
-        first: 4
-        second: 881a0600
-      data:
-        first: 23
-        second: 66182300
-      data:
-        first: 33
-        second: a65a3200
-    SimpleAvatarBody.004:
-      data:
-        first: 1
-        second: aa860100
-      data:
-        first: 4
-        second: 8a1a0600
-      data:
-        first: 23
-        second: 68182300
-      data:
-        first: 33
-        second: a85a3200
-    SimpleAvatarBody.005:
-      data:
-        first: 1
-        second: ac860100
-      data:
-        first: 4
-        second: 8c1a0600
-      data:
-        first: 23
-        second: 6a182300
-      data:
-        first: 33
-        second: aa5a3200
-    SimpleAvatarBody.006:
-      data:
-        first: 1
-        second: ae860100
-      data:
-        first: 4
-        second: 8e1a0600
-      data:
-        first: 23
-        second: 6c182300
-      data:
-        first: 33
-        second: ac5a3200
-    SimpleAvatarBody.007:
-      data:
-        first: 1
-        second: b0860100
-      data:
-        first: 4
-        second: 901a0600
-      data:
-        first: 23
-        second: 6e182300
-      data:
-        first: 33
-        second: ae5a3200
-    SimpleAvatarBody.008:
-      data:
-        first: 1
-        second: b2860100
-      data:
-        first: 4
-        second: 921a0600
-      data:
-        first: 23
-        second: 70182300
-      data:
-        first: 33
-        second: b05a3200
-    SimpleAvatarBody.009:
-      data:
-        first: 1
-        second: b4860100
-      data:
-        first: 4
-        second: 941a0600
-      data:
-        first: 23
-        second: 72182300
-      data:
-        first: 33
-        second: b25a3200
-    SimpleAvatarBody.010:
-      data:
-        first: 1
-        second: b6860100
-      data:
-        first: 4
-        second: 961a0600
-      data:
-        first: 23
-        second: 74182300
-      data:
-        first: 33
-        second: b45a3200
-    SimpleAvatarBody.011:
-      data:
-        first: 1
-        second: b8860100
-      data:
-        first: 4
-        second: 981a0600
-      data:
-        first: 23
-        second: 76182300
-      data:
-        first: 33
-        second: b65a3200
-    SimpleAvatarBody.012:
-      data:
-        first: 1
-        second: ba860100
-      data:
-        first: 4
-        second: 9a1a0600
-      data:
-        first: 23
-        second: 78182300
-      data:
-        first: 33
-        second: b85a3200
-    SimpleAvatarBody.013:
-      data:
-        first: 1
-        second: bc860100
-      data:
-        first: 4
-        second: 9c1a0600
-      data:
-        first: 23
-        second: 7a182300
-      data:
-        first: 33
-        second: ba5a3200
-    SimpleAvatarBody.014:
-      data:
-        first: 1
-        second: be860100
-      data:
-        first: 4
-        second: 9e1a0600
-      data:
-        first: 23
-        second: 7c182300
-      data:
-        first: 33
-        second: bc5a3200
-    SimpleAvatarBody.015:
-      data:
-        first: 1
-        second: c0860100
-      data:
-        first: 4
-        second: a01a0600
-      data:
-        first: 23
-        second: 7e182300
-      data:
-        first: 33
-        second: be5a3200
-    SimpleAvatarBody.016:
-      data:
-        first: 1
-        second: c2860100
-      data:
-        first: 4
-        second: a21a0600
-      data:
-        first: 23
-        second: 80182300
-      data:
-        first: 33
-        second: c05a3200
-    SimpleAvatarBody.017:
-      data:
-        first: 1
-        second: c4860100
-      data:
-        first: 4
-        second: a41a0600
-      data:
-        first: 23
-        second: 82182300
-      data:
-        first: 33
-        second: c25a3200
-    SimpleAvatarBody.018:
-      data:
-        first: 1
-        second: c6860100
-      data:
-        first: 4
-        second: a61a0600
-      data:
-        first: 23
-        second: 84182300
-      data:
-        first: 33
-        second: c45a3200
-    SimpleAvatarBody.019:
-      data:
-        first: 1
-        second: c8860100
-      data:
-        first: 4
-        second: a81a0600
-      data:
-        first: 23
-        second: 86182300
-      data:
-        first: 33
-        second: c65a3200
-    SimpleAvatarBody.020:
-      data:
-        first: 1
-        second: ca860100
-      data:
-        first: 4
-        second: aa1a0600
-      data:
-        first: 23
-        second: 88182300
-      data:
-        first: 33
-        second: c85a3200
-    SimpleAvatarBody.021:
-      data:
-        first: 1
-        second: cc860100
-      data:
-        first: 4
-        second: ac1a0600
-      data:
-        first: 23
-        second: 8a182300
-      data:
-        first: 33
-        second: ca5a3200
-    SimpleAvatarBody.022:
-      data:
-        first: 1
-        second: ce860100
-      data:
-        first: 4
-        second: ae1a0600
-      data:
-        first: 23
-        second: 8c182300
-      data:
-        first: 33
-        second: cc5a3200
-    SimpleAvatarBody.023:
-      data:
-        first: 1
-        second: d0860100
-      data:
-        first: 4
-        second: b01a0600
-      data:
-        first: 23
-        second: 8e182300
-      data:
-        first: 33
-        second: ce5a3200
-    SimpleAvatarBody.024:
-      data:
-        first: 1
-        second: d2860100
-      data:
-        first: 4
-        second: b21a0600
-      data:
-        first: 23
-        second: 90182300
-      data:
-        first: 33
-        second: d05a3200
-    SimpleAvatarBody.025:
-      data:
-        first: 1
-        second: d4860100
-      data:
-        first: 4
-        second: b41a0600
-      data:
-        first: 23
-        second: 92182300
-      data:
-        first: 33
-        second: d25a3200
-    SimpleAvatarBody.026:
-      data:
-        first: 1
-        second: d6860100
-      data:
-        first: 4
-        second: b61a0600
-      data:
-        first: 23
-        second: 94182300
-      data:
-        first: 33
-        second: d45a3200
-    SimpleAvatarBody.027:
-      data:
-        first: 1
-        second: d8860100
-      data:
-        first: 4
-        second: b81a0600
-      data:
-        first: 23
-        second: 96182300
-      data:
-        first: 33
-        second: d65a3200
-    SimpleAvatarBody.028:
-      data:
-        first: 1
-        second: da860100
-      data:
-        first: 4
-        second: ba1a0600
-      data:
-        first: 23
-        second: 98182300
-      data:
-        first: 33
-        second: d85a3200
-    SimpleAvatarBody.029:
-      data:
-        first: 1
-        second: dc860100
-      data:
-        first: 4
-        second: bc1a0600
-      data:
-        first: 23
-        second: 9a182300
-      data:
-        first: 33
-        second: da5a3200
-    SimpleAvatarBody.030:
-      data:
-        first: 1
-        second: de860100
-      data:
-        first: 4
-        second: be1a0600
-      data:
-        first: 23
-        second: 9c182300
-      data:
-        first: 33
-        second: dc5a3200
-    SimpleAvatarBody.031:
-      data:
-        first: 1
-        second: e0860100
-      data:
-        first: 4
-        second: c01a0600
-      data:
-        first: 23
-        second: 9e182300
-      data:
-        first: 33
-        second: de5a3200
-    SimpleAvatarBody.032:
-      data:
-        first: 1
-        second: e2860100
-      data:
-        first: 4
-        second: c21a0600
-      data:
-        first: 23
-        second: a0182300
-      data:
-        first: 33
-        second: e05a3200
-    SimpleAvatarBody.033:
-      data:
-        first: 1
-        second: e4860100
-      data:
-        first: 4
-        second: c41a0600
-      data:
-        first: 23
-        second: a2182300
-      data:
-        first: 33
-        second: e25a3200
-    SimpleAvatarBody.034:
-      data:
-        first: 1
-        second: e6860100
-      data:
-        first: 4
-        second: c61a0600
-      data:
-        first: 23
-        second: a4182300
-      data:
-        first: 33
-        second: e45a3200
-    SimpleAvatarBody.035:
-      data:
-        first: 1
-        second: e8860100
-      data:
-        first: 4
-        second: c81a0600
-      data:
-        first: 23
-        second: a6182300
-      data:
-        first: 33
-        second: e65a3200
-    SimpleAvatarBody.036:
-      data:
-        first: 1
-        second: ea860100
-      data:
-        first: 4
-        second: ca1a0600
-      data:
-        first: 23
-        second: a8182300
-      data:
-        first: 33
-        second: e85a3200
-    SimpleAvatarBody.037:
-      data:
-        first: 1
-        second: ec860100
-      data:
-        first: 4
-        second: cc1a0600
-      data:
-        first: 23
-        second: aa182300
-      data:
-        first: 33
-        second: ea5a3200
-    SimpleAvatarBody.038:
-      data:
-        first: 1
-        second: ee860100
-      data:
-        first: 4
-        second: ce1a0600
-      data:
-        first: 23
-        second: ac182300
-      data:
-        first: 33
-        second: ec5a3200
-    SimpleAvatarBody.039:
-      data:
-        first: 1
-        second: f0860100
-      data:
-        first: 4
-        second: d01a0600
-      data:
-        first: 23
-        second: ae182300
-      data:
-        first: 33
-        second: ee5a3200
-    SimpleAvatarBody.040:
-      data:
-        first: 1
-        second: f2860100
-      data:
-        first: 4
-        second: d21a0600
-      data:
-        first: 23
-        second: b0182300
-      data:
-        first: 33
-        second: f05a3200
-    SimpleAvatarBody.041:
-      data:
-        first: 1
-        second: f4860100
-      data:
-        first: 4
-        second: d41a0600
-      data:
-        first: 23
-        second: b2182300
-      data:
-        first: 33
-        second: f25a3200
-    SimpleAvatarBody.042:
-      data:
-        first: 1
-        second: f6860100
-      data:
-        first: 4
-        second: d61a0600
-      data:
-        first: 23
-        second: b4182300
-      data:
-        first: 33
-        second: f45a3200
-    SimpleAvatarBody.043:
-      data:
-        first: 1
-        second: f8860100
-      data:
-        first: 4
-        second: d81a0600
-      data:
-        first: 23
-        second: b6182300
-      data:
-        first: 33
-        second: f65a3200
-    SimpleAvatarBody.046:
-      data:
-        first: 1
-        second: fc860100
-      data:
-        first: 4
-        second: dc1a0600
-      data:
-        first: 23
-        second: ba182300
-      data:
-        first: 33
-        second: fa5a3200
-    SimpleAvatarBody.047:
-      data:
-        first: 1
-        second: fe860100
-      data:
-        first: 4
-        second: de1a0600
-      data:
-        first: 23
-        second: bc182300
-      data:
-        first: 33
-        second: fc5a3200
-    SimpleAvatarBody.048:
-      data:
-        first: 1
-        second: 00870100
-      data:
-        first: 4
-        second: e01a0600
-      data:
-        first: 23
-        second: be182300
-      data:
-        first: 33
-        second: fe5a3200
-    SimpleAvatarBodyRim:
-      data:
-        first: 1
-        second: fa860100
-      data:
-        first: 4
-        second: da1a0600
-      data:
-        first: 23
-        second: b8182300
-      data:
-        first: 33
-        second: f85a3200
+    tangentImportMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 1
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

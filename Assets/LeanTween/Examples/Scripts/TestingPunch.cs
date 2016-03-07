@@ -5,6 +5,8 @@ public class TestingPunch : MonoBehaviour {
 
     public AnimationCurve exportCurve;
     public float overShootValue = 1f;
+
+    private LTDescr descr;
 	
 	void Start () {
 	   //LeanTween.rotateAround(gameObject, gameObject.transform.rotation.eulerAngles, 360f, 5f).setDelay(1f).setEase(LeanTweenType.easeOutBounce);
@@ -57,6 +59,21 @@ public class TestingPunch : MonoBehaviour {
                 });
 
             });
+
+            
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            Vector3[] pts = new Vector3[] {new Vector3(-1f,0f,0f), new Vector3(0f,0f,0f), new Vector3(4f,0f,0f), new Vector3(20f,0f,0f)};
+            descr = LeanTween.move(gameObject, pts, 15f).setOrientToPath(true).setDirection(1f).setOnComplete( ()=>{
+                Debug.Log("move path finished");
+            });
+        }
+
+        if (Input.GetKeyDown(KeyCode.Y)) // Reverse the move path
+        {
+            descr.setDirection(-descr.direction);
         }
  
         if (Input.GetKeyDown(KeyCode.R))

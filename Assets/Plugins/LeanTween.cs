@@ -1,6 +1,8 @@
-// Copyright (c) 2015 Russell Savage - Dented Pixel
-// 
-// LeanTween version 2.31 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.33 - http://dentedpixel.com/developer-diary/
+//
+// The MIT License (MIT)
+//
+// Copyright (c) 2016 Russell Savage - Dented Pixel
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -9,16 +11,17 @@
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
 //
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software.
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
 //
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 
 /*
 TERMS OF USE - EASING EQUATIONS#
@@ -226,55 +229,58 @@ public enum LeanTweenType{
 * @constructor
 */
 
-public class LTDescr {
-	public bool toggle;
-	public bool useEstimatedTime;
-	public bool useFrames;
-	public bool useManualTime;
-	public bool hasInitiliazed;
-	public bool hasPhysics;
-	public bool onCompleteOnRepeat;
-	public bool onCompleteOnStart;
-	public float passed;
-	public float delay;
-	public float time;
-	public float lastVal;
+public class LTDescrImpl : LTDescr {
+	public bool toggle { get; set; }
+	public bool useEstimatedTime { get; set; }
+	public bool useFrames { get; set; }
+	public bool useManualTime { get; set; }
+	public bool hasInitiliazed { get; set; }
+	public bool hasPhysics { get; set; }
+	public bool onCompleteOnRepeat { get; set; }
+	public bool onCompleteOnStart { get; set; }
+	public float passed { get; set; }
+	public float delay { get; set; }
+	public float time { get; set; }
+	public float lastVal { get; set; }
 	private uint _id;
-	public int loopCount;
-	public uint counter;
-	public float direction;
-	public float directionLast;
-	public float overshoot;
-	public float period;
-	public bool destroyOnComplete;
-	public Transform trans;
-	public Transform toTrans;
-	public LTRect ltRect;
-	public Vector3 from;
-	public Vector3 to;
-	public Vector3 diff;
-	public Vector3 point;
-	public Vector3 axis;
-	public Quaternion origRotation;
-	public LTBezierPath path;
-	public LTSpline spline;
-	public TweenAction type;
-	public LeanTweenType tweenType;
-	public AnimationCurve animationCurve;
-	public LeanTweenType loopType;
-	public bool hasUpdateCallback;
-	public Action<float> onUpdateFloat;
-    public Action<float,float> onUpdateFloatRatio;
-	public Action<float,object> onUpdateFloatObject;
-	public Action<Vector2> onUpdateVector2;
-	public Action<Vector3> onUpdateVector3;
-	public Action<Vector3,object> onUpdateVector3Object;
-	public Action<Color> onUpdateColor;
-	public Action onComplete;
-	public Action<object> onCompleteObject;
-	public object onCompleteParam;
-	public object onUpdateParam;
-	public Action onStart;
+	public int loopCount { get; set; }
+	public uint counter { get; set; }
+	public float direction { get; set; }
+	public float directionLast { get; set; }
+	public float overshoot { get; set; }
+	public float period { get; set; }
+	public bool destroyOnComplete { get; set; }
+	public Transform trans { get; set; }
+	public Transform toTrans { get; set; }
+	public LTRect ltRect { get; set; }
+	internal Vector3 fromInternal;
+	public Vector3 from { get { return this.fromInternal; } set { this.fromInternal = value; } }
+	internal Vector3 toInternal;
+	public Vector3 to { get { return this.toInternal; } set { this.toInternal = value; } }
+	internal Vector3 diffInternal;
+	public Vector3 diff { get { return this.diffInternal; } set { this.diffInternal = value; } }
+	public Vector3 point { get; set; }
+	public Vector3 axis { get; set; }
+	public Quaternion origRotation { get; set; }
+	public LTBezierPath path { get; set; }
+	public LTSpline spline { get; set; }
+	public TweenAction type { get; set; }
+	public LeanTweenType tweenType { get; set; }
+	public AnimationCurve animationCurve { get; set; }
+	public LeanTweenType loopType { get; set; }
+	public bool hasUpdateCallback { get; set; }
+	public Action<float> onUpdateFloat { get; set; }
+    public Action<float,float> onUpdateFloatRatio { get; set; }
+	public Action<float,object> onUpdateFloatObject { get; set; }
+	public Action<Vector2> onUpdateVector2 { get; set; }
+	public Action<Vector3> onUpdateVector3 { get; set; }
+	public Action<Vector3,object> onUpdateVector3Object { get; set; }
+	public Action<Color> onUpdateColor { get; set; }
+	public Action onComplete { get; set; }
+	public Action<object> onCompleteObject { get; set; }
+	public object onCompleteParam { get; set; }
+	public object onUpdateParam { get; set; }
+	public Action onStart { get; set; }
 
 	#if LEANTWEEN_1
 	public Hashtable optional;
@@ -292,7 +298,7 @@ public class LTDescr {
 		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
 
-	public LTDescr(){
+	public LTDescrImpl(){
 
 	}
 
@@ -388,32 +394,32 @@ public class LTDescr {
 			case TweenAction.MOVE_TO_TRANSFORM:
 				this.from = trans.position; break;
 			case TweenAction.MOVE_X:
-				this.from.x = trans.position.x; break;
+				this.fromInternal.x = trans.position.x; break;
 			case TweenAction.MOVE_Y:
-				this.from.x = trans.position.y; break;
+				this.fromInternal.x = trans.position.y; break;
 			case TweenAction.MOVE_Z:
-				this.from.x = trans.position.z; break;
+				this.fromInternal.x = trans.position.z; break;
 			case TweenAction.MOVE_LOCAL_X:
-				this.from.x = trans.localPosition.x; break;
+				this.fromInternal.x = trans.localPosition.x; break;
 			case TweenAction.MOVE_LOCAL_Y:
-				this.from.x = trans.localPosition.y; break;
+				this.fromInternal.x = trans.localPosition.y; break;
 			case TweenAction.MOVE_LOCAL_Z:
-				this.from.x = trans.localPosition.z; break;
+				this.fromInternal.x = trans.localPosition.z; break;
 			case TweenAction.SCALE_X:
-				this.from.x = trans.localScale.x; break;
+				this.fromInternal.x = trans.localScale.x; break;
 			case TweenAction.SCALE_Y:
-				this.from.x = trans.localScale.y; break;
+				this.fromInternal.x = trans.localScale.y; break;
 			case TweenAction.SCALE_Z:
-				this.from.x = trans.localScale.z; break;
+				this.fromInternal.x = trans.localScale.z; break;
 			case TweenAction.ALPHA:
 				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 					if(trans.gameObject.renderer){
-						this.from.x = trans.gameObject.renderer.material.color.a;
+						this.fromInternal.x = trans.gameObject.renderer.material.color.a;
 					}else if(trans.childCount>0){
 						foreach (Transform child in trans) {
 							if(child.gameObject.renderer!=null){
 								Color col = child.gameObject.renderer.material.color;
-								this.from.x = col.a;
+								this.fromInternal.x = col.a;
 								break;
 	    					}
 						}
@@ -422,18 +428,18 @@ public class LTDescr {
 				#else
 					SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
 					if(ren!=null){
-						this.from.x = ren.color.a;
+						this.fromInternal.x = ren.color.a;
 					}else{
 						if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
-							this.from.x = trans.gameObject.GetComponent<Renderer>().material.color.a;
+							this.fromInternal.x = trans.gameObject.GetComponent<Renderer>().material.color.a;
 						}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
 							Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor("_TintColor");
-							this.from.x = col.a;
+							this.fromInternal.x = col.a;
 						}else if(trans.childCount>0){
 							foreach (Transform child in trans) {
 								if(child.gameObject.GetComponent<Renderer>()!=null){
 									Color col = child.gameObject.GetComponent<Renderer>().material.color;
-									this.from.x = col.a;
+									this.fromInternal.x = col.a;
 									break;
 		    					}
 							}
@@ -447,36 +453,36 @@ public class LTDescr {
 			case TweenAction.MOVE_CURVED_LOCAL:
 			case TweenAction.MOVE_SPLINE:
 			case TweenAction.MOVE_SPLINE_LOCAL:
-				this.from.x = 0; break;
+				this.fromInternal.x = 0; break;
 			case TweenAction.ROTATE:
 				this.from = trans.eulerAngles; 
-				this.to = new Vector3(LeanTween.closestRot( this.from.x, this.to.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
+				this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
 				break;
 			case TweenAction.ROTATE_X:
-				this.from.x = trans.eulerAngles.x; 
-				this.to.x = LeanTween.closestRot( this.from.x, this.to.x);
+				this.fromInternal.x = trans.eulerAngles.x; 
+				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
 				break;
 			case TweenAction.ROTATE_Y:
-				this.from.x = trans.eulerAngles.y; 
-				this.to.x = LeanTween.closestRot( this.from.x, this.to.x);
+				this.fromInternal.x = trans.eulerAngles.y; 
+				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
 				break;
 			case TweenAction.ROTATE_Z:
-				this.from.x = trans.eulerAngles.z; 
-				this.to.x = LeanTween.closestRot( this.from.x, this.to.x);
+				this.fromInternal.x = trans.eulerAngles.z; 
+				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
 				break;
 			case TweenAction.ROTATE_AROUND:
 				this.lastVal = 0.0f; // optional["last"]
-				this.from.x = 0.0f;
+				this.fromInternal.x = 0.0f;
 				this.origRotation = trans.rotation; // optional["origRotation"
 				break;
 			case TweenAction.ROTATE_AROUND_LOCAL:
 				this.lastVal = 0.0f; // optional["last"]
-				this.from.x = 0.0f;
+				this.fromInternal.x = 0.0f;
 				this.origRotation = trans.localRotation; // optional["origRotation"
 				break;
 			case TweenAction.ROTATE_LOCAL:
 				this.from = trans.localEulerAngles; 
-				this.to = new Vector3(LeanTween.closestRot( this.from.x, this.to.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
+				this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
 				break;
 			case TweenAction.SCALE:
 				this.from = trans.localScale; break;
@@ -487,16 +493,16 @@ public class LTDescr {
 			case TweenAction.GUI_SCALE:
 				this.from = new Vector3(this.ltRect.rect.width, this.ltRect.rect.height, 0); break;
 			case TweenAction.GUI_ALPHA:
-				this.from.x = this.ltRect.alpha; break;
+				this.fromInternal.x = this.ltRect.alpha; break;
 			case TweenAction.GUI_ROTATE:
 				if(this.ltRect.rotateEnabled==false){
 					this.ltRect.rotateEnabled = true;
 					this.ltRect.resetForRotation();
 				}
 				
-				this.from.x = this.ltRect.rotation; break;
+				this.fromInternal.x = this.ltRect.rotation; break;
 			case TweenAction.ALPHA_VERTEX:
-				this.from.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
+				this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 				break;
 			case TweenAction.CALLBACK:
 				break;
@@ -545,7 +551,7 @@ public class LTDescr {
 			case TweenAction.CANVAS_ALPHA:
 				this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
                 if(this.uiImage != null)
-	                this.from.x = this.uiImage.color.a;
+	                this.fromInternal.x = this.uiImage.color.a;
                 break;
             case TweenAction.CANVAS_COLOR:
                 this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
@@ -553,12 +559,12 @@ public class LTDescr {
 	               this.setFromColor( this.uiImage.color );
                 break;
             case TweenAction.CANVASGROUP_ALPHA:
-				this.from.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
+				this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
                 break;
             case TweenAction.TEXT_ALPHA:
                 this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
                 if (this.uiText != null)
-                    this.from.x = this.uiText.color.a;
+                    this.fromInternal.x = this.uiText.color.a;
                 break;
             case TweenAction.TEXT_COLOR:
                 this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
@@ -566,24 +572,24 @@ public class LTDescr {
                     this.setFromColor( this.uiText.color );
                 break;
 			case TweenAction.CANVAS_MOVE:
-				this.from = this.rectTransform.anchoredPosition3D; break;
+				this.fromInternal = this.rectTransform.anchoredPosition3D; break;
 			case TweenAction.CANVAS_MOVE_X:
-				this.from.x = this.rectTransform.anchoredPosition3D.x; break;
+				this.fromInternal.x = this.rectTransform.anchoredPosition3D.x; break;
 			case TweenAction.CANVAS_MOVE_Y:
-				this.from.x = this.rectTransform.anchoredPosition3D.y; break;
+				this.fromInternal.x = this.rectTransform.anchoredPosition3D.y; break;
 			case TweenAction.CANVAS_MOVE_Z:
-				this.from.x = this.rectTransform.anchoredPosition3D.z; break;
+				this.fromInternal.x = this.rectTransform.anchoredPosition3D.z; break;
 			case TweenAction.CANVAS_ROTATEAROUND:
 			case TweenAction.CANVAS_ROTATEAROUND_LOCAL:
 				this.lastVal = 0.0f;
-				this.from.x = 0.0f;
+				this.fromInternal.x = 0.0f;
 				this.origRotation = this.rectTransform.rotation;
 				break;
 			case TweenAction.CANVAS_SCALE:
 				this.from = this.rectTransform.localScale; break;
 			case TweenAction.CANVAS_PLAYSPRITE:
 				this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-				this.from.x = 0f;
+				this.fromInternal.x = 0f;
 				break;
 			#endif
 		}
@@ -1221,12 +1227,17 @@ public class LTDescr {
     	}
 
     	if(this.direction!=direction){
-	    	// Debug.Log("reverse path:"+this.path+" spline:"+this.spline);
-	    	if(this.path!=null){
-	    		this.path = new LTBezierPath( LTUtility.reverse( this.path.pts ) );
-			}else if(this.spline!=null){
-				this.spline = new LTSpline( LTUtility.reverse( this.spline.pts ) );
-			}
+	    	// Debug.Log("reverse path:"+this.path+" spline:"+this.spline+" hasInitiliazed:"+this.hasInitiliazed);
+	    	if(this.hasInitiliazed){
+	    		this.direction = direction;
+    		}else{
+    			if(this.path!=null){
+		    		this.path = new LTBezierPath( LTUtility.reverse( this.path.pts ) );
+				}else if(this.spline!=null){
+					this.spline = new LTSpline( LTUtility.reverse( this.spline.pts ) );
+				}
+				// this.passed = this.time - this.passed;
+    		}
 		}
     	
     	return this;
@@ -1277,9 +1288,9 @@ public class LeanTween : MonoBehaviour {
 public static bool throwErrors = true;
 public static float tau = Mathf.PI*2.0f; 
 
-private static LTDescr[] tweens;
+private static LTDescrImpl[] tweens;
 private static int[] tweensFinished;
-private static LTDescr tween;
+private static LTDescrImpl tween;
 private static int tweenMaxSearch = -1;
 private static int maxTweens = 400;
 private static int frameRendered= -1;
@@ -1330,7 +1341,7 @@ public static int tweensRunning{
 public static void init(int maxSimultaneousTweens){
 	if(tweens==null){
 		maxTweens = maxSimultaneousTweens;
-		tweens = new LTDescr[maxTweens];
+		tweens = new LTDescrImpl[maxTweens];
 		tweensFinished = new int[maxTweens];
 		_tweenEmpty = new GameObject();
 		_tweenEmpty.name = "~LeanTween";
@@ -1341,7 +1352,7 @@ public static void init(int maxSimultaneousTweens){
 		#endif
 		DontDestroyOnLoad( _tweenEmpty );
 		for(int i = 0; i < maxTweens; i++){
-			tweens[i] = new LTDescr();
+			tweens[i] = new LTDescrImpl();
 		}
 	}
 }
@@ -1544,8 +1555,8 @@ public static void update() {
 									}else if(tween.tweenType==LeanTweenType.easeShake){
 										tween.animationCurve = LeanTween.shake;
 									}
-									tween.to.x = tween.from.x + tween.to.x;
-									tween.diff.x = tween.to.x - tween.from.x;
+									tween.toInternal.x = tween.from.x + tween.to.x;
+									tween.diffInternal.x = tween.to.x - tween.from.x;
 									val = tweenOnCurve(tween, ratioPassed); break;
 								case LeanTweenType.easeSpring:
 									val = spring(tween.from.x, tween.to.x, ratioPassed); break;
@@ -1890,7 +1901,7 @@ public static void update() {
 										}else if(tween.tweenType==LeanTweenType.easeShake){
 											tween.animationCurve = LeanTween.shake;
 										}
-										tween.to = tween.from + tween.to;
+										tween.toInternal = tween.from + tween.to;
 										tween.diff = tween.to - tween.from;
 										if(tweenAction==TweenAction.ROTATE || tweenAction==TweenAction.ROTATE_LOCAL){
 											tween.to = new Vector3(closestRot(tween.from.x, tween.to.x), closestRot(tween.from.y, tween.to.y), closestRot(tween.from.z, tween.to.z));
@@ -2135,7 +2146,7 @@ private static void textAlphaRecursive( Transform trans, float val ){
 }
 #endif
 
-private static Color tweenColor( LTDescr tween, float val ){
+private static Color tweenColor( LTDescrImpl tween, float val ){
 	Vector3 diff3 = tween.point - tween.axis;
 	float diffAlpha = tween.to.y - tween.from.y;
 	return new Color(tween.axis.x + diff3.x*val, tween.axis.y + diff3.y*val, tween.axis.z + diff3.z*val, tween.from.y + diffAlpha*val);
@@ -2158,7 +2169,7 @@ public static void removeTween( int i ){
 			//	Debug.Log("destroy i:"+i+" id:"+tweens[i].ltRect.id);
 				LTGUI.destroy( tweens[i].ltRect.id );
 			}else{ // check if equal to tweenEmpty
-				if(tweens[i].trans.gameObject!=_tweenEmpty){
+				if(tweens[i].trans!=null && tweens[i].trans.gameObject!=_tweenEmpty){
 					Destroy(tweens[i].trans.gameObject);
 				}
 			}
@@ -4052,12 +4063,12 @@ public static int alpha(GameObject gameObject, float to, float time, object[] op
 
 // Tweening Functions - Thanks to Robert Penner and GFX47
 
-private static float tweenOnCurve( LTDescr tweenDescr, float ratioPassed ){
+private static float tweenOnCurve( LTDescrImpl tweenDescr, float ratioPassed ){
 	// Debug.Log("single ratio:"+ratioPassed+" tweenDescr.animationCurve.Evaluate(ratioPassed):"+tweenDescr.animationCurve.Evaluate(ratioPassed));
 	return tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.animationCurve.Evaluate(ratioPassed);
 }
 
-private static Vector3 tweenOnCurveVector( LTDescr tweenDescr, float ratioPassed ){
+private static Vector3 tweenOnCurveVector( LTDescrImpl tweenDescr, float ratioPassed ){
 	return	new Vector3(tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.animationCurve.Evaluate(ratioPassed),
 						tweenDescr.from.y + (tweenDescr.diff.y) * tweenDescr.animationCurve.Evaluate(ratioPassed),
 						tweenDescr.from.z + (tweenDescr.diff.z) * tweenDescr.animationCurve.Evaluate(ratioPassed) );
@@ -4791,6 +4802,12 @@ public class LTSpline {
 	private float totalLength;
 	
 	public LTSpline(params Vector3[] pts) {
+		// Debug.Log("pts.Length:"+pts.Length);
+		if(pts.Length<4){
+			LeanTween.logError( "LeanTween - When passing values for a spline path, you must pass four or more values!" );
+			return;
+		}
+
 		this.pts = new Vector3[pts.Length];
 		System.Array.Copy(pts, this.pts, pts.Length);
 
@@ -4810,6 +4827,8 @@ public class LTSpline {
 
 		float minPrecision = minSegment / SUBLINE_COUNT; // number of subdivisions in each segment
 		int precision = (int)Mathf.Ceil(totalDistance / minPrecision) * DISTANCE_COUNT;
+		if(precision<=1) // precision has to be greater than zero
+			precision = 2;
 
 		ptsAdj = new Vector3[ precision ];
 		earlierPoint = interp( 0f );
@@ -4846,8 +4865,11 @@ public class LTSpline {
 		int first = (int)Mathf.Floor( t );
 		int next = (int)Mathf.Ceil( t );
 
+		if(first<0)
+			first = 0;
+
 		Vector3 val = ptsAdj[ first ];
-		
+
 
 		Vector3 nextVal = ptsAdj[ next ];
 		float diff = t - first;
@@ -4863,7 +4885,7 @@ public class LTSpline {
 		currPt = Mathf.Min(Mathf.FloorToInt(t * (float) numSections), numSections - 1);
 		float u = t * (float) numSections - (float) currPt;
 				
-		// Debug.Log("currPt:"+currPt+" numSections:"+numSections+" pts.Length :"+pts.Length );
+		//Debug.Log("currPt:"+currPt+" numSections:"+numSections+" pts.Length :"+pts.Length );
 		Vector3 a = pts[currPt];
 		Vector3 b = pts[currPt + 1];
 		Vector3 c = pts[currPt + 2];
