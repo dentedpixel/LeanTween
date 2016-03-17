@@ -1318,6 +1318,12 @@ public static int maxSearch{
 	}
 }
 
+public static int maxSimulataneousTweens{
+	get {
+		return maxTweens;
+	}
+}
+
 public static int tweensRunning{
 	get{ 
 		int count = 0;
