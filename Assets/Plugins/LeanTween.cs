@@ -1099,7 +1099,7 @@ public class LTDescrImpl : LTDescr {
 	* @param {bool} doesOrient:bool whether the gameobject will orient to the path it is animating along
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
-	* LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true).setAxis(Vector3.forward);<br>
+	* LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath2d(true).setAxis(Vector3.forward);<br>
 	*/
 	public LTDescr setOrientToPath2d( bool doesOrient2d ){
 		setOrientToPath(doesOrient2d);
@@ -4471,7 +4471,7 @@ public static void addListener( GameObject caller, int eventId, System.Action<LT
 		}
 		#endif
 	}
-	Debug.LogError("You ran out of areas to add listeners, consider increasing INIT_LISTENERS_MAX, ex: LeanTween.INIT_LISTENERS_MAX = "+(INIT_LISTENERS_MAX*2));
+	Debug.LogError("You ran out of areas to add listeners, consider increasing LISTENERS_MAX, ex: LeanTween.LISTENERS_MAX = "+(LISTENERS_MAX*2));
 }
 
 public static bool removeListener( int eventId, System.Action<LTEvent> callback ){
@@ -4795,8 +4795,8 @@ public class LTBezierPath {
 */
 [System.Serializable]
 public class LTSpline {
-	public static int DISTANCE_COUNT = 30; // increase for a more accurate constant speed
-	public static int SUBLINE_COUNT = 50; // increase for a more accurate smoothing of the curves into lines
+	public static int DISTANCE_COUNT = 3; // increase for a more accurate constant speed
+	public static int SUBLINE_COUNT = 15; // increase for a more accurate smoothing of the curves into lines
 
 	public Vector3[] pts;
 	public Vector3[] ptsAdj;
@@ -4805,7 +4805,6 @@ public class LTSpline {
 	public bool orientToPath2d;
 	private int numSections;
 	private int currPt;
-	private float totalLength;
 	
 	public LTSpline(params Vector3[] pts) {
 		// Debug.Log("pts.Length:"+pts.Length);
@@ -4822,8 +4821,9 @@ public class LTSpline {
 		float minSegment = float.PositiveInfinity;
 		Vector3 earlierPoint = this.pts[1];
 		float totalDistance = 0f;
-		for(int i=2; i < this.pts.Length-2; i++){
+		for(int i=1; i < this.pts.Length-1; i++){
 			float pointDistance = Vector3.Distance(this.pts[i], earlierPoint);
+			//Debug.Log("pointDist:"+pointDistance);
 			if(pointDistance < minSegment){
 				minSegment = pointDistance;
 			}
@@ -4831,19 +4831,25 @@ public class LTSpline {
 			totalDistance += pointDistance;
 		}
 
+		minSegment = totalDistance / (numSections*SUBLINE_COUNT);
+		//Debug.Log("minSegment:"+minSegment+" numSections:"+numSections);
+
 		float minPrecision = minSegment / SUBLINE_COUNT; // number of subdivisions in each segment
 		int precision = (int)Mathf.Ceil(totalDistance / minPrecision) * DISTANCE_COUNT;
-		if(precision<=1) // precision has to be greater than zero
+		// Debug.Log("precision:"+precision);
+		if(precision<=1) // precision has to be greater than one
 			precision = 2;
 
 		ptsAdj = new Vector3[ precision ];
 		earlierPoint = interp( 0f );
-		int num = 0;
-		for(int i = 0; i < precision; i++){
-			float fract = ((float)(i+1f)) / precision;
+		int num = 1;
+		ptsAdj[0] = earlierPoint;
+		for(int i = 0; i < precision + 1; i++){
+			float fract = ((float)(i)) / precision;
+			// Debug.Log("fract:"+fract);
 			Vector3 point = interp( fract );
 			float dist = Vector3.Distance(point, earlierPoint);
-			if(dist>=minPrecision){
+			if(dist>=minPrecision || fract>=1.0f){
 				ptsAdj[num] = point;
 
 				earlierPoint = point;
@@ -4896,13 +4902,15 @@ public class LTSpline {
 		Vector3 b = pts[currPt + 1];
 		Vector3 c = pts[currPt + 2];
 		Vector3 d = pts[currPt + 3];
-		
-		return .5f * (
+
+		Vector3 val = (.5f * (
 			(-a + 3f * b - 3f * c + d) * (u * u * u)
 			+ (2f * a - 5f * b + 4f * c - d) * (u * u)
 			+ (-a + c) * u
-			+ 2f * b
-		);
+			+ 2f * b));
+		// Debug.Log("currPt:"+currPt+" t:"+t+" val.x"+val.x+" y:"+val.y+" z:"+val.z);
+		
+		return val;
 	}
 
 	/**
@@ -5004,13 +5012,13 @@ public class LTSpline {
 	
 	public void gizmoDraw(float t = -1.0f) {
 		
-			Vector3 prevPt = point(0);
+			Vector3 prevPt = ptsAdj[0];
 			
-			for (int i = 1; i <= 120; i++) {
-				float pm = (float) i / 120f;
-				Vector3 currPt2 = point(pm);
+			for (int i = 0; i < ptsAdjLength; i++) {
+				Vector3 currPt2 = ptsAdj[i];
+				// Debug.Log("currPt2:"+currPt2);
 				//Gizmos.color = new Color(UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),1);
-				Gizmos.DrawLine(currPt2, prevPt);
+				Gizmos.DrawLine(prevPt, currPt2);
 				prevPt = currPt2;
 			}
 	

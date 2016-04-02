@@ -18,7 +18,10 @@ public class PathSplines : MonoBehaviour {
 		avatar1 = GameObject.Find("Avatar1");
 
 		// Tween automatically
-		LeanTween.moveSpline(avatar1, cr.pts, 6.5f).setOrientToPath(true).setRepeat(-1).setDirection(-1f);
+		LeanTween.move(avatar1, cr, 6.5f).setOrientToPath(true).setRepeat(1).setOnComplete( ()=>{
+			Vector3[] next = new Vector3[] {trans[4].position, trans[3].position, trans[2].position, trans[1].position, trans[0].position};
+			LeanTween.moveSpline( avatar1, next, 6.5f); // move it back to the start without an LTSpline
+		}).setEase(LeanTweenType.easeOutQuad);
 	}
 	
 	private float iter;
@@ -33,7 +36,7 @@ public class PathSplines : MonoBehaviour {
 
 	void OnDrawGizmos(){
 		// Debug.Log("drwaing");
-		if(cr!=null)
+		if(cr==null)
 			OnEnable();
 		Gizmos.color = Color.red;
 		if(cr!=null)
