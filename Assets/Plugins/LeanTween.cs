@@ -5011,6 +5011,8 @@ public class LTSpline {
 	}
 	
 	public void gizmoDraw(float t = -1.0f) {
+			if(ptsAdj==null || ptsAdj.Length<=0)
+				return;
 		
 			Vector3 prevPt = ptsAdj[0];
 			
