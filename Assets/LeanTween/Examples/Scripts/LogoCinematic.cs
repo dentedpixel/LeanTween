@@ -32,10 +32,12 @@ public class LogoCinematic : MonoBehaviour {
 	void playBoom(){
 		// Make your own Dynamic Audio at http://leanaudioplay.dentedpixel.com
 		
-		AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(-0.001454365f, 0.006141067f, -3.698472f, -3.698472f), new Keyframe(0.007561419f, 1.006896f, -3.613532f, -3.613532f), new Keyframe(0.9999977f, 0.00601998f, -0.1788428f, -0.1788428f));
-		AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0f, 0.001724138f, 0.01912267f, 0.01912267f), new Keyframe(0.9981073f, 0.007586207f, 0f, 0f));
+		AnimationCurve volumeCurve = new AnimationCurve( new Keyframe(0f, 1.163155f, 0f, -1f), new Keyframe(0.3098361f, 0f, 0f, 0f), new Keyframe(0.5f, 0.003524712f, 0f, 0f));
+		AnimationCurve frequencyCurve = new AnimationCurve( new Keyframe(0.000819672f, 0.007666667f, 0f, 0f), new Keyframe(0.01065573f, 0.002424242f, 0f, 0f), new Keyframe(0.02704918f, 0.007454545f, 0f, 0f), new Keyframe(0.03770492f, 0.002575758f, 0f, 0f), new Keyframe(0.052459f, 0.007090909f, 0f, 0f), new Keyframe(0.06885245f, 0.002939394f, 0f, 0f), new Keyframe(0.0819672f, 0.006727273f, 0f, 0f), new Keyframe(0.1040983f, 0.003181818f, 0f, 0f), new Keyframe(0.1188525f, 0.006212121f, 0f, 0f), new Keyframe(0.145082f, 0.004151515f, 0f, 0f), new Keyframe(0.1893443f, 0.005636364f, 0f, 0f));
+
 		AudioClip audioClip = LeanAudio.createAudio(volumeCurve, frequencyCurve, LeanAudio.options().setVibrato( new Vector3[]{ new Vector3(0.1f,0f,0f)} ).setFrequency(11025));
-		LeanAudio.play(audioClip, Vector3.zero);
+
+		LeanAudio.play( audioClip ); //a:fvb:8,.000819672,.007666667,,,.01065573,.002424242,,,.02704918,.007454545,,,.03770492,.002575758,,,.052459,.007090909,,,.06885245,.002939394,,,.0819672,.006727273,,,.1040983,.003181818,,,.1188525,.006212121,,,.145082,.004151515,,,.1893443,.005636364,,,8~8,,1.163155,,-,.3098361,,,,.5,.003524712,,,8~.1,,,~11025~0~~
 	}
 	
 }

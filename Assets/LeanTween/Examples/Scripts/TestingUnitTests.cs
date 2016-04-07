@@ -26,7 +26,7 @@ public class TempTestingCancel : MonoBehaviour {
     }
 }
 
-public class TestingEverything : MonoBehaviour {
+public class TestingUnitTests : MonoBehaviour {
 
 	public GameObject cube1;
 	public GameObject cube2;
