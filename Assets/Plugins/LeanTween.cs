@@ -1360,6 +1360,10 @@ public static void init(int maxSimultaneousTweens){
 		for(int i = 0; i < maxTweens; i++){
 			tweens[i] = new LTDescrImpl();
 		}
+
+		#if UNITY_5_3_OR_NEWER
+		SceneManager.onSceneLoaded += internalOnLevelWasLoaded;
+		#endif
 	}
 }
 
@@ -1375,7 +1379,11 @@ public void Update(){
 	LeanTween.update();
 }
 
-public void OnLevelWasLoaded( int lvl ){
+#if !UNITY_5_3_OR_NEWER
+public void OnLevelWasLoaded( int lvl ){ internalOnLevelWasLoaded( lvl ); }
+#endif
+
+private void internalOnLevelWasLoaded( int lvl ){
 	// Debug.Log("reseting gui");
 	LTGUI.reset();
 }
@@ -4541,6 +4549,34 @@ public static void dispatchEvent( int eventId, object data ){
 	}
 }
 
+	public static void splineGizmo(Transform[] arr, Color color) {
+		if(arr.Length>=4){
+			Vector3[] vec3s = new Vector3[arr.Length];
+			for(int i = 0; i < arr.Length; i++){
+				vec3s[i] = arr[i].position;
+			}
+			LTSpline spline = new LTSpline(vec3s);
+			Vector3 prevPt = spline.ptsAdj[0];
+
+			Color colorBefore = Gizmos.color;
+			Gizmos.color = color;
+			for (int i = 0; i < spline.ptsAdjLength; i++) {
+				Vector3 currPt2 = spline.ptsAdj[i];
+				// Debug.Log("currPt2:"+currPt2);
+
+				Gizmos.DrawLine(prevPt, currPt2);
+				prevPt = currPt2;
+			}
+			Gizmos.color = colorBefore;
+		}
+	}
+
+	public static void splineDraw(Transform[] arr, Color color) {
+		if(arr.Length>=4){
+			
+		}
+	}
+
 } // End LeanTween class
 
 public class LTBezier {
@@ -4973,6 +5009,7 @@ public class LTSpline {
 	* ltPath.place( transform, 0.6f, Vector3.left );
 	*/
 	public void place( Transform transform, float ratio, Vector3 worldUp ){
+		ratio = Mathf.Repeat(ratio, 1.0f); // make sure ratio is always between 0-1
 		transform.position = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f)

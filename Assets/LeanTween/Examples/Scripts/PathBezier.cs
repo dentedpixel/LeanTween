@@ -1,7 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
-public class PathSplinesBezier : MonoBehaviour {
+namespace DentedPixel.LTExamples{
+
+public class PathBezier : MonoBehaviour {
 
 	public Transform[] trans;
 	
@@ -40,4 +42,6 @@ public class PathSplinesBezier : MonoBehaviour {
 		if(cr!=null)
 			cr.gizmoDraw(); // To Visualize the path, use this method
 	}
+}
+
 }
