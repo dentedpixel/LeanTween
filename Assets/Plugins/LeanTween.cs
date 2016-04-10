@@ -2879,6 +2879,27 @@ public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time
 }
 
 /**
+* Move a GameObject through a set of points
+* 
+* @method LeanTween.moveSpline
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to move
+* @param {LTSpline} spline:LTSpline pass a pre-existing LTSpline for the object to move along
+* @param {float} time:float The time to complete the tween in
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example
+* <i>Javascript:</i><br>
+* LeanTween.moveSpline(gameObject, ltSpline, 2.0) .setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
+* <i>C#:</i><br>
+* LeanTween.moveSpline(gameObject, ltSpline, 1.5f).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
+*/
+	public static LTDescr moveSpline(GameObject gameObject, LTSpline to, float time){
+		d = options();
+		d.spline = to;
+
+		return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE, d );
+	}
+
+/**
 * Move a GameObject through a set of points, in local space
 * 
 * @method LeanTween.moveSplineLocal
