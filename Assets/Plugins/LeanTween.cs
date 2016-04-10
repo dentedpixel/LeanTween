@@ -1248,7 +1248,25 @@ public class LTUtility {
 
 
 	public static Vector3[] reverse( Vector3[] arr ){
-		
+		/*Vector3[] newArr = new Vector3[ arr.Length ];
+		for(int i = 0; i < arr.Length; i++){
+			newArr[ arr.Length - i - 1] = arr[i];
+		}
+		return newArr;*/
+
+		int length = arr.Length;
+		int left = 0;
+		int right = length - 1;
+
+		for (; left < right; left += 1, right -= 1)
+		{
+			Vector3 temporary = arr[left];
+			arr[left] = arr[right];
+			arr[right] = temporary;
+		}
+		return arr;
+
+		/*
 		int k = arr.Length - 1;
 		for(int i=0;i<=(arr.Length/2);i++)
 		{
@@ -1258,7 +1276,7 @@ public class LTUtility {
 		   k--;
 		}
 
-		return arr;
+		return arr;*/
 	}
 }
 
@@ -1627,6 +1645,7 @@ public static void update() {
 							}else{
 								trans.position = tween.spline.point( val );
 							}
+							// Debug.Log("val:"+val+" trans.position:"+trans.position);
 						}else if(tweenAction==TweenAction.MOVE_SPLINE_LOCAL){
 							if(tween.spline.orientToPath){
 								if(tween.spline.orientToPath2d){
@@ -4855,6 +4874,12 @@ public class LTSpline {
 	public static int DISTANCE_COUNT = 3; // increase for a more accurate constant speed
 	public static int SUBLINE_COUNT = 15; // increase for a more accurate smoothing of the curves into lines
 
+	/**
+	* @property {float} distance distance of the spline (in unity units)
+	*/
+	public float distance = 0f;
+
+
 	public Vector3[] pts;
 	public Vector3[] ptsAdj;
 	public int ptsAdjLength;
@@ -4879,6 +4904,7 @@ public class LTSpline {
 		Vector3 earlierPoint = this.pts[1];
 		float totalDistance = 0f;
 		for(int i=1; i < this.pts.Length-1; i++){
+			// float pointDistance = (this.pts[i]-earlierPoint).sqrMagnitude;
 			float pointDistance = Vector3.Distance(this.pts[i], earlierPoint);
 			//Debug.Log("pointDist:"+pointDistance);
 			if(pointDistance < minSegment){
@@ -4906,6 +4932,8 @@ public class LTSpline {
 			// Debug.Log("fract:"+fract);
 			Vector3 point = interp( fract );
 			float dist = Vector3.Distance(point, earlierPoint);
+			distance += dist;
+			// float dist = (point-earlierPoint).sqrMagnitude;
 			if(dist>=minPrecision || fract>=1.0f){
 				ptsAdj[num] = point;
 
@@ -4973,6 +5001,30 @@ public class LTSpline {
 	/**
 	* Retrieve a point along a path
 	* 
+	* @method ratioAtPoint
+	* @param {Vector3} point:Vector3 given a current location it makes the best approximiation of where it is along the path ratio-wise (0-1)
+	* @return {float} float of ratio along the path
+	* @example
+	* ratioIter = ltSpline.ratioAtPoint( transform.position );
+	*/
+	public float ratioAtPoint( Vector3 pt ){
+		float closestDist = float.MaxValue;
+		int closestI = 0;
+		for (int i = 0; i < ptsAdjLength; i++) {
+			float dist = Vector3.Distance(pt, ptsAdj[i]);
+			// Debug.Log("i:"+i+" dist:"+dist);
+			if(dist<closestDist){
+				closestDist = dist;
+				closestI = i;
+			}
+		}
+		// Debug.Log("closestI:"+closestI+" ptsAdjLength:"+ptsAdjLength);
+		return (float) closestI / (float)(ptsAdjLength-1);
+	}
+
+	/**
+	* Retrieve a point along a path
+	* 
 	* @method point
 	* @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
 	* @return {Vector3} Vector3 position of the point along the path
@@ -4981,7 +5033,6 @@ public class LTSpline {
 	*/
 	public Vector3 point( float ratio ){
 		float t = ratio>1f?1f:ratio;
-
 		return map(t);
 	}
 
@@ -5030,7 +5081,7 @@ public class LTSpline {
 	* ltPath.place( transform, 0.6f, Vector3.left );
 	*/
 	public void place( Transform transform, float ratio, Vector3 worldUp ){
-		ratio = Mathf.Repeat(ratio, 1.0f); // make sure ratio is always between 0-1
+		// ratio = Mathf.Repeat(ratio, 1.0f); // make sure ratio is always between 0-1
 		transform.position = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f)
