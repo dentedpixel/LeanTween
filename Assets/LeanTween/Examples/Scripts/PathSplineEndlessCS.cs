@@ -7,47 +7,41 @@ public class PathSplineEndlessCS : MonoBehaviour {
 	public GameObject car;
 	public GameObject carInternal;
 
+	public GameObject[] cubes;
+	private int cubesIter;
+	public GameObject[] trees;
+	private int treesIter;
+
+	public float randomIterWidth = 0.1f;
+
 	private LTSpline track;
 	private List<Vector3> trackPts = new List<Vector3>();
-	private float zIter = 0f;
+	private int zIter = 0;
 	private float carIter = 0f;
 	private float carSpeed;
 	private int trackMaxItems = 15;
-	private float trailRendererDir = -1f;
 	private int trackIter = 1;
 	private float pushTrackAhead = 0f;
+	private float randomIter = 0f;
 
-	// Use this for initialization
 	void Start () {
 
-		for(int i = 0; i < trackMaxItems; i++){
+		// Setup initial track points
+		for(int i = 0; i < 4; i++){
 			addRandomTrackPoint();
 		}
 		refreshSpline();
-
-		// moveTrailRendererAlongPath();
 
 		// Animate in track ahead of the car
 		LeanTween.value(gameObject, 0, 0.3f, 2f).setOnUpdate( ( float val )=>{
 			pushTrackAhead = val;
 		});
 	}
-
-	void moveTrailRendererAlongPath(){
-		LeanTween.moveSpline( trackTrailRenderers, trackPts.ToArray(), 10f ).setOrientToPath(true).setOnComplete( ()=>{
-			trailRendererDir = 0f - trailRendererDir; // Flip direction so every pass down the trail
-			moveTrailRendererAlongPath();
-
-		}).setDirection(trailRendererDir);
-	}
 	
-	// Update is called once per frame
 	void Update () {
 
 		float zLastDist = (trackPts[ trackPts.Count - 1].z - transform.position.z);
-		// Debug.Log("zLastDist:"+zLastDist+" carIter:"+carIter);
 		if(zLastDist < 200f){
-			Debug.Log("addRandomTrackPoint");
 			addRandomTrackPoint();
 			refreshSpline();
 		}
@@ -70,30 +64,47 @@ public class PathSplineEndlessCS : MonoBehaviour {
 			}
 			// Move the internal local x of the car to simulate changing tracks
 			LeanTween.moveLocalX(carInternal, (trackIter-1)*6f, 0.3f).setEase(LeanTweenType.easeOutBack);
-
 		}
 	}
 
+	// Simple object queuing system
+	GameObject objectQueue( GameObject[] arr, ref int lastIter ){
+		lastIter = lastIter>=arr.Length-1 ? 0 : lastIter+1;
+		
+		// Reset scale and rotation for a new animation
+		arr[ lastIter ].transform.localScale = Vector3.one;
+		arr[ lastIter ].transform.rotation = Quaternion.identity;
+		return arr[ lastIter ];
+	}
+
 	void addRandomTrackPoint(){
-		Vector3 randomInFrontPosition = new Vector3( Random.Range(-20.0f,20.0f), 0f, zIter);
+		float randX = Mathf.PerlinNoise(0f, randomIter);
+		randomIter += randomIterWidth;
+		// Debug.Log("randX:"+randX);
+		Vector3 randomInFrontPosition = new Vector3( (randX-0.5f)*20f, 0f, zIter*40f);
 
 		// placing the box is just to visualize how the paths get created
-		GameObject box = GameObject.CreatePrimitive(PrimitiveType.Cube);
+		GameObject box = objectQueue( cubes, ref cubesIter ); 
 		box.transform.position = randomInFrontPosition;
 
+		// Line the roads with trees
+		GameObject tree = objectQueue( trees, ref treesIter ); 
+		float treeX = zIter%2==0 ? -15f : 15f;
+		tree.transform.position = new Vector3( randomInFrontPosition.x + treeX, 0f, zIter*40f);
+		Debug.Log("zIter:"+zIter);
+
 		trackPts.Add( randomInFrontPosition ); // Add a future node
-		Debug.Log("trackPts.Count:"+trackPts.Count);
 		if(trackPts.Count > trackMaxItems)
 			trackPts.RemoveAt(0); // Remove the trailing node
 
-		zIter += 40f;
+		zIter++;
 	}
 
 	void refreshSpline(){
 		track = new LTSpline( trackPts.ToArray() );
-		carIter = track.ratioAtPoint( car.transform.position );
-		Debug.Log("distance:"+track.distance+" carIter:"+carIter);
-		carSpeed = 5f / track.distance;
+		carIter = track.ratioAtPoint( car.transform.position ); // we created a new spline so we need to update the cars iteration point on this new spline
+		// Debug.Log("distance:"+track.distance+" carIter:"+carIter);
+		carSpeed = 5f / track.distance; // we want to make sure the speed is based on the distance of the spline for a more constant speed
 	}
 		
 }

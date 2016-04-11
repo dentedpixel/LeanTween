@@ -4872,7 +4872,7 @@ public class LTBezierPath {
 [System.Serializable]
 public class LTSpline {
 	public static int DISTANCE_COUNT = 3; // increase for a more accurate constant speed
-	public static int SUBLINE_COUNT = 15; // increase for a more accurate smoothing of the curves into lines
+	public static int SUBLINE_COUNT = 20; // increase for a more accurate smoothing of the curves into lines
 
 	/**
 	* @property {float} distance distance of the spline (in unity units)
@@ -4927,6 +4927,7 @@ public class LTSpline {
 		earlierPoint = interp( 0f );
 		int num = 1;
 		ptsAdj[0] = earlierPoint;
+		distance = 0f;
 		for(int i = 0; i < precision + 1; i++){
 			float fract = ((float)(i)) / precision;
 			// Debug.Log("fract:"+fract);
