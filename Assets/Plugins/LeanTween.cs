@@ -1379,7 +1379,7 @@ public static void init(int maxSimultaneousTweens){
 			tweens[i] = new LTDescrImpl();
 		}
 
-		#if UNITY_5_3_OR_NEWER
+		#if UNITY_5_4_OR_NEWER
 		SceneManager.onSceneLoaded += internalOnLevelWasLoaded;
 		#endif
 	}
@@ -1397,7 +1397,7 @@ public void Update(){
 	LeanTween.update();
 }
 
-#if !UNITY_5_3_OR_NEWER
+#if !UNITY_5_4_OR_NEWER
 public void OnLevelWasLoaded( int lvl ){ internalOnLevelWasLoaded( lvl ); }
 #endif
 
