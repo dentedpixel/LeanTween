@@ -1380,7 +1380,7 @@ public static void init(int maxSimultaneousTweens){
 		}
 
 		#if UNITY_5_4_OR_NEWER
-		SceneManager.onSceneLoaded += internalOnLevelWasLoaded;
+			UnityEngine.SceneManagement.SceneManager.sceneLoaded += onLevelWasLoaded54;
 		#endif
 	}
 }
@@ -1397,11 +1397,13 @@ public void Update(){
 	LeanTween.update();
 }
 
-#if !UNITY_5_4_OR_NEWER
-public void OnLevelWasLoaded( int lvl ){ internalOnLevelWasLoaded( lvl ); }
+#if UNITY_5_4_OR_NEWER
+private static void onLevelWasLoaded54( UnityEngine.SceneManagement.Scene scene, UnityEngine.SceneManagement.LoadSceneMode mode ){ internalOnLevelWasLoaded( scene.buildIndex ); }
+#else
+	public void OnLevelWasLoaded( int lvl ){ internalOnLevelWasLoaded( lvl ); }
 #endif
 
-private void internalOnLevelWasLoaded( int lvl ){
+private static void internalOnLevelWasLoaded( int lvl ){
 	// Debug.Log("reseting gui");
 	LTGUI.reset();
 }
@@ -4685,7 +4687,9 @@ public class LTBezier {
 * Manually animate along a bezier path with this class
 * @class LTBezierPath
 * @constructor
-* @param {Vector3 Array} pts A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)
+* @param {Vector3 Array} pts A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)<br>
+* It goes in the order: <strong>startPoint</strong>,endControl,startControl,<strong>endPoint</strong> - <strong>Note:</strong> the control for the end and start are reversed! This is just a *quirk* of the API.<br>
+* <img src="http://dentedpixel.com/assets/LTBezierExplanation.gif" width="413" height="196" style="margin-top:10px" />
 * @example 
 * LTBezierPath ltPath = new LTBezierPath( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(1f,0f,0f), new Vector3(1f,0f,0f), new Vector3(1f,1f,0f)} );<br><br>
 * LeanTween.move(lt, ltPath.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>

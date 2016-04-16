@@ -129,7 +129,7 @@
                         
                         
                                 <div class="foundat">
-                                    Defined in: <a href="../files/LeanTween.cs.html#l4786"><code>LeanTween.cs:4786</code></a>
+                                    Defined in: <a href="../files/LeanTween.cs.html#l4864"><code>LeanTween.cs:4864</code></a>
                                 </div>
                         
                         
@@ -164,7 +164,7 @@
                                     <div class="meta">
                                                 <p>
                                                 Defined in
-                                        <a href="../files/LeanTween.cs.html#l4786"><code>LeanTween.cs:4786</code></a>
+                                        <a href="../files/LeanTween.cs.html#l4864"><code>LeanTween.cs:4864</code></a>
                                         </p>
                                 
                                 
@@ -212,6 +212,7 @@
                                 <li class="api-class-tab index"><a href="#index">Index</a></li>
                         
                                     <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
+                                    <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
                             </ul>
                         
                             <div>
@@ -242,9 +243,23 @@
                                                         <a href="#method_point">point</a>
                         
                                                     </li>
+                                                    <li class="index-item method">
+                                                        <a href="#method_ratioAtPoint">ratioAtPoint</a>
+                        
+                                                    </li>
                                             </ul>
                                         </div>
                         
+                                        <div class="index-section properties">
+                                            <h3>Properties</h3>
+                        
+                                            <ul class="index-list properties">
+                                                    <li class="index-item property">
+                                                        <a href="#property_distance distance of the spline (in unity units)">distance distance of the spline (in unity units)</a>
+                        
+                                                    </li>
+                                            </ul>
+                                        </div>
                         
                         
                                 </div>
@@ -276,7 +291,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4952"><code>LeanTween.cs:4952</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l5063"><code>LeanTween.cs:5063</code></a>
                                                     </p>
                                             
                                             
@@ -354,7 +369,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4965"><code>LeanTween.cs:4965</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l5076"><code>LeanTween.cs:5076</code></a>
                                                     </p>
                                             
                                             
@@ -440,7 +455,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4983"><code>LeanTween.cs:4983</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l5095"><code>LeanTween.cs:5095</code></a>
                                                     </p>
                                             
                                             
@@ -518,7 +533,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4996"><code>LeanTween.cs:4996</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l5108"><code>LeanTween.cs:5108</code></a>
                                                     </p>
                                             
                                             
@@ -604,7 +619,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l4916"><code>LeanTween.cs:4916</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l5028"><code>LeanTween.cs:5028</code></a>
                                                     </p>
                                             
                                             
@@ -653,8 +668,109 @@
                                                         </div>
                                                     </div>
                                             </div>
+                                            <div id="method_ratioAtPoint" class="method item">
+                                                <h3 class="name"><code>ratioAtPoint</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>point:Vector3</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type">Float</span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l5004"><code>LeanTween.cs:5004</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Retrieve a point along a path</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">point:Vector3</code>
+                                                                    <span class="type">Vector3</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>given a current location it makes the best approximiation of where it is along the path ratio-wise (0-1)</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type">Float</span>:
+                                                                <p>float of ratio along the path</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>ratioIter = ltSpline.ratioAtPoint( transform.position );</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
                                     </div>
                         
+                                    <div id="properties" class="api-class-tabpanel">
+                                        <h2 class="off-left">Properties</h2>
+                        
+                                            <div id="property_distance distance of the spline (in unity units)" class="property item">
+                                                <h3 class="name"><code>distance distance of the spline (in unity units)</code></h3>
+                                                <span class="type">Float</span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l4879"><code>LeanTween.cs:4879</code></a>
+                                                    </p>
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    
+                                                </div>
+                                            
+                                            
+                                            
+                                            </div>
+                                    </div>
                         
                         
                             </div>
