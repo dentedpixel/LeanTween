@@ -18,7 +18,7 @@ public class PathSplineEndlessCS : MonoBehaviour {
 	private List<Vector3> trackPts = new List<Vector3>();
 	private int zIter = 0;
 	private float carIter = 0f;
-	private float carSpeed;
+	private float carAdd;
 	private int trackMaxItems = 15;
 	private int trackIter = 1;
 	private float pushTrackAhead = 0f;
@@ -48,7 +48,7 @@ public class PathSplineEndlessCS : MonoBehaviour {
 
 		// Update avatar's position on correct track
 		track.place( car.transform, carIter );
-		carIter += carSpeed;
+		carIter += carAdd * Time.deltaTime;
 
 		// we'll place the trail renders always a bit in front of the car
 		track.place( trackTrailRenderers.transform, carIter + pushTrackAhead );
@@ -108,7 +108,7 @@ public class PathSplineEndlessCS : MonoBehaviour {
 		track = new LTSpline( trackPts.ToArray() );
 		carIter = track.ratioAtPoint( car.transform.position ); // we created a new spline so we need to update the cars iteration point on this new spline
 		// Debug.Log("distance:"+track.distance+" carIter:"+carIter);
-		carSpeed = 5f / track.distance; // we want to make sure the speed is based on the distance of the spline for a more constant speed
+		carAdd = 40f / track.distance; // we want to make sure the speed is based on the distance of the spline for a more constant speed
 	}
 
 	// Make your own LeanAudio sounds at http://leanaudioplay.dentedpixel.com

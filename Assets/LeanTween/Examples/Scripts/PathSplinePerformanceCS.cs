@@ -1,26 +1,52 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+// This class is to test the upper limits of a complex spline
 
-// This project demonstrates how you can use the spline behaviour for a multi-track game (like an endless runner style)
+public class PathSplinePerformanceCS : MonoBehaviour {
 
-public class PathSplineTrackCS : MonoBehaviour {
-
+	public GameObject trackTrailRenderers;
 	public GameObject car;
 	public GameObject carInternal;
-	public GameObject trackTrailRenderers;
 
-	public Transform[] trackOnePoints;
+
+	public float circleLength = 10f;
+	public float randomRange = 1f;
+	public int trackNodes = 30;
+	public float carSpeed = 30f;
+	public float tracerSpeed = 2f;
 
 	private LTSpline track;
 	private int trackIter = 1;
+	private float carAdd;
 	private float trackPosition; // ratio 0,1 of the avatars position on the track
 
 	void Start () {
+		Application.targetFrameRate = 240;
+
 		// Make the track from the provided transforms
-		track = new LTSpline( new Vector3[] {trackOnePoints[0].position, trackOnePoints[1].position, trackOnePoints[2].position, trackOnePoints[3].position, trackOnePoints[4].position, trackOnePoints[5].position, trackOnePoints[6].position} );
+		List<Vector3> randList = new List<Vector3>();
+		float degree = 0f;
+		int nodeLength = trackNodes + 1;// We need to add some extra because the first and last nodes just act as *guides* to the first and last curvature
+		for(int i = 0; i < nodeLength; i++){
+			float x = Mathf.Cos( degree * Mathf.Deg2Rad ) * circleLength + Random.Range(0f, randomRange);
+			float z = Mathf.Sin( degree * Mathf.Deg2Rad ) * circleLength + Random.Range(0f, randomRange);
+			randList.Add( new Vector3(x,1f,z ) );
+
+			degree += 360f/(float)trackNodes;
+		}
+		randList[0] = randList[ randList.Count-1 ]; // set the zero-ith one as the last position so it will flow smoothly into the first curve
+		randList.Add( randList[1] ); // Add the first and second one in, so the circle connects to itself
+		randList.Add( randList[2] ); 
+
+		track = new LTSpline( randList.ToArray() );
+
+		carAdd = carSpeed / track.distance;
+
+		tracerSpeed = track.distance / (carSpeed*1.2f);
 
 		// Optional technique to show the trails in game
-		LeanTween.moveSpline( trackTrailRenderers, track, 2f ).setOrientToPath(true).setRepeat(-1);
+		LeanTween.moveSpline( trackTrailRenderers, track, tracerSpeed ).setOrientToPath(true).setRepeat(-1);
 	}
 	
 	void Update () {
@@ -42,7 +68,7 @@ public class PathSplineTrackCS : MonoBehaviour {
 		// Update avatar's position on correct track
 		track.place( car.transform, trackPosition );
 
-		trackPosition += Time.deltaTime * 0.03f;
+		trackPosition += Time.deltaTime * carAdd;
 
 		if(trackPosition>1f)
 			trackPosition = 0f; // We need to keep the ratio between 0-1 so after one we will loop back to the beginning of the track
@@ -50,7 +76,8 @@ public class PathSplineTrackCS : MonoBehaviour {
 
 	// Use this for visualizing what the track looks like in the editor (for a full suite of spline tools check out the LeanTween Editor)
 	void OnDrawGizmos(){
-		LTSpline.drawGizmo( trackOnePoints, Color.red);
+		if(track!=null)
+			track.drawGizmo( Color.red );
 	}
 
 	// Make your own LeanAudio sounds at http://leanaudioplay.dentedpixel.com

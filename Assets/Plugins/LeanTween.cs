@@ -4591,33 +4591,6 @@ public static void dispatchEvent( int eventId, object data ){
 	}
 }
 
-	public static void splineGizmo(Transform[] arr, Color color) {
-		if(arr.Length>=4){
-			Vector3[] vec3s = new Vector3[arr.Length];
-			for(int i = 0; i < arr.Length; i++){
-				vec3s[i] = arr[i].position;
-			}
-			LTSpline spline = new LTSpline(vec3s);
-			Vector3 prevPt = spline.ptsAdj[0];
-
-			Color colorBefore = Gizmos.color;
-			Gizmos.color = color;
-			for (int i = 0; i < spline.ptsAdjLength; i++) {
-				Vector3 currPt2 = spline.ptsAdj[i];
-				// Debug.Log("currPt2:"+currPt2);
-
-				Gizmos.DrawLine(prevPt, currPt2);
-				prevPt = currPt2;
-			}
-			Gizmos.color = colorBefore;
-		}
-	}
-
-	public static void splineDraw(Transform[] arr, Color color) {
-		if(arr.Length>=4){
-			
-		}
-	}
 
 } // End LeanTween class
 
@@ -4937,10 +4910,11 @@ public class LTSpline {
 			// Debug.Log("fract:"+fract);
 			Vector3 point = interp( fract );
 			float dist = Vector3.Distance(point, earlierPoint);
-			distance += dist;
+			
 			// float dist = (point-earlierPoint).sqrMagnitude;
 			if(dist>=minPrecision || fract>=1.0f){
 				ptsAdj[num] = point;
+				distance += dist; // only add it to the total distance once we know we are adding it as an adjusted point
 
 				earlierPoint = point;
 				// Debug.Log("fract:"+fract+" point:"+point);
@@ -5125,19 +5099,65 @@ public class LTSpline {
 	}
 	
 	public void gizmoDraw(float t = -1.0f) {
-			if(ptsAdj==null || ptsAdj.Length<=0)
-				return;
+		if(ptsAdj==null || ptsAdj.Length<=0)
+			return;
+	
+		Vector3 prevPt = ptsAdj[0];
 		
-			Vector3 prevPt = ptsAdj[0];
+		for (int i = 0; i < ptsAdjLength; i++) {
+			Vector3 currPt2 = ptsAdj[i];
+			// Debug.Log("currPt2:"+currPt2);
+			//Gizmos.color = new Color(UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),1);
+			Gizmos.DrawLine(prevPt, currPt2);
+			prevPt = currPt2;
+		}
+	}
+
+	public void drawGizmo( Color color ) {
+		if( this.ptsAdjLength>=4){
 			
-			for (int i = 0; i < ptsAdjLength; i++) {
-				Vector3 currPt2 = ptsAdj[i];
+			Vector3 prevPt = this.ptsAdj[0];
+
+			Color colorBefore = Gizmos.color;
+			Gizmos.color = color;
+			for (int i = 0; i < this.ptsAdjLength; i++) {
+				Vector3 currPt2 = this.ptsAdj[i];
 				// Debug.Log("currPt2:"+currPt2);
-				//Gizmos.color = new Color(UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),UnityEngine.Random.Range(0f,1f),1);
+
 				Gizmos.DrawLine(prevPt, currPt2);
 				prevPt = currPt2;
 			}
-	
+			Gizmos.color = colorBefore;
+		}
+	}
+
+	public static void drawGizmo(Transform[] arr, Color color) {
+		if(arr.Length>=4){
+			Vector3[] vec3s = new Vector3[arr.Length];
+			for(int i = 0; i < arr.Length; i++){
+				vec3s[i] = arr[i].position;
+			}
+			LTSpline spline = new LTSpline(vec3s);
+			Vector3 prevPt = spline.ptsAdj[0];
+
+			Color colorBefore = Gizmos.color;
+			Gizmos.color = color;
+			for (int i = 0; i < spline.ptsAdjLength; i++) {
+				Vector3 currPt2 = spline.ptsAdj[i];
+				// Debug.Log("currPt2:"+currPt2);
+
+				Gizmos.DrawLine(prevPt, currPt2);
+				prevPt = currPt2;
+			}
+			Gizmos.color = colorBefore;
+		}
+	}
+
+
+	public static void drawLine(Transform[] arr, float width, Color color) {
+		if(arr.Length>=4){
+			
+		}
 	}
 
 	/*public Vector3 Velocity(float t) {
