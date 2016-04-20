@@ -238,6 +238,7 @@ public class LTDescrImpl : LTDescr {
 	public bool hasPhysics { get; set; }
 	public bool onCompleteOnRepeat { get; set; }
 	public bool onCompleteOnStart { get; set; }
+	public bool useRecursion { get; set; }
 	public float passed { get; set; }
 	public float delay { get; set; }
 	public float time { get; set; }
@@ -338,7 +339,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public void reset(){
-		this.toggle = true;
+		this.toggle = this.useRecursion = true;
 		#if LEANTWEEN_1
 		this.optional = null;
 		#endif
@@ -1197,7 +1198,7 @@ public class LTDescrImpl : LTDescr {
 	
 	/**
 	* Have a method called when the tween starts
-	* @method setOnStart ()
+	* @method setOnStart
 	* @param {Action<>} onStart:Action<> the method that should be called when the tween is starting ex: tweenStarted( ){ }
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
@@ -1213,7 +1214,7 @@ public class LTDescrImpl : LTDescr {
 
     /**
 	* Set the direction of a tween -1f for backwards 1f for forwards (currently only bezier and spline paths are supported)
-	* @method setDirection ()
+	* @method setDirection
 	* @param {float} direction:float the direction that the tween should run, -1f for backwards 1f for forwards
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
@@ -1239,6 +1240,21 @@ public class LTDescrImpl : LTDescr {
 				// this.passed = this.time - this.passed;
     		}
 		}
+    	
+    	return this;
+    }
+
+    /**
+	* Set whether or not the tween will recursively effect an objects children in the hierarchy
+	* @method setRecursive
+	* @param {bool} useRecursion:bool whether the tween will recursively effect an objects children in the hierarchy
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+    * LeanTween.alpha(gameObject, 0f, 1f).setRecursive(true);<br>
+	*/
+
+    public LTDescr setRecursive( bool useRecursion ){
+    	this.useRecursion = useRecursion;
     	
     	return this;
     }
@@ -1723,25 +1739,7 @@ public static void update() {
 							if(ren!=null){
 								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
 							}else{
-								if(trans.gameObject.GetComponent<Renderer>()!=null){
-									foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
-										if(mat.HasProperty("_Color")){
-			        						mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-		        						}else if(mat.HasProperty("_TintColor")){
-		        							Color col = mat.GetColor ("_TintColor");
-											mat.SetColor("_TintColor", new Color( col.r, col.g, col.b, val));
-		        						}
-		    						}
-		    					}
-	    						if(trans.childCount>0){
-	    							foreach (Transform child in trans) {
-	    								if(child.gameObject.GetComponent<Renderer>()!=null){
-		    								foreach(Material mat in child.gameObject.GetComponent<Renderer>().materials){
-		    									mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-				    						}
-				    					}
-									}
-	    						}
+								alphaRecursive(tween.trans, val, tween.useRecursion);
 							}
 
     						#endif
@@ -1790,9 +1788,13 @@ public static void update() {
 						}
 						#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
                         else if (tweenAction == TweenAction.CANVAS_ALPHA){
-                            Color c = tween.uiImage.color;
-                            c.a = val;
-                            tween.uiImage.color = c;
+                            if(tween.useRecursion){
+                            	alphaRecursive( tween.rectTransform, val );
+                            }else{
+                            	Color c = tween.uiImage.color;
+	                            c.a = val;
+	                            tween.uiImage.color = c;
+                            }
                         }
                         else if (tweenAction == TweenAction.CANVAS_COLOR){
                             Color toColor = tweenColor(tween, val);
@@ -2165,7 +2167,42 @@ public static void update() {
 	}
 }
 
+private static void alphaRecursive( Transform transform, float val, bool useRecursion = true){
+	Renderer renderer = transform.gameObject.GetComponent<Renderer>();
+	if(renderer!=null){
+		foreach(Material mat in renderer.materials){
+			if(mat.HasProperty("_Color")){
+				mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+			}else if(mat.HasProperty("_TintColor")){
+				Color col = mat.GetColor ("_TintColor");
+				mat.SetColor("_TintColor", new Color( col.r, col.g, col.b, val));
+			}
+		}
+	}
+	if(useRecursion && transform.childCount>0){
+		foreach (Transform child in transform) {
+			alphaRecursive(child, val);
+		}
+	}
+}
+
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+
+private static void alphaRecursive( RectTransform rectTransform, float val){
+	UnityEngine.UI.Image uiImage = rectTransform.GetComponent<UnityEngine.UI.Image>();
+	if(uiImage!=null){
+		Color c = uiImage.color;
+	    c.a = val;
+	    uiImage.color = c;
+	}
+	
+	if(rectTransform.childCount>0){
+		foreach (RectTransform child in rectTransform) {
+			alphaRecursive(child, val);
+		}
+	}
+}
+
 private static void textAlphaRecursive( Transform trans, float val ){
 	UnityEngine.UI.Text uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
 	if(uiText!=null){

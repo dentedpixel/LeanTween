@@ -12,6 +12,7 @@ public interface LTDescr
 	bool hasPhysics { get; set; }
 	bool onCompleteOnRepeat { get; set; }
 	bool onCompleteOnStart { get; set; }
+	bool useRecursion { get; set; }
 	float passed { get; set; }
 	float delay { get; set; }
 	float time { get; set; }
@@ -109,6 +110,7 @@ public interface LTDescr
 	LTDescr setRect(LTRect rect);
 	LTDescr setRect(UnityEngine.Rect rect);
 	LTDescr setRepeat(int repeat);
+	LTDescr setRecursive(bool useRecursion);
 	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 	LTDescr setRect(UnityEngine.RectTransform rect);
 	LTDescr setSprites(UnityEngine.Sprite[] sprites);
