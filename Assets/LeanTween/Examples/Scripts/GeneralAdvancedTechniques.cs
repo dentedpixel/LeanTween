@@ -11,6 +11,7 @@ public class GeneralAdvancedTechniques : MonoBehaviour {
 		// Recurision - Set a objects value and have it recursively effect it's children
 		LeanTween.alpha( avatarRecursive, 0f, 1f).setRecursive(true).setLoopPingPong();
 		LeanTween.alpha( wingPersonPanel, 0f, 1f).setRecursive(true).setLoopPingPong();
+		LeanTween.textAlpha( wingPersonPanel, 0f, 1f).setRecursive(true).setLoopPingPong();
 
 		// Destroy on Complete - 
 	}

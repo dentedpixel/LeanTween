@@ -551,26 +551,38 @@ public class LTDescrImpl : LTDescr {
 			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 			case TweenAction.CANVAS_ALPHA:
 				this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-                if(this.uiImage != null)
+                if(this.uiImage != null){
 	                this.fromInternal.x = this.uiImage.color.a;
+                }else{
+                	this.fromInternal.x = 1f;
+                }
                 break;
             case TweenAction.CANVAS_COLOR:
                 this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-                if(this.uiImage != null)
+                if(this.uiImage != null){
 	               this.setFromColor( this.uiImage.color );
+	            }else{
+                	this.setFromColor( Color.white );
+                }
                 break;
             case TweenAction.CANVASGROUP_ALPHA:
 				this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
                 break;
             case TweenAction.TEXT_ALPHA:
                 this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                if (this.uiText != null)
+                if (this.uiText != null){
                     this.fromInternal.x = this.uiText.color.a;
+                }else{
+                	this.fromInternal.x = 1f;
+                }
                 break;
             case TweenAction.TEXT_COLOR:
                 this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                if (this.uiText != null)
+                if (this.uiText != null){
                     this.setFromColor( this.uiText.color );
+                }else{
+                	this.setFromColor( Color.white );
+                }
                 break;
 			case TweenAction.CANVAS_MOVE:
 				this.fromInternal = this.rectTransform.anchoredPosition3D; break;
@@ -1788,13 +1800,11 @@ public static void update() {
 						}
 						#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
                         else if (tweenAction == TweenAction.CANVAS_ALPHA){
-                            if(tween.useRecursion){
+                            Color c = tween.uiImage.color;
+                            c.a = val;
+                            tween.uiImage.color = c;
+                            if(tween.useRecursion)
                             	alphaRecursive( tween.rectTransform, val );
-                            }else{
-                            	Color c = tween.uiImage.color;
-	                            c.a = val;
-	                            tween.uiImage.color = c;
-                            }
                         }
                         else if (tweenAction == TweenAction.CANVAS_COLOR){
                             Color toColor = tweenColor(tween, val);
@@ -1802,13 +1812,15 @@ public static void update() {
                             if (dt!=0f && tween.onUpdateColor != null){
                                 tween.onUpdateColor(toColor);
                             }
+                            if(tween.useRecursion)
+                            	colorRecursive(tween.rectTransform, toColor);
                         }
                         else if (tweenAction == TweenAction.CANVASGROUP_ALPHA){
                         	CanvasGroup canvasGroup = tween.trans.GetComponent<CanvasGroup>();
                             canvasGroup.alpha = val;
                         }
                         else if (tweenAction == TweenAction.TEXT_ALPHA){
-                        	textAlphaRecursive( trans, val );
+                        	textAlphaRecursive( trans, val, tween.useRecursion );
                         }
                         else if (tweenAction == TweenAction.TEXT_COLOR){
                             Color toColor = tweenColor(tween, val);
@@ -1816,13 +1828,8 @@ public static void update() {
                         	if (dt!=0f && tween.onUpdateColor != null){
                                 tween.onUpdateColor(toColor);
                             }
-                            if(trans.childCount>0){
-    							foreach (Transform child in trans) {
-    								UnityEngine.UI.Text uiText = child.gameObject.GetComponent<UnityEngine.UI.Text>();
-    								if(uiText!=null){
-	    								uiText.color = toColor;
-			    					}
-								}
+                            if(tween.useRecursion && trans.childCount>0){
+    							textColorRecursive(tween.trans, toColor);
     						}
                         }
 						else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND){
@@ -2189,30 +2196,54 @@ private static void alphaRecursive( Transform transform, float val, bool useRecu
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 
 private static void alphaRecursive( RectTransform rectTransform, float val){
-	UnityEngine.UI.Image uiImage = rectTransform.GetComponent<UnityEngine.UI.Image>();
-	if(uiImage!=null){
-		Color c = uiImage.color;
-	    c.a = val;
-	    uiImage.color = c;
-	}
-	
 	if(rectTransform.childCount>0){
 		foreach (RectTransform child in rectTransform) {
+			UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
+			if(uiImage!=null){
+				Color c = uiImage.color;
+			    c.a = val;
+			    uiImage.color = c;
+			}
 			alphaRecursive(child, val);
 		}
 	}
 }
 
-private static void textAlphaRecursive( Transform trans, float val ){
+private static void colorRecursive( RectTransform rectTransform, Color toColor ){
+	
+    if(rectTransform.childCount>0){
+		foreach (RectTransform child in rectTransform) {
+			UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
+			if(uiImage!=null){
+				uiImage.color = toColor;
+			}
+			colorRecursive(child, toColor);
+		}
+	}
+}
+
+private static void textAlphaRecursive( Transform trans, float val, bool useRecursion = true ){
 	UnityEngine.UI.Text uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
 	if(uiText!=null){
 		Color c = uiText.color;
         c.a = val;
         uiText.color = c;
 	}
-	if(trans.childCount>0){
+	if(useRecursion && trans.childCount>0){
 		foreach (Transform child in trans) {
 			textAlphaRecursive(child, val);
+		}
+	}
+}
+
+private static void textColorRecursive(Transform trans, Color toColor ){
+	if(trans.childCount>0){
+		foreach (Transform child in trans) {
+			UnityEngine.UI.Text uiText = child.gameObject.GetComponent<UnityEngine.UI.Text>();
+			if(uiText!=null){
+				uiText.color = toColor;
+			}
+			textColorRecursive(child, toColor);
 		}
 	}
 }
