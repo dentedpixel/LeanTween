@@ -269,6 +269,7 @@ public class LTDescrImpl : LTDescr {
 	public LeanTweenType tweenType { get; set; }
 	public AnimationCurve animationCurve { get; set; }
 	public LeanTweenType loopType { get; set; }
+	public bool hasOnDestroyedCallback { get { return this.onDestroyed != null; } }
 	public bool hasUpdateCallback { get; set; }
 	public Action<float> onUpdateFloat { get; set; }
     public Action<float,float> onUpdateFloatRatio { get; set; }
@@ -277,6 +278,7 @@ public class LTDescrImpl : LTDescr {
 	public Action<Vector3> onUpdateVector3 { get; set; }
 	public Action<Vector3,object> onUpdateVector3Object { get; set; }
 	public Action<Color> onUpdateColor { get; set; }
+	public Action onDestroyed { get; set; }
 	public Action onComplete { get; set; }
 	public Action<object> onCompleteObject { get; set; }
 	public object onCompleteParam { get; set; }
@@ -917,6 +919,11 @@ public class LTDescrImpl : LTDescr {
 		return this; 
 	}
 
+	public LTDescr setOnDestroyed(Action onDestroyed){
+		this.onDestroyed = onDestroyed;
+		return this;
+	}
+
 	/**
 	* Have a method called when the tween finishes
 	* @method setOnComplete
@@ -1500,6 +1507,9 @@ public static void update() {
 				}
 				
 				if(trans==null){
+					if (tweens[i].hasOnDestroyedCallback){
+						tweens[i].onDestroyed();
+					}
 					removeTween(i);
 					continue;
 				}

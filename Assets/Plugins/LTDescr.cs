@@ -82,6 +82,7 @@ public interface LTDescr
 	LTDescr setLoopPingPong();
 	LTDescr setLoopPingPong(int loops);
 	LTDescr setLoopType(LeanTweenType loopType);
+	LTDescr setOnDestroyed(Action onDestroyed);
 	LTDescr setOnComplete(Action onComplete);
 	LTDescr setOnComplete(Action<object> onComplete);
 	LTDescr setOnComplete(Action<object> onComplete, object onCompleteParam);
