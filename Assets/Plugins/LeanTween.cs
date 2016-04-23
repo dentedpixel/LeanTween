@@ -1750,6 +1750,7 @@ public static void update() {
 
 							if(ren!=null){
 								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
+								alphaRecursiveSprite(tween.trans, val);
 							}else{
 								alphaRecursive(tween.trans, val, tween.useRecursion);
 							}
@@ -1772,25 +1773,13 @@ public static void update() {
 							SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
 							if(ren!=null){
 								ren.color = toColor;
+								colorRecursiveSprite( trans, toColor);
 							}else{
 							#endif
-								// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
-								if(tweenAction==TweenAction.COLOR){
-									if(trans.gameObject.GetComponent<Renderer>()!=null){
-										foreach(Material mat in trans.gameObject.GetComponent<Renderer>().materials){
-			        						mat.color = toColor;
-			    						}
-			    					}
-			    					if(trans.childCount>0){
-		    							foreach (Transform child in trans) {
-		    								if(child.gameObject.GetComponent<Renderer>()!=null){
-			    								foreach(Material mat in child.gameObject.GetComponent<Renderer>().materials){
-					        						mat.color = toColor;
-					    						}
-					    					}
-										}
-		    						}
-			    				}
+							// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
+							if(tweenAction==TweenAction.COLOR){
+								colorRecursive(trans, toColor, tween.useRecursion);
+		    				}
 			    			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 			    			}
 			    			#endif
@@ -2174,6 +2163,17 @@ public static void update() {
 	}
 }
 
+private static void alphaRecursiveSprite( Transform transform, float val ){
+	if(transform.childCount>0){
+		foreach (Transform child in transform) {
+			SpriteRenderer ren = child.GetComponent<SpriteRenderer>();
+			if(ren!=null)
+				ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
+			alphaRecursiveSprite(child, val);
+		}
+	}
+}
+
 private static void alphaRecursive( Transform transform, float val, bool useRecursion = true){
 	Renderer renderer = transform.gameObject.GetComponent<Renderer>();
 	if(renderer!=null){
@@ -2205,6 +2205,36 @@ private static void alphaRecursive( RectTransform rectTransform, float val){
 			    uiImage.color = c;
 			}
 			alphaRecursive(child, val);
+			textAlphaRecursive(child, val);
+		}
+	}
+}
+
+private static void colorRecursiveSprite( Transform transform, Color toColor ){
+	if(transform.childCount>0){
+		foreach (Transform child in transform) {
+			SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
+			if(ren!=null)
+				ren.color = toColor;
+			colorRecursiveSprite(child, toColor);
+		}
+	}
+}
+
+private static void colorRecursive( Transform transform, Color toColor, bool useRecursion = true ){
+	Renderer ren = transform.gameObject.GetComponent<Renderer>();
+	if(ren!=null){
+		foreach(Material mat in ren.materials){
+			mat.color = toColor;
+		}
+	}
+    if(useRecursion && transform.childCount>0){
+		foreach (Transform child in transform) {
+			UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
+			if(uiImage!=null){
+				uiImage.color = toColor;
+			}
+			colorRecursive(child, toColor);
 		}
 	}
 }
