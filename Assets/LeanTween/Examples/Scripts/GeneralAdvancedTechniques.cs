@@ -13,7 +13,7 @@ public class GeneralAdvancedTechniques : MonoBehaviour {
 		LeanTween.alpha( avatarRecursive, 0f, 1f).setRecursive(true).setLoopPingPong();
 		LeanTween.alpha( avatar2dRecursive, 0f, 1f).setRecursive(true).setLoopPingPong();
 		LeanTween.alpha( wingPersonPanel, 0f, 1f).setRecursive(true).setLoopPingPong();
-		LeanTween.textAlpha( wingPersonPanel, 0f, 1f).setRecursive(true).setLoopPingPong();
+		// LeanTween.textAlpha( wingPersonPanel, 0f, 1f).setRecursive(true).setLoopPingPong();
 
 		// Destroy on Complete - 
 	}

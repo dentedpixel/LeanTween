@@ -1793,7 +1793,7 @@ public static void update() {
                             c.a = val;
                             tween.uiImage.color = c;
                             if(tween.useRecursion)
-                            	alphaRecursive( tween.rectTransform, val );
+                            	alphaRecursive( tween.rectTransform, val, 0 );
                         }
                         else if (tweenAction == TweenAction.CANVAS_COLOR){
                             Color toColor = tweenColor(tween, val);
@@ -2195,7 +2195,7 @@ private static void alphaRecursive( Transform transform, float val, bool useRecu
 
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 
-private static void alphaRecursive( RectTransform rectTransform, float val){
+private static void alphaRecursive( RectTransform rectTransform, float val, int recursiveLevel = 0){
 	if(rectTransform.childCount>0){
 		foreach (RectTransform child in rectTransform) {
 			UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
@@ -2204,8 +2204,11 @@ private static void alphaRecursive( RectTransform rectTransform, float val){
 			    c.a = val;
 			    uiImage.color = c;
 			}
-			alphaRecursive(child, val);
-			textAlphaRecursive(child, val);
+			
+			if(recursiveLevel==0) // We only want to kick off this recursion on the first level
+				textAlphaRecursive(child, val);
+
+			alphaRecursive(child, val, recursiveLevel + 1);
 		}
 	}
 }
