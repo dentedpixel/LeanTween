@@ -2,32 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 namespace DentedPixel.LTExamples{
-
-	public class TempTestingCancel : MonoBehaviour {
-	    public bool isTweening = false;
-	    public bool tweenOverride = false;
-	    private LTDescr tween;
-	 
-	    // Use this for initialization
-	    void Start () {
-	        tween = LeanTween.move(gameObject, transform.position + Vector3.one*3f, Random.Range(2,2) ).setRepeat(-1).setLoopClamp ();
-	    }
-	 
-	    public void Update () {
-	        if(tween != null){
-	            isTweening = LeanTween.isTweening(gameObject);
-	            if(tweenOverride){
-	             
-	                // this next line works  
-	                //tween.cancel();
-	 
-	                // this one doesn't
-	                LeanTween.cancel(gameObject);
-	            }
-	        }
-	    }
-	}
-
+	
 	public class TestingUnitTests : MonoBehaviour {
 
 		public GameObject cube1;
@@ -57,9 +32,9 @@ namespace DentedPixel.LTExamples{
 
 		void Start () {
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 35;
+			LeanTest.expected = 36;
 
-			LeanTween.init(14 + 1200);
+			LeanTween.init(15 + 1200);
 			// add a listener
 			LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
@@ -156,6 +131,12 @@ namespace DentedPixel.LTExamples{
 				});
 			});
 
+			// Tween with time of zero is needs to be set to it's final value
+			GameObject zeroCube = Instantiate( boxNoCollider ) as GameObject;
+			zeroCube.name = "zeroCube";
+			LeanTween.moveX( zeroCube, 10f, 0f).setOnComplete( ()=>{
+				LeanTest.expect( zeroCube.transform.position.x == 10f, "ZERO TIME FINSHES CORRECTLY", "final x:"+ zeroCube.transform.position.x);
+			});
 			
 			StartCoroutine( timeBasedTesting() );
 		}
