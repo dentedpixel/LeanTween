@@ -673,9 +673,11 @@ public static void update() {
 						}
 						#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
                         else if (tweenAction == TweenAction.CANVAS_ALPHA){
-                            Color c = tween.uiImage.color;
-                            c.a = val;
-                            tween.uiImage.color = c;
+                        	if(tween.uiImage!=null){
+	                            Color c = tween.uiImage.color;
+	                            c.a = val;
+	                            tween.uiImage.color = c;
+	                        }
                             if(tween.useRecursion)
                             	alphaRecursive( tween.rectTransform, val, 0 );
                         }
