@@ -6,6 +6,7 @@ public class GeneralAdvancedTechniques : MonoBehaviour {
 	public GameObject avatarRecursive;
 	public GameObject avatar2dRecursive;
 	public RectTransform wingPersonPanel;
+	public RectTransform textField;
 
 	// Use this for initialization
 	void Start () {
