@@ -3317,6 +3317,7 @@ public class LTSpline {
 
 
 	public Vector3[] pts;
+	[System.NonSerialized]
 	public Vector3[] ptsAdj;
 	public int ptsAdjLength;
 	public bool orientToPath;
