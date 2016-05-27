@@ -426,7 +426,7 @@ public static void update() {
 					tween.init();
 				}
 				
-				if(tween.delay<=0){
+				if(tween.delay<=0 && tween.direction!=0){
 					// Move Values
 					if(timeTotal<=0f){
 						//Debug.LogError("time total is zero Time.timeScale:"+Time.timeScale+" useEstimatedTime:"+tween.useEstimatedTime);
@@ -3299,7 +3299,8 @@ public class LTBezierPath {
 * Animate along a set of points that need to be in the format: controlPoint, point1, point2.... pointLast, endControlPoint
 * @class LTSpline
 * @constructor
-* @param {Vector3 Array} pts A set of points that define the points the path will pass through (starting with starting control point, and ending with a control point)
+* @param {Vector3 Array} pts A set of points that define the points the path will pass through (starting with starting control point, and ending with a control point)<br>
+<i><strong>Note:</strong> The first and last item just define the angle of the end points, they are not actually used in the spline path itself. If you do not care about the angle you can jus set the first two items and last two items as the same value.</i>
 * @example 
 * LTSpline ltSpline = new LTSpline( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(0f,0f,0f), new Vector3(0f,0.5f,0f), new Vector3(1f,1f,0f), new Vector3(1f,1f,0f)} );<br><br>
 * LeanTween.moveSpline(lt, ltSpline.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
