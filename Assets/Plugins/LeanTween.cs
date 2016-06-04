@@ -669,6 +669,8 @@ public static void update() {
 			    			#endif
 		    				if(dt!=0f && tween.onUpdateColor!=null){
 								tween.onUpdateColor(toColor);
+							}else if(dt!=0f && tween.onUpdateColorObject!=null){
+								tween.onUpdateColorObject(toColor, tween.onUpdateParam);
 							}
 						}
 						#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
@@ -2364,6 +2366,10 @@ public static LTDescr value(GameObject gameObject, Action<float, float> callOnUp
 */
 
 public static LTDescr value(GameObject gameObject, Action<Color> callOnUpdate, Color from, Color to, float time){
+	return pushNewTween( gameObject, new Vector3(1.0f,to.a,0.0f), time, TweenAction.CALLBACK_COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) )
+		.setAxis( new Vector3(from.r, from.g, from.b) ).setFrom( new Vector3(0.0f, from.a, 0.0f) ).setHasInitialized(false).setOnUpdateColor(callOnUpdate) );
+}
+public static LTDescr value(GameObject gameObject, Action<Color,object> callOnUpdate, Color from, Color to, float time){
 	return pushNewTween( gameObject, new Vector3(1.0f,to.a,0.0f), time, TweenAction.CALLBACK_COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) )
 		.setAxis( new Vector3(from.r, from.g, from.b) ).setFrom( new Vector3(0.0f, from.a, 0.0f) ).setHasInitialized(false).setOnUpdateColor(callOnUpdate) );
 }

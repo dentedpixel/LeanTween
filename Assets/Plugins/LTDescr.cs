@@ -92,10 +92,12 @@ public interface LTDescr
 	LTDescr setOnUpdate(Action<float, object> onUpdate, object onUpdateParam = null);
 	LTDescr setOnUpdate(Action<float> onUpdate);
 	LTDescr setOnUpdate(Action<UnityEngine.Color> onUpdate);
+	LTDescr setOnUpdate(Action<UnityEngine.Color,object> onUpdate );
 	LTDescr setOnUpdate(Action<UnityEngine.Vector2> onUpdate, object onUpdateParam = null);
 	LTDescr setOnUpdate(Action<UnityEngine.Vector3, object> onUpdate, object onUpdateParam = null);
 	LTDescr setOnUpdate(Action<UnityEngine.Vector3> onUpdate, object onUpdateParam = null);
 	LTDescr setOnUpdateColor(Action<UnityEngine.Color> onUpdate);
+	LTDescr setOnUpdateColor(Action<UnityEngine.Color,object> onUpdate );
 	LTDescr setOnUpdateObject(Action<float, object> onUpdate);
 	LTDescr setOnUpdateParam(object onUpdateParam);
 	LTDescr setOnUpdateRatio(Action<float, float> onUpdate);

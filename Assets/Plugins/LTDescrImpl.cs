@@ -79,6 +79,7 @@ public class LTDescrImpl : LTDescr {
 	public Action<Vector3> onUpdateVector3 { get; set; }
 	public Action<Vector3,object> onUpdateVector3Object { get; set; }
 	public Action<Color> onUpdateColor { get; set; }
+	public Action<Color,object> onUpdateColorObject { get; set; }
 	public Action onComplete { get; set; }
 	public Action<object> onCompleteObject { get; set; }
 	public object onCompleteParam { get; set; }
@@ -442,6 +443,7 @@ public class LTDescrImpl : LTDescr {
 	*/
 	public LTDescr resume(){
 		this.direction = this.directionLast;
+		
 		return this;
 	}
 
@@ -806,11 +808,22 @@ public class LTDescrImpl : LTDescr {
 		this.hasUpdateCallback = true;
 		return this;
 	}
+	public LTDescr setOnUpdateColor( Action<Color,object> onUpdate ){
+		this.onUpdateColorObject = onUpdate;
+		this.hasUpdateCallback = true;
+		return this;
+	}
 
 	#if !UNITY_FLASH
 
 	public LTDescr setOnUpdate( Action<Color> onUpdate ){
 		this.onUpdateColor = onUpdate;
+		this.hasUpdateCallback = true;
+		return this;
+	}
+
+	public LTDescr setOnUpdate( Action<Color,object> onUpdate ){
+		this.onUpdateColorObject = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
