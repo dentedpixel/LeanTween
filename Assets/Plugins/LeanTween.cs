@@ -1701,6 +1701,15 @@ public static LTDescr colorText(RectTransform rectTransform, Color to, float tim
 }
 #endif
 
+/**
+* Call a method after a specified amount of time
+* 
+* @method LeanTween.delayedCall
+* @param {GameObject} gameObject:GameObject Gameobject that you wish to associate with this delayed call
+* @param {float} time:float delay The time you wish to pass before the method is called
+* @return {LTDescr} LTDescr an object that distinguishes the tween
+* @example LeanTween.delayedCall(gameObject, 1f, ()=>{ <br>Debug.Log("I am called one second later!");<br> }));
+*/
 public static LTDescr delayedCall( float delayTime, Action callback){
 	return pushNewTween( tweenEmpty, Vector3.zero, delayTime, TweenAction.CALLBACK, options().setOnComplete(callback) );
 }
