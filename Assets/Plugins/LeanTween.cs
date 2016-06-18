@@ -3182,6 +3182,15 @@ public class LTBezierPath {
 	}
 
 	/**
+	* @property {float} distance distance of the path (in unity units)
+	*/
+	public float distance{
+		get{
+			return length;
+		}
+	}
+
+	/**
 	* Retrieve a point along a path
 	* 
 	* @method point

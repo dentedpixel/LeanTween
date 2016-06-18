@@ -75,6 +75,7 @@ public interface LTDescr
 	LTDescr setHasInitialized(bool has);
 	LTDescr setId(uint id);
 	LTDescr setIgnoreTimeScale(bool useUnScaledTime);
+	LTDescr setSpeed( float speed );
 	LTDescr setLoopClamp();
 	LTDescr setLoopClamp(int loops);
 	LTDescr setLoopCount(int loopCount);
