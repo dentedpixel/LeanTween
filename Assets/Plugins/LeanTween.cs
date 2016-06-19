@@ -654,9 +654,9 @@ public static void update() {
 							Color toColor = tweenColor(tween, val);
 
 							#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
-							SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-							if(ren!=null){
-								ren.color = toColor;
+
+							if(tween.spriteRen!=null){
+								tween.spriteRen.color = toColor;
 								colorRecursiveSprite( trans, toColor);
 							}else{
 							#endif
@@ -1680,7 +1680,12 @@ public static LTDescr alphaVertex(GameObject gameObject, float to, float time){
 * LeanTween.color(gameObject, Color.yellow, 1f) .setDelay(1f);
 */
 public static LTDescr color(GameObject gameObject, Color to, float time){
-	return pushNewTween( gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) ) );
+	LTDescr lt = pushNewTween( gameObject, new Vector3(1.0f, to.a, 0.0f), time, TweenAction.COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) ) );
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+	SpriteRenderer ren = gameObject.GetComponent<SpriteRenderer>();
+	lt.spriteRen = ren;
+	#endif
+	return lt;
 }
 
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
@@ -2280,9 +2285,14 @@ public static LTDescr value(GameObject gameObject, Vector3 from, Vector3 to, flo
 * } );<br>
 */
 public static LTDescr value(GameObject gameObject, Color from, Color to, float time){
-	return pushNewTween( gameObject, new Vector3(1f, to.a, 0f), time, TweenAction.CALLBACK_COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) )
-		.setFromColor(from).setHasInitialized(false)
-	);
+	LTDescr lt = pushNewTween( gameObject, new Vector3(1f, to.a, 0f), time, TweenAction.CALLBACK_COLOR, options().setPoint( new Vector3(to.r, to.g, to.b) )
+		.setFromColor(from).setHasInitialized(false) );
+	
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+	SpriteRenderer ren = gameObject.GetComponent<SpriteRenderer>();
+	lt.spriteRen = ren;
+	#endif
+	return lt;
 }
 
 /**

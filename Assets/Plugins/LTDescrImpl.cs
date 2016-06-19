@@ -86,6 +86,9 @@ public class LTDescrImpl : LTDescr {
 	public object onCompleteParam { get; set; }
 	public object onUpdateParam { get; set; }
 	public Action onStart { get; set; }
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+	public SpriteRenderer spriteRen { get; set; }
+	#endif
 
 	#if LEANTWEEN_1
 	public Hashtable optional;

@@ -57,6 +57,9 @@ public interface LTDescr
 	void cleanup();
 	int uniqueId { get; }
 	int id { get; }
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+	SpriteRenderer spriteRen{ get; set; }
+	#endif
 	void init();
 	LTDescr pause();
 	void reset();
