@@ -630,10 +630,8 @@ public static void update() {
 							alphaRecursive(tween.trans, val, tween.useRecursion);
 							#else
 
-							SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-
-							if(ren!=null){
-								ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
+							if(tween.spriteRen!=null){
+								tween.spriteRen.color = new Color( tween.spriteRen.color.r, tween.spriteRen.color.g, tween.spriteRen.color.b, val);
 								alphaRecursiveSprite(tween.trans, val);
 							}else{
 								alphaRecursive(tween.trans, val, tween.useRecursion);
@@ -1594,7 +1592,13 @@ public static LTDescr play(RectTransform rectTransform, UnityEngine.Sprite[] spr
 * LeanTween.alpha(gameObject, 1f, 1f) .setDelay(1f);
 */
 public static LTDescr alpha(GameObject gameObject, float to, float time){
-	return pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ALPHA, options() );
+	LTDescr lt = pushNewTween( gameObject, new Vector3(to,0,0), time, TweenAction.ALPHA, options() );
+
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+	SpriteRenderer ren = gameObject.GetComponent<SpriteRenderer>();
+	lt.spriteRen = ren;
+	#endif
+	return lt;
 }
 
 /**
