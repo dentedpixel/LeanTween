@@ -3354,6 +3354,7 @@ public class LTSpline {
 	*/
 	public float distance = 0f;
 
+	public bool constantSpeed = true;
 
 	public Vector3[] pts;
 	[System.NonSerialized]
@@ -3363,9 +3364,17 @@ public class LTSpline {
 	public bool orientToPath2d;
 	private int numSections;
 	private int currPt;
+
+	public LTSpline( Vector3[] pts ){
+		init( pts, true);
+	}
 	
-	public LTSpline(params Vector3[] pts) {
-		// Debug.Log("pts.Length:"+pts.Length);
+	public LTSpline( Vector3[] pts, bool constantSpeed ) {
+		this.constantSpeed = constantSpeed;
+		init(pts, constantSpeed);
+	}
+
+	private void init( Vector3[] pts, bool constantSpeed){
 		if(pts.Length<4){
 			LeanTween.logError( "LeanTween - When passing values for a spline path, you must pass four or more values!" );
 			return;
@@ -3390,47 +3399,48 @@ public class LTSpline {
 			totalDistance += pointDistance;
 		}
 
-		minSegment = totalDistance / (numSections*SUBLINE_COUNT);
-		//Debug.Log("minSegment:"+minSegment+" numSections:"+numSections);
+		if(constantSpeed){
+			minSegment = totalDistance / (numSections*SUBLINE_COUNT);
+			//Debug.Log("minSegment:"+minSegment+" numSections:"+numSections);
 
-		float minPrecision = minSegment / SUBLINE_COUNT; // number of subdivisions in each segment
-		int precision = (int)Mathf.Ceil(totalDistance / minPrecision) * DISTANCE_COUNT;
-		// Debug.Log("precision:"+precision);
-		if(precision<=1) // precision has to be greater than one
-			precision = 2;
+			float minPrecision = minSegment / SUBLINE_COUNT; // number of subdivisions in each segment
+			int precision = (int)Mathf.Ceil(totalDistance / minPrecision) * DISTANCE_COUNT;
+			// Debug.Log("precision:"+precision);
+			if(precision<=1) // precision has to be greater than one
+				precision = 2;
 
-		ptsAdj = new Vector3[ precision ];
-		earlierPoint = interp( 0f );
-		int num = 1;
-		ptsAdj[0] = earlierPoint;
-		distance = 0f;
-		for(int i = 0; i < precision + 1; i++){
-			float fract = ((float)(i)) / precision;
-			// Debug.Log("fract:"+fract);
-			Vector3 point = interp( fract );
-			float dist = Vector3.Distance(point, earlierPoint);
-			
-			// float dist = (point-earlierPoint).sqrMagnitude;
-			if(dist>=minPrecision || fract>=1.0f){
-				ptsAdj[num] = point;
-				distance += dist; // only add it to the total distance once we know we are adding it as an adjusted point
+			ptsAdj = new Vector3[ precision ];
+			earlierPoint = interp( 0f );
+			int num = 1;
+			ptsAdj[0] = earlierPoint;
+			distance = 0f;
+			for(int i = 0; i < precision + 1; i++){
+				float fract = ((float)(i)) / precision;
+				// Debug.Log("fract:"+fract);
+				Vector3 point = interp( fract );
+				float dist = Vector3.Distance(point, earlierPoint);
+				
+				// float dist = (point-earlierPoint).sqrMagnitude;
+				if(dist>=minPrecision || fract>=1.0f){
+					ptsAdj[num] = point;
+					distance += dist; // only add it to the total distance once we know we are adding it as an adjusted point
 
-				earlierPoint = point;
-				// Debug.Log("fract:"+fract+" point:"+point);
-				num++;
+					earlierPoint = point;
+					// Debug.Log("fract:"+fract+" point:"+point);
+					num++;
+				}
 			}
-		}
-		// make sure there is a point at the very end
-		/*num++;
-		Vector3 endPoint = interp( 1f );
-		ptsAdj[num] = endPoint;*/
-		// Debug.Log("fract 1f endPoint:"+endPoint);
+			// make sure there is a point at the very end
+			/*num++;
+			Vector3 endPoint = interp( 1f );
+			ptsAdj[num] = endPoint;*/
+			// Debug.Log("fract 1f endPoint:"+endPoint);
 
-		ptsAdjLength = num;
+			ptsAdjLength = num;
+		}
 		// Debug.Log("map 1f:"+map(1f)+" end:"+ptsAdj[ ptsAdjLength-1 ]);
 
 		// Debug.Log("ptsAdjLength:"+ptsAdjLength+" minPrecision:"+minPrecision+" precision:"+precision);
-
 	}
 
 	public Vector3 map( float u ){
@@ -3511,7 +3521,7 @@ public class LTSpline {
 	*/
 	public Vector3 point( float ratio ){
 		float t = ratio>1f?1f:ratio;
-		return map(t);
+		return constantSpeed ? map(t) : interp(t);
 	}
 
 	public void place2d( Transform transform, float ratio ){
