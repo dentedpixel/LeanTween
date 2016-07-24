@@ -233,18 +233,18 @@ private static int tweenMaxSearch = -1;
 private static int maxTweens = 400;
 private static int frameRendered= -1;
 private static GameObject _tweenEmpty;
-private static float dtEstimated = -1f;
+public static float dtEstimated = -1f;
 public static float dtManual;
 #if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5
 private static float previousRealTime;
 #endif
 private static float dt;
-private static float dtActual;
+public static float dtActual;
 private static int i;
 private static int j;
 private static int finishedCnt;
-private static AnimationCurve punch = new AnimationCurve( new Keyframe(0.0f, 0.0f ), new Keyframe(0.112586f, 0.9976035f ), new Keyframe(0.3120486f, -0.1720615f ), new Keyframe(0.4316337f, 0.07030682f ), new Keyframe(0.5524869f, -0.03141804f ), new Keyframe(0.6549395f, 0.003909959f ), new Keyframe(0.770987f, -0.009817753f ), new Keyframe(0.8838775f, 0.001939224f ), new Keyframe(1.0f, 0.0f ) );
-private static AnimationCurve shake = new AnimationCurve( new Keyframe(0f, 0f), new Keyframe(0.25f, 1f), new Keyframe(0.75f, -1f), new Keyframe(1f, 0f) ) ;
+public static AnimationCurve punch = new AnimationCurve( new Keyframe(0.0f, 0.0f ), new Keyframe(0.112586f, 0.9976035f ), new Keyframe(0.3120486f, -0.1720615f ), new Keyframe(0.4316337f, 0.07030682f ), new Keyframe(0.5524869f, -0.03141804f ), new Keyframe(0.6549395f, 0.003909959f ), new Keyframe(0.770987f, -0.009817753f ), new Keyframe(0.8838775f, 0.001939224f ), new Keyframe(1.0f, 0.0f ) );
+public static AnimationCurve shake = new AnimationCurve( new Keyframe(0f, 0f), new Keyframe(0.25f, 1f), new Keyframe(0.75f, -1f), new Keyframe(1f, 0f) ) ;
 
 public static void init(){
 	init(maxTweens);
@@ -342,7 +342,6 @@ private static float ratioPassed;
 private static float from;
 //private static float to = 1.0f;
 private static float val;
-private static bool isTweenFinished;
 private static int maxTweenReached;
 private static Vector3 newVect;
 private static GameObject target;
@@ -377,565 +376,18 @@ public static void update() {
 			//	Debug.Log("tweens["+i+"]"+tweens[i]+" dt:"+dt);
 			if(tweens[i].toggle){
 				maxTweenReached = i;
+                
+
 				tween = tweens[i];
-				trans = tween.trans;
-				timeTotal = tween.time;
-				tweenAction = tween.type;
-
-				/*if(trans.gameObject.name=="Main Camera"){
-					Debug.Log("main tween:"+tween+" i:"+i);
-				}*/
-				 
-				if( tween.useEstimatedTime ){
-					dt = dtEstimated;
-				}else if( tween.useFrames ){
-					dt = 1;
-				}else if( tween.useManualTime ){
-					dt = dtManual;
-				}else if(tween.direction==0f){
-					dt = 0f;
-				}else{
-					dt = dtActual;
-				}
+                bool isTweenFinished = tween.update();
 				
-				if(trans==null){
-					removeTween(i);
-					continue;
-				}
-				// Debug.Log("i:"+i+" tween:"+tween+" dt:"+dt);
-
-				if (tweenAction == TweenAction.MOVE_TO_TRANSFORM) {
-                    tween.to = tween.toTrans.position;
-                    tween.diff = tween.to - tween.from;
+				
+                if (isTweenFinished) {
+                    if (tween.loopType == LeanTweenType.once || tween.loopCount == 1) {
+                        tweensFinished[finishedCnt] = i;
+                        finishedCnt++;
+                    }
                 }
-				
-				// Check for tween finished
-				isTweenFinished = false;
-				if(tween.delay<=0){
-					if((tween.passed + dt > tween.time && tween.direction > 0.0f )){
-						// Debug.Log("i:"+i+" passed:"+tween.passed+" dt:"+dt+" time:"+tween.time+" dir:"+tween.direction);
-						isTweenFinished = true;
-						tween.passed = tween.time; // Set to the exact end time so that it can finish tween exactly on the end value
-					}else if(tween.direction<0.0f && tween.passed - dt < 0.0f){
-						isTweenFinished = true;
-						tween.passed = Mathf.Epsilon;
-					}
-				}
-
-				if(!tween.hasInitiliazed && ((tween.passed==0.0 && tween.delay==0.0) || tween.passed>0.0) ){
-					tween.init();
-				}
-				
-				if(tween.delay<=0 && tween.direction!=0){
-					// Move Values
-					if(timeTotal<=0f){
-						//Debug.LogError("time total is zero Time.timeScale:"+Time.timeScale+" useEstimatedTime:"+tween.useEstimatedTime);
-						ratioPassed = 1f;
-					}else{
-						ratioPassed = tween.passed / timeTotal;
-					}
-
-					if(ratioPassed>1.0f){
-						ratioPassed = 1.0f;
-					}else if(ratioPassed<0f){
-						ratioPassed = 0f;
-					}
-					// Debug.Log("action:"+tweenAction+" ratioPassed:"+ratioPassed + " timeTotal:" + timeTotal + " tween.passed:"+ tween.passed +" dt:"+dt);
-					
-					if(tweenAction>=TweenAction.MOVE_X && tweenAction<TweenAction.MOVE){
-						if(tween.animationCurve!=null){
-							val = tweenOnCurve(tween, ratioPassed);
-						}else {
-							switch( tween.tweenType ){
-								case LeanTweenType.linear:
-									val = tween.from.x + tween.diff.x * ratioPassed; break;
-								case LeanTweenType.easeOutQuad:
-									val = easeOutQuadOpt(tween.from.x, tween.diff.x, ratioPassed); break;
-								case LeanTweenType.easeInQuad:
-									val = easeInQuadOpt(tween.from.x, tween.diff.x, ratioPassed); break;
-								case LeanTweenType.easeInOutQuad:
-									val = easeInOutQuadOpt(tween.from.x, tween.diff.x, ratioPassed); break;
-								case LeanTweenType.easeInCubic:
-									val = easeInCubic(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeOutCubic:
-									val = easeOutCubic(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInOutCubic:
-									val = easeInOutCubic(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInQuart:
-									val = easeInQuart(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeOutQuart:
-									val = easeOutQuart(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInOutQuart:
-									val = easeInOutQuart(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInQuint:
-									val = easeInQuint(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeOutQuint:
-									val = easeOutQuint(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInOutQuint:
-									val = easeInOutQuint(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInSine:
-									val = easeInSine(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeOutSine:
-									val = easeOutSine(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInOutSine:
-									val = easeInOutSine(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInExpo:
-									val = easeInExpo(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeOutExpo:
-									val = easeOutExpo(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInOutExpo:
-									val = easeInOutExpo(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInCirc:
-									val = easeInCirc(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeOutCirc:
-									val = easeOutCirc(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInOutCirc:
-									val = easeInOutCirc(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInBounce:
-									val = easeInBounce(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeOutBounce:
-									val = easeOutBounce(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInOutBounce:
-									val = easeInOutBounce(tween.from.x, tween.to.x, ratioPassed); break;
-								case LeanTweenType.easeInBack:
-									val = easeInBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot); break;
-								case LeanTweenType.easeOutBack:
-									val = easeOutBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot); break;
-								case LeanTweenType.easeInOutBack:
-									val = easeInOutBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot); break;
-								case LeanTweenType.easeInElastic:
-									val = easeInElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period); break;
-								case LeanTweenType.easeOutElastic:
-									val = easeOutElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period); break;
-								case LeanTweenType.easeInOutElastic:
-									val = easeInOutElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period); break;
-                                case LeanTweenType.punch:
-								case LeanTweenType.easeShake:
-									if(tween.tweenType==LeanTweenType.punch){
-										tween.animationCurve = LeanTween.punch;
-									}else if(tween.tweenType==LeanTweenType.easeShake){
-										tween.animationCurve = LeanTween.shake;
-									}
-									tween.toInternal.x = tween.from.x + tween.to.x;
-									tween.diffInternal.x = tween.to.x - tween.from.x;
-									val = tweenOnCurve(tween, ratioPassed); break;
-								case LeanTweenType.easeSpring:
-									val = spring(tween.from.x, tween.to.x, ratioPassed); break;
-                                default:
-                                    {
-                                        val = tween.from.x + tween.diff.x * ratioPassed; break;
-                                    }
-							}
-						
-						}
-						
-						// Debug.Log("from:"+from+" val:"+val+" ratioPassed:"+ratioPassed);
-						if(tweenAction==TweenAction.MOVE_X){
-							trans.position=new Vector3( val,trans.position.y,trans.position.z);
-						}else if(tweenAction==TweenAction.MOVE_Y){
-							trans.position =new Vector3( trans.position.x,val,trans.position.z);
-						}else if(tweenAction==TweenAction.MOVE_Z){
-							trans.position=new Vector3( trans.position.x,trans.position.y,val);
-						}if(tweenAction==TweenAction.MOVE_LOCAL_X){
-							trans.localPosition=new Vector3( val,trans.localPosition.y,trans.localPosition.z);
-						}else if(tweenAction==TweenAction.MOVE_LOCAL_Y){
-							trans.localPosition=new Vector3( trans.localPosition.x,val,trans.localPosition.z);
-						}else if(tweenAction==TweenAction.MOVE_LOCAL_Z){
-							trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,val);
-						}else if(tweenAction==TweenAction.MOVE_CURVED){
-							if(tween.path.orientToPath){
-								if(tween.path.orientToPath2d){
-									tween.path.place2d( trans, val );
-								}else{
-									tween.path.place( trans, val );
-								}
-							}else{
-								trans.position = tween.path.point( val );
-							}
-							// Debug.Log("val:"+val+" trans.position:"+trans.position + " 0:"+ tween.curves[0] +" 1:"+tween.curves[1] +" 2:"+tween.curves[2] +" 3:"+tween.curves[3]);
-						}else if((TweenAction)tweenAction==TweenAction.MOVE_CURVED_LOCAL){
-							if(tween.path.orientToPath){
-								if(tween.path.orientToPath2d){
-									tween.path.placeLocal2d( trans, val );
-								}else{
-									tween.path.placeLocal( trans, val );
-								}
-							}else{
-								trans.localPosition = tween.path.point( val );
-							}
-							// Debug.Log("val:"+val+" trans.position:"+trans.position);
-						}else if(tweenAction==TweenAction.MOVE_SPLINE){
-							if(tween.spline.orientToPath){
-								if(tween.spline.orientToPath2d){
-									tween.spline.place2d( trans, val );
-								}else{
-									tween.spline.place( trans, val );
-								}
-							}else{
-								trans.position = tween.spline.point( val );
-							}
-							// Debug.Log("val:"+val+" trans.position:"+trans.position);
-						}else if(tweenAction==TweenAction.MOVE_SPLINE_LOCAL){
-							if(tween.spline.orientToPath){
-								if(tween.spline.orientToPath2d){
-									tween.spline.placeLocal2d( trans, val );
-								}else{
-									tween.spline.placeLocal( trans, val );
-								}
-							}else{
-								trans.localPosition = tween.spline.point( val );
-							}
-						}else if(tweenAction==TweenAction.SCALE_X){
-							trans.localScale=new Vector3(val, trans.localScale.y,trans.localScale.z);
-						}else if(tweenAction==TweenAction.SCALE_Y){
-							trans.localScale=new Vector3( trans.localScale.x,val,trans.localScale.z);
-						}else if(tweenAction==TweenAction.SCALE_Z){
-							trans.localScale=new Vector3(trans.localScale.x,trans.localScale.y,val);
-						}else if(tweenAction==TweenAction.ROTATE_X){
-					    	trans.eulerAngles=new Vector3(val, trans.eulerAngles.y,trans.eulerAngles.z);
-					    }else if(tweenAction==TweenAction.ROTATE_Y){
-					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,val,trans.eulerAngles.z);
-					    }else if(tweenAction==TweenAction.ROTATE_Z){
-					    	trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,val);
-					    }else if(tweenAction==TweenAction.ROTATE_AROUND){
-							Vector3 origPos = trans.localPosition;
-							Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( tween.point );
-			    			trans.RotateAround(rotateAroundPt, tween.axis, -val);
-			    			Vector3 diff = origPos - trans.localPosition;
-			    			
-			    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
-			    			trans.rotation = tween.origRotation;
-
-			    			rotateAroundPt = (Vector3)trans.TransformPoint( tween.point );
-				    		trans.RotateAround(rotateAroundPt, tween.axis, val);
-
-				    		//GameObject cubeMarker = GameObject.Find("TweenRotatePoint");
-			    			//cubeMarker.transform.position = rotateAroundPt;
-
-					    }else if(tweenAction==TweenAction.ROTATE_AROUND_LOCAL){
-							Vector3 origPos = trans.localPosition;
-			    			trans.RotateAround((Vector3)trans.TransformPoint( tween.point ), trans.TransformDirection(tween.axis), -val);
-			    			Vector3 diff = origPos - trans.localPosition;
-			    			
-			    			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
-			    			trans.localRotation = tween.origRotation;
-			    			Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( tween.point );
-			    			trans.RotateAround(rotateAroundPt, trans.TransformDirection(tween.axis), val);
-
-			    			//GameObject cubeMarker = GameObject.Find("TweenRotatePoint");
-			    			//cubeMarker.transform.position = rotateAroundPt;
-		    			
-					    }else if(tweenAction==TweenAction.ALPHA){
-					    	#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-							alphaRecursive(tween.trans, val, tween.useRecursion);
-							#else
-
-							if(tween.spriteRen!=null){
-								tween.spriteRen.color = new Color( tween.spriteRen.color.r, tween.spriteRen.color.g, tween.spriteRen.color.b, val);
-								alphaRecursiveSprite(tween.trans, val);
-							}else{
-								alphaRecursive(tween.trans, val, tween.useRecursion);
-							}
-
-    						#endif
-						}else if(tweenAction==TweenAction.ALPHA_VERTEX){
-							Mesh mesh = trans.GetComponent<MeshFilter>().mesh;
-							Vector3[] vertices = mesh.vertices;
-							Color32[] colors = new Color32[vertices.Length];
-							Color32 c = mesh.colors32[0];
-							c = new Color( c.r, c.g, c.b, val);
-							for (int k= 0; k < vertices.Length; k++) {
-								colors[k] = c;
-							}
-							mesh.colors32 = colors;
-						}else if(tweenAction==TweenAction.COLOR || tweenAction==TweenAction.CALLBACK_COLOR){
-							Color toColor = tweenColor(tween, val);
-
-							#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
-
-							if(tween.spriteRen!=null){
-								tween.spriteRen.color = toColor;
-								colorRecursiveSprite( trans, toColor);
-							}else{
-							#endif
-							// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
-							if(tweenAction==TweenAction.COLOR){
-								colorRecursive(trans, toColor, tween.useRecursion);
-		    				}
-			    			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
-			    			}
-			    			#endif
-		    				if(dt!=0f && tween.onUpdateColor!=null){
-								tween.onUpdateColor(toColor);
-							}else if(dt!=0f && tween.onUpdateColorObject!=null){
-								tween.onUpdateColorObject(toColor, tween.onUpdateParam);
-							}
-						}
-						#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-                        else if (tweenAction == TweenAction.CANVAS_ALPHA){
-                        	if(tween.uiImage!=null){
-	                            Color c = tween.uiImage.color;
-	                            c.a = val;
-	                            tween.uiImage.color = c;
-	                        }
-                            if(tween.useRecursion){
-                            	alphaRecursive( tween.rectTransform, val, 0 );
-                            	textAlphaRecursive( tween.rectTransform, val);
-                            }
-                        }
-                        else if (tweenAction == TweenAction.CANVAS_COLOR){
-                            Color toColor = tweenColor(tween, val);
-                            tween.uiImage.color = toColor;
-                            if (dt!=0f && tween.onUpdateColor != null){
-                                tween.onUpdateColor(toColor);
-                            }
-                            if(tween.useRecursion)
-                            	colorRecursive(tween.rectTransform, toColor);
-                        }
-                        else if (tweenAction == TweenAction.CANVASGROUP_ALPHA){
-                        	CanvasGroup canvasGroup = tween.trans.GetComponent<CanvasGroup>();
-                            canvasGroup.alpha = val;
-                        }
-                        else if (tweenAction == TweenAction.TEXT_ALPHA){
-                        	textAlphaRecursive( trans, val, tween.useRecursion );
-                        }
-                        else if (tweenAction == TweenAction.TEXT_COLOR){
-                            Color toColor = tweenColor(tween, val);
-                            tween.uiText.color = toColor;
-                        	if (dt!=0f && tween.onUpdateColor != null){
-                                tween.onUpdateColor(toColor);
-                            }
-                            if(tween.useRecursion && trans.childCount>0){
-    							textColorRecursive(tween.trans, toColor);
-    						}
-                        }
-						else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND){
-							// figure out how much the rotation has shifted the object over
-			    			RectTransform rect = tween.rectTransform;
-			    			Vector3 origPos = rect.localPosition;
-			    			rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, -val);
-			    			Vector3 diff = origPos - rect.localPosition;
-			    			
-			    			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
-			    			rect.rotation = tween.origRotation;
-				    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), tween.axis, val);
-					    }else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND_LOCAL){
-							// figure out how much the rotation has shifted the object over
-			    			RectTransform rect = tween.rectTransform;
-			    			Vector3 origPos = rect.localPosition;
-			    			rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), rect.TransformDirection(tween.axis), -val);
-			    			Vector3 diff = origPos - rect.localPosition;
-			    			
-			    			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
-			    			rect.rotation = tween.origRotation;
-				    		rect.RotateAround((Vector3)rect.TransformPoint( tween.point ), rect.TransformDirection(tween.axis), val);
-					    }else if(tweenAction==TweenAction.CANVAS_PLAYSPRITE){
-							int frame = (int)Mathf.Round( val );
-							// Debug.Log("frame:"+frame+" val:"+val);
-							tween.uiImage.sprite = tween.sprites[ frame ];
-					    }else if(tweenAction==TweenAction.CANVAS_MOVE_X){
-					    	Vector3 current = tween.rectTransform.anchoredPosition3D;
-							tween.rectTransform.anchoredPosition3D = new Vector3(val, current.y, current.z);
-						}else if(tweenAction==TweenAction.CANVAS_MOVE_Y){
-					    	Vector3 current = tween.rectTransform.anchoredPosition3D;
-							tween.rectTransform.anchoredPosition3D = new Vector3(current.x, val, current.z);
-						}else if(tweenAction==TweenAction.CANVAS_MOVE_Z){
-					    	Vector3 current = tween.rectTransform.anchoredPosition3D;
-							tween.rectTransform.anchoredPosition3D = new Vector3(current.x, current.y, val);
-						}
-						#endif
-						
-					}else if(tweenAction>=TweenAction.MOVE){
-						//
-						
-						if(tween.animationCurve!=null){
-							newVect = tweenOnCurveVector(tween, ratioPassed);
-						}else{
-							if(tween.tweenType == LeanTweenType.linear){
-								newVect = new Vector3( tween.from.x + tween.diff.x * ratioPassed, tween.from.y + tween.diff.y * ratioPassed, tween.from.z + tween.diff.z * ratioPassed);
-							}else if(tween.tweenType >= LeanTweenType.linear){
-								switch(tween.tweenType){
-									case LeanTweenType.easeOutQuad:
-										newVect = new Vector3(easeOutQuadOpt(tween.from.x, tween.diff.x, ratioPassed), easeOutQuadOpt(tween.from.y, tween.diff.y, ratioPassed), easeOutQuadOpt(tween.from.z, tween.diff.z, ratioPassed)); break;
-									case LeanTweenType.easeInQuad:
-										newVect = new Vector3(easeInQuadOpt(tween.from.x, tween.diff.x, ratioPassed), easeInQuadOpt(tween.from.y, tween.diff.y, ratioPassed), easeInQuadOpt(tween.from.z, tween.diff.z, ratioPassed)); break;
-									case LeanTweenType.easeInOutQuad:
-										newVect = new Vector3(easeInOutQuadOpt(tween.from.x, tween.diff.x, ratioPassed), easeInOutQuadOpt(tween.from.y, tween.diff.y, ratioPassed), easeInOutQuadOpt(tween.from.z, tween.diff.z, ratioPassed)); break;
-									case LeanTweenType.easeInCubic:
-										newVect = new Vector3(easeInCubic(tween.from.x, tween.to.x, ratioPassed), easeInCubic(tween.from.y, tween.to.y, ratioPassed), easeInCubic(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeOutCubic:
-										newVect = new Vector3(easeOutCubic(tween.from.x, tween.to.x, ratioPassed), easeOutCubic(tween.from.y, tween.to.y, ratioPassed), easeOutCubic(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInOutCubic:
-										newVect = new Vector3(easeInOutCubic(tween.from.x, tween.to.x, ratioPassed), easeInOutCubic(tween.from.y, tween.to.y, ratioPassed), easeInOutCubic(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInQuart:
-										newVect = new Vector3(easeInQuart(tween.from.x, tween.to.x, ratioPassed), easeInQuart(tween.from.y, tween.to.y, ratioPassed), easeInQuart(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeOutQuart:
-										newVect = new Vector3(easeOutQuart(tween.from.x, tween.to.x, ratioPassed), easeOutQuart(tween.from.y, tween.to.y, ratioPassed), easeOutQuart(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInOutQuart:
-										newVect = new Vector3(easeInOutQuart(tween.from.x, tween.to.x, ratioPassed), easeInOutQuart(tween.from.y, tween.to.y, ratioPassed), easeInOutQuart(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInQuint:
-										newVect = new Vector3(easeInQuint(tween.from.x, tween.to.x, ratioPassed), easeInQuint(tween.from.y, tween.to.y, ratioPassed), easeInQuint(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeOutQuint:
-										newVect = new Vector3(easeOutQuint(tween.from.x, tween.to.x, ratioPassed), easeOutQuint(tween.from.y, tween.to.y, ratioPassed), easeOutQuint(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInOutQuint:
-										newVect = new Vector3(easeInOutQuint(tween.from.x, tween.to.x, ratioPassed), easeInOutQuint(tween.from.y, tween.to.y, ratioPassed), easeInOutQuint(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInSine:
-										newVect = new Vector3(easeInSine(tween.from.x, tween.to.x, ratioPassed), easeInSine(tween.from.y, tween.to.y, ratioPassed), easeInSine(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeOutSine:
-										newVect = new Vector3(easeOutSine(tween.from.x, tween.to.x, ratioPassed), easeOutSine(tween.from.y, tween.to.y, ratioPassed), easeOutSine(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInOutSine:
-										newVect = new Vector3(easeInOutSine(tween.from.x, tween.to.x, ratioPassed), easeInOutSine(tween.from.y, tween.to.y, ratioPassed), easeInOutSine(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInExpo:
-										newVect = new Vector3(easeInExpo(tween.from.x, tween.to.x, ratioPassed), easeInExpo(tween.from.y, tween.to.y, ratioPassed), easeInExpo(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeOutExpo:
-										newVect = new Vector3(easeOutExpo(tween.from.x, tween.to.x, ratioPassed), easeOutExpo(tween.from.y, tween.to.y, ratioPassed), easeOutExpo(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInOutExpo:
-										newVect = new Vector3(easeInOutExpo(tween.from.x, tween.to.x, ratioPassed), easeInOutExpo(tween.from.y, tween.to.y, ratioPassed), easeInOutExpo(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInCirc:
-										newVect = new Vector3(easeInCirc(tween.from.x, tween.to.x, ratioPassed), easeInCirc(tween.from.y, tween.to.y, ratioPassed), easeInCirc(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeOutCirc:
-										newVect = new Vector3(easeOutCirc(tween.from.x, tween.to.x, ratioPassed), easeOutCirc(tween.from.y, tween.to.y, ratioPassed), easeOutCirc(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInOutCirc:
-										newVect = new Vector3(easeInOutCirc(tween.from.x, tween.to.x, ratioPassed), easeInOutCirc(tween.from.y, tween.to.y, ratioPassed), easeInOutCirc(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInBounce:
-										newVect = new Vector3(easeInBounce(tween.from.x, tween.to.x, ratioPassed), easeInBounce(tween.from.y, tween.to.y, ratioPassed), easeInBounce(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeOutBounce:
-										newVect = new Vector3(easeOutBounce(tween.from.x, tween.to.x, ratioPassed), easeOutBounce(tween.from.y, tween.to.y, ratioPassed), easeOutBounce(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInOutBounce:
-										newVect = new Vector3(easeInOutBounce(tween.from.x, tween.to.x, ratioPassed), easeInOutBounce(tween.from.y, tween.to.y, ratioPassed), easeInOutBounce(tween.from.z, tween.to.z, ratioPassed)); break;
-									case LeanTweenType.easeInBack:
-										newVect = new Vector3(easeInBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot), easeInBack(tween.from.y, tween.to.y, ratioPassed, tween.overshoot), easeInBack(tween.from.z, tween.to.z, ratioPassed, tween.overshoot)); break;
-									case LeanTweenType.easeOutBack:
-										newVect = new Vector3(easeOutBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot), easeOutBack(tween.from.y, tween.to.y, ratioPassed, tween.overshoot), easeOutBack(tween.from.z, tween.to.z, ratioPassed, tween.overshoot)); break;
-									case LeanTweenType.easeInOutBack:
-										newVect = new Vector3(easeInOutBack(tween.from.x, tween.to.x, ratioPassed, tween.overshoot), easeInOutBack(tween.from.y, tween.to.y, ratioPassed, tween.overshoot), easeInOutBack(tween.from.z, tween.to.z, ratioPassed, tween.overshoot)); break;
-									case LeanTweenType.easeInElastic:
-										newVect = new Vector3(easeInElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period), easeInElastic(tween.from.y, tween.to.y, ratioPassed, tween.overshoot, tween.period), easeInElastic(tween.from.z, tween.to.z, ratioPassed, tween.overshoot, tween.period)); break;
-									case LeanTweenType.easeOutElastic:
-										newVect = new Vector3(easeOutElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period), easeOutElastic(tween.from.y, tween.to.y, ratioPassed, tween.overshoot, tween.period), easeOutElastic(tween.from.z, tween.to.z, ratioPassed, tween.overshoot, tween.period)); break;
-									case LeanTweenType.easeInOutElastic:
-										newVect = new Vector3(easeInOutElastic(tween.from.x, tween.to.x, ratioPassed, tween.overshoot, tween.period), easeInOutElastic(tween.from.y, tween.to.y, ratioPassed, tween.overshoot, tween.period), easeInOutElastic(tween.from.z, tween.to.z, ratioPassed, tween.overshoot, tween.period)); break;
-									case LeanTweenType.punch:
-									case LeanTweenType.easeShake:
-										if(tween.tweenType==LeanTweenType.punch){
-											tween.animationCurve = LeanTween.punch;
-										}else if(tween.tweenType==LeanTweenType.easeShake){
-											tween.animationCurve = LeanTween.shake;
-										}
-										tween.toInternal = tween.from + tween.to;
-										tween.diff = tween.to - tween.from;
-										if(tweenAction==TweenAction.ROTATE || tweenAction==TweenAction.ROTATE_LOCAL){
-											tween.to = new Vector3(closestRot(tween.from.x, tween.to.x), closestRot(tween.from.y, tween.to.y), closestRot(tween.from.z, tween.to.z));
-										}
-										newVect = tweenOnCurveVector(tween, ratioPassed); break;
-									case LeanTweenType.easeSpring:
-										newVect = new Vector3(spring(tween.from.x, tween.to.x, ratioPassed), spring(tween.from.y, tween.to.y, ratioPassed), spring(tween.from.z, tween.to.z, ratioPassed)); break;
-									
-								}
-							}else{
-								newVect = new Vector3( tween.from.x + tween.diff.x * ratioPassed, tween.from.y + tween.diff.y * ratioPassed, tween.from.z + tween.diff.z * ratioPassed);
-							}
-						}
-						 
-						if(tweenAction==TweenAction.MOVE){
-							trans.position = newVect;
-					    }else if(tweenAction==TweenAction.MOVE_LOCAL){
-							trans.localPosition = newVect;
-					    }else if(tweenAction==TweenAction.MOVE_TO_TRANSFORM){
-							trans.position = newVect;
-					    }else if(tweenAction==TweenAction.ROTATE){
-					    	/*if(tween.hasPhysics){
-					    		trans.gameObject.rigidbody.MoveRotation(Quaternion.Euler( newVect ));
-				    		}else{*/
-				    			trans.eulerAngles = newVect;
-				    		// }
-					    }else if(tweenAction==TweenAction.ROTATE_LOCAL){
-					    	trans.localEulerAngles = newVect;
-					    }else if(tweenAction==TweenAction.SCALE){
-					    	trans.localScale = newVect;
-					    }else if(tweenAction==TweenAction.GUI_MOVE){
-					    	tween.ltRect.rect = new Rect( newVect.x, newVect.y, tween.ltRect.rect.width, tween.ltRect.rect.height);
-					    }else if(tweenAction==TweenAction.GUI_MOVE_MARGIN){
-					    	tween.ltRect.margin = new Vector2(newVect.x, newVect.y);
-					    }else if(tweenAction==TweenAction.GUI_SCALE){
-					    	tween.ltRect.rect = new Rect( tween.ltRect.rect.x, tween.ltRect.rect.y, newVect.x, newVect.y);
-					    }else if(tweenAction==TweenAction.GUI_ALPHA){
-					    	tween.ltRect.alpha = newVect.x;
-					    }else if(tweenAction==TweenAction.GUI_ROTATE){
-					    	tween.ltRect.rotation = newVect.x;
-					    }
-					    #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-						else if(tweenAction==TweenAction.CANVAS_MOVE){
-							tween.rectTransform.anchoredPosition3D = newVect;
-						}else if(tweenAction==TweenAction.CANVAS_SCALE){
-							tween.rectTransform.localScale = newVect;
-						}
-						#endif
-					}
-					// Debug.Log("tween.delay:"+tween.delay + " tween.passed:"+tween.passed + " tweenAction:"+tweenAction + " to:"+newVect+" axis:"+tween.axis);
-
-					if(dt!=0f && tween.hasUpdateCallback){
-						if(tween.onUpdateFloat!=null){
-							tween.onUpdateFloat(val);
-						}
-                        if (tween.onUpdateFloatRatio != null){
-                            tween.onUpdateFloatRatio(val,ratioPassed);
-                        }else if(tween.onUpdateFloatObject!=null){
-							tween.onUpdateFloatObject(val, tween.onUpdateParam);
-						}else if(tween.onUpdateVector3Object!=null){
-							tween.onUpdateVector3Object(newVect, tween.onUpdateParam);
-						}else if(tween.onUpdateVector3!=null){
-							tween.onUpdateVector3(newVect);
-						}else if(tween.onUpdateVector2!=null){
-							tween.onUpdateVector2(new Vector2(newVect.x,newVect.y));
-						}
-					}
-					
-				}
-				
-				if(isTweenFinished){
-					if(tween.loopType==LeanTweenType.once || tween.loopCount==1){
-						tweensFinished[finishedCnt] = i;
-						finishedCnt++;
-
-						//Debug.Log("finished tween:"+i+" tween:"+tween);
-						if(tweenAction==TweenAction.GUI_ROTATE)
-							tween.ltRect.rotateFinished = true;
-						
-						if(tweenAction==TweenAction.DELAYED_SOUND){
-							AudioSource.PlayClipAtPoint((AudioClip)tween.onCompleteParam, tween.to, tween.from.x);
-						}
-					}else{
-						if((tween.loopCount<0 && tween.type==TweenAction.CALLBACK) || tween.onCompleteOnRepeat){
-							if(tweenAction==TweenAction.DELAYED_SOUND){
-								AudioSource.PlayClipAtPoint((AudioClip)tween.onCompleteParam, tween.to, tween.from.x);
-							}
-							if(tween.onComplete!=null){
-								tween.onComplete();
-							}else if(tween.onCompleteObject!=null){
-								tween.onCompleteObject(tween.onCompleteParam);
-							}
-						}
-						if(tween.loopCount>=1){
-							tween.loopCount--;
-						}
-						// Debug.Log("tween.loopType:"+tween.loopType+" tween.loopCount:"+tween.loopCount+" passed:"+tween.passed);
-						if(tween.loopType==LeanTweenType.pingPong){
-							tween.direction = 0.0f-(tween.direction);
-						}else{
-							tween.passed = Mathf.Epsilon;
-						}
-					}
-				}else if(tween.delay<=0f){
-					tween.passed += dt*tween.direction;
-				}else{
-					tween.delay -= dt;
-					// Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
-					if(tween.delay<0f){
-						tween.passed = 0.0f;//-tween.delay
-						tween.delay = 0.0f;
-					}
-				}
 			}
 		}
 
@@ -972,123 +424,7 @@ public static void update() {
 	}
 }
 
-private static void alphaRecursive( Transform transform, float val, bool useRecursion = true){
-	Renderer renderer = transform.gameObject.GetComponent<Renderer>();
-	if(renderer!=null){
-		foreach(Material mat in renderer.materials){
-			if(mat.HasProperty("_Color")){
-				mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
-			}else if(mat.HasProperty("_TintColor")){
-				Color col = mat.GetColor ("_TintColor");
-				mat.SetColor("_TintColor", new Color( col.r, col.g, col.b, val));
-			}
-		}
-	}
-	if(useRecursion && transform.childCount>0){
-		foreach (Transform child in transform) {
-			alphaRecursive(child, val);
-		}
-	}
-}
 
-private static void colorRecursive( Transform transform, Color toColor, bool useRecursion = true ){
-	Renderer ren = transform.gameObject.GetComponent<Renderer>();
-	if(ren!=null){
-		foreach(Material mat in ren.materials){
-			mat.color = toColor;
-		}
-	}
-    if(useRecursion && transform.childCount>0){
-		foreach (Transform child in transform) {
-			colorRecursive(child, toColor);
-		}
-	}
-}
-
-#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-
-private static void alphaRecursive( RectTransform rectTransform, float val, int recursiveLevel = 0){
-	if(rectTransform.childCount>0){
-		foreach (RectTransform child in rectTransform) {
-			UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
-			if(uiImage!=null){
-				Color c = uiImage.color;
-			    c.a = val;
-			    uiImage.color = c;
-			}
-		
-			alphaRecursive(child, val, recursiveLevel + 1);
-		}
-	}
-}
-
-private static void alphaRecursiveSprite( Transform transform, float val ){
-	if(transform.childCount>0){
-		foreach (Transform child in transform) {
-			SpriteRenderer ren = child.GetComponent<SpriteRenderer>();
-			if(ren!=null)
-				ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
-			alphaRecursiveSprite(child, val);
-		}
-	}
-}
-
-private static void colorRecursiveSprite( Transform transform, Color toColor ){
-	if(transform.childCount>0){
-		foreach (Transform child in transform) {
-			SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-			if(ren!=null)
-				ren.color = toColor;
-			colorRecursiveSprite(child, toColor);
-		}
-	}
-}
-
-private static void colorRecursive( RectTransform rectTransform, Color toColor ){
-	
-    if(rectTransform.childCount>0){
-		foreach (RectTransform child in rectTransform) {
-			UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
-			if(uiImage!=null){
-				uiImage.color = toColor;
-			}
-			colorRecursive(child, toColor);
-		}
-	}
-}
-
-private static void textAlphaRecursive( Transform trans, float val, bool useRecursion = true ){
-	UnityEngine.UI.Text uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-	if(uiText!=null){
-		Color c = uiText.color;
-        c.a = val;
-        uiText.color = c;
-	}
-	if(useRecursion && trans.childCount>0){
-		foreach (Transform child in trans) {
-			textAlphaRecursive(child, val);
-		}
-	}
-}
-
-private static void textColorRecursive(Transform trans, Color toColor ){
-	if(trans.childCount>0){
-		foreach (Transform child in trans) {
-			UnityEngine.UI.Text uiText = child.gameObject.GetComponent<UnityEngine.UI.Text>();
-			if(uiText!=null){
-				uiText.color = toColor;
-			}
-			textColorRecursive(child, toColor);
-		}
-	}
-}
-#endif
-
-private static Color tweenColor( LTDescrImpl tween, float val ){
-	Vector3 diff3 = tween.point - tween.axis;
-	float diffAlpha = tween.to.y - tween.from.y;
-	return new Color(tween.axis.x + diff3.x*val, tween.axis.y + diff3.y*val, tween.axis.z + diff3.z*val, tween.from.y + diffAlpha*val);
-}
 
 public static void removeTween( int i, int uniqueId){ // Only removes the tween if the unique id matches
 	if(tweens[i].uniqueId==uniqueId){
@@ -2591,37 +1927,37 @@ public static LTDescr color(RectTransform rectTrans, Color to, float time){
 
 // Tweening Functions - Thanks to Robert Penner and GFX47
 
-private static float tweenOnCurve( LTDescrImpl tweenDescr, float ratioPassed ){
+public static float tweenOnCurve( LTDescrImpl tweenDescr, float ratioPassed ){
 	// Debug.Log("single ratio:"+ratioPassed+" tweenDescr.animationCurve.Evaluate(ratioPassed):"+tweenDescr.animationCurve.Evaluate(ratioPassed));
 	return tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.animationCurve.Evaluate(ratioPassed);
 }
 
-private static Vector3 tweenOnCurveVector( LTDescrImpl tweenDescr, float ratioPassed ){
+    public static Vector3 tweenOnCurveVector( LTDescrImpl tweenDescr, float ratioPassed ){
 	return	new Vector3(tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.animationCurve.Evaluate(ratioPassed),
 						tweenDescr.from.y + (tweenDescr.diff.y) * tweenDescr.animationCurve.Evaluate(ratioPassed),
 						tweenDescr.from.z + (tweenDescr.diff.z) * tweenDescr.animationCurve.Evaluate(ratioPassed) );
 }
 
-private static float easeOutQuadOpt( float start, float diff, float ratioPassed ){
+    public static float easeOutQuadOpt( float start, float diff, float ratioPassed ){
 	return -diff * ratioPassed * (ratioPassed - 2) + start;
 }
 
-private static float easeInQuadOpt( float start, float diff, float ratioPassed ){
+    public static float easeInQuadOpt( float start, float diff, float ratioPassed ){
 	return diff * ratioPassed * ratioPassed + start;
 }
 
-private static float easeInOutQuadOpt( float start, float diff, float ratioPassed ){
+    public static float easeInOutQuadOpt( float start, float diff, float ratioPassed ){
 	ratioPassed /= .5f;
 	if (ratioPassed < 1) return diff / 2 * ratioPassed * ratioPassed + start;
 	ratioPassed--;
 	return -diff / 2 * (ratioPassed * (ratioPassed - 2) - 1) + start;
 }
 
-private static float linear(float start, float end, float val){
+    public static float linear(float start, float end, float val){
 	return Mathf.Lerp(start, end, val);
 }
 
-private static float clerp(float start, float end, float val){
+    public static float clerp(float start, float end, float val){
 	float min = 0.0f;
 	float max = 360.0f;
 	float half = Mathf.Abs((max - min) / 2.0f);
@@ -2637,23 +1973,23 @@ private static float clerp(float start, float end, float val){
 	return retval;
 }
 
-private static float spring(float start, float end, float val ){
+    public static float spring(float start, float end, float val ){
 	val = Mathf.Clamp01(val);
 	val = (Mathf.Sin(val * Mathf.PI * (0.2f + 2.5f * val * val * val)) * Mathf.Pow(1f - val, 2.2f ) + val) * (1f + (1.2f * (1f - val) ));
 	return start + (end - start) * val;
 }
 
-private static float easeInQuad(float start, float end, float val){
+    public static float easeInQuad(float start, float end, float val){
 	end -= start;
 	return end * val * val + start;
 }
 
-private static float easeOutQuad(float start, float end, float val){
+    public static float easeOutQuad(float start, float end, float val){
 	end -= start;
 	return -end * val * (val - 2) + start;
 }
 
-private static float easeInOutQuad(float start, float end, float val){
+    public static float easeInOutQuad(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val + start;
@@ -2661,18 +1997,18 @@ private static float easeInOutQuad(float start, float end, float val){
 	return -end / 2 * (val * (val - 2) - 1) + start;
 }
 
-private static float easeInCubic(float start, float end, float val){
+    public static float easeInCubic(float start, float end, float val){
 	end -= start;
 	return end * val * val * val + start;
 }
 
-private static float easeOutCubic(float start, float end, float val){
+    public static float easeOutCubic(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * (val * val * val + 1) + start;
 }
 
-private static float easeInOutCubic(float start, float end, float val){
+    public static float easeInOutCubic(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val + start;
@@ -2680,18 +2016,18 @@ private static float easeInOutCubic(float start, float end, float val){
 	return end / 2 * (val * val * val + 2) + start;
 }
 
-private static float easeInQuart(float start, float end, float val){
+    public static float easeInQuart(float start, float end, float val){
 	end -= start;
 	return end * val * val * val * val + start;
 }
 
-private static float easeOutQuart(float start, float end, float val){
+    public static float easeOutQuart(float start, float end, float val){
 	val--;
 	end -= start;
 	return -end * (val * val * val * val - 1) + start;
 }
 
-private static float easeInOutQuart(float start, float end, float val){
+    public static float easeInOutQuart(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val * val + start;
@@ -2699,18 +2035,18 @@ private static float easeInOutQuart(float start, float end, float val){
 	return -end / 2 * (val * val * val * val - 2) + start;
 }
 
-private static float easeInQuint(float start, float end, float val){
+    public static float easeInQuint(float start, float end, float val){
 	end -= start;
 	return end * val * val * val * val * val + start;
 }
 
-private static float easeOutQuint(float start, float end, float val){
+    public static float easeOutQuint(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * (val * val * val * val * val + 1) + start;
 }
 
-private static float easeInOutQuint(float start, float end, float val){
+    public static float easeInOutQuint(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * val * val * val * val * val + start;
@@ -2718,32 +2054,32 @@ private static float easeInOutQuint(float start, float end, float val){
 	return end / 2 * (val * val * val * val * val + 2) + start;
 }
 
-private static float easeInSine(float start, float end, float val){
+    public static float easeInSine(float start, float end, float val){
 	end -= start;
 	return -end * Mathf.Cos(val / 1 * (Mathf.PI / 2)) + end + start;
 }
 
-private static float easeOutSine(float start, float end, float val){
+    public static float easeOutSine(float start, float end, float val){
 	end -= start;
 	return end * Mathf.Sin(val / 1 * (Mathf.PI / 2)) + start;
 }
 
-private static float easeInOutSine(float start, float end, float val){
+    public static float easeInOutSine(float start, float end, float val){
 	end -= start;
 	return -end / 2 * (Mathf.Cos(Mathf.PI * val / 1) - 1) + start;
 }
 
-private static float easeInExpo(float start, float end, float val){
+    public static float easeInExpo(float start, float end, float val){
 	end -= start;
 	return end * Mathf.Pow(2, 10 * (val / 1 - 1)) + start;
 }
 
-private static float easeOutExpo(float start, float end, float val){
+    public static float easeOutExpo(float start, float end, float val){
 	end -= start;
 	return end * (-Mathf.Pow(2, -10 * val / 1) + 1) + start;
 }
 
-private static float easeInOutExpo(float start, float end, float val){
+    public static float easeInOutExpo(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return end / 2 * Mathf.Pow(2, 10 * (val - 1)) + start;
@@ -2751,18 +2087,18 @@ private static float easeInOutExpo(float start, float end, float val){
 	return end / 2 * (-Mathf.Pow(2, -10 * val) + 2) + start;
 }
 
-private static float easeInCirc(float start, float end, float val){
+    public static float easeInCirc(float start, float end, float val){
 	end -= start;
 	return -end * (Mathf.Sqrt(1 - val * val) - 1) + start;
 }
 
-private static float easeOutCirc(float start, float end, float val){
+    public static float easeOutCirc(float start, float end, float val){
 	val--;
 	end -= start;
 	return end * Mathf.Sqrt(1 - val * val) + start;
 }
 
-private static float easeInOutCirc(float start, float end, float val){
+public static float easeInOutCirc(float start, float end, float val){
 	val /= .5f;
 	end -= start;
 	if (val < 1) return -end / 2 * (Mathf.Sqrt(1 - val * val) - 1) + start;
@@ -2770,13 +2106,13 @@ private static float easeInOutCirc(float start, float end, float val){
 	return end / 2 * (Mathf.Sqrt(1 - val * val) + 1) + start;
 }
 
-private static float easeInBounce(float start, float end, float val){
+public static float easeInBounce(float start, float end, float val){
 	end -= start;
 	float d = 1f;
 	return end - easeOutBounce(0, end, d-val) + start;
 }
 
-private static float easeOutBounce(float start, float end, float val){
+public static float easeOutBounce(float start, float end, float val){
 	val /= 1f;
 	end -= start;
 	if (val < (1 / 2.75f)){
@@ -2817,28 +2153,28 @@ private static float easeOutBounce(float start, float end, float val){
 	}
 }*/
 
-private static float easeInOutBounce(float start, float end, float val){
+    public static float easeInOutBounce(float start, float end, float val){
 	end -= start;
 	float d= 1f;
 	if (val < d/2) return easeInBounce(0, end, val*2) * 0.5f + start;
 	else return easeOutBounce(0, end, val*2-d) * 0.5f + end*0.5f + start;
 }
 
-private static float easeInBack(float start, float end, float val, float overshoot = 1.0f){
+    public static float easeInBack(float start, float end, float val, float overshoot = 1.0f){
 	end -= start;
 	val /= 1;
 	float s= 1.70158f * overshoot;
 	return end * (val) * val * ((s + 1) * val - s) + start;
 }
 
-private static float easeOutBack(float start, float end, float val, float overshoot = 1.0f){
+    public static float easeOutBack(float start, float end, float val, float overshoot = 1.0f){
 	float s = 1.70158f * overshoot;
 	end -= start;
 	val = (val / 1) - 1;
 	return end * ((val) * val * ((s + 1) * val + s) + 1) + start;
 }
 
-private static float easeInOutBack(float start, float end, float val, float overshoot = 1.0f){
+    public static float easeInOutBack(float start, float end, float val, float overshoot = 1.0f){
 	float s = 1.70158f * overshoot;
 	end -= start;
 	val /= .5f;
@@ -2851,7 +2187,7 @@ private static float easeInOutBack(float start, float end, float val, float over
 	return end / 2 * ((val) * val * (((s) + 1) * val + s) + 2) + start;
 }
 
-private static float easeInElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f){
+    public static float easeInElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f){
 	end -= start;
 	
 	float p = period;
@@ -2877,7 +2213,7 @@ private static float easeInElastic(float start, float end, float val, float over
 	return start-(a * Mathf.Pow(2f, 10f * val) * Mathf.Sin((val - s) * (2f * Mathf.PI) / p)) * overshoot;
 }		
 
-private static float easeOutElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f){
+    public static float easeOutElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f){
 	end -= start;
 	
 	float p = period;
@@ -2902,7 +2238,7 @@ private static float easeOutElastic(float start, float end, float val, float ove
 	return start + end + a * Mathf.Pow(2f, -10f * val) * Mathf.Sin((val - s) * (2f * Mathf.PI) / p) * overshoot;
 }		
 
-private static float easeInOutElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f)
+    public static float easeInOutElastic(float start, float end, float val, float overshoot = 1.0f, float period = 0.3f)
 {
 	end -= start;
 	
@@ -3685,6 +3021,84 @@ public class LTSpline {
 				+ (2f * a -5f * b + 4f * c - d) * u
 				+ .5f * c - .5f * a;
 	}*/
+
+    public void drawLinesGLLines(Material outlineMaterial, Color color, float width){
+        GL.PushMatrix();
+        outlineMaterial.SetPass(0);
+        GL.LoadPixelMatrix();
+        GL.Begin(GL.LINES);
+        GL.Color(color);
+
+        if (constantSpeed) {
+            if (this.ptsAdjLength >= 4) {
+
+                Vector3 prevPt = this.ptsAdj[0];
+
+                for (int i = 0; i < this.ptsAdjLength; i++) {
+                    Vector3 currPt2 = this.ptsAdj[i];
+                    GL.Vertex(prevPt);
+                    GL.Vertex(currPt2);
+
+                    prevPt = currPt2;
+                }
+            }
+
+        } else {
+            if (this.pts.Length >= 4) {
+
+                Vector3 prevPt = this.pts[0];
+
+                float split = 1f / ((float)this.pts.Length * 10f);
+
+                float iter = 0f;
+                while (iter < 1f) {
+                    float at = iter / 1f;
+                    Vector3 currPt2 = interp(at);
+                    // Debug.Log("currPt2:"+currPt2);
+
+                    GL.Vertex(prevPt);
+                    GL.Vertex(currPt2);
+
+                    prevPt = currPt2;
+
+                    iter += split;
+                }
+            }
+        }
+
+
+        GL.End();
+        GL.PopMatrix();
+
+    }
+
+    public Vector3[] generateVectors(){
+        if (this.pts.Length >= 4) {
+            List<Vector3> meshPoints = new List<Vector3>();
+            Vector3 prevPt = this.pts[0];
+            meshPoints.Add(prevPt);
+
+            float split = 1f / ((float)this.pts.Length * 10f);
+
+            float iter = 0f;
+            while (iter < 1f) {
+                float at = iter / 1f;
+                Vector3 currPt2 = interp(at);
+                //                Debug.Log("currPt2:"+currPt2);
+
+                //                GL.Vertex(prevPt);
+                //                GL.Vertex(currPt2);
+                meshPoints.Add(currPt2);
+
+                //                prevPt = currPt2;
+
+                iter += split;
+            }
+
+            meshPoints.ToArray();
+        }
+        return null;
+    }
 }
 
 /**

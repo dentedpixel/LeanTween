@@ -61,6 +61,7 @@ public interface LTDescr
 	SpriteRenderer spriteRen{ get; set; }
 	#endif
 	void init();
+    bool update();
 	LTDescr pause();
 	void reset();
 	LTDescr resume();

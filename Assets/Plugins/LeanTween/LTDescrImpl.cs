@@ -434,6 +434,691 @@ public class LTDescrImpl : LTDescr {
 		this.axis = new Vector3( col.r, col.g, col.b );
 		return this;
 	}
+        
+    private static float timeTotal;
+    private static TweenAction tweenAction;
+    private static float ratioPassed;
+    //private static float to = 1.0f;
+    private static float val;
+    private static float dt;
+    private static Vector3 newVect;
+
+    public bool update(){
+        timeTotal = this.time;
+        tweenAction = this.type;
+
+        /*if(trans.gameObject.name=="Main Camera"){
+                    Debug.Log("main tween:"+tween+" i:"+i);
+                }*/
+
+        if( this.useEstimatedTime ){
+            dt = LeanTween.dtEstimated;
+        }else if( this.useFrames ){
+            dt = 1;
+        }else if( this.useManualTime ){
+            dt = LeanTween.dtManual;
+        }else if(this.direction==0f){
+            dt = 0f;
+        }else{
+            dt = LeanTween.dtActual;
+        }
+
+//        if(trans==null){ // ToDo: Make sure this doesn't need to go back in
+//            removeTween(i);
+//            continue;
+//        }
+//        Debug.Log("tween:"+this+" dt:"+dt);
+
+        if (tweenAction == TweenAction.MOVE_TO_TRANSFORM) {
+            this.to = this.toTrans.position;
+            this.diff = this.to - this.from;
+        }
+
+        // Check for tween finished
+        bool isTweenFinished = false;
+        if(this.delay<=0){
+            if((this.passed + dt > this.time && this.direction > 0.0f )){
+                // Debug.Log("i:"+i+" passed:"+tween.passed+" dt:"+dt+" time:"+tween.time+" dir:"+tween.direction);
+                isTweenFinished = true;
+                this.passed = this.time; // Set to the exact end time so that it can finish tween exactly on the end value
+            }else if(this.direction<0.0f && this.passed - dt < 0.0f){
+                isTweenFinished = true;
+                this.passed = Mathf.Epsilon;
+            }
+        }
+
+        if(!this.hasInitiliazed && ((this.passed==0.0 && this.delay==0.0) || this.passed>0.0) ){
+            this.init();
+        }
+
+        if(this.delay<=0 && this.direction!=0){
+            // Move Values
+            if(timeTotal<=0f){
+                //Debug.LogError("time total is zero Time.timeScale:"+Time.timeScale+" useEstimatedTime:"+tween.useEstimatedTime);
+                ratioPassed = 1f;
+            }else{
+                ratioPassed = this.passed / timeTotal;
+            }
+
+            if(ratioPassed>1.0f){
+                ratioPassed = 1.0f;
+            }else if(ratioPassed<0f){
+                ratioPassed = 0f;
+            }
+            // Debug.Log("action:"+tweenAction+" ratioPassed:"+ratioPassed + " timeTotal:" + timeTotal + " tween.passed:"+ tween.passed +" dt:"+dt);
+
+            if(tweenAction>=TweenAction.MOVE_X && tweenAction<TweenAction.MOVE){
+                if(this.animationCurve!=null){
+                    val = LeanTween.tweenOnCurve(this, ratioPassed);
+                }else {
+                    switch( this.tweenType ){
+                        case LeanTweenType.linear:
+                            val = this.from.x + this.diff.x * ratioPassed; break;
+                        case LeanTweenType.easeOutQuad:
+                            val = LeanTween.easeOutQuadOpt(this.from.x, this.diff.x, ratioPassed); break;
+                        case LeanTweenType.easeInQuad:
+                            val = LeanTween.easeInQuadOpt(this.from.x, this.diff.x, ratioPassed); break;
+                        case LeanTweenType.easeInOutQuad:
+                            val = LeanTween.easeInOutQuadOpt(this.from.x, this.diff.x, ratioPassed); break;
+                        case LeanTweenType.easeInCubic:
+                            val = LeanTween.easeInCubic(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeOutCubic:
+                            val = LeanTween.easeOutCubic(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInOutCubic:
+                            val = LeanTween.easeInOutCubic(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInQuart:
+                            val = LeanTween.easeInQuart(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeOutQuart:
+                            val = LeanTween.easeOutQuart(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInOutQuart:
+                            val = LeanTween.easeInOutQuart(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInQuint:
+                            val = LeanTween.easeInQuint(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeOutQuint:
+                            val = LeanTween.easeOutQuint(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInOutQuint:
+                            val = LeanTween.easeInOutQuint(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInSine:
+                            val = LeanTween.easeInSine(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeOutSine:
+                            val = LeanTween.easeOutSine(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInOutSine:
+                            val = LeanTween.easeInOutSine(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInExpo:
+                            val = LeanTween.easeInExpo(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeOutExpo:
+                            val = LeanTween.easeOutExpo(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInOutExpo:
+                            val = LeanTween.easeInOutExpo(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInCirc:
+                            val = LeanTween.easeInCirc(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeOutCirc:
+                            val = LeanTween.easeOutCirc(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInOutCirc:
+                            val = LeanTween.easeInOutCirc(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInBounce:
+                            val = LeanTween.easeInBounce(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeOutBounce:
+                            val = LeanTween.easeOutBounce(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInOutBounce:
+                            val = LeanTween.easeInOutBounce(this.from.x, this.to.x, ratioPassed); break;
+                        case LeanTweenType.easeInBack:
+                            val = LeanTween.easeInBack(this.from.x, this.to.x, ratioPassed, this.overshoot); break;
+                        case LeanTweenType.easeOutBack:
+                            val = LeanTween.easeOutBack(this.from.x, this.to.x, ratioPassed, this.overshoot); break;
+                        case LeanTweenType.easeInOutBack:
+                            val = LeanTween.easeInOutBack(this.from.x, this.to.x, ratioPassed, this.overshoot); break;
+                        case LeanTweenType.easeInElastic:
+                            val = LeanTween.easeInElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period); break;
+                        case LeanTweenType.easeOutElastic:
+                            val = LeanTween.easeOutElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period); break;
+                        case LeanTweenType.easeInOutElastic:
+                            val = LeanTween.easeInOutElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period); break;
+                        case LeanTweenType.punch:
+                        case LeanTweenType.easeShake:
+                            if(this.tweenType==LeanTweenType.punch){
+                                this.animationCurve = LeanTween.punch;
+                            }else if(this.tweenType==LeanTweenType.easeShake){
+                                this.animationCurve = LeanTween.shake;
+                            }
+                            this.toInternal.x = this.from.x + this.to.x;
+                            this.diffInternal.x = this.to.x - this.from.x;
+                            val = LeanTween.tweenOnCurve(this, ratioPassed); break;
+                        case LeanTweenType.easeSpring:
+                            val = LeanTween.spring(this.from.x, this.to.x, ratioPassed); break;
+                        default:
+                            {
+                                val = this.from.x + this.diff.x * ratioPassed; break;
+                            }
+                    }
+
+                }
+
+                // Debug.Log("from:"+from+" val:"+val+" ratioPassed:"+ratioPassed);
+                if(tweenAction==TweenAction.MOVE_X){
+                    trans.position=new Vector3( val,trans.position.y,trans.position.z);
+                }else if(tweenAction==TweenAction.MOVE_Y){
+                    trans.position =new Vector3( trans.position.x,val,trans.position.z);
+                }else if(tweenAction==TweenAction.MOVE_Z){
+                    trans.position=new Vector3( trans.position.x,trans.position.y,val);
+                }if(tweenAction==TweenAction.MOVE_LOCAL_X){
+                    trans.localPosition=new Vector3( val,trans.localPosition.y,trans.localPosition.z);
+                }else if(tweenAction==TweenAction.MOVE_LOCAL_Y){
+                    trans.localPosition=new Vector3( trans.localPosition.x,val,trans.localPosition.z);
+                }else if(tweenAction==TweenAction.MOVE_LOCAL_Z){
+                    trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,val);
+                }else if(tweenAction==TweenAction.MOVE_CURVED){
+                    if(this.path.orientToPath){
+                        if(this.path.orientToPath2d){
+                            this.path.place2d( trans, val );
+                        }else{
+                            this.path.place( trans, val );
+                        }
+                    }else{
+                        trans.position = this.path.point( val );
+                    }
+                    // Debug.Log("val:"+val+" trans.position:"+trans.position + " 0:"+ this.curves[0] +" 1:"+this.curves[1] +" 2:"+this.curves[2] +" 3:"+this.curves[3]);
+                }else if((TweenAction)tweenAction==TweenAction.MOVE_CURVED_LOCAL){
+                    if(this.path.orientToPath){
+                        if(this.path.orientToPath2d){
+                            this.path.placeLocal2d( trans, val );
+                        }else{
+                            this.path.placeLocal( trans, val );
+                        }
+                    }else{
+                        trans.localPosition = this.path.point( val );
+                    }
+                    // Debug.Log("val:"+val+" trans.position:"+trans.position);
+                }else if(tweenAction==TweenAction.MOVE_SPLINE){
+                    if(this.spline.orientToPath){
+                        if(this.spline.orientToPath2d){
+                            this.spline.place2d( trans, val );
+                        }else{
+                            this.spline.place( trans, val );
+                        }
+                    }else{
+                        trans.position = this.spline.point( val );
+                    }
+                    // Debug.Log("val:"+val+" trans.position:"+trans.position);
+                }else if(tweenAction==TweenAction.MOVE_SPLINE_LOCAL){
+                    if(this.spline.orientToPath){
+                        if(this.spline.orientToPath2d){
+                            this.spline.placeLocal2d( trans, val );
+                        }else{
+                            this.spline.placeLocal( trans, val );
+                        }
+                    }else{
+                        trans.localPosition = this.spline.point( val );
+                    }
+                }else if(tweenAction==TweenAction.SCALE_X){
+                    trans.localScale=new Vector3(val, trans.localScale.y,trans.localScale.z);
+                }else if(tweenAction==TweenAction.SCALE_Y){
+                    trans.localScale=new Vector3( trans.localScale.x,val,trans.localScale.z);
+                }else if(tweenAction==TweenAction.SCALE_Z){
+                    trans.localScale=new Vector3(trans.localScale.x,trans.localScale.y,val);
+                }else if(tweenAction==TweenAction.ROTATE_X){
+                    trans.eulerAngles=new Vector3(val, trans.eulerAngles.y,trans.eulerAngles.z);
+                }else if(tweenAction==TweenAction.ROTATE_Y){
+                    trans.eulerAngles=new Vector3(trans.eulerAngles.x,val,trans.eulerAngles.z);
+                }else if(tweenAction==TweenAction.ROTATE_Z){
+                    trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,val);
+                }else if(tweenAction==TweenAction.ROTATE_AROUND){
+                    Vector3 origPos = trans.localPosition;
+                    Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this.point );
+                    trans.RotateAround(rotateAroundPt, this.axis, -val);
+                    Vector3 diff = origPos - trans.localPosition;
+
+                    trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+                    trans.rotation = this.origRotation;
+
+                    rotateAroundPt = (Vector3)trans.TransformPoint( this.point );
+                    trans.RotateAround(rotateAroundPt, this.axis, val);
+
+                    //GameObject cubeMarker = GameObject.Find("TweenRotatePoint");
+                    //cubeMarker.transform.position = rotateAroundPt;
+
+                }else if(tweenAction==TweenAction.ROTATE_AROUND_LOCAL){
+                    Vector3 origPos = trans.localPosition;
+                    trans.RotateAround((Vector3)trans.TransformPoint( this.point ), trans.TransformDirection(this.axis), -val);
+                    Vector3 diff = origPos - trans.localPosition;
+
+                    trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+                    trans.localRotation = this.origRotation;
+                    Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this.point );
+                    trans.RotateAround(rotateAroundPt, trans.TransformDirection(this.axis), val);
+
+                    //GameObject cubeMarker = GameObject.Find("TweenRotatePoint");
+                    //cubeMarker.transform.position = rotateAroundPt;
+
+                }else if(tweenAction==TweenAction.ALPHA){
+                    #if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+                    alphaRecursive(this.trans, val, this.useRecursion);
+                    #else
+
+                    if(this.spriteRen!=null){
+                        this.spriteRen.color = new Color( this.spriteRen.color.r, this.spriteRen.color.g, this.spriteRen.color.b, val);
+                        alphaRecursiveSprite(this.trans, val);
+                    }else{
+                        alphaRecursive(this.trans, val, this.useRecursion);
+                    }
+
+                    #endif
+                }else if(tweenAction==TweenAction.ALPHA_VERTEX){
+                    Mesh mesh = trans.GetComponent<MeshFilter>().mesh;
+                    Vector3[] vertices = mesh.vertices;
+                    Color32[] colors = new Color32[vertices.Length];
+                    Color32 c = mesh.colors32[0];
+                    c = new Color( c.r, c.g, c.b, val);
+                    for (int k= 0; k < vertices.Length; k++) {
+                        colors[k] = c;
+                    }
+                    mesh.colors32 = colors;
+                }else if(tweenAction==TweenAction.COLOR || tweenAction==TweenAction.CALLBACK_COLOR){
+                    Color toColor = tweenColor(this, val);
+
+                    #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+
+                    if(this.spriteRen!=null){
+                        this.spriteRen.color = toColor;
+                        colorRecursiveSprite( trans, toColor);
+                    }else{
+                    #endif
+                        // Debug.Log("val:"+val+" tween:"+tween+" this.diff:"+this.diff);
+                        if(tweenAction==TweenAction.COLOR){
+                            colorRecursive(trans, toColor, this.useRecursion);
+                        }
+                        #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+                    }
+                        #endif
+                    if(dt!=0f && this.onUpdateColor!=null){
+                        this.onUpdateColor(toColor);
+                    }else if(dt!=0f && this.onUpdateColorObject!=null){
+                        this.onUpdateColorObject(toColor, this.onUpdateParam);
+                    }
+                }
+                #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+                else if (tweenAction == TweenAction.CANVAS_ALPHA){
+                    if(this.uiImage!=null){
+                        Color c = this.uiImage.color;
+                        c.a = val;
+                        this.uiImage.color = c;
+                    }
+                    if(this.useRecursion){
+                        alphaRecursive( this.rectTransform, val, 0 );
+                        textAlphaRecursive( this.rectTransform, val);
+                    }
+                }
+                else if (tweenAction == TweenAction.CANVAS_COLOR){
+                    Color toColor = tweenColor(this, val);
+                    this.uiImage.color = toColor;
+                    if (dt!=0f && this.onUpdateColor != null){
+                        this.onUpdateColor(toColor);
+                    }
+                    if(this.useRecursion)
+                        colorRecursive(this.rectTransform, toColor);
+                }
+                else if (tweenAction == TweenAction.CANVASGROUP_ALPHA){
+                    CanvasGroup canvasGroup = this.trans.GetComponent<CanvasGroup>();
+                    canvasGroup.alpha = val;
+                }
+                else if (tweenAction == TweenAction.TEXT_ALPHA){
+                    textAlphaRecursive( trans, val, this.useRecursion );
+                }
+                else if (tweenAction == TweenAction.TEXT_COLOR){
+                    Color toColor = tweenColor(this, val);
+                    this.uiText.color = toColor;
+                    if (dt!=0f && this.onUpdateColor != null){
+                        this.onUpdateColor(toColor);
+                    }
+                    if(this.useRecursion && trans.childCount>0){
+                        textColorRecursive(this.trans, toColor);
+                    }
+                }
+                else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND){
+                    // figure out how much the rotation has shifted the object over
+                    RectTransform rect = this.rectTransform;
+                    Vector3 origPos = rect.localPosition;
+                    rect.RotateAround((Vector3)rect.TransformPoint( this.point ), this.axis, -val);
+                    Vector3 diff = origPos - rect.localPosition;
+
+                    rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+                    rect.rotation = this.origRotation;
+                    rect.RotateAround((Vector3)rect.TransformPoint( this.point ), this.axis, val);
+                }else if(tweenAction==TweenAction.CANVAS_ROTATEAROUND_LOCAL){
+                    // figure out how much the rotation has shifted the object over
+                    RectTransform rect = this.rectTransform;
+                    Vector3 origPos = rect.localPosition;
+                    rect.RotateAround((Vector3)rect.TransformPoint( this.point ), rect.TransformDirection(this.axis), -val);
+                    Vector3 diff = origPos - rect.localPosition;
+
+                    rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+                    rect.rotation = this.origRotation;
+                    rect.RotateAround((Vector3)rect.TransformPoint( this.point ), rect.TransformDirection(this.axis), val);
+                }else if(tweenAction==TweenAction.CANVAS_PLAYSPRITE){
+                    int frame = (int)Mathf.Round( val );
+                    // Debug.Log("frame:"+frame+" val:"+val);
+                    this.uiImage.sprite = this.sprites[ frame ];
+                }else if(tweenAction==TweenAction.CANVAS_MOVE_X){
+                    Vector3 current = this.rectTransform.anchoredPosition3D;
+                    this.rectTransform.anchoredPosition3D = new Vector3(val, current.y, current.z);
+                }else if(tweenAction==TweenAction.CANVAS_MOVE_Y){
+                    Vector3 current = this.rectTransform.anchoredPosition3D;
+                    this.rectTransform.anchoredPosition3D = new Vector3(current.x, val, current.z);
+                }else if(tweenAction==TweenAction.CANVAS_MOVE_Z){
+                    Vector3 current = this.rectTransform.anchoredPosition3D;
+                    this.rectTransform.anchoredPosition3D = new Vector3(current.x, current.y, val);
+                }
+                #endif
+
+            }else if(tweenAction>=TweenAction.MOVE){
+                //
+
+                if(this.animationCurve!=null){
+                    newVect = LeanTween.tweenOnCurveVector(this, ratioPassed);
+                }else{
+                    if(this.tweenType == LeanTweenType.linear){
+                        newVect = new Vector3( this.from.x + this.diff.x * ratioPassed, this.from.y + this.diff.y * ratioPassed, this.from.z + this.diff.z * ratioPassed);
+                    }else if(this.tweenType >= LeanTweenType.linear){
+                        switch(this.tweenType){
+                            case LeanTweenType.easeOutQuad:
+                                newVect = new Vector3(LeanTween.easeOutQuadOpt(this.from.x, this.diff.x, ratioPassed), LeanTween.easeOutQuadOpt(this.from.y, this.diff.y, ratioPassed), LeanTween.easeOutQuadOpt(this.from.z, this.diff.z, ratioPassed)); break;
+                            case LeanTweenType.easeInQuad:
+                                newVect = new Vector3(LeanTween.easeInQuadOpt(this.from.x, this.diff.x, ratioPassed), LeanTween.easeInQuadOpt(this.from.y, this.diff.y, ratioPassed), LeanTween.easeInQuadOpt(this.from.z, this.diff.z, ratioPassed)); break;
+                            case LeanTweenType.easeInOutQuad:
+                                newVect = new Vector3(LeanTween.easeInOutQuadOpt(this.from.x, this.diff.x, ratioPassed), LeanTween.easeInOutQuadOpt(this.from.y, this.diff.y, ratioPassed), LeanTween.easeInOutQuadOpt(this.from.z, this.diff.z, ratioPassed)); break;
+                            case LeanTweenType.easeInCubic:
+                                newVect = new Vector3(LeanTween.easeInCubic(this.from.x, this.to.x, ratioPassed), LeanTween.easeInCubic(this.from.y, this.to.y, ratioPassed), LeanTween.easeInCubic(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeOutCubic:
+                                newVect = new Vector3(LeanTween.easeOutCubic(this.from.x, this.to.x, ratioPassed), LeanTween.easeOutCubic(this.from.y, this.to.y, ratioPassed), LeanTween.easeOutCubic(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInOutCubic:
+                                newVect = new Vector3(LeanTween.easeInOutCubic(this.from.x, this.to.x, ratioPassed), LeanTween.easeInOutCubic(this.from.y, this.to.y, ratioPassed), LeanTween.easeInOutCubic(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInQuart:
+                                newVect = new Vector3(LeanTween.easeInQuart(this.from.x, this.to.x, ratioPassed), LeanTween.easeInQuart(this.from.y, this.to.y, ratioPassed), LeanTween.easeInQuart(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeOutQuart:
+                                newVect = new Vector3(LeanTween.easeOutQuart(this.from.x, this.to.x, ratioPassed), LeanTween.easeOutQuart(this.from.y, this.to.y, ratioPassed), LeanTween.easeOutQuart(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInOutQuart:
+                                newVect = new Vector3(LeanTween.easeInOutQuart(this.from.x, this.to.x, ratioPassed), LeanTween.easeInOutQuart(this.from.y, this.to.y, ratioPassed), LeanTween.easeInOutQuart(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInQuint:
+                                newVect = new Vector3(LeanTween.easeInQuint(this.from.x, this.to.x, ratioPassed), LeanTween.easeInQuint(this.from.y, this.to.y, ratioPassed), LeanTween.easeInQuint(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeOutQuint:
+                                newVect = new Vector3(LeanTween.easeOutQuint(this.from.x, this.to.x, ratioPassed), LeanTween.easeOutQuint(this.from.y, this.to.y, ratioPassed), LeanTween.easeOutQuint(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInOutQuint:
+                                newVect = new Vector3(LeanTween.easeInOutQuint(this.from.x, this.to.x, ratioPassed), LeanTween.easeInOutQuint(this.from.y, this.to.y, ratioPassed), LeanTween.easeInOutQuint(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInSine:
+                                newVect = new Vector3(LeanTween.easeInSine(this.from.x, this.to.x, ratioPassed), LeanTween.easeInSine(this.from.y, this.to.y, ratioPassed), LeanTween.easeInSine(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeOutSine:
+                                newVect = new Vector3(LeanTween.easeOutSine(this.from.x, this.to.x, ratioPassed), LeanTween.easeOutSine(this.from.y, this.to.y, ratioPassed), LeanTween.easeOutSine(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInOutSine:
+                                newVect = new Vector3(LeanTween.easeInOutSine(this.from.x, this.to.x, ratioPassed), LeanTween.easeInOutSine(this.from.y, this.to.y, ratioPassed), LeanTween.easeInOutSine(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInExpo:
+                                newVect = new Vector3(LeanTween.easeInExpo(this.from.x, this.to.x, ratioPassed), LeanTween.easeInExpo(this.from.y, this.to.y, ratioPassed), LeanTween.easeInExpo(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeOutExpo:
+                                newVect = new Vector3(LeanTween.easeOutExpo(this.from.x, this.to.x, ratioPassed), LeanTween.easeOutExpo(this.from.y, this.to.y, ratioPassed), LeanTween.easeOutExpo(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInOutExpo:
+                                newVect = new Vector3(LeanTween.easeInOutExpo(this.from.x, this.to.x, ratioPassed), LeanTween.easeInOutExpo(this.from.y, this.to.y, ratioPassed), LeanTween.easeInOutExpo(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInCirc:
+                                newVect = new Vector3(LeanTween.easeInCirc(this.from.x, this.to.x, ratioPassed), LeanTween.easeInCirc(this.from.y, this.to.y, ratioPassed), LeanTween.easeInCirc(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeOutCirc:
+                                newVect = new Vector3(LeanTween.easeOutCirc(this.from.x, this.to.x, ratioPassed), LeanTween.easeOutCirc(this.from.y, this.to.y, ratioPassed), LeanTween.easeOutCirc(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInOutCirc:
+                                newVect = new Vector3(LeanTween.easeInOutCirc(this.from.x, this.to.x, ratioPassed), LeanTween.easeInOutCirc(this.from.y, this.to.y, ratioPassed), LeanTween.easeInOutCirc(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInBounce:
+                                newVect = new Vector3(LeanTween.easeInBounce(this.from.x, this.to.x, ratioPassed), LeanTween.easeInBounce(this.from.y, this.to.y, ratioPassed), LeanTween.easeInBounce(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeOutBounce:
+                                newVect = new Vector3(LeanTween.easeOutBounce(this.from.x, this.to.x, ratioPassed), LeanTween.easeOutBounce(this.from.y, this.to.y, ratioPassed), LeanTween.easeOutBounce(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInOutBounce:
+                                newVect = new Vector3(LeanTween.easeInOutBounce(this.from.x, this.to.x, ratioPassed), LeanTween.easeInOutBounce(this.from.y, this.to.y, ratioPassed), LeanTween.easeInOutBounce(this.from.z, this.to.z, ratioPassed)); break;
+                            case LeanTweenType.easeInBack:
+                                newVect = new Vector3(LeanTween.easeInBack(this.from.x, this.to.x, ratioPassed, this.overshoot), LeanTween.easeInBack(this.from.y, this.to.y, ratioPassed, this.overshoot), LeanTween.easeInBack(this.from.z, this.to.z, ratioPassed, this.overshoot)); break;
+                            case LeanTweenType.easeOutBack:
+                                newVect = new Vector3(LeanTween.easeOutBack(this.from.x, this.to.x, ratioPassed, this.overshoot), LeanTween.easeOutBack(this.from.y, this.to.y, ratioPassed, this.overshoot), LeanTween.easeOutBack(this.from.z, this.to.z, ratioPassed, this.overshoot)); break;
+                            case LeanTweenType.easeInOutBack:
+                                newVect = new Vector3(LeanTween.easeInOutBack(this.from.x, this.to.x, ratioPassed, this.overshoot), LeanTween.easeInOutBack(this.from.y, this.to.y, ratioPassed, this.overshoot), LeanTween.easeInOutBack(this.from.z, this.to.z, ratioPassed, this.overshoot)); break;
+                            case LeanTweenType.easeInElastic:
+                                newVect = new Vector3(LeanTween.easeInElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period), LeanTween.easeInElastic(this.from.y, this.to.y, ratioPassed, this.overshoot, this.period), LeanTween.easeInElastic(this.from.z, this.to.z, ratioPassed, this.overshoot, this.period)); break;
+                            case LeanTweenType.easeOutElastic:
+                                newVect = new Vector3(LeanTween.easeOutElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period), LeanTween.easeOutElastic(this.from.y, this.to.y, ratioPassed, this.overshoot, this.period), LeanTween.easeOutElastic(this.from.z, this.to.z, ratioPassed, this.overshoot, this.period)); break;
+                            case LeanTweenType.easeInOutElastic:
+                                newVect = new Vector3(LeanTween.easeInOutElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period), LeanTween.easeInOutElastic(this.from.y, this.to.y, ratioPassed, this.overshoot, this.period), LeanTween.easeInOutElastic(this.from.z, this.to.z, ratioPassed, this.overshoot, this.period)); break;
+                            case LeanTweenType.punch:
+                            case LeanTweenType.easeShake:
+                                if(this.tweenType==LeanTweenType.punch){
+                                    this.animationCurve = LeanTween.punch;
+                                }else if(this.tweenType==LeanTweenType.easeShake){
+                                    this.animationCurve = LeanTween.shake;
+                                }
+                                this.toInternal = this.from + this.to;
+                                this.diff = this.to - this.from;
+                                if(tweenAction==TweenAction.ROTATE || tweenAction==TweenAction.ROTATE_LOCAL){
+                                    this.to = new Vector3(LeanTween.closestRot(this.from.x, this.to.x), LeanTween.closestRot(this.from.y, this.to.y), LeanTween.closestRot(this.from.z, this.to.z));
+                                }
+                                newVect = LeanTween.tweenOnCurveVector(this, ratioPassed); break;
+                            case LeanTweenType.easeSpring:
+                                newVect = new Vector3(LeanTween.spring(this.from.x, this.to.x, ratioPassed), LeanTween.spring(this.from.y, this.to.y, ratioPassed), LeanTween.spring(this.from.z, this.to.z, ratioPassed)); break;
+
+                        }
+                    }else{
+                        newVect = new Vector3( this.from.x + this.diff.x * ratioPassed, this.from.y + this.diff.y * ratioPassed, this.from.z + this.diff.z * ratioPassed);
+                    }
+                }
+
+                if(tweenAction==TweenAction.MOVE){
+                    trans.position = newVect;
+                }else if(tweenAction==TweenAction.MOVE_LOCAL){
+                    trans.localPosition = newVect;
+                }else if(tweenAction==TweenAction.MOVE_TO_TRANSFORM){
+                    trans.position = newVect;
+                }else if(tweenAction==TweenAction.ROTATE){
+                    /*if(this.hasPhysics){
+                                trans.gameObject.rigidbody.MoveRotation(Quaternion.Euler( newVect ));
+                            }else{*/
+                    trans.eulerAngles = newVect;
+                    // }
+                }else if(tweenAction==TweenAction.ROTATE_LOCAL){
+                    trans.localEulerAngles = newVect;
+                }else if(tweenAction==TweenAction.SCALE){
+                    trans.localScale = newVect;
+                }else if(tweenAction==TweenAction.GUI_MOVE){
+                    this.ltRect.rect = new Rect( newVect.x, newVect.y, this.ltRect.rect.width, this.ltRect.rect.height);
+                }else if(tweenAction==TweenAction.GUI_MOVE_MARGIN){
+                    this.ltRect.margin = new Vector2(newVect.x, newVect.y);
+                }else if(tweenAction==TweenAction.GUI_SCALE){
+                    this.ltRect.rect = new Rect( this.ltRect.rect.x, this.ltRect.rect.y, newVect.x, newVect.y);
+                }else if(tweenAction==TweenAction.GUI_ALPHA){
+                    this.ltRect.alpha = newVect.x;
+                }else if(tweenAction==TweenAction.GUI_ROTATE){
+                    this.ltRect.rotation = newVect.x;
+                }
+                #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+                else if(tweenAction==TweenAction.CANVAS_MOVE){
+                    this.rectTransform.anchoredPosition3D = newVect;
+                }else if(tweenAction==TweenAction.CANVAS_SCALE){
+                    this.rectTransform.localScale = newVect;
+                }
+                #endif
+            }
+            // Debug.Log("this.delay:"+this.delay + " this.passed:"+this.passed + " tweenAction:"+tweenAction + " to:"+newVect+" axis:"+this.axis);
+
+            if(dt!=0f && this.hasUpdateCallback){
+                if(this.onUpdateFloat!=null){
+                    this.onUpdateFloat(val);
+                }
+                if (this.onUpdateFloatRatio != null){
+                    this.onUpdateFloatRatio(val,ratioPassed);
+                }else if(this.onUpdateFloatObject!=null){
+                    this.onUpdateFloatObject(val, this.onUpdateParam);
+                }else if(this.onUpdateVector3Object!=null){
+                    this.onUpdateVector3Object(newVect, this.onUpdateParam);
+                }else if(this.onUpdateVector3!=null){
+                    this.onUpdateVector3(newVect);
+                }else if(this.onUpdateVector2!=null){
+                    this.onUpdateVector2(new Vector2(newVect.x,newVect.y));
+                }
+            }
+
+        }
+
+        if(isTweenFinished){
+            if(this.loopType==LeanTweenType.once || this.loopCount==1){
+                //Debug.Log("finished tween:"+i+" tween:"+tween);
+                if(tweenAction==TweenAction.GUI_ROTATE)
+                    this.ltRect.rotateFinished = true;
+
+                if(tweenAction==TweenAction.DELAYED_SOUND){
+                    AudioSource.PlayClipAtPoint((AudioClip)this.onCompleteParam, this.to, this.from.x);
+                }
+            }else{
+                if((this.loopCount<0 && this.type==TweenAction.CALLBACK) || this.onCompleteOnRepeat){
+                    if(tweenAction==TweenAction.DELAYED_SOUND){
+                        AudioSource.PlayClipAtPoint((AudioClip)this.onCompleteParam, this.to, this.from.x);
+                    }
+                    if(this.onComplete!=null){
+                        this.onComplete();
+                    }else if(this.onCompleteObject!=null){
+                        this.onCompleteObject(this.onCompleteParam);
+                    }
+                }
+                if(this.loopCount>=1){
+                    this.loopCount--;
+                }
+                // Debug.Log("tween.loopType:"+tween.loopType+" tween.loopCount:"+tween.loopCount+" passed:"+tween.passed);
+                if(this.loopType==LeanTweenType.pingPong){
+                    this.direction = 0.0f-(this.direction);
+                }else{
+                    this.passed = Mathf.Epsilon;
+                }
+            }
+        }else if(this.delay<=0f){
+            this.passed += dt*this.direction;
+        }else{
+            this.delay -= dt;
+            // Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
+            if(this.delay<0f){
+                this.passed = 0.0f;//-tween.delay
+                this.delay = 0.0f;
+            }
+        }
+
+        return isTweenFinished;
+    }
+
+    private static void alphaRecursive( Transform transform, float val, bool useRecursion = true){
+        Renderer renderer = transform.gameObject.GetComponent<Renderer>();
+        if(renderer!=null){
+            foreach(Material mat in renderer.materials){
+                if(mat.HasProperty("_Color")){
+                    mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+                }else if(mat.HasProperty("_TintColor")){
+                    Color col = mat.GetColor ("_TintColor");
+                    mat.SetColor("_TintColor", new Color( col.r, col.g, col.b, val));
+                }
+            }
+        }
+        if(useRecursion && transform.childCount>0){
+            foreach (Transform child in transform) {
+                alphaRecursive(child, val);
+            }
+        }
+    }
+
+    private static void colorRecursive( Transform transform, Color toColor, bool useRecursion = true ){
+        Renderer ren = transform.gameObject.GetComponent<Renderer>();
+        if(ren!=null){
+            foreach(Material mat in ren.materials){
+                mat.color = toColor;
+            }
+        }
+        if(useRecursion && transform.childCount>0){
+            foreach (Transform child in transform) {
+                colorRecursive(child, toColor);
+            }
+        }
+    }
+
+    #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+
+    private static void alphaRecursive( RectTransform rectTransform, float val, int recursiveLevel = 0){
+        if(rectTransform.childCount>0){
+            foreach (RectTransform child in rectTransform) {
+                UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
+                if(uiImage!=null){
+                    Color c = uiImage.color;
+                    c.a = val;
+                    uiImage.color = c;
+                }
+
+                alphaRecursive(child, val, recursiveLevel + 1);
+            }
+        }
+    }
+
+    private static void alphaRecursiveSprite( Transform transform, float val ){
+        if(transform.childCount>0){
+            foreach (Transform child in transform) {
+                SpriteRenderer ren = child.GetComponent<SpriteRenderer>();
+                if(ren!=null)
+                    ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
+                alphaRecursiveSprite(child, val);
+            }
+        }
+    }
+
+    private static void colorRecursiveSprite( Transform transform, Color toColor ){
+        if(transform.childCount>0){
+            foreach (Transform child in transform) {
+                SpriteRenderer ren = transform.gameObject.GetComponent<SpriteRenderer>();
+                if(ren!=null)
+                    ren.color = toColor;
+                colorRecursiveSprite(child, toColor);
+            }
+        }
+    }
+
+    private static void colorRecursive( RectTransform rectTransform, Color toColor ){
+
+        if(rectTransform.childCount>0){
+            foreach (RectTransform child in rectTransform) {
+                UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
+                if(uiImage!=null){
+                    uiImage.color = toColor;
+                }
+                colorRecursive(child, toColor);
+            }
+        }
+    }
+
+    private static void textAlphaRecursive( Transform trans, float val, bool useRecursion = true ){
+        UnityEngine.UI.Text uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+        if(uiText!=null){
+            Color c = uiText.color;
+            c.a = val;
+            uiText.color = c;
+        }
+        if(useRecursion && trans.childCount>0){
+            foreach (Transform child in trans) {
+                textAlphaRecursive(child, val);
+            }
+        }
+    }
+
+    private static void textColorRecursive(Transform trans, Color toColor ){
+        if(trans.childCount>0){
+            foreach (Transform child in trans) {
+                UnityEngine.UI.Text uiText = child.gameObject.GetComponent<UnityEngine.UI.Text>();
+                if(uiText!=null){
+                    uiText.color = toColor;
+                }
+                textColorRecursive(child, toColor);
+            }
+        }
+    }
+    #endif
+
+    private static Color tweenColor( LTDescrImpl tween, float val ){
+        Vector3 diff3 = tween.point - tween.axis;
+        float diffAlpha = tween.to.y - tween.from.y;
+        return new Color(tween.axis.x + diff3.x*val, tween.axis.y + diff3.y*val, tween.axis.z + diff3.z*val, tween.from.y + diffAlpha*val);
+    }
 
 	/**
 	* Pause a tween
