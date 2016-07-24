@@ -959,7 +959,8 @@ public class LTDescrImpl : LTDescr {
         }
 
         if(isTweenFinished){
-            if(this.loopType==LeanTweenType.once || this.loopCount==1){
+//            Debug.Log("this.loopCount:" + this.loopCount);
+            if(this.loopType==LeanTweenType.once){
                 //Debug.Log("finished tween:"+i+" tween:"+tween);
                 if(tweenAction==TweenAction.GUI_ROTATE)
                     this.ltRect.rotateFinished = true;

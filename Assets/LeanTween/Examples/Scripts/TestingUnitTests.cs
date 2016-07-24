@@ -76,7 +76,7 @@ namespace DentedPixel.LTExamples{
 			LeanTest.expect( (Vector3.Distance( cube4.transform.position, new Vector3(10f,0f,0f) ) <= 0.7f), "SPLINE POSITIONING AT HALFWAY", "position is:"+cube4.transform.position+" but should be:(10f,0f,0f)");
 			LeanTween.color(cube4, Color.green, 0.01f);	
 
-			Debug.Log("Point 2:"+cr.ratioAtPoint(splineArr[2]));
+//			Debug.Log("Point 2:"+cr.ratioAtPoint(splineArr[2]));
 
 			// OnStart Speed Test for ignoreTimeScale vs normal timeScale
 			GameObject cube = Instantiate( boxNoCollider ) as GameObject;

@@ -383,7 +383,7 @@ public static void update() {
 				
 				
                 if (isTweenFinished) {
-                    if (tween.loopType == LeanTweenType.once || tween.loopCount == 1) {
+                    if (tween.loopType == LeanTweenType.once || tween.loopCount == 0) {
                         tweensFinished[finishedCnt] = i;
                         finishedCnt++;
                     }
