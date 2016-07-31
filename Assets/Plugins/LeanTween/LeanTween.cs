@@ -238,7 +238,6 @@ public static float dtManual;
 #if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5
 private static float previousRealTime;
 #endif
-private static float dt;
 public static float dtActual;
 private static int i;
 private static int j;
@@ -334,18 +333,8 @@ private static void internalOnLevelWasLoaded( int lvl ){
 	// Debug.Log("reseting gui");
 	LTGUI.reset();
 }
-
-private static Transform trans;
-private static float timeTotal;
-private static TweenAction tweenAction;
-private static float ratioPassed;
-private static float from;
-//private static float to = 1.0f;
-private static float val;
+		
 private static int maxTweenReached;
-private static Vector3 newVect;
-private static GameObject target;
-private static GameObject customTarget;
 
 public static void update() {
 	if(frameRendered != Time.frameCount){ // make sure update is only called once per frame
@@ -1999,6 +1988,14 @@ public static float easeInOutQuadOpt( float start, float diff, float ratioPassed
 	val--;
 	return -end / 2 * (val * (val - 2) - 1) + start;
 }
+
+
+	public static float easeInOutQuadOpt2(float start, float diffBy2, float val, float val2){
+		val /= .5f;
+		if (val < 1) return diffBy2 * val2 + start;
+		val--;
+		return -diffBy2 * ((val2 - 2) - 1f) + start;
+	}
 
     public static float easeInCubic(float start, float end, float val){
 	end -= start;

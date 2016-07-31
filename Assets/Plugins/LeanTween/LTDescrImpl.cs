@@ -63,7 +63,11 @@ public class LTDescrImpl : LTDescr {
 	internal Vector3 toInternal;
 	public Vector3 to { get { return this.toInternal; } set { this.toInternal = value; } }
 	internal Vector3 diffInternal;
-	public Vector3 diff { get { return this.diffInternal; } set { this.diffInternal = value; } }
+	internal Vector3 diffDiv2;
+	public Vector3 diff { get { return this.diffInternal; } set { 
+			this.diffInternal = value;
+			this.diffDiv2 = value / 2;
+		} }
 	public Vector3 point { get; set; }
 	public Vector3 axis { get; set; }
 	public Quaternion origRotation { get; set; }
@@ -89,7 +93,7 @@ public class LTDescrImpl : LTDescr {
 	public Action onStart { get; set; }
 	public EaseTypeDelegate easeMethod { get; set; }
 	public ActionMethodDelegate easeInternal {get; set; }
-	public delegate Vector3 EaseTypeDelegate(Vector3 from,Vector3 diff,float ratio);
+	public delegate Vector3 EaseTypeDelegate();
 	public delegate void ActionMethodDelegate();
 	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 	public SpriteRenderer spriteRen { get; set; }
@@ -197,7 +201,7 @@ public class LTDescrImpl : LTDescr {
 
 		if (this.onStart != null){
             this.onStart();
-        }		 	
+        }		 
 
 		// Initialize From Values
 		switch(this.type){
@@ -376,7 +380,7 @@ public class LTDescrImpl : LTDescr {
 	               this.setFromColor( this.uiImage.color );
 	            }else{
                 	this.setFromColor( Color.white );
-                }
+				}
                 break;
             case TweenAction.CANVASGROUP_ALPHA:
 				this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
@@ -459,7 +463,17 @@ public class LTDescrImpl : LTDescr {
 	private static bool usesNormalDt = true;
 
 	private void moveInternal(){
-		trans.position = this.easeMethod(this.from, this.diff, ratioPassed);
+		trans.position = easeInOutQuadInternal();
+	}
+
+	private Vector3 easeInOutQuadInternal(){
+		float ratio2 = ratioPassed * ratioPassed;
+		float val = ratioPassed * .5f;
+		if (val < 1) 
+			return new Vector3( this.diffDiv2.x * ratio2 + this.from.x, this.diffDiv2.y * ratio2 + this.from.y, this.diffDiv2.z * ratio2 + this.from.z);
+		val--;
+		return new Vector3( -this.diffDiv2.x * ((ratio2 - 2) - 1f) + this.from.x, -this.diffDiv2.y * ((ratio2 - 2) - 1f) + this.from.y, -this.diffDiv2.z * ((ratio2 - 2) - 1f) + this.from.z);
+
 	}
 
 	public bool update2(){
@@ -506,7 +520,20 @@ public class LTDescrImpl : LTDescr {
 		// Debug.Log("this.delay:"+this.delay + " this.passed:"+this.passed + " this.type:"+this.type + " to:"+newVect+" axis:"+this.axis);
 
 		if(this.hasUpdateCallback && dt!=0f){
-			
+			if(this.onUpdateFloat!=null){
+				this.onUpdateFloat(val);
+			}
+			if (this.onUpdateFloatRatio != null){
+				this.onUpdateFloatRatio(val,ratioPassed);
+			}else if(this.onUpdateFloatObject!=null){
+				this.onUpdateFloatObject(val, this.onUpdateParam);
+			}else if(this.onUpdateVector3Object!=null){
+				this.onUpdateVector3Object(newVect, this.onUpdateParam);
+			}else if(this.onUpdateVector3!=null){
+				this.onUpdateVector3(newVect);
+			}else if(this.onUpdateVector2!=null){
+				this.onUpdateVector2(new Vector2(newVect.x,newVect.y));
+			}
 		}
 
 //		Debug.Log("tween:"+this+" dt:"+dt);
@@ -1296,7 +1323,7 @@ public class LTDescrImpl : LTDescr {
 	public LTDescr setEase( LeanTweenType easeType ){
 		this.tweenType = easeType;
 		if(this.tweenType==LeanTweenType.easeInOutQuad){
-			this.easeMethod = LeanTween.easeInOutQuadOpt;
+			this.easeMethod = easeInOutQuadInternal;
 		}
 		return this;
 	}
