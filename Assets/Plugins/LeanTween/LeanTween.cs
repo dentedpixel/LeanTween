@@ -377,13 +377,8 @@ public static void update() {
 			if(tweens[i].toggle){
 				maxTweenReached = i;
                 
-
-				tween = tweens[i];
-                bool isTweenFinished = tween.update();
-				
-				
-                if (isTweenFinished) {
-                    if (tween.loopType == LeanTweenType.once || tween.loopCount == 0) {
+				if (tweens[i].update2()) {
+					if (tweens[i].loopCount == 0 || tweens[i].loopType == LeanTweenType.once) {
                         tweensFinished[finishedCnt] = i;
                         finishedCnt++;
                     }
@@ -1946,11 +1941,18 @@ public static float tweenOnCurve( LTDescrImpl tweenDescr, float ratioPassed ){
 	return diff * ratioPassed * ratioPassed + start;
 }
 
-    public static float easeInOutQuadOpt( float start, float diff, float ratioPassed ){
+public static float easeInOutQuadOpt( float start, float diff, float ratioPassed ){
 	ratioPassed /= .5f;
 	if (ratioPassed < 1) return diff / 2 * ratioPassed * ratioPassed + start;
 	ratioPassed--;
 	return -diff / 2 * (ratioPassed * (ratioPassed - 2) - 1) + start;
+}
+
+    public static Vector3 easeInOutQuadOpt( Vector3 start, Vector3 diff, float ratioPassed ){
+    ratioPassed /= .5f;
+    if (ratioPassed < 1) return diff / 2 * ratioPassed * ratioPassed + start;
+    ratioPassed--;
+    return -diff / 2 * (ratioPassed * (ratioPassed - 2) - 1) + start;
 }
 
     public static float linear(float start, float end, float val){
