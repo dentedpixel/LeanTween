@@ -41,7 +41,6 @@ public class LTDescrImpl : LTDescr {
 	public bool onCompleteOnRepeat { get; set; }
 	public bool onCompleteOnStart { get; set; }
 	public bool useRecursion { get; set; }
-    public float oneOverTime { get; set; }
     public float ratioPassed { get; set; }
 	public float passed { get; set; }
 	public float delay { get; set; }
@@ -88,8 +87,10 @@ public class LTDescrImpl : LTDescr {
 	public object onCompleteParam { get; set; }
 	public object onUpdateParam { get; set; }
 	public Action onStart { get; set; }
-	public EaseMethodDelegate easeMethod { get; set; }
-	public delegate Vector3 EaseMethodDelegate(Vector3 from,Vector3 diff,float ratio);
+	public EaseTypeDelegate easeMethod { get; set; }
+	public ActionMethodDelegate easeInternal {get; set; }
+	public delegate Vector3 EaseTypeDelegate(Vector3 from,Vector3 diff,float ratio);
+	public delegate void ActionMethodDelegate();
 	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 	public SpriteRenderer spriteRen { get; set; }
 	#endif
@@ -191,10 +192,7 @@ public class LTDescrImpl : LTDescr {
 		this.hasInitiliazed = true;
 
         if (this.time <= 0f) { // avoid dividing by zero
-            this.oneOverTime = 0f;
             this.ratioPassed = 1f;
-        } else {
-            this.oneOverTime = 1f / this.time;
         }
 
 		if (this.onStart != null){
@@ -204,6 +202,9 @@ public class LTDescrImpl : LTDescr {
 		// Initialize From Values
 		switch(this.type){
 			case TweenAction.MOVE:
+				this.from = trans.position;
+				this.easeInternal = moveInternal;
+				break;
 			case TweenAction.MOVE_TO_TRANSFORM:
 				this.from = trans.position; break;
 			case TweenAction.MOVE_X:
@@ -448,17 +449,23 @@ public class LTDescrImpl : LTDescr {
         
 //    private static float ratioPassed;
     //private static float to = 1.0f;
-    private static float val;
-    private static float dt;
-    private static Vector3 newVect;
+	public static float val;
+	public static Vector3 newVect;
+
+    public static float dt;
     private static bool isTweenFinished;
+
+	private static bool hasExtraOnCompletes = false;
+	private static bool usesNormalDt = true;
 
 	private void moveInternal(){
 		trans.position = this.easeMethod(this.from, this.diff, ratioPassed);
 	}
 
 	public bool update2(){
-		if(true){
+		isTweenFinished = false;
+
+		if(usesNormalDt){
 			dt = LeanTween.dtActual;
 		}else if( this.useEstimatedTime ){
 			dt = LeanTween.dtEstimated;
@@ -468,15 +475,8 @@ public class LTDescrImpl : LTDescr {
 			dt = LeanTween.dtManual;
 		}else if(this.direction==0f){
 			dt = 0f;
-		}else{
-			dt = LeanTween.dtActual;
 		}
-
-
-		isTweenFinished = false;
 		// check to see if delay has shrunk enough
-
-
 		if(this.delay<=0f){
 			// initialize if has not done so yet
 			if(!this.hasInitiliazed)
@@ -484,18 +484,14 @@ public class LTDescrImpl : LTDescr {
 
 			this.passed += dt*this.direction;
 			if(this.direction>0f){
-				if(this.passed>=1f){
-					isTweenFinished = true;
-					this.passed = this.time; // Set to the exact end time so that it can finish tween exactly on the end value
-				}
+				isTweenFinished = this.passed>=this.time;
 			}else{
-				if(this.passed<=0f){
-					isTweenFinished = true;
-					this.passed = Mathf.Epsilon;
-				}
+				isTweenFinished = this.passed<=0f;
 			}
 			//            this.ratioPassed = this.passed / this.time;
-			this.ratioPassed = this.passed * this.oneOverTime;
+			this.ratioPassed = isTweenFinished ? Mathf.Clamp01(this.passed / this.time) : this.passed / this.time; // need to clamp when finished so it will finish at the exact spot and not overshoot
+
+			this.easeInternal();
 		}else{
 			this.delay -= dt;
 			// Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
@@ -505,44 +501,12 @@ public class LTDescrImpl : LTDescr {
 			}
 		}
 
-		// update tween
-//		float r = ratioPassed;
-//		if(this.type==TweenAction.MOVE){
-//			if (this.tweenType == LeanTweenType.easeInOutQuad) {
-//				//                            newVect = LeanTween.easeInOutQuadOpt(this.from, this.diff, ratioPassed);
-//				r /= .5f;
-//				if (r < 1) {
-//					newVect = diff / 2 * r * r + this.from;
-//				} else {
-//					r--;
-//					newVect = -diff / 2 * (r * (r - 2) - 1) + this.from;
-//				}
-//			}
-//		}
-//		if(this.type==TweenAction.MOVE){
-//			trans.position = newVect;
-//		}
-
-		moveInternal();
 
 
 		// Debug.Log("this.delay:"+this.delay + " this.passed:"+this.passed + " this.type:"+this.type + " to:"+newVect+" axis:"+this.axis);
 
 		if(this.hasUpdateCallback && dt!=0f){
-			if(this.onUpdateFloat!=null){
-				this.onUpdateFloat(val);
-			}
-			if (this.onUpdateFloatRatio != null){
-				this.onUpdateFloatRatio(val,ratioPassed);
-			}else if(this.onUpdateFloatObject!=null){
-				this.onUpdateFloatObject(val, this.onUpdateParam);
-			}else if(this.onUpdateVector3Object!=null){
-				this.onUpdateVector3Object(newVect, this.onUpdateParam);
-			}else if(this.onUpdateVector3!=null){
-				this.onUpdateVector3(newVect);
-			}else if(this.onUpdateVector2!=null){
-				this.onUpdateVector2(new Vector2(newVect.x,newVect.y));
-			}
+			
 		}
 
 //		Debug.Log("tween:"+this+" dt:"+dt);
@@ -551,15 +515,13 @@ public class LTDescrImpl : LTDescr {
 
 		if(isTweenFinished){
 			this.loopCount--;
-			this.direction *= -1f;
+			this.direction = 0f - this.direction;
 //			Debug.Log("this.loopCount:" + this.loopCount);
-			if(this.loopType==LeanTweenType.once){
-				//Debug.Log("finished tween:"+i+" tween:"+tween);
-				if(this.type==TweenAction.GUI_ROTATE)
-					this.ltRect.rotateFinished = true;
-			}else{
+
 //				if((this.loopCount<=0 && this.type==TweenAction.CALLBACK) || this.onCompleteOnRepeat){
-					if(false){ // ToDo: Only turn on for extra on completes
+					if(hasExtraOnCompletes){ // ToDo: Only turn on for extra on completes
+						if(this.type==TweenAction.GUI_ROTATE)
+							this.ltRect.rotateFinished = true;
 						if(this.type==TweenAction.DELAYED_SOUND){
 							AudioSource.PlayClipAtPoint((AudioClip)this.onCompleteParam, this.to, this.from.x);
 						}
@@ -570,7 +532,7 @@ public class LTDescrImpl : LTDescr {
 						}
 					}
 //				}
-			}
+
 		}
 
 		return isTweenFinished;
@@ -1136,8 +1098,8 @@ public class LTDescrImpl : LTDescr {
             }
         }else if(this.delay<=0f){
             this.passed += dt*this.direction;
-//            this.ratioPassed = this.passed / this.time;
-            this.ratioPassed = this.passed * this.oneOverTime;
+            this.ratioPassed = this.passed / this.time;
+//            this.ratioPassed = this.passed * this.oneOverTime;
         }else{
             this.delay -= dt;
             // Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);

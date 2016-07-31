@@ -13,7 +13,6 @@ public interface LTDescr
 	bool onCompleteOnRepeat { get; set; }
 	bool onCompleteOnStart { get; set; }
 	bool useRecursion { get; set; }
-    float oneOverTime { get; set; }
     float ratioPassed { get; set; }
 	float passed { get; set; }
 	float delay { get; set; }
@@ -54,7 +53,8 @@ public interface LTDescr
 	object onCompleteParam { get; set; }
 	object onUpdateParam { get; set; }
 	Action onStart { get; set; }
-	LTDescrImpl.EaseMethodDelegate easeMethod { get; set; }
+	LTDescrImpl.EaseTypeDelegate easeMethod { get; set; }
+	LTDescrImpl.ActionMethodDelegate easeInternal {get; set; }
 	[System.Obsolete("Use 'LeanTween.cancel( id )' instead")]
 	LTDescr cancel(UnityEngine.GameObject gameObject);
 	void cleanup();

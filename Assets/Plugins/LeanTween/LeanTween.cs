@@ -371,17 +371,18 @@ public static void update() {
 		// if(tweenMaxSearch>1500)
 		// Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" maxTweens:"+maxTweens);
 		for( int i = 0; i <= tweenMaxSearch && i < maxTweens; i++){
-			
+			tween = tweens[i];
 			//if(i==0 && tweens[i].toggle)
 			//	Debug.Log("tweens["+i+"]"+tweens[i]+" dt:"+dt);
-			if(tweens[i].toggle){
+			if(tween.toggle){
 				maxTweenReached = i;
-                
-				if (tweens[i].update2()) {
-					if (tweens[i].loopCount == 0 || tweens[i].loopType == LeanTweenType.once) {
-                        tweensFinished[finishedCnt] = i;
-                        finishedCnt++;
-                    }
+				
+            
+				if (tween.update2()) {
+					if (tween.loopCount == 0 || tween.loopType == LeanTweenType.once) {
+	                    tweensFinished[finishedCnt] = i;
+	                    finishedCnt++;
+	                }
                 }
 			}
 		}
