@@ -66,8 +66,7 @@ public class LTDescrImpl : LTDescr {
 	internal Vector3 diffDiv2;
 	public Vector3 diff { get { return this.diffInternal; } set { 
 			this.diffInternal = value;
-			this.diffDiv2 = value / 2;
-		} }
+	} }
 	public Vector3 point { get; set; }
 	public Vector3 axis { get; set; }
 	public Quaternion origRotation { get; set; }
@@ -112,7 +111,7 @@ public class LTDescrImpl : LTDescr {
 	private static uint global_counter = 0;
 
     public override string ToString(){
-		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
+		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" diff:"+diff+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
 
 	public LTDescrImpl(){
@@ -423,8 +422,12 @@ public class LTDescrImpl : LTDescr {
 				break;
 			#endif
 		}
-        if(this.type!=TweenAction.CALLBACK_COLOR && this.type!=TweenAction.COLOR && this.type!=TweenAction.TEXT_COLOR && this.type!=TweenAction.CANVAS_COLOR)
+		if(this.type!=TweenAction.CALLBACK_COLOR && this.type!=TweenAction.COLOR && this.type!=TweenAction.TEXT_COLOR && this.type!=TweenAction.CANVAS_COLOR){
 			this.diff = this.to - this.from;
+			if(this.tweenType==LeanTweenType.easeInOutQuad){
+				this.diffDiv2 = this.diff * 0.5f;
+			}
+		}
 		if(this.onCompleteOnStart){
 			if(this.onComplete!=null){
 				this.onComplete();
@@ -463,18 +466,30 @@ public class LTDescrImpl : LTDescr {
 	private static bool usesNormalDt = true;
 
 	private void moveInternal(){
-		trans.position = easeInOutQuadInternal();
+		trans.position = easeMethod();
+//		Debug.Log("trans.position x:"+trans.position.x+" y:"+trans.position.y+" z:"+trans.position.z);
+//		Debug.Log("diffDiv2 x:"+this.diffDiv2.x+" y:"+this.diffDiv2.y+" z:"+this.diffDiv2.z);
 	}
 
 	private Vector3 easeInOutQuadInternal(){
-		float ratio2 = ratioPassed * ratioPassed;
-		float val = ratioPassed * .5f;
-		if (val < 1) 
-			return new Vector3( this.diffDiv2.x * ratio2 + this.from.x, this.diffDiv2.y * ratio2 + this.from.y, this.diffDiv2.z * ratio2 + this.from.z);
+		val = ratioPassed;
+		val /= .5f;
+
+		if (val < 1) {
+			val = val * val;
+			return new Vector3( this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+		}
 		val--;
-		return new Vector3( -this.diffDiv2.x * ((ratio2 - 2) - 1f) + this.from.x, -this.diffDiv2.y * ((ratio2 - 2) - 1f) + this.from.y, -this.diffDiv2.z * ((ratio2 - 2) - 1f) + this.from.z);
+		val = (val * (val - 2) - 1);
+		return new Vector3( -this.diffDiv2.x * val + this.from.x, -this.diffDiv2.y * val + this.from.y, -this.diffDiv2.z * val + this.from.z);
 
 	}
+
+//	val /= .5f;
+//	end -= start;
+//	if (val < 1) return end / 2 * val * val + start;
+//	val--;
+//	return -end / 2 * (val * (val - 2) - 1) + start;
 
 	public bool update2(){
 		isTweenFinished = false;
