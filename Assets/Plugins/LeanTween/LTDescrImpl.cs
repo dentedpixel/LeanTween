@@ -475,21 +475,14 @@ public class LTDescrImpl : LTDescr {
 		val = ratioPassed;
 		val /= .5f;
 
-		if (val < 1) {
+		if (val < 1f) {
 			val = val * val;
 			return new Vector3( this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
 		}
-		val--;
-		val = (val * (val - 2) - 1);
+		val = (val-1f) * (val - 3f) - 1f;
 		return new Vector3( -this.diffDiv2.x * val + this.from.x, -this.diffDiv2.y * val + this.from.y, -this.diffDiv2.z * val + this.from.z);
 
 	}
-
-//	val /= .5f;
-//	end -= start;
-//	if (val < 1) return end / 2 * val * val + start;
-//	val--;
-//	return -end / 2 * (val * (val - 2) - 1) + start;
 
 	public bool update2(){
 		isTweenFinished = false;
@@ -506,48 +499,45 @@ public class LTDescrImpl : LTDescr {
 			dt = 0f;
 		}
 		// check to see if delay has shrunk enough
-		if(this.delay<=0f){
-			// initialize if has not done so yet
-			if(!this.hasInitiliazed)
-				this.init();
+		if(dt!=0f){
+			if(this.delay<=0f){
+				// initialize if has not done so yet
+				if(!this.hasInitiliazed)
+					this.init();
 
-			this.passed += dt*this.direction;
-			if(this.direction>0f){
-				isTweenFinished = this.passed>=this.time;
+				this.passed += dt*this.direction;
+				if(this.direction>0f){
+					isTweenFinished = this.passed>=this.time;
+				}else{
+					isTweenFinished = this.passed<=0f;
+				}
+				this.ratioPassed = isTweenFinished ? Mathf.Clamp01(this.passed / this.time) : this.passed / this.time; // need to clamp when finished so it will finish at the exact spot and not overshoot
+
+				this.easeInternal();
+
+				if(this.hasUpdateCallback){
+					if(this.onUpdateFloat!=null){
+						this.onUpdateFloat(val);
+					}
+					if (this.onUpdateFloatRatio != null){
+						this.onUpdateFloatRatio(val,ratioPassed);
+					}else if(this.onUpdateFloatObject!=null){
+						this.onUpdateFloatObject(val, this.onUpdateParam);
+					}else if(this.onUpdateVector3Object!=null){
+						this.onUpdateVector3Object(newVect, this.onUpdateParam);
+					}else if(this.onUpdateVector3!=null){
+						this.onUpdateVector3(newVect);
+					}else if(this.onUpdateVector2!=null){
+						this.onUpdateVector2(new Vector2(newVect.x,newVect.y));
+					}
+				}
 			}else{
-				isTweenFinished = this.passed<=0f;
-			}
-			//            this.ratioPassed = this.passed / this.time;
-			this.ratioPassed = isTweenFinished ? Mathf.Clamp01(this.passed / this.time) : this.passed / this.time; // need to clamp when finished so it will finish at the exact spot and not overshoot
-
-			this.easeInternal();
-		}else{
-			this.delay -= dt;
-			// Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
-			if(this.delay<0f){
-				this.passed = 0.0f;//-tween.delay
-				this.delay = 0.0f;
-			}
-		}
-
-
-
-		// Debug.Log("this.delay:"+this.delay + " this.passed:"+this.passed + " this.type:"+this.type + " to:"+newVect+" axis:"+this.axis);
-
-		if(this.hasUpdateCallback && dt!=0f){
-			if(this.onUpdateFloat!=null){
-				this.onUpdateFloat(val);
-			}
-			if (this.onUpdateFloatRatio != null){
-				this.onUpdateFloatRatio(val,ratioPassed);
-			}else if(this.onUpdateFloatObject!=null){
-				this.onUpdateFloatObject(val, this.onUpdateParam);
-			}else if(this.onUpdateVector3Object!=null){
-				this.onUpdateVector3Object(newVect, this.onUpdateParam);
-			}else if(this.onUpdateVector3!=null){
-				this.onUpdateVector3(newVect);
-			}else if(this.onUpdateVector2!=null){
-				this.onUpdateVector2(new Vector2(newVect.x,newVect.y));
+				this.delay -= dt;
+				// Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
+	//			if(this.delay<0f){
+	//				this.passed = 0.0f;//-tween.delay
+	//				this.delay = 0.0f;
+	//			}
 			}
 		}
 

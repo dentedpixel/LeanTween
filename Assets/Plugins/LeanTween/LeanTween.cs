@@ -368,7 +368,7 @@ public static void update() {
 				
             
 				if (tween.update2()) {
-					if (tween.loopCount == 0 || tween.loopType == LeanTweenType.once) {
+					if (tween.loopCount == 0 || tween.loopType == LeanTweenType.once || tween.trans==null) {
 	                    tweensFinished[finishedCnt] = i;
 	                    finishedCnt++;
 	                }
