@@ -315,7 +315,7 @@ public static void init(int maxSimultaneousTweens){
 public static void reset(){
 	if(tweens!=null){
 		for (int i = 0; i <= tweenMaxSearch; i++){
-	        if(tweens[i])
+	        if(tweens[i]!=null)
 		        tweens[i].toggle = false;
 	    }
 	}
