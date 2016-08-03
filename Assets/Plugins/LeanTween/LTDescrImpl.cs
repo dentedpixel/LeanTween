@@ -692,6 +692,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public LTDescr setLoopCount( int loopCount ){
+		this.loopType = LeanTweenType.clamp;
 		this.loopCount = loopCount;
 		return this;
 	}
