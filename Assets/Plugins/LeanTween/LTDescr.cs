@@ -76,6 +76,7 @@ public interface LTDescr
 	LTDescr setDiff(UnityEngine.Vector3 diff);
 	LTDescr setDirection(float direction);
 	LTDescr setEase(LeanTweenType easeType);
+	LTDescr setEaseInOutQuad();
 	LTDescr setEase(UnityEngine.AnimationCurve easeCurve);
 	LTDescr setFrom(float from);
 	LTDescr setFrom(UnityEngine.Vector3 from);
