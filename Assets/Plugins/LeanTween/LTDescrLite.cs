@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -19,19 +20,30 @@ public class LTDescrLite {
 	public Vector3 diff;
 	public Vector3 from;
 
-	public Dictionary<string, string> fakeD = new Dictionary<string, string>();
-	public Dictionary<string, string> fakeA = new Dictionary<string, string>();
-	public Dictionary<string, string> fakeB = new Dictionary<string, string>();
-	public Dictionary<string, string> fakeC = new Dictionary<string, string>();
-
 	public TweenAction type;
 	public LeanTweenType tweenType;
 	public LeanTweenType loopType;
 
 	public EaseTypeDelegate easeMethod;
-	public ActionMethodDelegate easeInternal {get; set; }
+	public ActionMethodDelegate easeInternal;
 	public delegate Vector3 EaseTypeDelegate();
 	public delegate void ActionMethodDelegate();
+
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+	public SpriteRenderer spriteRen { get; set; }
+	#endif
+
+	#if LEANTWEEN_1
+	public Hashtable optional;
+	#endif
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+	public RectTransform rectTransform;
+	public UnityEngine.UI.Text uiText;
+	public UnityEngine.UI.Image uiImage;
+	public UnityEngine.Sprite[] sprites;
+	#endif
+
+	public LTDescrOptional optional = new LTDescrOptional();
 
 	private static uint global_counter = 0;
 
@@ -77,6 +89,16 @@ public class LTDescrLite {
 	}
 
 	private void moveInternal(){
+//		val = ratioPassed;
+//		val /= .5f;
+//
+//		if (val < 1f) {
+//			val = val * val;
+//			trans.position = new Vector3( this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+//			return;
+//		}
+//		val = (val-1f) * (val - 3f) - 1f;
+//		trans.position = new Vector3( -this.diff.x * val + this.from.x, -this.diff.y * val + this.from.y, -this.diff.z * val + this.from.z);
 		trans.position = easeMethod();
 //				Debug.Log("trans.position x:"+trans.position.x+" y:"+trans.position.y+" z:"+trans.position.z);
 		//		Debug.Log("diffDiv2 x:"+this.diffDiv2.x+" y:"+this.diffDiv2.y+" z:"+this.diffDiv2.z);
@@ -140,7 +162,7 @@ public class LTDescrLite {
 //		}
 
 		// check to see if delay has shrunk enough
-		if(dt!=0f){
+//		if(dt!=0f){
 			if(this.delay<=0f){
 				// initialize if has not done so yet
 				if(!this.hasInitiliazed)
@@ -173,6 +195,11 @@ public class LTDescrLite {
 //						this.onUpdateVector2(new Vector2(newVect.x,newVect.y));
 //					}
 //				}
+
+				if(isTweenFinished){
+					this.loopCount--;
+					this.direction = 0f - this.direction;
+				}
 			}else{
 				this.delay -= dt;
 				// Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
@@ -181,12 +208,7 @@ public class LTDescrLite {
 				//				this.delay = 0.0f;
 				//			}
 			}
-		}
-
-		if(isTweenFinished){
-			this.loopCount--;
-			this.direction = 0f - this.direction;
-		}
+//		}
 
 		return isTweenFinished;
 	}
