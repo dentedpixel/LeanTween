@@ -645,6 +645,16 @@ public static void update() {
 							Mesh mesh = trans.GetComponent<MeshFilter>().mesh;
 							Vector3[] vertices = mesh.vertices;
 							Color32[] colors = new Color32[vertices.Length];
+							if (colors.Length == 0){ //MaxFW fix: add vertex colors if the mesh doesn't have any             
+						        Color32 transparentWhiteColor32 = new Color32(0xff, 0xff, 0xff, 0x00);
+						        colors = new Color32[mesh.vertices.Length];
+						        for (int k=0; k<colors.Length; k++)
+						        {
+						            colors[k] = transparentWhiteColor32;
+						        }
+						        mesh.colors32 = colors;
+						    }
+						    // fix end
 							Color32 c = mesh.colors32[0];
 							c = new Color( c.r, c.g, c.b, val);
 							for (int k= 0; k < vertices.Length; k++) {
