@@ -503,6 +503,11 @@ public class LTDescrImpl : LTDescr {
 		return this;
 	}
 
+	public LTDescr setEaseInOutQuad(){
+		this.tweenType = LeanTweenType.easeInOutQuad;
+		return this;
+	}
+
 	/**
 	* Set how far past a tween will overshoot  for certain ease types (compatible:  easeInBack, easeInOutBack, easeOutBack, easeOutElastic, easeInElastic, easeInOutElastic). <br>
 	* @method setOvershoot
