@@ -388,16 +388,16 @@ public static void update() {
 			tween = tweens[ j ];
 	
 			// logError("removing tween:"+tween);
-			if(tween.onComplete!=null){
-				System.Action onComplete = tween.onComplete;
+			if(tween.optional.onComplete!=null){
+				System.Action onComplete = tween.optional.onComplete;
 				//logError("removing tween for j:"+j+" tween:"+tween);
 				removeTween(j);
 				//tween.cleanup();
 				onComplete();
 				
-			}else if(tween.onCompleteObject!=null){
-				System.Action<object> onCompleteObject = tween.onCompleteObject;
-				object onCompleteParam = tween.onCompleteParam;
+				}else if(tween.optional.onCompleteObject!=null){
+					System.Action<object> onCompleteObject = tween.optional.onCompleteObject;
+					object onCompleteParam = tween.optional.onCompleteParam;
 				removeTween(j);
 				//tween.cleanup();
 				onCompleteObject(onCompleteParam);
@@ -489,8 +489,8 @@ public static void cancelAll(bool callComplete){
     for (int i = 0; i <= tweenMaxSearch; i++)
     {
         if (tweens[i].trans != null){
-            if (callComplete && tweens[i].onComplete != null)
-                tweens[i].onComplete();
+			if (callComplete && tweens[i].optional.onComplete != null)
+				tweens[i].optional.onComplete();
             removeTween(i);
         }
     }
@@ -513,8 +513,8 @@ public static void cancel( GameObject gameObject, bool callOnComplete ){
 	Transform trans = gameObject.transform;
 	for(int i = 0; i <= tweenMaxSearch; i++){
 		if(tweens[i].toggle && tweens[i].trans==trans){
-            if (callOnComplete && tweens[i].onComplete != null)
-                tweens[i].onComplete();
+			if (callOnComplete && tweens[i].optional.onComplete != null)
+				tweens[i].optional.onComplete();
 			removeTween(i);
 		}
 	}
@@ -561,8 +561,8 @@ public static void cancel( int uniqueId, bool callOnComplete ){
 		int backCounter = uniqueId >> 16;
 		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
 		if(tweens[backId].counter==backCounter){
-			if(callOnComplete && tweens[backId].onComplete != null)
-                tweens[backId].onComplete();
+			if(callOnComplete && tweens[backId].optional.onComplete != null)
+				tweens[backId].optional.onComplete();
 			removeTween((int)backId);
 		}
 	}
@@ -1103,24 +1103,24 @@ public static LTDescr move(GameObject gameObject, Vector2 to, float time){
 */	
 public static LTDescr move(GameObject gameObject, Vector3[] to, float time){
 	d = options();
-	if(d.path==null)
-		d.path = new LTBezierPath( to );
+	if(d.optional.path==null)
+		d.optional.path = new LTBezierPath( to );
 	else 
-		d.path.setPoints( to );
+		d.optional.path.setPoints( to );
 
 	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED, d );
 }
 
 public static LTDescr move(GameObject gameObject, LTBezierPath to, float time) {
     d = options();
-    d.path = to;
+	d.optional.path = to;
 
     return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED, d);
 }
 
 public static LTDescr move(GameObject gameObject, LTSpline to, float time) {
 	d = options();
-	d.spline = to;
+	d.optional.spline = to;
 
 	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE, d);
 }
@@ -1141,7 +1141,7 @@ public static LTDescr move(GameObject gameObject, LTSpline to, float time) {
 */
 public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time){
 	d = options();
-	d.spline = new LTSpline( to );
+	d.optional.spline = new LTSpline( to );
 
 	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE, d );
 }
@@ -1162,7 +1162,7 @@ public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time
 */
 	public static LTDescr moveSpline(GameObject gameObject, LTSpline to, float time){
 		d = options();
-		d.spline = to;
+		d.optional.spline = to;
 
 		return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE, d );
 	}
@@ -1183,7 +1183,7 @@ public static LTDescr moveSpline(GameObject gameObject, Vector3[] to, float time
 */
 public static LTDescr moveSplineLocal(GameObject gameObject, Vector3[] to, float time){
 	d = options();
-	d.spline = new LTSpline( to );
+	d.optional.spline = new LTSpline( to );
 
 	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, d );
 }
@@ -1274,10 +1274,10 @@ public static LTDescr moveLocal(GameObject gameObject, Vector3 to, float time){
 */
 public static LTDescr moveLocal(GameObject gameObject, Vector3[] to, float time){
 	d = options();
-	if(d.path==null)
-		d.path = new LTBezierPath( to );
+	if(d.optional.path==null)
+		d.optional.path = new LTBezierPath( to );
 	else 
-		d.path.setPoints( to );
+		d.optional.path.setPoints( to );
 
 	return pushNewTween( gameObject, new Vector3(1.0f,0.0f,0.0f), time, TweenAction.MOVE_CURVED_LOCAL, d );
 }
@@ -1296,13 +1296,13 @@ public static LTDescr moveLocalZ(GameObject gameObject, float to, float time){
 
 public static LTDescr moveLocal(GameObject gameObject, LTBezierPath to, float time) {
 	d = options();
-	d.path = to;
+	d.optional.path = to;
 
 	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_CURVED_LOCAL, d);
 }
 public static LTDescr moveLocal(GameObject gameObject, LTSpline to, float time) {
 	d = options();
-	d.spline = to;
+	d.optional.spline = to;
  		 
 	return pushNewTween(gameObject, new Vector3(1.0f, 0.0f, 0.0f), time, TweenAction.MOVE_SPLINE_LOCAL, d);
 }
@@ -1917,13 +1917,13 @@ public static LTDescr color(RectTransform rectTrans, Color to, float time){
 
 public static float tweenOnCurve( LTDescrImpl tweenDescr, float ratioPassed ){
 	// Debug.Log("single ratio:"+ratioPassed+" tweenDescr.animationCurve.Evaluate(ratioPassed):"+tweenDescr.animationCurve.Evaluate(ratioPassed));
-	return tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.animationCurve.Evaluate(ratioPassed);
+	return tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.optional.animationCurve.Evaluate(ratioPassed);
 }
 
     public static Vector3 tweenOnCurveVector( LTDescrImpl tweenDescr, float ratioPassed ){
-	return	new Vector3(tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.animationCurve.Evaluate(ratioPassed),
-						tweenDescr.from.y + (tweenDescr.diff.y) * tweenDescr.animationCurve.Evaluate(ratioPassed),
-						tweenDescr.from.z + (tweenDescr.diff.z) * tweenDescr.animationCurve.Evaluate(ratioPassed) );
+		return	new Vector3(tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.optional.animationCurve.Evaluate(ratioPassed),
+			tweenDescr.from.y + (tweenDescr.diff.y) * tweenDescr.optional.animationCurve.Evaluate(ratioPassed),
+			tweenDescr.from.z + (tweenDescr.diff.z) * tweenDescr.optional.animationCurve.Evaluate(ratioPassed) );
 }
 
     public static float easeOutQuadOpt( float start, float diff, float ratioPassed ){

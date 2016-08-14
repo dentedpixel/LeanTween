@@ -31,28 +31,15 @@ public interface LTDescr
 	Vector3 from { get; set; }
 	Vector3 to { get; set; }
 	Vector3 diff { get; set; }
-	Vector3 point { get; set; }
-	Vector3 axis { get; set; }
-	Quaternion origRotation { get; set; }
-	LTBezierPath path { get; set; }
-	LTSpline spline { get; set; }
+
 	TweenAction type { get; set; }
 	LeanTweenType tweenType { get; set; }
-	AnimationCurve animationCurve { get; set; }
+
 	LeanTweenType loopType { get; set; }
 	bool hasUpdateCallback { get; set; }
-	Action<float> onUpdateFloat { get; set; }
-    Action<float,float> onUpdateFloatRatio { get; set; }
-	Action<float,object> onUpdateFloatObject { get; set; }
-	Action<Vector2> onUpdateVector2 { get; set; }
-	Action<Vector3> onUpdateVector3 { get; set; }
-	Action<Vector3,object> onUpdateVector3Object { get; set; }
-	Action<Color> onUpdateColor { get; set; }
-	Action onComplete { get; set; }
-	Action<object> onCompleteObject { get; set; }
-	object onCompleteParam { get; set; }
-	object onUpdateParam { get; set; }
-	Action onStart { get; set; }
+
+	LTDescrOptional optional { get; set; }
+
 	LTDescrImpl.EaseTypeDelegate easeMethod { get; set; }
 	LTDescrImpl.ActionMethodDelegate easeInternal {get; set; }
 	[System.Obsolete("Use 'LeanTween.cancel( id )' instead")]
