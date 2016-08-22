@@ -27,10 +27,8 @@ public interface LTDescr
 	bool destroyOnComplete { get; set; }
 	Transform trans { get; set; }
 	Transform toTrans { get; set; }
-	LTRect ltRect { get; set; }
 	Vector3 from { get; set; }
 	Vector3 to { get; set; }
-	Vector3 diff { get; set; }
 
 	TweenAction type { get; set; }
 	LeanTweenType tweenType { get; set; }
@@ -44,7 +42,6 @@ public interface LTDescr
 	LTDescrImpl.ActionMethodDelegate easeInternal {get; set; }
 	[System.Obsolete("Use 'LeanTween.cancel( id )' instead")]
 	LTDescr cancel(UnityEngine.GameObject gameObject);
-	void cleanup();
 	int uniqueId { get; }
 	int id { get; }
 	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
@@ -52,7 +49,6 @@ public interface LTDescr
 	#endif
 	void init();
 	bool update2();
-    bool update();
 	LTDescr pause();
 	void reset();
 	LTDescr resume();

@@ -225,6 +225,7 @@ public class LeanTween : MonoBehaviour {
 
 public static bool throwErrors = true;
 public static float tau = Mathf.PI*2.0f; 
+public static float PI_DIV2 = Mathf.PI / 2.0f; 
 
 private static LTDescrImpl[] tweens;
 private static int[] tweensFinished;
@@ -369,12 +370,9 @@ public static void update() {
 			if(tween.toggle){
 				maxTweenReached = i;
 				
-            
-				if (tween.update2()) {
-					if (tween.loopCount == 0 || tween.loopType == LeanTweenType.once || tween.trans==null) {
-	                    tweensFinished[finishedCnt] = i;
-	                    finishedCnt++;
-	                }
+				if (tween.update2()) { // returns true if the tween is finished with it's loop
+					tweensFinished[finishedCnt] = i;
+					finishedCnt++;
                 }
 			}
 		}
@@ -436,7 +434,6 @@ public static void removeTween( int i ){
 				}
 			}
 		}
-		tweens[i].cleanup();
 		//tweens[i].optional = null;
 		startSearch = i;
 		//Debug.Log("start search reset:"+startSearch + " i:"+i+" tweenMaxSearch:"+tweenMaxSearch);
@@ -837,9 +834,11 @@ public static LTDescr options(){
 	init();
 	
 	bool found = false;
+//		Debug.Log("Search start");
 	for(j=0, i = startSearch; j < maxTweens; i++){
 		if(i>=maxTweens-1)
 			i = 0;
+//			Debug.Log("searching i:"+i);
 		if(tweens[i].toggle==false){
 			if(i+1>tweenMaxSearch)
 				tweenMaxSearch = i+1;

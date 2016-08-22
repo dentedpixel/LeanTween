@@ -62,11 +62,8 @@ public class LTDescrImpl : LTDescr {
 	public Vector3 from { get { return this.fromInternal; } set { this.fromInternal = value; } }
 	internal Vector3 toInternal;
 	public Vector3 to { get { return this.toInternal; } set { this.toInternal = value; } }
-	internal Vector3 diffInternal;
+	internal Vector3 diff;
 	internal Vector3 diffDiv2;
-	public Vector3 diff { get { return this.diffInternal; } set { 
-			this.diffInternal = value;
-	} }
 	public TweenAction type { get; set; }
 	public LeanTweenType tweenType { get; set; }
 	public LeanTweenType loopType { get; set; }
@@ -149,17 +146,13 @@ public class LTDescrImpl : LTDescr {
 		this.direction = this.directionLast = this.overshoot = 1.0f;
 		this.period = 0.3f;
 		this.speed = -1f;
-//		this._optional.reset();
-//		cleanup();
+		this._optional.reset();
 		
 		global_counter++;
 		if(global_counter>0x8000)
 			global_counter = 0;
 	}
 
-	public void cleanup(){
-		
-	}
 
 	// This method is only for internal use
 	public void init(){
@@ -276,20 +269,20 @@ public class LTDescrImpl : LTDescr {
 			case TweenAction.SCALE:
 				this.from = trans.localScale; break;
 			case TweenAction.GUI_MOVE:
-				this.from = new Vector3(this.ltRect.rect.x, this.ltRect.rect.y, 0); break;
+				this.from = new Vector3(this._optional.ltRect.rect.x, this._optional.ltRect.rect.y, 0); break;
 			case TweenAction.GUI_MOVE_MARGIN:
-				this.from = new Vector2(this.ltRect.margin.x, this.ltRect.margin.y); break;
+				this.from = new Vector2(this._optional.ltRect.margin.x, this._optional.ltRect.margin.y); break;
 			case TweenAction.GUI_SCALE:
-				this.from = new Vector3(this.ltRect.rect.width, this.ltRect.rect.height, 0); break;
+				this.from = new Vector3(this._optional.ltRect.rect.width, this._optional.ltRect.rect.height, 0); break;
 			case TweenAction.GUI_ALPHA:
-				this.fromInternal.x = this.ltRect.alpha; break;
+				this.fromInternal.x = this._optional.ltRect.alpha; break;
 			case TweenAction.GUI_ROTATE:
-				if(this.ltRect.rotateEnabled==false){
-					this.ltRect.rotateEnabled = true;
-					this.ltRect.resetForRotation();
+				if(this._optional.ltRect.rotateEnabled==false){
+					this._optional.ltRect.rotateEnabled = true;
+					this._optional.ltRect.resetForRotation();
 				}
 				
-				this.fromInternal.x = this.ltRect.rotation; break;
+				this.fromInternal.x = this._optional.ltRect.rotation; break;
 			case TweenAction.ALPHA_VERTEX:
 				this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 				break;
@@ -394,12 +387,9 @@ public class LTDescrImpl : LTDescr {
 				break;
 			#endif
 		}
-		if(this.type!=TweenAction.CALLBACK_COLOR && this.type!=TweenAction.COLOR && this.type!=TweenAction.TEXT_COLOR && this.type!=TweenAction.CANVAS_COLOR){
-			this.diff = this.to - this.from;
-			if(this.tweenType==LeanTweenType.easeInOutQuad){
-				this.diffDiv2 = this.diff * 0.5f;
-			}
-		}
+
+		this.diff = this.to - this.from;
+		this.diffDiv2 = this.diff * 0.5f;
 		if(this.onCompleteOnStart){
 			if(this._optional.onComplete!=null){
 				this._optional.onComplete();
@@ -469,6 +459,7 @@ public class LTDescrImpl : LTDescr {
 					this.init();
 
 				this.passed += dt*this.direction;
+
 				if(this.direction>0f){
 					isTweenFinished = this.passed>=this.time;
 				}else{
@@ -516,18 +507,18 @@ public class LTDescrImpl : LTDescr {
 //				if((this.loopCount<=0 && this.type==TweenAction.CALLBACK) || this.onCompleteOnRepeat){
 					if(hasExtraOnCompletes){ // ToDo: Only turn on for extra on completes
 						if(this.type==TweenAction.GUI_ROTATE)
-							this.ltRect.rotateFinished = true;
+							this._optional.ltRect.rotateFinished = true;
 						if(this.type==TweenAction.DELAYED_SOUND){
 							AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
 						}
-					if(this._optional.onComplete!=null){
-						this._optional.onComplete();
-					}else if(this._optional.onCompleteObject!=null){
-						this._optional.onCompleteObject(this._optional.onCompleteParam);
+						if(this._optional.onComplete!=null){
+							this._optional.onComplete();
+						}else if(this._optional.onCompleteObject!=null){
+							this._optional.onCompleteObject(this._optional.onCompleteParam);
 						}
 					}
 //				}
-
+			isTweenFinished = this.loopCount == 0 || this.loopType == LeanTweenType.once; // only return true if it is fully complete
 		}
 
 		return isTweenFinished;
@@ -787,7 +778,7 @@ public class LTDescrImpl : LTDescr {
 					this._optional.animationCurve = LeanTween.shake;
 				}
 				this.toInternal.x = this.from.x + this.to.x;
-				this.diffInternal.x = this.to.x - this.from.x;
+				this.diff.x = this.to.x - this.from.x;
 				val = LeanTween.tweenOnCurve(this, ratioPassed); break;
 			case LeanTweenType.easeSpring:
 				val = LeanTween.spring(this.from.x, this.to.x, ratioPassed); break;
@@ -802,17 +793,17 @@ public class LTDescrImpl : LTDescr {
 
 	public LTDescr setEaseInOutQuad(){
 		this.tweenType = LeanTweenType.easeInOutQuad;
-		this.easeMethod = this.easeInOutQuadInternal;
+		this.easeMethod = this.easeInOutQuad;
 		return this;
 	}
 
-	private Vector3 tweenOnCurveInternal(){
+	private Vector3 tweenOnCurve(){
 		return	new Vector3(this.from.x + (this.diff.x) * this._optional.animationCurve.Evaluate(ratioPassed),
 			this.from.y + (this.diff.y) * this._optional.animationCurve.Evaluate(ratioPassed),
 			this.from.z + (this.diff.z) * this._optional.animationCurve.Evaluate(ratioPassed) );
 	}
 
-	private Vector3 easeInOutQuadInternal(){
+	private Vector3 easeInOutQuad(){
 		val = this.ratioPassed * 2f;
 
 		if (val < 1f) {
@@ -823,21 +814,21 @@ public class LTDescrImpl : LTDescr {
 		return new Vector3( this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
 	} 
 
-	private Vector3 easeInQuadInternal(){
+	private Vector3 easeInQuad(){
 		val = ratioPassed * ratioPassed;
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
 	}
 
-	private Vector3 easeOutQuadInternal(){
+	private Vector3 easeOutQuad(){
 		val = this.ratioPassed * (this.ratioPassed - 2);
 		return new Vector3(-this.diff.x * val + this.from.x, -this.diff.y * val + this.from.y, -this.diff.z * val + this.from.z);
 	}
 
-	private Vector3 linearInternal(){
+	private Vector3 linear(){
 		return new Vector3(this.from.x+this.diff.x*this.ratioPassed, this.from.y+this.diff.y*this.ratioPassed, this.from.z+this.diff.z*this.ratioPassed);
 	}
 
-	private Vector3 easeInCubicInternal(){
+	private Vector3 easeInCubic(){
 		val = this.ratioPassed * this.ratioPassed * this.ratioPassed;
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
 	}
@@ -897,6 +888,147 @@ public class LTDescrImpl : LTDescr {
 		val -= 2f;
 		val = (val * val * val * val * val + 2f);
 		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+	}
+
+	private Vector3 easeInSine(){
+		val = - Mathf.Cos(this.ratioPassed / 1 * LeanTween.PI_DIV2);
+		return new Vector3(this.diff.x * val + this.diff.x + this.from.x, this.diff.y * val + this.diff.y + this.from.y, this.diff.z * val + this.diff.z + this.from.z);
+	}
+
+	private Vector3 easeOutSine(){
+		val = Mathf.Sin(this.ratioPassed / 1 * LeanTween.PI_DIV2);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y,this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeInOutSine(){
+		val = 2 * (Mathf.Cos(Mathf.PI * this.ratioPassed / 1) - 1);
+		return new Vector3(-this.diff.x / val + this.from.x, -this.diff.y / val + this.from.y, -this.diff.z / val + this.from.z);
+	}
+
+	private Vector3 easeInExpo(){
+		val = Mathf.Pow(2, 10 * (this.ratioPassed / 1 - 1));
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeOutExpo(){
+		val = (-Mathf.Pow(2, -10 * this.ratioPassed / 1) + 1);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeInOutExpo(){
+		val = this.ratioPassed * 2f;
+		val = Mathf.Pow(2, 10 * (val - 1));
+		if (val < 1f){ 
+			return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+		}
+		val--;
+		val = (-Mathf.Pow(2, -10 * val) + 2);
+		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+	}
+
+	private Vector3 easeInCirc(){
+		val = -(Mathf.Sqrt(1 - this.ratioPassed * this.ratioPassed) - 1);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeOutCirc(){
+		val = this.ratioPassed - 1f;
+		val = Mathf.Sqrt(1 - val * val);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeInOutCirc(){
+		val = this.ratioPassed * 2f;
+		if (val < 1){
+			val = 2 * (Mathf.Sqrt(1 - val * val) - 1);
+			return new Vector3(-this.diff.x / val  + this.from.x, -this.diff.y / val  + this.from.y, -this.diff.z / val  + this.from.z);
+		}
+		val -= 2;
+		val = 2 * (Mathf.Sqrt(1 - val * val) + 1);
+		return new Vector3(this.diff.x / val + this.from.x, this.diff.y / val + this.from.y, this.diff.z / val + this.from.z);
+	}
+
+	private Vector3 easeInBounce(){
+		val = this.ratioPassed;
+		float d = 1f;
+		return new Vector3(this.diff.x - LeanTween.easeOutBounce(0, this.diff.x, d-val) + this.from.x, 
+			this.diff.y - LeanTween.easeOutBounce(0, this.diff.y, d-val) + this.from.y, 
+			this.diff.z - LeanTween.easeOutBounce(0, this.diff.z, d-val) + this.from.z);
+	}
+
+	private Vector3 easeOutBounce(){
+		val = ratioPassed;
+		val /= 1f;
+		if (val < (1 / 2.75f)){
+			return this.diff * (7.5625f * val * val) + this.from;
+		}else if (val < (2 / 2.75f)){
+			val -= (1.5f / 2.75f);
+			return this.diff * (7.5625f * (val) * val + .75f) + this.from;
+		}else if (val < (2.5 / 2.75)){
+			val -= (2.25f / 2.75f);
+			return this.diff * (7.5625f * (val) * val + .9375f) + this.from;
+		}else{
+			val -= (2.625f / 2.75f);
+			return this.diff * (7.5625f * (val) * val + .984375f) + this.from;
+		}
+	}
+
+	private Vector3 easeInOutBounce(){
+		float d = 1f;
+		val = this.ratioPassed * 2f;
+		if (val < d/2){
+			return new Vector3(LeanTween.easeInBounce(0, this.diff.x, val) * 0.5f + this.from.x, 
+				LeanTween.easeInBounce(0, this.diff.y, val) * 0.5f + this.from.y, 
+				LeanTween.easeInBounce(0, this.diff.z, val) * 0.5f + this.from.z);
+		}else return new Vector3(LeanTween.easeOutBounce(0, this.diff.x, val-d) * 0.5f + this.diffDiv2.x + this.from.x,
+			LeanTween.easeOutBounce(0, this.diff.y, val-d) * 0.5f + this.diffDiv2.y + this.from.y,
+			LeanTween.easeOutBounce(0, this.diff.z, val-d) * 0.5f + this.diffDiv2.z + this.from.z);
+	}
+
+	private Vector3 easeInBack(){
+		val = this.ratioPassed;
+		val /= 1;
+		float s = 1.70158f * this.overshoot;
+		return this.diff * (val) * val * ((s + 1) * val - s) + this.from;
+	}
+
+	private Vector3 easeOutBack(){
+		float s = 1.70158f * this.overshoot;
+		val = (this.ratioPassed / 1) - 1;
+		val = ((val) * val * ((s + 1) * val + s) + 1);
+		return this.diff * val + this.from;
+	}
+
+	private Vector3 easeInOutBack(){
+		float s = 1.70158f * this.overshoot;
+		val = this.ratioPassed * 2f;
+		if ((val) < 1){
+			s *= (1.525f) * overshoot;
+			return this.diffDiv2 * (val * val * (((s) + 1) * val - s)) + this.from;
+		}
+		val -= 2;
+		s *= (1.525f) * overshoot;
+		val = ((val) * val * (((s) + 1) * val + s) + 2);
+		return this.diffDiv2 * val + this.from;
+	}
+
+	private Vector3 easeInElastic(){
+		return new Vector3(LeanTween.easeInElastic(this.from.x,this.to.x,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeInElastic(this.from.y,this.to.y,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeInElastic(this.from.z,this.to.z,this.ratioPassed,this.overshoot,this.period));
+	}		
+
+	private Vector3 easeOutElastic(){
+		return new Vector3(LeanTween.easeOutElastic(this.from.x,this.to.x,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeOutElastic(this.from.y,this.to.y,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeOutElastic(this.from.z,this.to.z,this.ratioPassed,this.overshoot,this.period));
+	}
+
+	private Vector3 easeInOutElastic()
+	{
+		return new Vector3(LeanTween.easeInOutElastic(this.from.x,this.to.x,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeInOutElastic(this.from.y,this.to.y,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeInOutElastic(this.from.z,this.to.z,this.ratioPassed,this.overshoot,this.period));
 	}
 
 	/**
@@ -1360,12 +1492,12 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public LTDescr setRect( LTRect rect ){
-		this.ltRect = rect;
+		this._optional.ltRect = rect;
 		return this;
 	}
 
 	public LTDescr setRect( Rect rect ){
-		this.ltRect = new LTRect(rect);
+		this._optional.ltRect = new LTRect(rect);
 		return this;
 	}
 

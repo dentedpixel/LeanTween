@@ -12,6 +12,8 @@ public class LTDescrOptional  {
 	public LTSpline spline { get; set; }
 	public AnimationCurve animationCurve;
 
+	public LTRect ltRect { get; set; } // maybe get rid of this eventually
+
 	public Action<float> onUpdateFloat { get; set; }
 	public Action<float,float> onUpdateFloatRatio { get; set; }
 	public Action<float,object> onUpdateFloatObject { get; set; }
