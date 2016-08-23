@@ -287,6 +287,7 @@ public class LTDescrImpl : LTDescr {
 				this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 				break;
 			case TweenAction.CALLBACK:
+				this.easeInternal = moveInternal; // doesn't really do anything
 				break;
 			case TweenAction.CALLBACK_COLOR:
 				this.diff = new Vector3(1.0f,0.0f,0.0f);
@@ -433,6 +434,10 @@ public class LTDescrImpl : LTDescr {
 //		Debug.Log("diffDiv2 x:"+this.diffDiv2.x+" y:"+this.diffDiv2.y+" z:"+this.diffDiv2.z);
 	}
 
+	private void callbackInternal(){
+
+	}
+
 	public bool update2(){
 		isTweenFinished = false;
 
@@ -470,20 +475,20 @@ public class LTDescrImpl : LTDescr {
 				this.easeInternal();
 
 				if(this.hasUpdateCallback){
-//					if(this._optional.onUpdateFloat!=null){
-//						this._optional.onUpdateFloat(val);
-//					}
-//					if (this._optional.onUpdateFloatRatio != null){
-//						this._optional.onUpdateFloatRatio(val,ratioPassed);
-//					}else if(this._optional.onUpdateFloatObject!=null){
-//						this._optional.onUpdateFloatObject(val, this._optional.onUpdateParam);
-//					}else if(this._optional.onUpdateVector3Object!=null){
-//						this._optional.onUpdateVector3Object(newVect, this._optional.onUpdateParam);
-//					}else if(this._optional.onUpdateVector3!=null){
-//						this._optional.onUpdateVector3(newVect);
-//					}else if(this._optional.onUpdateVector2!=null){
-//						this._optional.onUpdateVector2(new Vector2(newVect.x,newVect.y));
-//					}
+					if(this._optional.onUpdateFloat!=null){
+						this._optional.onUpdateFloat(val);
+					}
+					if (this._optional.onUpdateFloatRatio != null){
+						this._optional.onUpdateFloatRatio(val,ratioPassed);
+					}else if(this._optional.onUpdateFloatObject!=null){
+						this._optional.onUpdateFloatObject(val, this._optional.onUpdateParam);
+					}else if(this._optional.onUpdateVector3Object!=null){
+						this._optional.onUpdateVector3Object(newVect, this._optional.onUpdateParam);
+					}else if(this._optional.onUpdateVector3!=null){
+						this._optional.onUpdateVector3(newVect);
+					}else if(this._optional.onUpdateVector2!=null){
+						this._optional.onUpdateVector2(new Vector2(newVect.x,newVect.y));
+					}
 				}
 			}else{
 				this.delay -= dt;
@@ -709,67 +714,67 @@ public class LTDescrImpl : LTDescr {
 
 		switch( easeType ){
 			case LeanTweenType.linear:
-				val = this.from.x + this.diff.x * ratioPassed; break;
+				setEaseLinear(); break;
 			case LeanTweenType.easeOutQuad:
-				val = LeanTween.easeOutQuadOpt(this.from.x, this.diff.x, ratioPassed); break;
+				setEaseOutQuad(); break;
 			case LeanTweenType.easeInQuad:
-				val = LeanTween.easeInQuadOpt(this.from.x, this.diff.x, ratioPassed); break;
+				setEaseInQuad(); break;
 			case LeanTweenType.easeInOutQuad:
 				setEaseInOutQuad(); break;
 			case LeanTweenType.easeInCubic:
-				val = LeanTween.easeInCubic(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInCubic();break;
 			case LeanTweenType.easeOutCubic:
-				val = LeanTween.easeOutCubic(this.from.x, this.to.x, ratioPassed); break;
+				setEaseOutCubic(); break;
 			case LeanTweenType.easeInOutCubic:
-				val = LeanTween.easeInOutCubic(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInOutCubic(); break;
 			case LeanTweenType.easeInQuart:
-				val = LeanTween.easeInQuart(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInQuart(); break;
 			case LeanTweenType.easeOutQuart:
-				val = LeanTween.easeOutQuart(this.from.x, this.to.x, ratioPassed); break;
+				setEaseOutQuart(); break;
 			case LeanTweenType.easeInOutQuart:
-				val = LeanTween.easeInOutQuart(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInOutQuart(); break;
 			case LeanTweenType.easeInQuint:
-				val = LeanTween.easeInQuint(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInQuint(); break;
 			case LeanTweenType.easeOutQuint:
-				val = LeanTween.easeOutQuint(this.from.x, this.to.x, ratioPassed); break;
+				setEaseOutQuint(); break;
 			case LeanTweenType.easeInOutQuint:
-				val = LeanTween.easeInOutQuint(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInOutQuint(); break;
 			case LeanTweenType.easeInSine:
-				val = LeanTween.easeInSine(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInSine(); break;
 			case LeanTweenType.easeOutSine:
-				val = LeanTween.easeOutSine(this.from.x, this.to.x, ratioPassed); break;
+				setEaseOutSine(); break;
 			case LeanTweenType.easeInOutSine:
-				val = LeanTween.easeInOutSine(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInOutSine(); break;
 			case LeanTweenType.easeInExpo:
-				val = LeanTween.easeInExpo(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInExpo(); break;
 			case LeanTweenType.easeOutExpo:
-				val = LeanTween.easeOutExpo(this.from.x, this.to.x, ratioPassed); break;
+				setEaseOutExpo(); break;
 			case LeanTweenType.easeInOutExpo:
-				val = LeanTween.easeInOutExpo(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInOutExpo(); break;
 			case LeanTweenType.easeInCirc:
-				val = LeanTween.easeInCirc(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInCirc(); break;
 			case LeanTweenType.easeOutCirc:
-				val = LeanTween.easeOutCirc(this.from.x, this.to.x, ratioPassed); break;
+				setEaseOutCirc(); break;
 			case LeanTweenType.easeInOutCirc:
-				val = LeanTween.easeInOutCirc(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInOutCirc(); break;
 			case LeanTweenType.easeInBounce:
-				val = LeanTween.easeInBounce(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInBounce(); break;
 			case LeanTweenType.easeOutBounce:
-				val = LeanTween.easeOutBounce(this.from.x, this.to.x, ratioPassed); break;
+				setEaseOutBounce(); break;
 			case LeanTweenType.easeInOutBounce:
-				val = LeanTween.easeInOutBounce(this.from.x, this.to.x, ratioPassed); break;
+				setEaseInOutBounce(); break;
 			case LeanTweenType.easeInBack:
-				val = LeanTween.easeInBack(this.from.x, this.to.x, ratioPassed, this.overshoot); break;
+				setEaseInBack(); break;
 			case LeanTweenType.easeOutBack:
-				val = LeanTween.easeOutBack(this.from.x, this.to.x, ratioPassed, this.overshoot); break;
+				setEaseOutBack(); break;
 			case LeanTweenType.easeInOutBack:
-				val = LeanTween.easeInOutBack(this.from.x, this.to.x, ratioPassed, this.overshoot); break;
+				setEaseInOutBack();  break;
 			case LeanTweenType.easeInElastic:
-				val = LeanTween.easeInElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period); break;
+				setEaseInElastic();  break;
 			case LeanTweenType.easeOutElastic:
-				val = LeanTween.easeOutElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period); break;
+				setEaseOutElastic(); break;
 			case LeanTweenType.easeInOutElastic:
-				val = LeanTween.easeInOutElastic(this.from.x, this.to.x, ratioPassed, this.overshoot, this.period); break;
+				setEaseInOutElastic(); break;
 			case LeanTweenType.punch:
 			case LeanTweenType.easeShake:
 				if(this.tweenType==LeanTweenType.punch){
@@ -783,19 +788,75 @@ public class LTDescrImpl : LTDescr {
 			case LeanTweenType.easeSpring:
 				val = LeanTween.spring(this.from.x, this.to.x, ratioPassed); break;
 			default:
-				{
-					val = this.from.x + this.diff.x * ratioPassed; break;
-				}
+				setEaseLinear(); break;
 			}
 
 		return this;
 	}
 
-	public LTDescr setEaseInOutQuad(){
-		this.tweenType = LeanTweenType.easeInOutQuad;
-		this.easeMethod = this.easeInOutQuad;
-		return this;
-	}
+	public LTDescr setEaseLinear(){ this.tweenType = LeanTweenType.linear; this.easeMethod = this.easeLinear; return this; }
+
+	public LTDescr setEaseInQuad(){ this.tweenType = LeanTweenType.easeInQuad; this.easeMethod = this.easeInQuad; return this; }
+
+	public LTDescr setEaseOutQuad(){ this.tweenType = LeanTweenType.easeOutQuad; this.easeMethod = this.easeOutQuad; return this; }
+
+	public LTDescr setEaseInOutQuad(){ this.tweenType = LeanTweenType.easeInOutQuad; this.easeMethod = this.easeInOutQuad; return this;}
+
+	public LTDescr setEaseInCubic(){ this.tweenType = LeanTweenType.easeInCubic; this.easeMethod = this.easeInCubic; return this; }
+
+	public LTDescr setEaseOutCubic(){ this.tweenType = LeanTweenType.easeOutCubic; this.easeMethod = this.easeOutCubic; return this; }
+
+	public LTDescr setEaseInOutCubic(){ this.tweenType = LeanTweenType.easeInOutCubic; this.easeMethod = this.easeInOutCubic; return this; }
+
+	public LTDescr setEaseInQuart(){ this.tweenType = LeanTweenType.easeInQuart; this.easeMethod = this.easeInQuart; return this; }
+
+	public LTDescr setEaseOutQuart(){ this.tweenType = LeanTweenType.easeOutQuart; this.easeMethod = this.easeOutQuart; return this; }
+
+	public LTDescr setEaseInOutQuart(){ this.tweenType = LeanTweenType.easeInOutQuart; this.easeMethod = this.easeInOutQuart; return this; }
+
+	public LTDescr setEaseInQuint(){ this.tweenType = LeanTweenType.easeInQuint; this.easeMethod = this.easeInQuint; return this; }
+
+	public LTDescr setEaseOutQuint(){ this.tweenType = LeanTweenType.easeOutQuint; this.easeMethod = this.easeOutQuint; return this; }
+
+	public LTDescr setEaseInOutQuint(){ this.tweenType = LeanTweenType.easeInOutQuint; this.easeMethod = this.easeInOutQuint; return this; }
+
+	public LTDescr setEaseInSine(){ this.tweenType = LeanTweenType.easeInSine; this.easeMethod = this.easeInSine; return this; }
+
+	public LTDescr setEaseOutSine(){ this.tweenType = LeanTweenType.easeOutSine; this.easeMethod = this.easeOutSine; return this; }
+
+	public LTDescr setEaseInOutSine(){ this.tweenType = LeanTweenType.easeInOutSine; this.easeMethod = this.easeInOutSine; return this; }
+
+	public LTDescr setEaseInExpo(){ this.tweenType = LeanTweenType.easeInExpo; this.easeMethod = this.easeInExpo; return this; }
+
+	public LTDescr setEaseOutExpo(){ this.tweenType = LeanTweenType.easeOutExpo; this.easeMethod = this.easeOutExpo; return this; }
+
+	public LTDescr setEaseInOutExpo(){ this.tweenType = LeanTweenType.easeInOutExpo; this.easeMethod = this.easeInOutExpo; return this; }
+
+	public LTDescr setEaseInCirc(){ this.tweenType = LeanTweenType.easeInCirc; this.easeMethod = this.easeInCirc; return this; }
+
+	public LTDescr setEaseOutCirc(){ this.tweenType = LeanTweenType.easeOutCirc; this.easeMethod = this.easeOutCirc; return this; }
+
+	public LTDescr setEaseInOutCirc(){ this.tweenType = LeanTweenType.easeInOutCirc; this.easeMethod = this.easeInOutCirc; return this; }
+
+	public LTDescr setEaseInBounce(){ this.tweenType = LeanTweenType.easeInBounce; this.easeMethod = this.easeInBounce; return this; }
+
+	public LTDescr setEaseOutBounce(){ this.tweenType = LeanTweenType.easeOutBounce; this.easeMethod = this.easeOutBounce; return this; }
+
+	public LTDescr setEaseInOutBounce(){ this.tweenType = LeanTweenType.easeInOutBounce; this.easeMethod = this.easeInOutBounce; return this; }
+
+	public LTDescr setEaseInBack(){ this.tweenType = LeanTweenType.easeInBack; this.easeMethod = this.easeInBack; return this; }
+
+	public LTDescr setEaseOutBack(){ this.tweenType = LeanTweenType.easeOutBack; this.easeMethod = this.easeOutBack; return this; }
+
+	public LTDescr setEaseInOutBack(){ this.tweenType = LeanTweenType.easeInOutBack; this.easeMethod = this.easeInOutBack; return this; }
+
+	public LTDescr setEaseInElastic(){ this.tweenType = LeanTweenType.easeInElastic; this.easeMethod = this.easeInElastic; return this; }
+
+	public LTDescr setEaseOutElastic(){ this.tweenType = LeanTweenType.easeOutElastic; this.easeMethod = this.easeOutElastic; return this; }
+
+	public LTDescr setEaseInOutElastic(){ this.tweenType = LeanTweenType.easeInOutElastic; this.easeMethod = this.easeInOutElastic; return this; }
+
+
 
 	private Vector3 tweenOnCurve(){
 		return	new Vector3(this.from.x + (this.diff.x) * this._optional.animationCurve.Evaluate(ratioPassed),
@@ -824,7 +885,7 @@ public class LTDescrImpl : LTDescr {
 		return new Vector3(-this.diff.x * val + this.from.x, -this.diff.y * val + this.from.y, -this.diff.z * val + this.from.z);
 	}
 
-	private Vector3 linear(){
+	private Vector3 easeLinear(){
 		return new Vector3(this.from.x+this.diff.x*this.ratioPassed, this.from.y+this.diff.y*this.ratioPassed, this.from.z+this.diff.z*this.ratioPassed);
 	}
 
@@ -848,6 +909,11 @@ public class LTDescrImpl : LTDescr {
 		val -= 2f;
 		val = val * val * val + 2f;
 		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y,this.diffDiv2.z * val + this.from.z);
+	}
+
+	private Vector3 easeInQuart(){
+		val = this.ratioPassed * this.ratioPassed * this.ratioPassed * this.ratioPassed;
+		return diff * val + this.from;
 	}
 
 	private Vector3 easeOutQuart(){

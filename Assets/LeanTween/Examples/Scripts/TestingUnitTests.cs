@@ -139,6 +139,16 @@ namespace DentedPixel.LTExamples{
 			LeanTween.moveX( zeroCube, 10f, 0f).setOnComplete( ()=>{
 				LeanTest.expect( zeroCube.transform.position.x == 10f, "ZERO TIME FINSHES CORRECTLY", "final x:"+ zeroCube.transform.position.x);
 			});
+
+			// Scale
+			// Value
+			// Rotate
+			// RotateAround
+			// Alpha
+			// Color
+			// OnUpdate
+			// OnStart
+
 			
 			StartCoroutine( timeBasedTesting() );
 		}
