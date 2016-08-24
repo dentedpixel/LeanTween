@@ -506,7 +506,11 @@ public class LTDescrImpl : LTDescr {
 
 		if(isTweenFinished){
 			this.loopCount--;
-			this.direction = 0f - this.direction;
+			if(this.loopType==LeanTweenType.pingPong){
+				this.direction = 0.0f-this.direction;
+			}else{
+				this.passed = Mathf.Epsilon;
+			}
 //			Debug.Log("this.loopCount:" + this.loopCount);
 
 //				if((this.loopCount<=0 && this.type==TweenAction.CALLBACK) || this.onCompleteOnRepeat){
