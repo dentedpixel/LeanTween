@@ -8,7 +8,7 @@ public class GeneralEasingTypes : MonoBehaviour {
 
 	void Start () {
 
-		string[] easeTypes = new string[]{"EaseInQuad","EaseOutQuad","EaseInOutQuad"};
+		string[] easeTypes = new string[]{"EaseLinear","EaseInQuad","EaseOutQuad","EaseInOutQuad"};
 	
 		for(int i = 0; i < easeTypes.Length; i++){
 			string easeName = easeTypes[i];

@@ -287,7 +287,7 @@ public class LTDescrImpl : LTDescr {
 				this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 				break;
 			case TweenAction.CALLBACK:
-				this.easeInternal = moveInternal; // doesn't really do anything
+				this.easeInternal = callbackInternal; // doesn't really do anything
 				break;
 			case TweenAction.CALLBACK_COLOR:
 				this.diff = new Vector3(1.0f,0.0f,0.0f);
@@ -435,7 +435,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	private void callbackInternal(){
-
+		val = easeMethod().x;
 	}
 
 	public bool update2(){
@@ -542,7 +542,7 @@ public class LTDescrImpl : LTDescr {
                 }else if(mat.HasProperty("_TintColor")){
                     Color col = mat.GetColor ("_TintColor");
                     mat.SetColor("_TintColor", new Color( col.r, col.g, col.b, val));
-                }
+				}
             }
         }
         if(useRecursion && transform.childCount>0){
@@ -885,12 +885,14 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	private Vector3 easeOutQuad(){
-		val = this.ratioPassed * (this.ratioPassed - 2);
-		return new Vector3(-this.diff.x * val + this.from.x, -this.diff.y * val + this.from.y, -this.diff.z * val + this.from.z);
+		val = this.ratioPassed;
+		val = val * (val - 2f);
+		return ((-this.diff) * val + this.from);
 	}
 
 	private Vector3 easeLinear(){
-		return new Vector3(this.from.x+this.diff.x*this.ratioPassed, this.from.y+this.diff.y*this.ratioPassed, this.from.z+this.diff.z*this.ratioPassed);
+		val = this.ratioPassed;
+		return new Vector3(this.from.x+this.diff.x*val, this.from.y+this.diff.y*val, this.from.z+this.diff.z*val);
 	}
 
 	private Vector3 easeInCubic(){
