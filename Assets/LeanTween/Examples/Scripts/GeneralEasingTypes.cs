@@ -8,13 +8,22 @@ public class GeneralEasingTypes : MonoBehaviour {
 
 	void Start () {
 
-		string[] easeTypes = new string[]{"EaseLinear","EaseInQuad","EaseOutQuad","EaseInOutQuad"};
+		string[] easeTypes = new string[]{"EaseLinear",
+			"EaseInQuad","EaseOutQuad","EaseInOutQuad",
+			"EaseInCubic","EaseOutCubic","EaseInOutCubic",
+			"EaseInQuart","EaseOutQuart","EaseInOutQuart",
+			"EaseInQuint","EaseOutQuint","EaseInOutQuint",
+			"EaseInSine","EaseOutSine","EaseInOutSine",
+			"EaseInExpo","EaseOutExpo","EaseInOutExpo",
+			"EaseInCirc","EaseOutCirc","EaseInOutCirc",
+			"EaseInBounce","EaseOutBounce","EaseInOutBounce",
+		};
 	
 		for(int i = 0; i < easeTypes.Length; i++){
 			string easeName = easeTypes[i];
 			Transform obj1 = GameObject.Find(easeName).transform.FindChild("Line");
 			float obj1val = 0f;
-			LTDescr lt = LeanTween.value( obj1.gameObject, 0f, 1f, 5f).setLoopCount(-1).setOnUpdate( (float val)=>{
+			LTDescr lt = LeanTween.value( obj1.gameObject, 0f, 1f, 5f).setLoopCount(-1).setLoopPingPong().setOnUpdate( (float val)=>{
 				Vector3 vec = obj1.localPosition;
 				vec.x = obj1val*lineDrawScale;
 				vec.y = val*lineDrawScale;

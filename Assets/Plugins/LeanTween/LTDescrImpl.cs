@@ -886,8 +886,8 @@ public class LTDescrImpl : LTDescr {
 
 	private Vector3 easeOutQuad(){
 		val = this.ratioPassed;
-		val = val * (val - 2f);
-		return ((-this.diff) * val + this.from);
+		val = -val * (val - 2f);
+		return (this.diff * val + this.from);
 	}
 
 	private Vector3 easeLinear(){
@@ -925,7 +925,7 @@ public class LTDescrImpl : LTDescr {
 	private Vector3 easeOutQuart(){
 		val = this.ratioPassed - 1f;
 		val = -(val * val * val * val - 1);
-		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y,this.diffDiv2.z * val + this.from.z);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y,this.diff.z * val + this.from.z);
 	}
 
 	private Vector3 easeInOutQuart(){
@@ -973,8 +973,8 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	private Vector3 easeInOutSine(){
-		val = 2 * (Mathf.Cos(Mathf.PI * this.ratioPassed / 1) - 1);
-		return new Vector3(-this.diff.x / val + this.from.x, -this.diff.y / val + this.from.y, -this.diff.z / val + this.from.z);
+		val = -(Mathf.Cos(Mathf.PI * this.ratioPassed / 1) - 1);
+		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
 	}
 
 	private Vector3 easeInExpo(){
@@ -1009,52 +1009,64 @@ public class LTDescrImpl : LTDescr {
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
 	}
 
+//	val /= .5f;
+//	end -= start;
+//	if (val < 1) return -end / 2 * (Mathf.Sqrt(1 - val * val) - 1) + start;
+//	val -= 2;
+//	return end / 2 * (Mathf.Sqrt(1 - val * val) + 1) + start;
+
 	private Vector3 easeInOutCirc(){
 		val = this.ratioPassed * 2f;
-		if (val < 1){
-			val = 2 * (Mathf.Sqrt(1 - val * val) - 1);
-			return new Vector3(-this.diff.x / val  + this.from.x, -this.diff.y / val  + this.from.y, -this.diff.z / val  + this.from.z);
+		if (val < 1f){
+			val = -(Mathf.Sqrt(1f - val * val) - 1f);
+			return new Vector3(this.diffDiv2.x * val  + this.from.x, this.diffDiv2.y * val  + this.from.y, this.diffDiv2.z * val  + this.from.z);
 		}
-		val -= 2;
-		val = 2 * (Mathf.Sqrt(1 - val * val) + 1);
-		return new Vector3(this.diff.x / val + this.from.x, this.diff.y / val + this.from.y, this.diff.z / val + this.from.z);
+		val -= 2f;
+		val = (Mathf.Sqrt(1f - val * val) + 1f);
+		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
 	}
 
 	private Vector3 easeInBounce(){
 		val = this.ratioPassed;
-		float d = 1f;
-		return new Vector3(this.diff.x - LeanTween.easeOutBounce(0, this.diff.x, d-val) + this.from.x, 
-			this.diff.y - LeanTween.easeOutBounce(0, this.diff.y, d-val) + this.from.y, 
-			this.diff.z - LeanTween.easeOutBounce(0, this.diff.z, d-val) + this.from.z);
+		val = 1f - val;
+		return new Vector3(this.diff.x - LeanTween.easeOutBounce(0, this.diff.x, val) + this.from.x, 
+			this.diff.y - LeanTween.easeOutBounce(0, this.diff.y, val) + this.from.y, 
+			this.diff.z - LeanTween.easeOutBounce(0, this.diff.z, val) + this.from.z);
 	}
 
 	private Vector3 easeOutBounce(){
 		val = ratioPassed;
-		val /= 1f;
 		if (val < (1 / 2.75f)){
-			return this.diff * (7.5625f * val * val) + this.from;
+			val = (7.5625f * val * val);
+			return this.diff * val + this.from;
 		}else if (val < (2 / 2.75f)){
 			val -= (1.5f / 2.75f);
-			return this.diff * (7.5625f * (val) * val + .75f) + this.from;
+			val = (7.5625f * (val) * val + .75f);
+			return this.diff * val + this.from;
 		}else if (val < (2.5 / 2.75)){
 			val -= (2.25f / 2.75f);
-			return this.diff * (7.5625f * (val) * val + .9375f) + this.from;
+			val = (7.5625f * (val) * val + .9375f);
+			return this.diff * val + this.from;
 		}else{
 			val -= (2.625f / 2.75f);
-			return this.diff * (7.5625f * (val) * val + .984375f) + this.from;
+			val = 7.5625f * (val) * val + .984375f;
+			return this.diff * val + this.from;
 		}
 	}
-
+		
 	private Vector3 easeInOutBounce(){
-		float d = 1f;
 		val = this.ratioPassed * 2f;
-		if (val < d/2){
+		if (val < 1f){
 			return new Vector3(LeanTween.easeInBounce(0, this.diff.x, val) * 0.5f + this.from.x, 
 				LeanTween.easeInBounce(0, this.diff.y, val) * 0.5f + this.from.y, 
 				LeanTween.easeInBounce(0, this.diff.z, val) * 0.5f + this.from.z);
-		}else return new Vector3(LeanTween.easeOutBounce(0, this.diff.x, val-d) * 0.5f + this.diffDiv2.x + this.from.x,
-			LeanTween.easeOutBounce(0, this.diff.y, val-d) * 0.5f + this.diffDiv2.y + this.from.y,
-			LeanTween.easeOutBounce(0, this.diff.z, val-d) * 0.5f + this.diffDiv2.z + this.from.z);
+		}else {
+			val = val - 1f;
+			return new Vector3(LeanTween.easeOutBounce(0, this.diff.x, val) * 0.5f + this.diffDiv2.x + this.from.x,
+			LeanTween.easeOutBounce(0, this.diff.y, val) * 0.5f + this.diffDiv2.y + this.from.y,
+			LeanTween.easeOutBounce(0, this.diff.z, val) * 0.5f + this.diffDiv2.z + this.from.z);
+
+		}
 	}
 
 	private Vector3 easeInBack(){
