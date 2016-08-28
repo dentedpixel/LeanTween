@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public class LTDescrOptional  {
 
+	public Transform toTrans { get; set; }
 	public Vector3 point { get; set; }
 	public Vector3 axis { get; set; }
 	public Quaternion origRotation { get; set; }
@@ -58,13 +59,5 @@ public class LTDescrOptional  {
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
 		this.onStart = null;
-
-//		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-//		this.rectTransform = null;
-//		this.uiText = null;
-//		this.uiImage = null;
-//		this.sprites = null;
-//		#endif
 	}
-
 }

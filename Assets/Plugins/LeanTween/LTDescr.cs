@@ -26,7 +26,6 @@ public interface LTDescr
 	float period { get; set; }
 	bool destroyOnComplete { get; set; }
 	Transform trans { get; set; }
-	Transform toTrans { get; set; }
 	Vector3 from { get; set; }
 	Vector3 to { get; set; }
 

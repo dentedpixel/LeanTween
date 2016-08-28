@@ -37,6 +37,7 @@ public class LTDescrImpl : LTDescr {
 	public bool useFrames { get; set; }
 	public bool useManualTime { get; set; }
 	public bool hasInitiliazed { get; set; }
+	internal bool hasExtraOnCompletes;
 	public bool hasPhysics { get; set; }
 	public bool onCompleteOnRepeat { get; set; }
 	public bool onCompleteOnStart { get; set; }
@@ -56,7 +57,6 @@ public class LTDescrImpl : LTDescr {
 	public float period { get; set; }
 	public bool destroyOnComplete { get; set; }
 	public Transform trans { get; set; }
-	public Transform toTrans { get; set; }
 	public LTRect ltRect { get; set; }
 	internal Vector3 fromInternal;
 	public Vector3 from { get { return this.fromInternal; } set { this.fromInternal = value; } }
@@ -139,7 +139,7 @@ public class LTDescrImpl : LTDescr {
 		this.toggle = this.useRecursion = true;
         this.trans = null;
 		this.passed = this.delay = this.lastVal = 0.0f;
-		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = false;
+		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = this.hasExtraOnCompletes = false;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
@@ -175,38 +175,37 @@ public class LTDescrImpl : LTDescr {
 				this.easeInternal = moveInternal;
 				break;
 			case TweenAction.MOVE_TO_TRANSFORM:
-				this.from = trans.position; break;
+				this.from = trans.position; 
+				this.easeInternal = moveToTransform; break;
 			case TweenAction.MOVE_X:
-				this.fromInternal.x = trans.position.x; break;
+				this.fromInternal.x = trans.position.x; 
+				this.easeInternal = moveX; break;
 			case TweenAction.MOVE_Y:
-				this.fromInternal.x = trans.position.y; break;
+				this.fromInternal.x = trans.position.y;
+				this.easeInternal = moveY; break;
 			case TweenAction.MOVE_Z:
-				this.fromInternal.x = trans.position.z; break;
+				this.fromInternal.x = trans.position.z; 
+				this.easeInternal = moveZ; break;
 			case TweenAction.MOVE_LOCAL_X:
-				this.fromInternal.x = trans.localPosition.x; break;
+				this.fromInternal.x = trans.localPosition.x;
+				this.easeInternal = moveLocalX; break;
 			case TweenAction.MOVE_LOCAL_Y:
-				this.fromInternal.x = trans.localPosition.y; break;
+				this.easeInternal = moveLocalY; break;
 			case TweenAction.MOVE_LOCAL_Z:
-				this.fromInternal.x = trans.localPosition.z; break;
+				this.easeInternal = moveLocalZ; break;
 			case TweenAction.SCALE_X:
-				this.fromInternal.x = trans.localScale.x; break;
+				this.fromInternal.x = trans.localScale.x;
+				this.easeInternal = scaleX; break;
 			case TweenAction.SCALE_Y:
-				this.fromInternal.x = trans.localScale.y; break;
+				this.fromInternal.x = trans.localScale.y; 
+				this.easeInternal = scaleY; break;
 			case TweenAction.SCALE_Z:
-				this.fromInternal.x = trans.localScale.z; break;
+				this.fromInternal.x = trans.localScale.z;
+				this.easeInternal = scaleZ; break;
 			case TweenAction.ALPHA:
 				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-					if(trans.gameObject.renderer){
-						this.fromInternal.x = trans.gameObject.renderer.material.color.a;
-					}else if(trans.childCount>0){
-						foreach (Transform child in trans) {
-							if(child.gameObject.renderer!=null){
-								Color col = child.gameObject.renderer.material.color;
-								this.fromInternal.x = col.a;
-								break;
-	    					}
-						}
-					}
+					if(trans.gameObject.renderer){ this.fromInternal.x = trans.gameObject.renderer.material.color.a; }else if(trans.childCount>0){ foreach (Transform child in trans) { if(child.gameObject.renderer!=null){ Color col = child.gameObject.renderer.material.color; this.fromInternal.x = col.a; break; }}}
+					this.easeInternal = this.alpha;
 					break;	
 				#else
 					SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
@@ -228,12 +227,15 @@ public class LTDescrImpl : LTDescr {
 							}
 						}
 					}
+					this.easeInternal = this.alpha;
 					break;
 				#endif
 			case TweenAction.MOVE_LOCAL:
 				this.from = trans.localPosition; break;
 			case TweenAction.MOVE_CURVED:
+				this.easeInternal = moveCurved; break;
 			case TweenAction.MOVE_CURVED_LOCAL:
+				this.easeInternal = moveCurvedLocal; break;
 			case TweenAction.MOVE_SPLINE:
 				this.easeInternal = moveSpline;
 				break;
@@ -244,69 +246,81 @@ public class LTDescrImpl : LTDescr {
 			case TweenAction.ROTATE:
 				this.from = trans.eulerAngles; 
 				this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
+				this.easeInternal = rotate;
 				break;
 			case TweenAction.ROTATE_X:
 				this.fromInternal.x = trans.eulerAngles.x; 
 				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
+				this.easeInternal = rotateX;
 				break;
 			case TweenAction.ROTATE_Y:
 				this.fromInternal.x = trans.eulerAngles.y; 
 				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
+				this.easeInternal = rotateY;
 				break;
 			case TweenAction.ROTATE_Z:
 				this.fromInternal.x = trans.eulerAngles.z; 
 				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
+				this.easeInternal = rotateZ;
 				break;
 			case TweenAction.ROTATE_AROUND:
-				this.lastVal = 0.0f; // ["last"]
-				this.fromInternal.x = 0.0f;
-				this._optional.origRotation = trans.rotation; // optional["origRotation"
+				this.lastVal = 0.0f;
+				this.fromInternal.x = 0f;
+				this._optional.origRotation = trans.rotation;
+				this.easeInternal = this.rotateAround;
 				break;
 			case TweenAction.ROTATE_AROUND_LOCAL:
-				this.lastVal = 0.0f; // optional["last"]
-				this.fromInternal.x = 0.0f;
-				this._optional.origRotation = trans.localRotation; // optional["origRotation"
+				this.lastVal = 0.0f;
+				this.fromInternal.x = 0f;
+				this._optional.origRotation = trans.localRotation;
+				this.easeInternal = this.rotateAroundLocal;
 				break;
 			case TweenAction.ROTATE_LOCAL:
 				this.from = trans.localEulerAngles; 
 				this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
+				this.easeInternal = rotateLocal;
 				break;
 			case TweenAction.SCALE:
-				this.from = trans.localScale; break;
+				this.from = trans.localScale; 
+				this.easeInternal = this.scale; break;
 			case TweenAction.GUI_MOVE:
-				this.from = new Vector3(this._optional.ltRect.rect.x, this._optional.ltRect.rect.y, 0); break;
+				this.from = new Vector3(this._optional.ltRect.rect.x, this._optional.ltRect.rect.y, 0);
+				this.easeInternal = this.guiMove; break;
 			case TweenAction.GUI_MOVE_MARGIN:
-				this.from = new Vector2(this._optional.ltRect.margin.x, this._optional.ltRect.margin.y); break;
+				this.from = new Vector2(this._optional.ltRect.margin.x, this._optional.ltRect.margin.y); 
+				this.easeInternal = this.guiMoveMargin; break;
 			case TweenAction.GUI_SCALE:
-				this.from = new Vector3(this._optional.ltRect.rect.width, this._optional.ltRect.rect.height, 0); break;
+				this.from = new Vector3(this._optional.ltRect.rect.width, this._optional.ltRect.rect.height, 0); 
+				this.easeInternal = this.guiScale; break;
 			case TweenAction.GUI_ALPHA:
-				this.fromInternal.x = this._optional.ltRect.alpha; break;
+				this.fromInternal.x = this._optional.ltRect.alpha; 
+				this.easeInternal = this.guiAlpha; break;
 			case TweenAction.GUI_ROTATE:
 				if(this._optional.ltRect.rotateEnabled==false){
 					this._optional.ltRect.rotateEnabled = true;
 					this._optional.ltRect.resetForRotation();
 				}
 				
-				this.fromInternal.x = this._optional.ltRect.rotation; break;
+				this.fromInternal.x = this._optional.ltRect.rotation; 
+				this.easeInternal = this.guiRotate; break;
 			case TweenAction.ALPHA_VERTEX:
 				this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
-				break;
+				this.easeInternal = this.alphaVertex; break;
 			case TweenAction.CALLBACK:
-				this.easeInternal = callbackInternal; // doesn't really do anything
+				this.easeInternal = callbackInternal; 
 				break;
 			case TweenAction.CALLBACK_COLOR:
 				this.diff = new Vector3(1.0f,0.0f,0.0f);
+				this.easeInternal = this.color;
 				break;
 			case TweenAction.COLOR:
 				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 					if(trans.gameObject.renderer){
-						Color col = trans.gameObject.renderer.material.color;
-						this.setFromColor( col );
+						this.setFromColor( trans.gameObject.renderer.material.color );
 					}else if(trans.childCount>0){
 						foreach (Transform child in trans) {
 							if(child.gameObject.renderer!=null){
-								Color col = child.gameObject.renderer.material.color;
-								this.setFromColor( col );
+								this.setFromColor( child.gameObject.renderer.material.color );
 								break;
 	    					}
 						}
@@ -314,8 +328,7 @@ public class LTDescrImpl : LTDescr {
 				#else
 					SpriteRenderer renColor = trans.gameObject.GetComponent<SpriteRenderer>();
                     if(renColor!=null){
-                        Color col = renColor.color;
-                        this.setFromColor( col );
+						this.setFromColor( renColor.color );
                     }else{
                         if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
 							Color col = trans.gameObject.GetComponent<Renderer>().material.color;
@@ -334,15 +347,13 @@ public class LTDescrImpl : LTDescr {
 						}
                     }
 				#endif
+				this.easeInternal = this.color;
 				break;
 			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 			case TweenAction.CANVAS_ALPHA:
 				this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-                if(this.uiImage != null){
-	                this.fromInternal.x = this.uiImage.color.a;
-                }else{
-                	this.fromInternal.x = 1f;
-                }
+				this.fromInternal.x = this.uiImage != null ? this.uiImage.color.a : 1f;
+				this.easeInternal = this.canvasAlpha;
                 break;
             case TweenAction.CANVAS_COLOR:
                 this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
@@ -351,45 +362,52 @@ public class LTDescrImpl : LTDescr {
 	            }else{
                 	this.setFromColor( Color.white );
 				}
+				this.easeInternal = this.canvasColor;
                 break;
             case TweenAction.CANVASGROUP_ALPHA:
 				this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
+				this.easeInternal = this.canvasGroupAlpha;
                 break;
             case TweenAction.TEXT_ALPHA:
                 this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                if (this.uiText != null){
-                    this.fromInternal.x = this.uiText.color.a;
-                }else{
-                	this.fromInternal.x = 1f;
-                }
+				this.fromInternal.x = this.uiText != null ? this.uiText.color.a : 1f;
+
+				this.easeInternal = this.canvasTextAlpha;
                 break;
             case TweenAction.TEXT_COLOR:
                 this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                if (this.uiText != null){
-                    this.setFromColor( this.uiText.color );
-                }else{
-                	this.setFromColor( Color.white );
-                }
+				this.setFromColor( this.uiText != null ? this.uiText.color : Color.white );
+
+				this.easeInternal = this.canvasTextColor;
                 break;
 			case TweenAction.CANVAS_MOVE:
-				this.fromInternal = this.rectTransform.anchoredPosition3D; break;
+				this.fromInternal = this.rectTransform.anchoredPosition3D; 
+				this.easeInternal = this.canvasMove; break;
 			case TweenAction.CANVAS_MOVE_X:
-				this.fromInternal.x = this.rectTransform.anchoredPosition3D.x; break;
+				this.fromInternal.x = this.rectTransform.anchoredPosition3D.x;  
+				this.easeInternal = this.canvasMoveX; break;
 			case TweenAction.CANVAS_MOVE_Y:
-				this.fromInternal.x = this.rectTransform.anchoredPosition3D.y; break;
+				this.fromInternal.x = this.rectTransform.anchoredPosition3D.y;  
+				this.easeInternal = this.canvasMoveY; break;
 			case TweenAction.CANVAS_MOVE_Z:
-				this.fromInternal.x = this.rectTransform.anchoredPosition3D.z; break;
+				this.fromInternal.x = this.rectTransform.anchoredPosition3D.z;  
+				this.easeInternal = this.canvasMoveZ; break;
 			case TweenAction.CANVAS_ROTATEAROUND:
+				this.easeInternal = this.canvasRotateAround; 
+				break;
 			case TweenAction.CANVAS_ROTATEAROUND_LOCAL:
 				this.lastVal = 0.0f;
 				this.fromInternal.x = 0.0f;
 				this._optional.origRotation = this.rectTransform.rotation;
+				this.easeInternal = this.canvasRotateAroundLocal;
 				break;
 			case TweenAction.CANVAS_SCALE:
-				this.from = this.rectTransform.localScale; break;
+				this.from = this.rectTransform.localScale; 
+				this.easeInternal = this.canvasScale; break;
 			case TweenAction.CANVAS_PLAYSPRITE:
 				this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
 				this.fromInternal.x = 0f;
+				this.easeInternal = this.canvasPlaySprite;
 				break;
 			#endif
 		}
@@ -430,7 +448,6 @@ public class LTDescrImpl : LTDescr {
     public static float dt;
     private static bool isTweenFinished;
 
-	private static bool hasExtraOnCompletes = false;
 	private static bool usesNormalDt = true;
 
 	private void moveInternal(){
@@ -467,6 +484,226 @@ public class LTDescrImpl : LTDescr {
 		}
 	}
 
+	private void moveCurved(){
+		if(this._optional.path.orientToPath){
+			if(this._optional.path.orientToPath2d){
+				this._optional.path.place2d( trans, val );
+			}else{
+				this._optional.path.place( trans, val );
+			}
+		}else{
+			trans.position = this._optional.path.point( val );
+		}
+	}
+
+	private void moveCurvedLocal(){
+		if(this._optional.path.orientToPath){
+			if(this._optional.path.orientToPath2d){
+				this._optional.path.placeLocal2d( trans, val );
+			}else{
+				this._optional.path.placeLocal( trans, val );
+			}
+		}else{
+			trans.localPosition = this._optional.path.point( val );
+		}
+	}
+
+	private void moveToTransform(){
+		this.to = this._optional.toTrans.position;
+		this.diff = this.to - this.from;
+		this.diffDiv2 = this.diff * 0.5f;
+
+		this.trans.position = easeMethod();
+	}
+
+	private void moveX(){ trans.position=new Vector3( easeMethod().x,trans.position.y,trans.position.z); }
+	private void moveY(){ trans.position=new Vector3( trans.position.x,easeMethod().x,trans.position.z); }
+	private void moveZ(){ trans.position=new Vector3( trans.position.x,trans.position.y,easeMethod().x); }
+
+	private void moveLocalX(){ trans.localPosition=new Vector3( easeMethod().x,trans.localPosition.y,trans.localPosition.z); }
+	private void moveLocalY(){ trans.localPosition=new Vector3( trans.localPosition.x,easeMethod().x,trans.localPosition.z); }
+	private void moveLocalZ(){ trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,easeMethod().x); }
+
+	private void scale(){ trans.localScale = easeMethod(); }
+	private void scaleX(){ trans.localScale=new Vector3( easeMethod().x,trans.localScale.y,trans.localScale.z); }
+	private void scaleY(){ trans.localScale=new Vector3( trans.localScale.x,easeMethod().x,trans.localScale.z); }
+	private void scaleZ(){ trans.localScale=new Vector3( trans.localScale.x,trans.localScale.y,easeMethod().x); }
+
+	private void rotateX(){ trans.eulerAngles=new Vector3(easeMethod().x,trans.eulerAngles.y,trans.eulerAngles.z); }
+	private void rotateY(){ trans.eulerAngles=new Vector3(trans.eulerAngles.x,easeMethod().x,trans.eulerAngles.z); }
+	private void rotateZ(){ trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,easeMethod().x); }
+
+	private void rotateAround(){
+		val = easeMethod().x;
+		Vector3 origPos = trans.localPosition;
+		Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
+		trans.RotateAround(rotateAroundPt, this._optional.axis, -val);
+		Vector3 diff = origPos - trans.localPosition;
+
+		trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+		trans.rotation = this._optional.origRotation;
+
+		rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
+		trans.RotateAround(rotateAroundPt, this._optional.axis, val);
+	}
+
+	private void rotateAroundLocal(){
+		val = easeMethod().x;
+		Vector3 origPos = trans.localPosition;
+		trans.RotateAround((Vector3)trans.TransformPoint( this._optional.point ), trans.TransformDirection(this._optional.axis), -val);
+		Vector3 diff = origPos - trans.localPosition;
+
+		trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+		trans.localRotation = this._optional.origRotation;
+		Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
+		trans.RotateAround(rotateAroundPt, trans.TransformDirection(this._optional.axis), val);
+	}
+
+	private void alpha(){
+		val = easeMethod().x;
+		#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+		alphaRecursive(this.trans, val, this.useRecursion);
+		#else
+		if(this.spriteRen!=null){
+			this.spriteRen.color = new Color( this.spriteRen.color.r, this.spriteRen.color.g, this.spriteRen.color.b, val);
+			alphaRecursiveSprite(this.trans, val);
+		}else{
+			alphaRecursive(this.trans, val, this.useRecursion);
+		}
+		#endif
+	}
+
+	private void alphaVertex(){
+		val = easeMethod().x;
+		Mesh mesh = trans.GetComponent<MeshFilter>().mesh;
+		Vector3[] vertices = mesh.vertices;
+		Color32[] colors = new Color32[vertices.Length];
+		if (colors.Length == 0){ //MaxFW fix: add vertex colors if the mesh doesn't have any             
+			Color32 transparentWhiteColor32 = new Color32(0xff, 0xff, 0xff, 0x00);
+			colors = new Color32[mesh.vertices.Length];
+			for (int k=0; k<colors.Length; k++)
+				colors[k] = transparentWhiteColor32;
+			mesh.colors32 = colors;
+		}// fix end
+		Color32 c = mesh.colors32[0];
+		c = new Color( c.r, c.g, c.b, val);
+		for (int k= 0; k < vertices.Length; k++)
+			colors[k] = c;
+		mesh.colors32 = colors;
+	}
+
+	private void color(){
+		val = easeMethod().x;
+		Color toColor = tweenColor(this, val);
+
+		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+
+		if(this.spriteRen!=null){
+			this.spriteRen.color = toColor;
+			colorRecursiveSprite( trans, toColor);
+		}else{
+		#endif
+		// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
+		if(this.type==TweenAction.COLOR)
+				colorRecursive(trans, toColor, this.useRecursion);
+
+		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+		}
+		#endif
+		if(dt!=0f && this._optional.onUpdateColor!=null){
+			this._optional.onUpdateColor(toColor);
+		}else if(dt!=0f && this._optional.onUpdateColorObject!=null){
+			this._optional.onUpdateColorObject(toColor, this._optional.onUpdateParam);
+		}
+	}
+
+	private void rotate(){ trans.eulerAngles = easeMethod(); }
+	private void rotateLocal(){ trans.localEulerAngles = easeMethod();}
+
+	// GUI
+	public void guiMove(){ Vector3 v = easeMethod(); this._optional.ltRect.rect = new Rect( v.x, v.y, this._optional.ltRect.rect.width, this._optional.ltRect.rect.height); }
+	public void guiMoveMargin(){ Vector3 v = easeMethod(); this._optional.ltRect.margin = new Vector2(v.x, v.y);}
+	public void guiScale(){ Vector3 v = easeMethod(); this._optional.ltRect.rect = new Rect( this._optional.ltRect.rect.x, this._optional.ltRect.rect.y, v.x, v.y); }
+	public void guiAlpha(){ this._optional.ltRect.alpha = easeMethod().x; }
+	public void guiRotate(){ this._optional.ltRect.rotation = easeMethod().x; }
+
+	// Canvas
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+
+	private void canvasAlpha(){
+		val = easeMethod().x;
+		if(this.uiImage!=null){
+			Color c = this.uiImage.color; c.a = val; this.uiImage.color = c;
+		}
+		if(this.useRecursion){
+			alphaRecursive( this.rectTransform, val, 0 );
+			textAlphaRecursive( this.rectTransform, val);
+		}
+	}
+
+	private void canvasColor(){
+		val = easeMethod().x;
+		Color toColor = tweenColor(this, val);
+		this.uiImage.color = toColor;
+		if (dt!=0f && this._optional.onUpdateColor != null)
+			this._optional.onUpdateColor(toColor);
+		
+		if(this.useRecursion)
+			colorRecursive(this.rectTransform, toColor);
+	}
+
+	private void canvasGroupAlpha(){ this.trans.GetComponent<CanvasGroup>().alpha = easeMethod().x; }
+	private void canvasTextAlpha(){ textAlphaRecursive( trans, easeMethod().x, this.useRecursion ); }
+
+	private void canvasTextColor(){ 
+		val = easeMethod().x;
+		Color toColor = tweenColor(this, val);
+		this.uiText.color = toColor;
+		if (dt!=0f && this._optional.onUpdateColor != null)
+			this._optional.onUpdateColor(toColor);
+		
+		if(this.useRecursion && trans.childCount>0)
+			textColorRecursive(this.trans, toColor);
+	}
+
+	private void canvasRotateAround(){
+		val = easeMethod().x;
+		RectTransform rect = this.rectTransform;
+		Vector3 origPos = rect.localPosition;
+		rect.RotateAround((Vector3)rect.TransformPoint( this._optional.point ), this._optional.axis, -val);
+		Vector3 diff = origPos - rect.localPosition;
+
+		rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+		rect.rotation = this._optional.origRotation;
+		rect.RotateAround((Vector3)rect.TransformPoint( this._optional.point ), this._optional.axis, val);
+	}
+
+	private void canvasRotateAroundLocal(){
+		val = easeMethod().x;
+		RectTransform rect = this.rectTransform;
+		Vector3 origPos = rect.localPosition;
+		rect.RotateAround((Vector3)rect.TransformPoint( this._optional.point ), rect.TransformDirection(this._optional.axis), -val);
+		Vector3 diff = origPos - rect.localPosition;
+
+		rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+		rect.rotation = this._optional.origRotation;
+		rect.RotateAround((Vector3)rect.TransformPoint( this._optional.point ), rect.TransformDirection(this._optional.axis), val);
+	}
+
+	private void canvasPlaySprite(){
+		int frame = (int)Mathf.Round( val );
+		this.uiImage.sprite = this.sprites[ frame ];
+	}
+
+	private void canvasMove(){ this.rectTransform.anchoredPosition3D = easeMethod(); }
+	private void canvasMoveX(){ Vector3 c = this.rectTransform.anchoredPosition3D; this.rectTransform.anchoredPosition3D = new Vector3(easeMethod().x, c.y, c.z); }
+	private void canvasMoveY(){ Vector3 c = this.rectTransform.anchoredPosition3D; this.rectTransform.anchoredPosition3D = new Vector3(c.x, easeMethod().x, c.z); }
+	private void canvasMoveZ(){ Vector3 c = this.rectTransform.anchoredPosition3D; this.rectTransform.anchoredPosition3D = new Vector3(c.x, c.y, easeMethod().x); }
+
+	private void canvasScale(){ this.rectTransform.localScale = easeMethod(); }
+
+	#endif
+
 	public bool update2(){
 		isTweenFinished = false;
 
@@ -501,6 +738,7 @@ public class LTDescrImpl : LTDescr {
 				}
 				this.ratioPassed = Mathf.Clamp01(this.passed / this.time); // need to clamp when finished so it will finish at the exact spot and not overshoot
 
+				Debug.Log("isFinished:"+isTweenFinished+" passed:"+this.passed+" time:"+this.time);
 				this.easeInternal();
 
 				if(this.hasUpdateCallback){
@@ -540,23 +778,25 @@ public class LTDescrImpl : LTDescr {
 			}else{
 				this.passed = Mathf.Epsilon;
 			}
-//			Debug.Log("this.loopCount:" + this.loopCount);
+			Debug.Log("this.loopCount:" + this.loopCount);
 
 //				if((this.loopCount<=0 && this.type==TweenAction.CALLBACK) || this.onCompleteOnRepeat){
-					if(hasExtraOnCompletes){ // ToDo: Only turn on for extra on completes
-						if(this.type==TweenAction.GUI_ROTATE)
-							this._optional.ltRect.rotateFinished = true;
-						if(this.type==TweenAction.DELAYED_SOUND){
-							AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
-						}
-						if(this._optional.onComplete!=null){
-							this._optional.onComplete();
-						}else if(this._optional.onCompleteObject!=null){
-							this._optional.onCompleteObject(this._optional.onCompleteParam);
-						}
-					}
+					
 //				}
 			isTweenFinished = this.loopCount == 0 || this.loopType == LeanTweenType.once; // only return true if it is fully complete
+		
+			if((isTweenFinished || this.onCompleteOnRepeat) && this.hasExtraOnCompletes){ 
+				if(this.type==TweenAction.GUI_ROTATE)
+					this._optional.ltRect.rotateFinished = true;
+				if(this.type==TweenAction.DELAYED_SOUND){
+					AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
+				}
+				if(this._optional.onComplete!=null){
+					this._optional.onComplete();
+				}else if(this._optional.onCompleteObject!=null){
+					this._optional.onCompleteObject(this._optional.onCompleteParam);
+				}
+			}
 		}
 
 		return isTweenFinished;
@@ -1215,7 +1455,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public LTDescr setTo( Transform to ){
-		this.toTrans = to;
+		this._optional.toTrans = to;
 		return this;
 	}
 
@@ -1406,6 +1646,7 @@ public class LTDescrImpl : LTDescr {
 	*/
 	public LTDescr setOnComplete( Action onComplete ){
 		this._optional.onComplete = onComplete;
+		this.hasExtraOnCompletes = true;
 		return this;
 	}
 
@@ -1419,10 +1660,12 @@ public class LTDescrImpl : LTDescr {
 	*/
 	public LTDescr setOnComplete( Action<object> onComplete ){
 		this._optional.onCompleteObject = onComplete;
+		this.hasExtraOnCompletes = true;
 		return this;
 	}
 	public LTDescr setOnComplete( Action<object> onComplete, object onCompleteParam ){
 		this._optional.onCompleteObject = onComplete;
+		this.hasExtraOnCompletes = true;
 		if(onCompleteParam!=null)
 			this._optional.onCompleteParam = onCompleteParam;
 		return this;
@@ -1442,6 +1685,7 @@ public class LTDescrImpl : LTDescr {
 	*/
 	public LTDescr setOnCompleteParam( object onCompleteParam ){
 		this._optional.onCompleteParam = onCompleteParam;
+		this.hasExtraOnCompletes = true;
 		return this;
 	}
 

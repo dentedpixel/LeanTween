@@ -148,6 +148,7 @@ namespace DentedPixel.LTExamples{
 			// Color
 			// OnUpdate
 			// OnStart
+			// moveLocalY (make sure uses y values)
 
 			
 			StartCoroutine( timeBasedTesting() );
