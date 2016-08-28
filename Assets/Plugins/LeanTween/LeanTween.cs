@@ -3636,21 +3636,33 @@ public class LTSpline {
 	}
 
 	public void drawGizmo( Color color ) {
-		if( this.ptsAdjLength>=4){
-			
-			Vector3 prevPt = this.ptsAdj[0];
+		if (constantSpeed) {
+            if (this.ptsAdjLength >= 4) {
 
-			Color colorBefore = Gizmos.color;
-			Gizmos.color = color;
-			for (int i = 0; i < this.ptsAdjLength; i++) {
-				Vector3 currPt2 = this.ptsAdj[i];
-				// Debug.Log("currPt2:"+currPt2);
+                Vector3 prevPt = this.ptsAdj[0];
 
-				Gizmos.DrawLine(prevPt, currPt2);
-				prevPt = currPt2;
-			}
-			Gizmos.color = colorBefore;
-		}
+                Color colorBefore = Gizmos.color;
+                Gizmos.color = color;
+                for (int i = 0; i < this.ptsAdjLength; i++) {
+                    Vector3 currPt2 = this.ptsAdj[i];
+                    // Debug.Log("currPt2:"+currPt2);
+
+                    Gizmos.DrawLine(prevPt, currPt2);
+                    prevPt = currPt2;
+                }
+                Gizmos.color = colorBefore;
+            }
+        }
+        else {
+            Vector3 prevPt = interp(0);
+
+            for (int i = 1; i <= 120; i++) {
+                float pm = (float)i / 120f;
+                Vector3 currPt2 = interp(pm);
+                Gizmos.DrawLine(currPt2, prevPt);
+                prevPt = currPt2;
+            }
+        }
 	}
 
 	public static void drawGizmo(Transform[] arr, Color color) {
