@@ -60,6 +60,7 @@ public interface LTDescr
 	LTDescr setDirection(float direction);
 	LTDescr setEase(LeanTweenType easeType);
 	LTDescr setEaseLinear();
+	LTDescr setEaseSpring();
 	LTDescr setEaseOutQuad();
 	LTDescr setEaseInQuad();
 	LTDescr setEaseInOutQuad();

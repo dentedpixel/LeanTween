@@ -5,10 +5,11 @@ using System.Reflection;
 public class GeneralEasingTypes : MonoBehaviour {
 
 	public float lineDrawScale = 10f;
+	public AnimationCurve animationCurve;
 
 	void Start () {
 
-		string[] easeTypes = new string[]{"EaseLinear",
+		string[] easeTypes = new string[]{"EaseLinear","EaseAnimationCurve","EaseSpring",
 			"EaseInQuad","EaseOutQuad","EaseInOutQuad",
 			"EaseInCubic","EaseOutCubic","EaseInOutCubic",
 			"EaseInQuart","EaseOutQuart","EaseInOutQuart",
@@ -17,6 +18,8 @@ public class GeneralEasingTypes : MonoBehaviour {
 			"EaseInExpo","EaseOutExpo","EaseInOutExpo",
 			"EaseInCirc","EaseOutCirc","EaseInOutCirc",
 			"EaseInBounce","EaseOutBounce","EaseInOutBounce",
+			"EaseInBack","EaseOutBack","EaseInOutBack",
+			"EaseInElastic","EaseOutElastic","EaseInOutElastic",
 		};
 	
 		for(int i = 0; i < easeTypes.Length; i++){
@@ -27,14 +30,21 @@ public class GeneralEasingTypes : MonoBehaviour {
 				Vector3 vec = obj1.localPosition;
 				vec.x = obj1val*lineDrawScale;
 				vec.y = val*lineDrawScale;
+				if(float.IsNaN(vec.y)){
+					Debug.Log("easeName:"+easeName);
+				}
 				obj1.localPosition = vec;
 
 				obj1val += Time.deltaTime/5f;
 				if(obj1val>1f)
 					obj1val = 0f;
 			});
-			MethodInfo theMethod = lt.GetType().GetMethod("set"+easeName);
-			theMethod.Invoke(lt, null);
+			if(easeName.IndexOf("AnimationCurve")>=0){
+				lt.setEase(animationCurve);
+			}else{
+				MethodInfo theMethod = lt.GetType().GetMethod("set"+easeName);
+				theMethod.Invoke(lt, null);
+			}
 		}
 	}
 

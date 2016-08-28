@@ -470,7 +470,7 @@ public class LTDescrImpl : LTDescr {
 				}else{
 					isTweenFinished = this.passed<=0f;
 				}
-				this.ratioPassed = isTweenFinished ? Mathf.Clamp01(this.passed / this.time) : this.passed / this.time; // need to clamp when finished so it will finish at the exact spot and not overshoot
+				this.ratioPassed = Mathf.Clamp01(this.passed / this.time); // need to clamp when finished so it will finish at the exact spot and not overshoot
 
 				this.easeInternal();
 
@@ -800,6 +800,8 @@ public class LTDescrImpl : LTDescr {
 
 	public LTDescr setEaseLinear(){ this.tweenType = LeanTweenType.linear; this.easeMethod = this.easeLinear; return this; }
 
+	public LTDescr setEaseSpring(){ this.tweenType = LeanTweenType.easeSpring; this.easeMethod = this.easeSpring; return this; }
+
 	public LTDescr setEaseInQuad(){ this.tweenType = LeanTweenType.easeInQuad; this.easeMethod = this.easeInQuad; return this; }
 
 	public LTDescr setEaseOutQuad(){ this.tweenType = LeanTweenType.easeOutQuad; this.easeMethod = this.easeOutQuad; return this; }
@@ -895,6 +897,12 @@ public class LTDescrImpl : LTDescr {
 		return new Vector3(this.from.x+this.diff.x*val, this.from.y+this.diff.y*val, this.from.z+this.diff.z*val);
 	}
 
+	private Vector3 easeSpring(){
+		val = Mathf.Clamp01(this.ratioPassed);
+		val = (Mathf.Sin(val * Mathf.PI * (0.2f + 2.5f * val * val * val)) * Mathf.Pow(1f - val, 2.2f ) + val) * (1f + (1.2f * (1f - val) ));
+		return this.from + this.diff * val;
+	}
+
 	private Vector3 easeInCubic(){
 		val = this.ratioPassed * this.ratioPassed * this.ratioPassed;
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
@@ -963,49 +971,49 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	private Vector3 easeInSine(){
-		val = - Mathf.Cos(this.ratioPassed / 1 * LeanTween.PI_DIV2);
+		val = - Mathf.Cos(this.ratioPassed * LeanTween.PI_DIV2);
 		return new Vector3(this.diff.x * val + this.diff.x + this.from.x, this.diff.y * val + this.diff.y + this.from.y, this.diff.z * val + this.diff.z + this.from.z);
 	}
 
 	private Vector3 easeOutSine(){
-		val = Mathf.Sin(this.ratioPassed / 1 * LeanTween.PI_DIV2);
+		val = Mathf.Sin(this.ratioPassed * LeanTween.PI_DIV2);
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y,this.diff.z * val + this.from.z);
 	}
 
 	private Vector3 easeInOutSine(){
-		val = -(Mathf.Cos(Mathf.PI * this.ratioPassed / 1) - 1);
+		val = -(Mathf.Cos(Mathf.PI * this.ratioPassed) - 1f);
 		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
 	}
 
 	private Vector3 easeInExpo(){
-		val = Mathf.Pow(2, 10 * (this.ratioPassed / 1 - 1));
+		val = Mathf.Pow(2f, 10f * (this.ratioPassed - 1f));
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
 	}
 
 	private Vector3 easeOutExpo(){
-		val = (-Mathf.Pow(2, -10 * this.ratioPassed / 1) + 1);
+		val = (-Mathf.Pow(2f, -10f * this.ratioPassed) + 1f);
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
 	}
 
 	private Vector3 easeInOutExpo(){
 		val = this.ratioPassed * 2f;
-		val = Mathf.Pow(2, 10 * (val - 1));
-		if (val < 1f){ 
+		val = Mathf.Pow(2f, 10f * (val - 1f));
+		if (val < 1f)
 			return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
-		}
 		val--;
-		val = (-Mathf.Pow(2, -10 * val) + 2);
+		val = (-Mathf.Pow(2f, -10f * val) + 2f);
 		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
 	}
 
 	private Vector3 easeInCirc(){
-		val = -(Mathf.Sqrt(1 - this.ratioPassed * this.ratioPassed) - 1);
+		val = -(Mathf.Sqrt(1f - this.ratioPassed * this.ratioPassed) - 1f);
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
 	}
 
 	private Vector3 easeOutCirc(){
 		val = this.ratioPassed - 1f;
-		val = Mathf.Sqrt(1 - val * val);
+		val = Mathf.Sqrt(1f - val * val);
+
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
 	}
 
@@ -1151,6 +1159,8 @@ public class LTDescrImpl : LTDescr {
 	*/
 	public LTDescr setEase( AnimationCurve easeCurve ){
 		this._optional.animationCurve = easeCurve;
+		this.easeMethod = this.tweenOnCurve;
+		this.tweenType = LeanTweenType.animationCurve;
 		return this;
 	}
 
