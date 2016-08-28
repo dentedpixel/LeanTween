@@ -37,7 +37,7 @@ public class LTDescrImpl : LTDescr {
 	public bool useFrames { get; set; }
 	public bool useManualTime { get; set; }
 	public bool hasInitiliazed { get; set; }
-	internal bool hasExtraOnCompletes;
+	public bool hasExtraOnCompletes { get; set;}
 	public bool hasPhysics { get; set; }
 	public bool onCompleteOnRepeat { get; set; }
 	public bool onCompleteOnStart { get; set; }
@@ -69,7 +69,6 @@ public class LTDescrImpl : LTDescr {
 	public LeanTweenType loopType { get; set; }
 
 	public bool hasUpdateCallback { get; set; }
-
 
 	public EaseTypeDelegate easeMethod { get; set; }
 	public ActionMethodDelegate easeInternal {get; set; }
@@ -738,7 +737,6 @@ public class LTDescrImpl : LTDescr {
 				}
 				this.ratioPassed = Mathf.Clamp01(this.passed / this.time); // need to clamp when finished so it will finish at the exact spot and not overshoot
 
-				Debug.Log("isFinished:"+isTweenFinished+" passed:"+this.passed+" time:"+this.time);
 				this.easeInternal();
 
 				if(this.hasUpdateCallback){
@@ -778,28 +776,29 @@ public class LTDescrImpl : LTDescr {
 			}else{
 				this.passed = Mathf.Epsilon;
 			}
-			Debug.Log("this.loopCount:" + this.loopCount);
 
-//				if((this.loopCount<=0 && this.type==TweenAction.CALLBACK) || this.onCompleteOnRepeat){
-					
-//				}
 			isTweenFinished = this.loopCount == 0 || this.loopType == LeanTweenType.once; // only return true if it is fully complete
 		
-			if((isTweenFinished || this.onCompleteOnRepeat) && this.hasExtraOnCompletes){ 
-				if(this.type==TweenAction.GUI_ROTATE)
-					this._optional.ltRect.rotateFinished = true;
-				if(this.type==TweenAction.DELAYED_SOUND){
-					AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
-				}
-				if(this._optional.onComplete!=null){
-					this._optional.onComplete();
-				}else if(this._optional.onCompleteObject!=null){
-					this._optional.onCompleteObject(this._optional.onCompleteParam);
-				}
-			}
+			if(this.onCompleteOnRepeat && this.hasExtraOnCompletes)
+				callOnCompletes();
 		}
 
 		return isTweenFinished;
+	}
+
+	public void callOnCompletes(){
+		if(this.hasExtraOnCompletes){
+			if(this.type==TweenAction.GUI_ROTATE)
+				this._optional.ltRect.rotateFinished = true;
+			if(this.type==TweenAction.DELAYED_SOUND){
+				AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
+			}
+			if(this._optional.onComplete!=null){
+				this._optional.onComplete();
+			}else if(this._optional.onCompleteObject!=null){
+				this._optional.onCompleteObject(this._optional.onCompleteParam);
+			}
+		}
 	}
 
     private static void alphaRecursive( Transform transform, float val, bool useRecursion = true){

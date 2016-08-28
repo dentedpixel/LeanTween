@@ -9,6 +9,7 @@ public interface LTDescr
 	bool useFrames { get; set; }
 	bool useManualTime { get; set; }
 	bool hasInitiliazed { get; set; }
+	bool hasExtraOnCompletes { get; }
 	bool hasPhysics { get; set; }
 	bool onCompleteOnRepeat { get; set; }
 	bool onCompleteOnStart { get; set; }
@@ -48,6 +49,7 @@ public interface LTDescr
 	#endif
 	void init();
 	bool update2();
+	void callOnCompletes();
 	LTDescr pause();
 	void reset();
 	LTDescr resume();
