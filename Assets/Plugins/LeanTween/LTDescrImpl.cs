@@ -1048,17 +1048,15 @@ public class LTDescrImpl : LTDescr {
 			case LeanTweenType.easeInOutElastic:
 				setEaseInOutElastic(); break;
 			case LeanTweenType.punch:
-			case LeanTweenType.easeShake:
-				if(this.tweenType==LeanTweenType.punch){
-					this._optional.animationCurve = LeanTween.punch;
-				}else if(this.tweenType==LeanTweenType.easeShake){
-					this._optional.animationCurve = LeanTween.shake;
-				}
+				this._optional.animationCurve = LeanTween.punch;
 				this.toInternal.x = this.from.x + this.to.x;
-				this.diff.x = this.to.x - this.from.x;
-				val = LeanTween.tweenOnCurve(this, ratioPassed); break;
+				this.easeMethod = this.tweenOnCurve; break;
+			case LeanTweenType.easeShake:
+				this._optional.animationCurve = LeanTween.shake;
+				this.toInternal.x = this.from.x + this.to.x;
+				this.easeMethod = this.tweenOnCurve; break;
 			case LeanTweenType.easeSpring:
-				val = LeanTween.spring(this.from.x, this.to.x, ratioPassed); break;
+				setEaseSpring(); break;
 			default:
 				setEaseLinear(); break;
 			}
