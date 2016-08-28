@@ -146,6 +146,7 @@ public class LTDescrImpl : LTDescr {
 		this.direction = this.directionLast = this.overshoot = 1.0f;
 		this.period = 0.3f;
 		this.speed = -1f;
+		this.easeMethod = this.easeLinear;
 		this._optional.reset();
 		
 		global_counter++;
@@ -234,8 +235,12 @@ public class LTDescrImpl : LTDescr {
 			case TweenAction.MOVE_CURVED:
 			case TweenAction.MOVE_CURVED_LOCAL:
 			case TweenAction.MOVE_SPLINE:
+				this.easeInternal = moveSpline;
+				break;
 			case TweenAction.MOVE_SPLINE_LOCAL:
-				this.fromInternal.x = 0; break;
+				this.fromInternal.x = 0; 
+				this.easeInternal = moveSplineLocal;	
+				break;
 			case TweenAction.ROTATE:
 				this.from = trans.eulerAngles; 
 				this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
@@ -430,12 +435,36 @@ public class LTDescrImpl : LTDescr {
 
 	private void moveInternal(){
 		trans.position = easeMethod();
-//		Debug.Log("trans.position x:"+trans.position.x+" y:"+trans.position.y+" z:"+trans.position.z);
-//		Debug.Log("diffDiv2 x:"+this.diffDiv2.x+" y:"+this.diffDiv2.y+" z:"+this.diffDiv2.z);
 	}
 
 	private void callbackInternal(){
 		val = easeMethod().x;
+	}
+
+	private void moveSpline(){
+		val = easeMethod().x;
+		if(this._optional.spline.orientToPath){
+			if(this._optional.spline.orientToPath2d){
+				this._optional.spline.place2d( trans, val );
+			}else{
+				this._optional.spline.place( trans, val );
+			}
+		}else{
+			trans.position = this._optional.spline.point( val );
+		}
+	}
+
+	private void moveSplineLocal(){
+		val = easeMethod().x;
+		if(this._optional.spline.orientToPath){
+			if(this._optional.spline.orientToPath2d){
+				this._optional.spline.placeLocal2d( trans, val );
+			}else{
+				this._optional.spline.placeLocal( trans, val );
+			}
+		}else{
+			trans.localPosition = this._optional.spline.point( val );
+		}
 	}
 
 	public bool update2(){
