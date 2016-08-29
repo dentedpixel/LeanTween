@@ -189,8 +189,10 @@ public class LTDescrImpl : LTDescr {
 				this.fromInternal.x = trans.localPosition.x;
 				this.easeInternal = moveLocalX; break;
 			case TweenAction.MOVE_LOCAL_Y:
+				this.fromInternal.x = trans.localPosition.y;
 				this.easeInternal = moveLocalY; break;
 			case TweenAction.MOVE_LOCAL_Z:
+				this.fromInternal.x = trans.localPosition.z;
 				this.easeInternal = moveLocalZ; break;
 			case TweenAction.SCALE_X:
 				this.fromInternal.x = trans.localScale.x;
