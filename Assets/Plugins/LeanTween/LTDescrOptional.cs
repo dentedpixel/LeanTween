@@ -59,5 +59,7 @@ public class LTDescrOptional  {
 		this.onCompleteObject = null;
 		this.onCompleteParam = null;
 		this.onStart = null;
+
+		this.point = Vector3.zero;
 	}
 }

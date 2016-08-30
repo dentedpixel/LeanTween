@@ -171,7 +171,7 @@ public class LTDescrImpl : LTDescr {
 		switch(this.type){
 			case TweenAction.MOVE:
 				this.from = trans.position;
-				this.easeInternal = moveInternal;
+				this.easeInternal = this.move;
 				break;
 			case TweenAction.MOVE_TO_TRANSFORM:
 				this.from = trans.position; 
@@ -308,7 +308,7 @@ public class LTDescrImpl : LTDescr {
 				this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
 				this.easeInternal = this.alphaVertex; break;
 			case TweenAction.CALLBACK:
-				this.easeInternal = callbackInternal; 
+				this.easeInternal = this.callback; 
 				break;
 			case TweenAction.CALLBACK_COLOR:
 				this.diff = new Vector3(1.0f,0.0f,0.0f);
@@ -394,6 +394,9 @@ public class LTDescrImpl : LTDescr {
 				this.fromInternal.x = this.rectTransform.anchoredPosition3D.z;  
 				this.easeInternal = this.canvasMoveZ; break;
 			case TweenAction.CANVAS_ROTATEAROUND:
+				this.lastVal = 0.0f;
+				this.fromInternal.x = 0.0f;
+				this._optional.origRotation = this.rectTransform.rotation;
 				this.easeInternal = this.canvasRotateAround; 
 				break;
 			case TweenAction.CANVAS_ROTATEAROUND_LOCAL:
@@ -451,11 +454,11 @@ public class LTDescrImpl : LTDescr {
 
 	private static bool usesNormalDt = true;
 
-	private void moveInternal(){
+	private void move(){
 		trans.position = easeMethod();
 	}
 
-	private void callbackInternal(){
+	private void callback(){
 		val = easeMethod().x;
 	}
 
@@ -486,6 +489,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	private void moveCurved(){
+		val = easeMethod().x;
 		if(this._optional.path.orientToPath){
 			if(this._optional.path.orientToPath2d){
 				this._optional.path.place2d( trans, val );
@@ -692,6 +696,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	private void canvasPlaySprite(){
+		val = easeMethod().x;
 		int frame = (int)Mathf.Round( val );
 		this.uiImage.sprite = this.sprites[ frame ];
 	}
