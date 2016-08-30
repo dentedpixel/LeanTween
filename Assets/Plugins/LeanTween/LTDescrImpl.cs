@@ -727,7 +727,7 @@ public class LTDescrImpl : LTDescr {
 //		}
 		// check to see if delay has shrunk enough
 //		if(dt!=0f){
-			if(this.delay<=0f){
+			if(this.delay<=0f && this.direction!=0f){
 				if(trans==null)
 					return true;	
 
@@ -735,7 +735,8 @@ public class LTDescrImpl : LTDescr {
 				if(!this.hasInitiliazed)
 					this.init();
 
-				this.passed += dt*this.direction;
+				dt = dt*this.direction;
+				this.passed += dt;
 
 				if(this.direction>0f){
 					isTweenFinished = this.passed>=this.time;
@@ -786,8 +787,8 @@ public class LTDescrImpl : LTDescr {
 
 			isTweenFinished = this.loopCount == 0 || this.loopType == LeanTweenType.once; // only return true if it is fully complete
 		
-			if(this.onCompleteOnRepeat && this.hasExtraOnCompletes)
-				callOnCompletes();
+			if(isTweenFinished==false && this.onCompleteOnRepeat && this.hasExtraOnCompletes)
+				callOnCompletes(); // this only gets called if onCompleteOnRepeat is set to true, otherwise LeanTween class takes care of calling it
 		}
 
 		return isTweenFinished;

@@ -389,7 +389,7 @@ namespace DentedPixel.LTExamples{
 
 		void rotateRepeatAllFinished(){
 			LeanTest.expect( rotateRepeatAngle==3, "ROTATE AROUND MULTIPLE", "expected 3 times received "+rotateRepeatAngle+" times" );
-			LeanTest.expect( rotateRepeat==3, "ROTATE REPEAT" );
+			LeanTest.expect( rotateRepeat==3, "ROTATE REPEAT", "expected 3 times received "+rotateRepeat+" times" );
 			LeanTest.expect( cube3==null, "DESTROY ON COMPLETE", "cube3:"+cube3 );
 		}
 
