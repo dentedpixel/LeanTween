@@ -36,6 +36,7 @@ public class LTDescrImpl : LTDescr {
 	public bool useEstimatedTime { get; set; }
 	public bool useFrames { get; set; }
 	public bool useManualTime { get; set; }
+	public bool usesNormalDt {get; set;}
 	public bool hasInitiliazed { get; set; }
 	public bool hasExtraOnCompletes { get; set;}
 	public bool hasPhysics { get; set; }
@@ -166,6 +167,8 @@ public class LTDescrImpl : LTDescr {
 		if (this._optional.onStart != null){
 			this._optional.onStart();
         }		 
+
+		usesNormalDt = !(useEstimatedTime || useManualTime || useFrames); // only set this to true if it uses non of the other timing modes
 
 		// Initialize From Values
 		switch(this.type){
@@ -452,8 +455,6 @@ public class LTDescrImpl : LTDescr {
     public static float dt;
     private static bool isTweenFinished;
 
-	private static bool usesNormalDt = true;
-
 	private void move(){
 		trans.position = easeMethod();
 	}
@@ -715,16 +716,13 @@ public class LTDescrImpl : LTDescr {
 
 		if(usesNormalDt){
 			dt = LeanTween.dtActual;
+		}else if( this.useEstimatedTime ){
+			dt = LeanTween.dtEstimated;
+		}else if( this.useFrames ){
+			dt = 1;
+		}else if( this.useManualTime ){
+			dt = LeanTween.dtManual;
 		}
-//		else if( this.useEstimatedTime ){
-//			dt = LeanTween.dtEstimated;
-//		}else if( this.useFrames ){
-//			dt = 1;
-//		}else if( this.useManualTime ){
-//			dt = LeanTween.dtManual;
-//		}else if(this.direction==0f){
-//			dt = 0f;
-//		}
 		// check to see if delay has shrunk enough
 //		if(dt!=0f){
 			if(this.delay<=0f && this.direction!=0f){
