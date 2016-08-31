@@ -235,7 +235,8 @@ public class LTDescrImpl : LTDescr {
 					break;
 				#endif
 			case TweenAction.MOVE_LOCAL:
-				this.from = trans.localPosition; break;
+				this.from = trans.localPosition; 
+				this.easeInternal = this.moveLocal; break;
 			case TweenAction.MOVE_CURVED:
 				this.easeInternal = moveCurved; break;
 			case TweenAction.MOVE_CURVED_LOCAL:
@@ -455,13 +456,27 @@ public class LTDescrImpl : LTDescr {
     public static float dt;
     private static bool isTweenFinished;
 
-	private void move(){
-		trans.position = easeMethod();
+	private void callback(){ val = easeMethod().x; }
+
+	private void move(){ trans.position = easeMethod(); }
+
+	private void moveLocal(){ trans.localPosition = easeMethod(); }
+
+	private void moveToTransform(){
+		this.to = this._optional.toTrans.position;
+		this.diff = this.to - this.from;
+		this.diffDiv2 = this.diff * 0.5f;
+
+		this.trans.position = easeMethod();
 	}
 
-	private void callback(){
-		val = easeMethod().x;
-	}
+	private void moveX(){ trans.position=new Vector3( easeMethod().x,trans.position.y,trans.position.z); }
+	private void moveY(){ trans.position=new Vector3( trans.position.x,easeMethod().x,trans.position.z); }
+	private void moveZ(){ trans.position=new Vector3( trans.position.x,trans.position.y,easeMethod().x); }
+
+	private void moveLocalX(){ trans.localPosition=new Vector3( easeMethod().x,trans.localPosition.y,trans.localPosition.z); }
+	private void moveLocalY(){ trans.localPosition=new Vector3( trans.localPosition.x,easeMethod().x,trans.localPosition.z); }
+	private void moveLocalZ(){ trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,easeMethod().x); }
 
 	private void moveSpline(){
 		val = easeMethod().x;
@@ -513,22 +528,6 @@ public class LTDescrImpl : LTDescr {
 			trans.localPosition = this._optional.path.point( val );
 		}
 	}
-
-	private void moveToTransform(){
-		this.to = this._optional.toTrans.position;
-		this.diff = this.to - this.from;
-		this.diffDiv2 = this.diff * 0.5f;
-
-		this.trans.position = easeMethod();
-	}
-
-	private void moveX(){ trans.position=new Vector3( easeMethod().x,trans.position.y,trans.position.z); }
-	private void moveY(){ trans.position=new Vector3( trans.position.x,easeMethod().x,trans.position.z); }
-	private void moveZ(){ trans.position=new Vector3( trans.position.x,trans.position.y,easeMethod().x); }
-
-	private void moveLocalX(){ trans.localPosition=new Vector3( easeMethod().x,trans.localPosition.y,trans.localPosition.z); }
-	private void moveLocalY(){ trans.localPosition=new Vector3( trans.localPosition.x,easeMethod().x,trans.localPosition.z); }
-	private void moveLocalZ(){ trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,easeMethod().x); }
 
 	private void scale(){ trans.localScale = easeMethod(); }
 	private void scaleX(){ trans.localScale=new Vector3( easeMethod().x,trans.localScale.y,trans.localScale.z); }
@@ -712,8 +711,7 @@ public class LTDescrImpl : LTDescr {
 	#endif
 
 	public bool update2(){
-		isTweenFinished = false;
-
+		
 		if(usesNormalDt){
 			dt = LeanTween.dtActual;
 		}else if( this.useEstimatedTime ){
@@ -723,59 +721,46 @@ public class LTDescrImpl : LTDescr {
 		}else if( this.useManualTime ){
 			dt = LeanTween.dtManual;
 		}
-		// check to see if delay has shrunk enough
-//		if(dt!=0f){
-			if(this.delay<=0f && this.direction!=0f){
-				if(trans==null)
-					return true;	
 
-				// initialize if has not done so yet
-				if(!this.hasInitiliazed)
-					this.init();
+		if(this.delay<=0f && this.direction!=0f){
+			if(trans==null)
+				return true;	
 
-				dt = dt*this.direction;
-				this.passed += dt;
+			// initialize if has not done so yet
+			if(!this.hasInitiliazed)
+				this.init();
 
-				if(this.direction>0f){
-					isTweenFinished = this.passed>=this.time;
-				}else{
-					isTweenFinished = this.passed<=0f;
+			dt = dt*this.direction;
+			this.passed += dt;
+
+			this.ratioPassed = Mathf.Clamp01(this.passed / this.time); // need to clamp when finished so it will finish at the exact spot and not overshoot
+			
+			this.easeInternal();
+			
+			if(this.hasUpdateCallback){
+				if(this._optional.onUpdateFloat!=null)
+					this._optional.onUpdateFloat(val);
+				
+				if (this._optional.onUpdateFloatRatio != null){
+					this._optional.onUpdateFloatRatio(val,ratioPassed);
+				}else if(this._optional.onUpdateFloatObject!=null){
+					this._optional.onUpdateFloatObject(val, this._optional.onUpdateParam);
+				}else if(this._optional.onUpdateVector3Object!=null){
+					this._optional.onUpdateVector3Object(newVect, this._optional.onUpdateParam);
+				}else if(this._optional.onUpdateVector3!=null){
+					this._optional.onUpdateVector3(newVect);
+				}else if(this._optional.onUpdateVector2!=null){
+					this._optional.onUpdateVector2(new Vector2(newVect.x,newVect.y));
 				}
-				this.ratioPassed = Mathf.Clamp01(this.passed / this.time); // need to clamp when finished so it will finish at the exact spot and not overshoot
-
-				this.easeInternal();
-
-				if(this.hasUpdateCallback){
-					if(this._optional.onUpdateFloat!=null){
-						this._optional.onUpdateFloat(val);
-					}
-					if (this._optional.onUpdateFloatRatio != null){
-						this._optional.onUpdateFloatRatio(val,ratioPassed);
-					}else if(this._optional.onUpdateFloatObject!=null){
-						this._optional.onUpdateFloatObject(val, this._optional.onUpdateParam);
-					}else if(this._optional.onUpdateVector3Object!=null){
-						this._optional.onUpdateVector3Object(newVect, this._optional.onUpdateParam);
-					}else if(this._optional.onUpdateVector3!=null){
-						this._optional.onUpdateVector3(newVect);
-					}else if(this._optional.onUpdateVector2!=null){
-						this._optional.onUpdateVector2(new Vector2(newVect.x,newVect.y));
-					}
-				}
-			}else{
-				this.delay -= dt;
-				// Debug.Log("dt:"+dt+" tween:"+i+" tween:"+tween);
-	//			if(this.delay<0f){
-	//				this.passed = 0.0f;//-tween.delay
-	//				this.delay = 0.0f;
-	//			}
 			}
-//		}
+		}else{
+			this.delay -= dt;
+		}
 
 //		Debug.Log("tween:"+this+" dt:"+dt);
 
-		// increment or flip tween
-
-		if(isTweenFinished){
+		isTweenFinished = this.direction>0f ? this.passed>=this.time : this.passed<=0f;
+		if(isTweenFinished){ // increment or flip tween
 			this.loopCount--;
 			if(this.loopType==LeanTweenType.pingPong){
 				this.direction = 0.0f-this.direction;
@@ -787,9 +772,11 @@ public class LTDescrImpl : LTDescr {
 		
 			if(isTweenFinished==false && this.onCompleteOnRepeat && this.hasExtraOnCompletes)
 				callOnCompletes(); // this only gets called if onCompleteOnRepeat is set to true, otherwise LeanTween class takes care of calling it
+
+			return isTweenFinished;
 		}
 
-		return isTweenFinished;
+		return false;
 	}
 
 	public void callOnCompletes(){
