@@ -384,28 +384,33 @@ public static void update() {
 		for(int i = 0; i < finishedCnt; i++){
 			j = tweensFinished[i];
 			tween = tweens[ j ];
-				removeTween(j);
+			
+			removeTween(j);
+			if(tween.hasExtraOnCompletes)
+				tween.callOnCompletes();
 
-				if(tween.hasExtraOnCompletes)
-					tween.callOnCompletes();
-			// logError("removing tween:"+tween);
-//			if(tween.optional.onComplete!=null){
-//				System.Action onComplete = tween.optional.onComplete;
-//				//logError("removing tween for j:"+j+" tween:"+tween);
-//				removeTween(j);
-//				//tween.cleanup();
-//				onComplete();
-//				
-//			}else if(tween.optional.onCompleteObject!=null){
-//					System.Action<object> onCompleteObject = tween.optional.onCompleteObject;
-//					object onCompleteParam = tween.optional.onCompleteParam;
-//				
-//				//tween.cleanup();
-//				onCompleteObject(onCompleteParam);
-//			}else{
-//				removeTween(j);
-//				//tween.cleanup();
-//			}
+//				if(tween.hasExtraOnCompletes){
+//			// logError("removing tween:"+tween);
+//					if(tween.optional.onComplete!=null){
+//						System.Action onComplete = tween.optional.onComplete;
+//						//logError("removing tween for j:"+j+" tween:"+tween);
+//						removeTween(j);
+//						//tween.cleanup();
+//						onComplete();
+//						
+//					}else if(tween.optional.onCompleteObject!=null){
+//							System.Action<object> onCompleteObject = tween.optional.onCompleteObject;
+//							object onCompleteParam = tween.optional.onCompleteParam;
+//						
+//						//tween.cleanup();
+//						onCompleteObject(onCompleteParam);
+//					}else{
+//						removeTween(j);
+//						//tween.cleanup();
+//					}
+//				}else{
+//					removeTween(j);
+//				}
 		}
 
 	}

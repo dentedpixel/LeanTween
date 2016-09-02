@@ -136,7 +136,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public void reset(){
-		this.toggle = this.useRecursion = true;
+		this.toggle = this.useRecursion = this.usesNormalDt = true;
         this.trans = null;
 		this.passed = this.delay = this.lastVal = 0.0f;
 		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = this.hasExtraOnCompletes = false;
@@ -159,16 +159,12 @@ public class LTDescrImpl : LTDescr {
 	public void init(){
 		this.hasInitiliazed = true;
 
+		usesNormalDt = !(useEstimatedTime || useManualTime || useFrames); // only set this to true if it uses non of the other timing modes
+
         if (this.time <= 0f) { // avoid dividing by zero
             this.ratioPassed = 1f;
+			this.time = Mathf.Epsilon;
         }
-//		this._optional = new LTDescrOptional();
-
-		if (this._optional.onStart != null){
-			this._optional.onStart();
-        }		 
-
-		usesNormalDt = !(useEstimatedTime || useManualTime || useFrames); // only set this to true if it uses non of the other timing modes
 
 		// Initialize From Values
 		switch(this.type){
@@ -242,6 +238,7 @@ public class LTDescrImpl : LTDescr {
 			case TweenAction.MOVE_CURVED_LOCAL:
 				this.easeInternal = moveCurvedLocal; break;
 			case TweenAction.MOVE_SPLINE:
+				this.fromInternal.x = 0; 
 				this.easeInternal = moveSpline;
 				break;
 			case TweenAction.MOVE_SPLINE_LOCAL:
@@ -422,6 +419,10 @@ public class LTDescrImpl : LTDescr {
 
 		this.diff = this.to - this.from;
 		this.diffDiv2 = this.diff * 0.5f;
+
+		if (this._optional.onStart != null){
+			this._optional.onStart();
+		}
 		if(this.onCompleteOnStart){
 			if(this._optional.onComplete!=null){
 				this._optional.onComplete();
@@ -757,7 +758,7 @@ public class LTDescrImpl : LTDescr {
 			this.delay -= dt;
 		}
 
-//		Debug.Log("tween:"+this+" dt:"+dt);
+//		Debug.Log("lt "+this+" dt:"+dt);
 
 		isTweenFinished = this.direction>0f ? this.passed>=this.time : this.passed<=0f;
 		if(isTweenFinished){ // increment or flip tween
@@ -780,17 +781,15 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public void callOnCompletes(){
-		if(this.hasExtraOnCompletes){
-			if(this.type==TweenAction.GUI_ROTATE)
-				this._optional.ltRect.rotateFinished = true;
-			if(this.type==TweenAction.DELAYED_SOUND){
-				AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
-			}
-			if(this._optional.onComplete!=null){
-				this._optional.onComplete();
-			}else if(this._optional.onCompleteObject!=null){
-				this._optional.onCompleteObject(this._optional.onCompleteParam);
-			}
+		if(this.type==TweenAction.GUI_ROTATE)
+			this._optional.ltRect.rotateFinished = true;
+		if(this.type==TweenAction.DELAYED_SOUND){
+			AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
+		}
+		if(this._optional.onComplete!=null){
+			this._optional.onComplete();
+		}else if(this._optional.onCompleteObject!=null){
+			this._optional.onCompleteObject(this._optional.onCompleteParam);
 		}
 	}
 

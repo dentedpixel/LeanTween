@@ -32,7 +32,7 @@ namespace DentedPixel.LTExamples{
 
 		void Start () {
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 36;
+			LeanTest.expected = 40;
 
 			LeanTween.init(15 + 1200);
 			// add a listener
@@ -79,8 +79,7 @@ namespace DentedPixel.LTExamples{
 //			Debug.Log("Point 2:"+cr.ratioAtPoint(splineArr[2]));
 
 			// OnStart Speed Test for ignoreTimeScale vs normal timeScale
-			GameObject cube = Instantiate( boxNoCollider ) as GameObject;
-			cube.name = "normalTimeScale";
+			GameObject cube = cubeNamed("normalTimeScale");
 			// float timeElapsedNormal = Time.time;
 			LeanTween.moveX(cube, 12f, 1f).setIgnoreTimeScale( false ).setOnComplete( ()=>{
 				timeElapsedNormalTimeScale = Time.time;
@@ -89,32 +88,27 @@ namespace DentedPixel.LTExamples{
 			LTDescr[] descr = LeanTween.descriptions( cube );
 			LeanTest.expect( descr.Length >= 0 && descr[0].to.x == 12f, "WE CAN RETRIEVE A DESCRIPTION");
 
-			cube = Instantiate( boxNoCollider ) as GameObject;
-			cube.name = "ignoreTimeScale";
+			cube = cubeNamed("ignoreTimeScale");
 			LeanTween.moveX(cube, 5f, 1f).setIgnoreTimeScale( true ).setOnComplete( ()=>{
 				timeElapsedIgnoreTimeScale = Time.time;
 			});
 
-			GameObject cubeDest = Instantiate( boxNoCollider ) as GameObject;
-			cubeDest.name = "cubeDest";
+			GameObject cubeDest = cubeNamed("cubeDest");
 			Vector3 cubeDestEnd = new Vector3(100f,20f,0f);
 			LeanTween.move( cubeDest, cubeDestEnd, 0.7f);
-			GameObject cubeToTrans = Instantiate( boxNoCollider ) as GameObject;
-			cubeToTrans.name = "cubeToTrans";
 
+			GameObject cubeToTrans = cubeNamed("cubeToTrans");
 			LeanTween.move( cubeToTrans, cubeDest.transform, 1.2f).setEase( LeanTweenType.easeOutQuad ).setOnComplete( ()=>{
 				LeanTest.expect( cubeToTrans.transform.position == cubeDestEnd, "MOVE TO TRANSFORM WORKS");
 			});
 
-			GameObject cubeDestroy = Instantiate( boxNoCollider ) as GameObject;
-			cubeDestroy.name = "cubeDestroy";
+			GameObject cubeDestroy = cubeNamed("cubeDestroy");
 			LeanTween.moveX( cubeDestroy, 200f, 0.05f).setDelay(0.02f).setDestroyOnComplete(true);
 			LeanTween.moveX( cubeDestroy, 200f, 0.1f).setDestroyOnComplete(true).setOnComplete( ()=>{
 				LeanTest.expect(true, "TWO DESTROY ON COMPLETE'S SUCCEED");
 			});
 
-			GameObject cubeSpline = Instantiate( boxNoCollider ) as GameObject;
-			cubeSpline.name = "cubeSpline";
+			GameObject cubeSpline = cubeNamed("cubeSpline");
 			LeanTween.moveSpline(cubeSpline, new Vector3[]{new Vector3(0.5f,0f,0.5f),new Vector3(0.75f,0f,0.75f),new Vector3(1f,0f,1f),new Vector3(1f,0f,1f)}, 0.1f).setOnComplete( ()=>{
 				LeanTest.expect(Vector3.Distance(new Vector3(1f,0f,1f), cubeSpline.transform.position) < 0.01f, "SPLINE WITH TWO POINTS SUCCEEDS");
 			});
@@ -140,18 +134,40 @@ namespace DentedPixel.LTExamples{
 				LeanTest.expect( zeroCube.transform.position.x == 10f, "ZERO TIME FINSHES CORRECTLY", "final x:"+ zeroCube.transform.position.x);
 			});
 
-			// Scale
-			// Value
+			// Scale, and OnStart
+			GameObject cubeScale = cubeNamed("cubeScale");
+			LeanTween.scale(cubeScale, new Vector3(5f,5f,5f),0.01f).setOnStart(()=>{
+				LeanTest.expect( true, "ON START WAS CALLED");
+			}).setOnComplete(()=>{
+				LeanTest.expect( cubeScale.transform.localScale.z == 5f, "SCALE WORKS","expected scale z:"+5f+" returned:"+cubeScale.transform.localScale.z);
+			});
+
 			// Rotate
+			GameObject cubeRotate = cubeNamed("cubeRotate");
+			LeanTween.rotate(cubeRotate, new Vector3(0f,180f,0f),0.02f).setOnComplete(()=>{
+				LeanTest.expect( cubeRotate.transform.eulerAngles.y == 180f, "ROTATE WORKS","expected rotate y:"+180f+" returned:"+cubeRotate.transform.eulerAngles.y);
+			});
+
 			// RotateAround
+			GameObject cubeRotateA = cubeNamed("cubeRotateA");
+			LeanTween.rotateAround(cubeRotateA,Vector3.forward,90f,0.3f).setOnComplete(()=>{
+				LeanTest.expect( cubeRotateA.transform.eulerAngles.z==90f, "ROTATE AROUND WORKS","expected rotate z:"+90f+" returned:"+cubeRotateA.transform.eulerAngles.z);
+			});
 			// Alpha
 			// Color
 			// OnUpdate
 			// OnStart
 			// moveLocalY (make sure uses y values)
+			// onUpdate with passing value
 
 			
 			StartCoroutine( timeBasedTesting() );
+		}
+
+		private GameObject cubeNamed( string name ){
+			GameObject cube = Instantiate( boxNoCollider ) as GameObject;
+			cube.name = name;
+			return cube;
 		}
 
 		IEnumerator timeBasedTesting(){
@@ -187,7 +203,7 @@ namespace DentedPixel.LTExamples{
 			});
 			
 			// Groups of tweens testing
-			groupTweens = new LTDescr[ 1200 ];
+			groupTweens = new LTDescr[ 2 ];
 			groupGOs = new GameObject[ groupTweens.Length ];
 			groupTweensCnt = 0;
 			int descriptionMatchCount = 0;
@@ -307,13 +323,7 @@ namespace DentedPixel.LTExamples{
 	        }
 			LeanTest.expect( ltCount==1, "RESET CORRECTLY CLEANS UP" );
 
-			
-
-
 			lotsOfCancels();
-
-
-			
 		}
 
 		IEnumerator lotsOfCancels(){
