@@ -91,7 +91,7 @@ public class LTDescrImpl : LTDescr {
 	private static uint global_counter = 0;
 
     public override string ToString(){
-		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" diff:"+diff+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
+		return (trans!=null ? "name:"+trans.gameObject.name : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" diff:"+diff+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
 
 	public LTDescrImpl(){
@@ -234,8 +234,10 @@ public class LTDescrImpl : LTDescr {
 				this.from = trans.localPosition; 
 				this.easeInternal = this.moveLocal; break;
 			case TweenAction.MOVE_CURVED:
+				this.fromInternal.x = 0;
 				this.easeInternal = moveCurved; break;
 			case TweenAction.MOVE_CURVED_LOCAL:
+				this.fromInternal.x = 0;
 				this.easeInternal = moveCurvedLocal; break;
 			case TweenAction.MOVE_SPLINE:
 				this.fromInternal.x = 0; 
@@ -519,6 +521,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	private void moveCurvedLocal(){
+		val = easeMethod().x;
 		if(this._optional.path.orientToPath){
 			if(this._optional.path.orientToPath2d){
 				this._optional.path.placeLocal2d( trans, val );
@@ -758,9 +761,8 @@ public class LTDescrImpl : LTDescr {
 			this.delay -= dt;
 		}
 
-//		Debug.Log("lt "+this+" dt:"+dt);
-
 		isTweenFinished = this.direction>0f ? this.passed>=this.time : this.passed<=0f;
+		// Debug.Log("lt "+this+" dt:"+dt+" fin:"+isTweenFinished);
 		if(isTweenFinished){ // increment or flip tween
 			this.loopCount--;
 			if(this.loopType==LeanTweenType.pingPong){

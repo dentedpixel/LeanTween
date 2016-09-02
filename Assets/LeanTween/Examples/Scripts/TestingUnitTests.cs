@@ -31,6 +31,8 @@ namespace DentedPixel.LTExamples{
 		}
 
 		void Start () {
+//			Time.timeScale = 0.25f;
+
 			LeanTest.timeout = 46f;
 			LeanTest.expected = 40;
 
@@ -114,16 +116,18 @@ namespace DentedPixel.LTExamples{
 			});
 			
 			// This test works when it is positioned last in the test queue (probably worth fixing when you have time)
-			GameObject jumpCube = Instantiate( boxNoCollider ) as GameObject;
-			jumpCube.name = "jumpTime";
-			int jumpTimeId = LeanTween.moveX( jumpCube, 1f, 1f).id;
+			GameObject jumpCube = cubeNamed("jumpTime");
+			jumpCube.transform.position = new Vector3(100f,0f,0f);
+			jumpCube.transform.localScale *= 100f;
+			int jumpTimeId = LeanTween.moveX( jumpCube, 200f, 1f).id;
 
-			LeanTween.delayedCall(jumpCube, 0.2f, ()=>{
+			LeanTween.delayedCall(gameObject, 0.2f, ()=>{
 				LTDescr d = LeanTween.descr( jumpTimeId );
 				float beforeX = jumpCube.transform.position.x;
 				d.setTime( 0.5f );
 				LeanTween.delayedCall( 0.01f, ()=>{ }).setOnStart( ()=>{
-					LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < 0.01f , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ));
+					float diffAmt = 3f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
+					LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < diffAmt , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ) +" beforeX:"+beforeX+" now:"+jumpCube.transform.position.x);
 				});
 			});
 
@@ -199,7 +203,7 @@ namespace DentedPixel.LTExamples{
 			cubeSpline.name = "bSpline";
 			Vector3 onStartPosSpline = cubeSpline.transform.position;
 			LeanTween.moveSplineLocal(cubeSpline, roundSpline, 0.5f).setOnComplete( ()=>{
-				LeanTest.expect(Vector3.Distance(onStartPosSpline, cubeSpline.transform.position) <= 0.01f, "BEZIER CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPosSpline+" onEnd:"+cubeSpline.transform.position+" dist:"+Vector3.Distance(onStartPosSpline, cubeSpline.transform.position));
+				LeanTest.expect(Vector3.Distance(onStartPosSpline, cubeSpline.transform.position) <= 0.01f, "SPLINE CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPosSpline+" onEnd:"+cubeSpline.transform.position+" dist:"+Vector3.Distance(onStartPosSpline, cubeSpline.transform.position));
 			});
 			
 			// Groups of tweens testing
@@ -241,7 +245,8 @@ namespace DentedPixel.LTExamples{
 				yield return null;
 
 			LeanTest.expect( descriptionMatchCount==groupTweens.Length, "GROUP IDS MATCH" );
-			LeanTest.expect( LeanTween.maxSearch<=groupTweens.Length+5, "MAX SEARCH OPTIMIZED", "maxSearch:"+LeanTween.maxSearch );
+			int expectedSearch = groupTweens.Length+5;
+			LeanTest.expect( LeanTween.maxSearch<=expectedSearch, "MAX SEARCH OPTIMIZED", "maxSearch:"+LeanTween.maxSearch+" should be:"+ expectedSearch);
 			LeanTest.expect( LeanTween.isTweening() == true, "SOMETHING IS TWEENING" );
 
 			// resume item before calling pause should continue item along it's way
