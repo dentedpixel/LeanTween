@@ -355,7 +355,7 @@ public static void update() {
 		}else{
 			dtEstimated = Time.unscaledDeltaTime;
 		}
-		// Debug.Log("Time.unscaledDeltaTime:"+Time.unscaledDeltaTime);
+//		Debug.Log("Time.unscaledDeltaTime:"+Time.unscaledDeltaTime);
 		#endif
 
 		dtActual = Time.deltaTime;

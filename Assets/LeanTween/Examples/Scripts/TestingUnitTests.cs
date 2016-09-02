@@ -83,7 +83,7 @@ namespace DentedPixel.LTExamples{
 			// OnStart Speed Test for ignoreTimeScale vs normal timeScale
 			GameObject cube = cubeNamed("normalTimeScale");
 			// float timeElapsedNormal = Time.time;
-			LeanTween.moveX(cube, 12f, 1f).setIgnoreTimeScale( false ).setOnComplete( ()=>{
+			LeanTween.moveX(cube, 12f, 1.5f).setIgnoreTimeScale( false ).setOnComplete( ()=>{
 				timeElapsedNormalTimeScale = Time.time;
 			});
 
@@ -91,7 +91,7 @@ namespace DentedPixel.LTExamples{
 			LeanTest.expect( descr.Length >= 0 && descr[0].to.x == 12f, "WE CAN RETRIEVE A DESCRIPTION");
 
 			cube = cubeNamed("ignoreTimeScale");
-			LeanTween.moveX(cube, 5f, 1f).setIgnoreTimeScale( true ).setOnComplete( ()=>{
+			LeanTween.moveX(cube, 5f, 1.5f).setIgnoreTimeScale( true ).setOnComplete( ()=>{
 				timeElapsedIgnoreTimeScale = Time.time;
 			});
 
@@ -125,8 +125,8 @@ namespace DentedPixel.LTExamples{
 				LTDescr d = LeanTween.descr( jumpTimeId );
 				float beforeX = jumpCube.transform.position.x;
 				d.setTime( 0.5f );
-				LeanTween.delayedCall( 0.01f, ()=>{ }).setOnStart( ()=>{
-					float diffAmt = 3f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
+				LeanTween.delayedCall( 0.0f, ()=>{ }).setOnStart( ()=>{
+					float diffAmt = 20f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
 					LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < diffAmt , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ) +" beforeX:"+beforeX+" now:"+jumpCube.transform.position.x);
 				});
 			});
@@ -175,9 +175,7 @@ namespace DentedPixel.LTExamples{
 		}
 
 		IEnumerator timeBasedTesting(){
-			yield return new WaitForSeconds(1);
-			
-			yield return new WaitForEndOfFrame();
+			yield return new WaitForSeconds(1.5f);
 
 			LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.15f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
 
