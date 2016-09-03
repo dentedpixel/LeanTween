@@ -155,52 +155,52 @@ public class LTDescrImpl : LTDescr {
 			global_counter = 0;
 	}
 
-//	MOVE_X,
+	// Initialize and Internal Methods
+
 	public LTDescr setMoveX(){
 		this.type = TweenAction.MOVE_X;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.position.x; };
 		this.easeInternal = ()=>{ trans.position=new Vector3( easeMethod().x,trans.position.y,trans.position.z); };
 		return this;
 	}
-//	MOVE_Y,
+
 	public LTDescr setMoveY(){
 		this.type = TweenAction.MOVE_Y;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.position.y; };
 		this.easeInternal = ()=>{ trans.position=new Vector3( trans.position.x,easeMethod().x,trans.position.z); };
 		return this;
 	}
-//	MOVE_Z,
+
 	public LTDescr setMoveZ(){
 		this.type = TweenAction.MOVE_Z;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.position.z; };;
 		this.easeInternal = ()=>{ trans.position=new Vector3( trans.position.x,trans.position.y,easeMethod().x);  };
 		return this;
 	}
-//	MOVE_LOCAL_X,
+
 	public LTDescr setMoveLocalX(){
 		this.type = TweenAction.MOVE_LOCAL_X;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.localPosition.x; };
 		this.easeInternal = ()=>{ trans.localPosition=new Vector3( easeMethod().x,trans.localPosition.y,trans.localPosition.z); };
 		return this;
 	}
-//	MOVE_LOCAL_Y,
+
 	public LTDescr setMoveLocalY(){
 		this.type = TweenAction.MOVE_LOCAL_Y;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.localPosition.y; };
 		this.easeInternal = ()=>{ trans.localPosition=new Vector3( trans.localPosition.x,easeMethod().x,trans.localPosition.z); };
 		return this;
 	}
-//	MOVE_LOCAL_Z,
+
 	public LTDescr setMoveLocalZ(){
 		this.type = TweenAction.MOVE_LOCAL_Z;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.localPosition.z; };
 		this.easeInternal = ()=>{ trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,easeMethod().x);  };
 		return this;
 	}
-	private void initFromInternal(){
-		this.fromInternal.x = 0;
-	}
-//	MOVE_CURVED,
+
+	private void initFromInternal(){ this.fromInternal.x = 0; }
+
 	public LTDescr setMoveCurved(){
 		this.type = TweenAction.MOVE_CURVED;
 		this.initInternal = this.initFromInternal;
@@ -218,7 +218,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-//	MOVE_CURVED_LOCAL,
+
 	public LTDescr setMoveCurvedLocal(){
 		this.type = TweenAction.MOVE_CURVED_LOCAL;
 		this.initInternal = this.initFromInternal;
@@ -236,7 +236,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-//	MOVE_SPLINE,
+
 	public LTDescr setMoveSpline(){
 		this.type = TweenAction.MOVE_SPLINE;
 		this.initInternal = this.initFromInternal;
@@ -254,7 +254,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	MOVE_SPLINE_LOCAL,
+
 	public LTDescr setMoveSplineLocal(){
 		this.type = TweenAction.MOVE_SPLINE_LOCAL;
 		this.initInternal = this.initFromInternal;
@@ -272,48 +272,42 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	SCALE_X,
+
 	public LTDescr setScaleX(){
 		this.type = TweenAction.SCALE_X;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.localScale.x; };
 		this.easeInternal = ()=>{ trans.localScale = new Vector3( easeMethod().x,trans.localScale.y,trans.localScale.z); };
 		return this;
 	}
-	//	SCALE_Y,
+
 	public LTDescr setScaleY(){
 		this.type = TweenAction.SCALE_Y;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.localScale.y; };
 		this.easeInternal = ()=>{ trans.localScale=new Vector3( trans.localScale.x,easeMethod().x,trans.localScale.z); };
 		return this;
 	}
-	//	SCALE_Z,
+
 	public LTDescr setScaleZ(){
 		this.type = TweenAction.SCALE_Z;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.localScale.z; };
 		this.easeInternal = ()=>{ trans.localScale=new Vector3( trans.localScale.x,trans.localScale.y,easeMethod().x); };
 		return this;
 	}
-	//	ROTATE_X,
+
 	public LTDescr setRotateX(){
 		this.type = TweenAction.ROTATE_X;
-		this.initInternal = ()=>{
-			this.fromInternal.x = trans.eulerAngles.x; 
-			this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
-		};
+		this.initInternal = ()=>{ this.fromInternal.x = trans.eulerAngles.x; this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);};
 		this.easeInternal = ()=>{ trans.eulerAngles=new Vector3(easeMethod().x,trans.eulerAngles.y,trans.eulerAngles.z); };
 		return this;
 	}
-	//	ROTATE_Y,
+
 	public LTDescr setRotateY(){
 		this.type = TweenAction.ROTATE_Y;
-		this.initInternal = ()=>{
-			this.fromInternal.x = trans.eulerAngles.y; 
-			this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
-		};
+		this.initInternal = ()=>{ this.fromInternal.x = trans.eulerAngles.y;  this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);};
 		this.easeInternal = ()=>{ trans.eulerAngles=new Vector3(trans.eulerAngles.x,easeMethod().x,trans.eulerAngles.z); };
 		return this;
 	}
-	//	ROTATE_Z,
+
 	public LTDescr setRotateZ(){
 		this.type = TweenAction.ROTATE_Z;
 		this.initInternal = ()=>{
@@ -323,7 +317,7 @@ public class LTDescrImpl : LTDescr {
 		this.easeInternal = ()=>{ trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,easeMethod().x); };
 		return this;
 	}
-	//	ROTATE_AROUND,
+
 	public LTDescr setRotateAround(){
 		this.type = TweenAction.ROTATE_AROUND;
 		this.initInternal = ()=>{
@@ -346,7 +340,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	ROTATE_AROUND_LOCAL,
+
 	public LTDescr setRotateAroundLocal(){
 		this.type = TweenAction.ROTATE_AROUND_LOCAL;
 		this.initInternal = ()=>{
@@ -368,12 +362,6 @@ public class LTDescrImpl : LTDescr {
 		return this;
 	}
 
-	private void initCanvasRotateAround(){
-		this.lastVal = 0.0f;
-		this.fromInternal.x = 0.0f;
-		this._optional.origRotation = this.rectTransform.rotation;
-	}
-	//	ALPHA,
 	public LTDescr setAlpha(){
 		this.type = TweenAction.ALPHA;
 		this.initInternal = ()=>{
@@ -408,12 +396,12 @@ public class LTDescrImpl : LTDescr {
 				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
 				alphaRecursive(this.trans, val, this.useRecursion);
 				#else
-					if(this.spriteRen!=null){
-						this.spriteRen.color = new Color( this.spriteRen.color.r, this.spriteRen.color.g, this.spriteRen.color.b, val);
-						alphaRecursiveSprite(this.trans, val);
-					}else{
-						alphaRecursive(this.trans, val, this.useRecursion);
-					}
+				if(this.spriteRen!=null){
+					this.spriteRen.color = new Color( this.spriteRen.color.r, this.spriteRen.color.g, this.spriteRen.color.b, val);
+					alphaRecursiveSprite(this.trans, val);
+				}else{
+					alphaRecursive(this.trans, val, this.useRecursion);
+				}
 				#endif
 			};
 
@@ -433,7 +421,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	TEXT_ALPHA,
+
 	public LTDescr setTextAlpha(){
 		this.type = TweenAction.TEXT_ALPHA;
 		this.initInternal = ()=>{
@@ -443,7 +431,7 @@ public class LTDescrImpl : LTDescr {
 		this.easeInternal = ()=>{ textAlphaRecursive( trans, easeMethod().x, this.useRecursion ); };
 		return this;
 	}
-	//	ALPHA_VERTEX,
+
 	public LTDescr setAlphaVertex(){
 		this.type = TweenAction.ALPHA_VERTEX;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a; };
@@ -467,7 +455,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	COLOR,
+
 	public LTDescr setColor(){
 		this.type = TweenAction.COLOR;
 		this.initInternal = ()=>{
@@ -516,13 +504,13 @@ public class LTDescrImpl : LTDescr {
 				colorRecursiveSprite( trans, toColor);
 			}else{
 			#endif
-				// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
-				if(this.type==TweenAction.COLOR)
-					colorRecursive(trans, toColor, this.useRecursion);
+			// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
+			if(this.type==TweenAction.COLOR)
+				colorRecursive(trans, toColor, this.useRecursion);
 
-				#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 			}
-				#endif
+			#endif
 			if(dt!=0f && this._optional.onUpdateColor!=null){
 				this._optional.onUpdateColor(toColor);
 			}else if(dt!=0f && this._optional.onUpdateColorObject!=null){
@@ -531,7 +519,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	CALLBACK_COLOR,
+
 	public LTDescr setCallbackColor(){
 		this.type = TweenAction.CALLBACK_COLOR;
 		this.initInternal = ()=>{ this.diff = new Vector3(1.0f,0.0f,0.0f); };
@@ -540,19 +528,18 @@ public class LTDescrImpl : LTDescr {
 			Color toColor = tweenColor(this, val);
 
 			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
-
 			if(this.spriteRen!=null){
 				this.spriteRen.color = toColor;
 				colorRecursiveSprite( trans, toColor);
 			}else{
 			#endif
-				// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
-				if(this.type==TweenAction.COLOR)
-					colorRecursive(trans, toColor, this.useRecursion);
+			// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
+			if(this.type==TweenAction.COLOR)
+				colorRecursive(trans, toColor, this.useRecursion);
 
-				#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 			}
-				#endif
+			#endif
 			if(dt!=0f && this._optional.onUpdateColor!=null){
 				this._optional.onUpdateColor(toColor);
 			}else if(dt!=0f && this._optional.onUpdateColorObject!=null){
@@ -561,7 +548,10 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	TEXT_COLOR,
+
+
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+
 	public LTDescr setTextColor(){
 		this.type = TweenAction.TEXT_COLOR;
 		this.initInternal = ()=>{
@@ -580,8 +570,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-	//	CANVAS_ALPHA,
+
 	public LTDescr setCanvasAlpha(){
 		this.type = TweenAction.CANVAS_ALPHA;
 		this.initInternal = ()=>{
@@ -600,7 +589,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	CANVASGROUP_ALPHA,
+
 	public LTDescr setCanvasGroupAlpha(){
 		this.type = TweenAction.CANVASGROUP_ALPHA;
 		this.initInternal = ()=>{this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;};
@@ -608,7 +597,6 @@ public class LTDescrImpl : LTDescr {
 		return this;
 	}
 
-	//	CANVAS_COLOR,
 	public LTDescr setCanvasColor(){
 		this.type = TweenAction.CANVAS_COLOR;
 		this.initInternal = ()=>{
@@ -631,21 +619,21 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	CANVAS_MOVE_X,
+
 	public LTDescr setCanvasMoveX(){
 		this.type = TweenAction.CANVAS_MOVE_X;
 		this.initInternal = ()=>{ this.fromInternal.x = this.rectTransform.anchoredPosition3D.x; };
 		this.easeInternal = ()=>{ Vector3 c = this.rectTransform.anchoredPosition3D; this.rectTransform.anchoredPosition3D = new Vector3(easeMethod().x, c.y, c.z); };
 		return this;
 	}
-	//	CANVAS_MOVE_Y,
+
 	public LTDescr setCanvasMoveY(){
 		this.type = TweenAction.CANVAS_MOVE_Y;
 		this.initInternal = ()=>{ this.fromInternal.x = this.rectTransform.anchoredPosition3D.y; };
 		this.easeInternal = ()=>{ Vector3 c = this.rectTransform.anchoredPosition3D; this.rectTransform.anchoredPosition3D = new Vector3(c.x, easeMethod().x, c.z); };
 		return this;
 	}
-	//	CANVAS_MOVE_Z,
+
 	public LTDescr setCanvasMoveZ(){
 		this.type = TweenAction.CANVAS_MOVE_Z;
 		this.initInternal = ()=>{ this.fromInternal.x = this.rectTransform.anchoredPosition3D.z; };
@@ -653,8 +641,12 @@ public class LTDescrImpl : LTDescr {
 		return this;
 	}
 
+	private void initCanvasRotateAround(){
+		this.lastVal = 0.0f;
+		this.fromInternal.x = 0.0f;
+		this._optional.origRotation = this.rectTransform.rotation;
+	}
 
-	//	CANVAS_ROTATEAROUND,
 	public LTDescr setCanvasRotateAround(){
 		this.type = TweenAction.CANVAS_ROTATEAROUND;
 		this.initInternal = this.initCanvasRotateAround;
@@ -671,7 +663,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	CANVAS_ROTATEAROUND_LOCAL,
+
 	public LTDescr setCanvasRotateAroundLocal(){
 		this.type = TweenAction.CANVAS_ROTATEAROUND_LOCAL;
 		this.initInternal = this.initCanvasRotateAround;
@@ -688,7 +680,7 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-	//	CANVAS_PLAYSPRITE,
+
 	public LTDescr setCanvasPlaySprite(){
 		this.type = TweenAction.CANVAS_PLAYSPRITE;
 		this.initInternal = ()=>{
@@ -702,9 +694,24 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
+
+	public LTDescr setCanvasMove(){
+		this.type = TweenAction.CANVAS_MOVE;
+		this.initInternal = ()=>{ this.fromInternal = this.rectTransform.anchoredPosition3D; };
+		this.easeInternal = ()=>{ this.rectTransform.anchoredPosition3D = easeMethod(); };
+		return this;
+	}
+
+	public LTDescr setCanvasScale(){
+		this.type = TweenAction.CANVAS_SCALE;
+		this.initInternal = ()=>{ this.from = this.rectTransform.localScale; };
+		this.easeInternal = ()=>{ this.rectTransform.localScale = easeMethod(); };
+		return this;
+	}
 	#endif
+
 	private void callback(){ val = easeMethod().x; }
-//	CALLBACK,
+
 	public LTDescr setCallback(){
 		this.type = TweenAction.CALLBACK;
 		this.initInternal = ()=>{};
@@ -717,21 +724,21 @@ public class LTDescrImpl : LTDescr {
 		this.easeInternal = this.callback;
 		return this;
 	}
-//	MOVE,
+
 	public LTDescr setMove(){
 		this.type = TweenAction.MOVE;
 		this.initInternal = ()=>{ this.from = trans.position; };
 		this.easeInternal = ()=>{ trans.position = easeMethod(); };
 		return this;
 	}
-//	MOVE_LOCAL,
+
 	public LTDescr setMoveLocal(){
 		this.type = TweenAction.MOVE_LOCAL;
 		this.initInternal = ()=>{ this.from = trans.localPosition; };
 		this.easeInternal = ()=>{ trans.localPosition = easeMethod(); };
 		return this;
 	}
-//	MOVE_TO_TRANSFORM,
+
 	public LTDescr setMoveToTransform(){
 		this.type = TweenAction.MOVE_TO_TRANSFORM;
 		this.initInternal = ()=>{ this.from = trans.position; };
@@ -744,64 +751,56 @@ public class LTDescrImpl : LTDescr {
 		};
 		return this;
 	}
-//	ROTATE,
+
 	public LTDescr setRotate(){
 		this.type = TweenAction.ROTATE;
-		this.initInternal = ()=>{
-			this.from = trans.eulerAngles; 
-			this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
-		};
+		this.initInternal = ()=>{ this.from = trans.eulerAngles;  this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z)); };
 		this.easeInternal = ()=>{ trans.eulerAngles = easeMethod(); };
 		return this;
 	}
-//	ROTATE_LOCAL,
+
 	public LTDescr setRotateLocal(){
 		this.type = TweenAction.ROTATE_LOCAL;
-		this.initInternal = ()=>{
-			this.from = trans.localEulerAngles; 
-			this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
-		};
+		this.initInternal = ()=>{ this.from = trans.localEulerAngles;  this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z)); };
 		this.easeInternal = ()=>{ trans.localEulerAngles = easeMethod(); };
 		return this;
 	}
-//	SCALE,
+
 	public LTDescr setScale(){
 		this.type = TweenAction.SCALE;
-		this.initInternal = ()=>{
-			this.from = trans.localScale;
-		};
+		this.initInternal = ()=>{ this.from = trans.localScale; };
 		this.easeInternal = ()=>{ trans.localScale = easeMethod(); };
 		return this;
 	}
-//	GUI_MOVE,
+
 	public LTDescr setGUIMove(){
 		this.type = TweenAction.GUI_MOVE;
 		this.initInternal = ()=>{ this.from = new Vector3(this._optional.ltRect.rect.x, this._optional.ltRect.rect.y, 0); };
 		this.easeInternal = ()=>{ Vector3 v = easeMethod(); this._optional.ltRect.rect = new Rect( v.x, v.y, this._optional.ltRect.rect.width, this._optional.ltRect.rect.height); };
 		return this;
 	}
-//	GUI_MOVE_MARGIN,
+
 	public LTDescr setGUIMoveMargin(){
 		this.type = TweenAction.GUI_MOVE_MARGIN;
 		this.initInternal = ()=>{ this.from = new Vector2(this._optional.ltRect.margin.x, this._optional.ltRect.margin.y); };
 		this.easeInternal = ()=>{ Vector3 v = easeMethod(); this._optional.ltRect.margin = new Vector2(v.x, v.y); };
 		return this;
 	}
-//	GUI_SCALE,
+
 	public LTDescr setGUIScale(){
 		this.type = TweenAction.GUI_SCALE;
 		this.initInternal = ()=>{ this.from = new Vector3(this._optional.ltRect.rect.width, this._optional.ltRect.rect.height, 0); };
 		this.easeInternal = ()=>{ Vector3 v = easeMethod(); this._optional.ltRect.rect = new Rect( this._optional.ltRect.rect.x, this._optional.ltRect.rect.y, v.x, v.y); };
 		return this;
 	}
-//	GUI_ALPHA,
+
 	public LTDescr setGUIAlpha(){
 		this.type = TweenAction.GUI_ALPHA;
 		this.initInternal = ()=>{ this.fromInternal.x = this._optional.ltRect.alpha; };
 		this.easeInternal = ()=>{ this._optional.ltRect.alpha = easeMethod().x; };
 		return this;
 	}
-//	GUI_ROTATE,
+
 	public LTDescr setGUIRotate(){
 		this.type = TweenAction.GUI_ROTATE;
 		this.initInternal = ()=>{ if(this._optional.ltRect.rotateEnabled==false){
@@ -814,32 +813,15 @@ public class LTDescrImpl : LTDescr {
 		this.easeInternal = ()=>{ this._optional.ltRect.rotation = easeMethod().x; };
 		return this;
 	}
-//	DELAYED_SOUND,
+
 	public LTDescr setDelayedSound(){
 		this.type = TweenAction.DELAYED_SOUND;
 		this.initInternal = ()=>{};
 		this.easeInternal = this.callback;
 		return this;
 	}
-	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-//	CANVAS_MOVE,
-	public LTDescr setCanvasMove(){
-		this.type = TweenAction.CANVAS_MOVE;
-		this.initInternal = ()=>{ this.fromInternal = this.rectTransform.anchoredPosition3D; };
-		this.easeInternal = ()=>{ this.rectTransform.anchoredPosition3D = easeMethod(); };
-		return this;
-	}
-//	CANVAS_SCALE,
-	public LTDescr setCanvasScale(){
-		this.type = TweenAction.CANVAS_SCALE;
-		this.initInternal = ()=>{ this.from = this.rectTransform.localScale; };
-		this.easeInternal = ()=>{ this.rectTransform.localScale = easeMethod(); };
-		return this;
-	}
-	#endif
 
-	// This method is only for internal use
-	public void init(){
+	private void init(){
 		this.hasInitiliazed = true;
 
 		usesNormalDt = !(useEstimatedTime || useManualTime || useFrames); // only set this to true if it uses non of the other timing modes
@@ -875,14 +857,7 @@ public class LTDescrImpl : LTDescr {
 			}
 		}
 	}
-
-	public LTDescr setFromColor( Color col ){
-		this.from = new Vector3(0.0f, col.a, 0.0f);
-		this.diff = new Vector3(1.0f,0.0f,0.0f);
-		this._optional.axis = new Vector3( col.r, col.g, col.b );
-		return this;
-	}
-        
+		
 	public static float val;
 	public static Vector3 newVect;
 
@@ -968,6 +943,15 @@ public class LTDescrImpl : LTDescr {
 		}else if(this._optional.onCompleteObject!=null){
 			this._optional.onCompleteObject(this._optional.onCompleteParam);
 		}
+	}
+
+	// Helper Methods
+
+	public LTDescr setFromColor( Color col ){
+		this.from = new Vector3(0.0f, col.a, 0.0f);
+		this.diff = new Vector3(1.0f,0.0f,0.0f);
+		this._optional.axis = new Vector3( col.r, col.g, col.b );
+		return this;
 	}
 
     private static void alphaRecursive( Transform transform, float val, bool useRecursion = true){
@@ -1297,13 +1281,13 @@ public class LTDescrImpl : LTDescr {
 
 	public LTDescr setEaseInOutElastic(){ this.tweenType = LeanTweenType.easeInOutElastic; this.easeMethod = this.easeInOutElastic; return this; }
 
-
-
 	private Vector3 tweenOnCurve(){
 		return	new Vector3(this.from.x + (this.diff.x) * this._optional.animationCurve.Evaluate(ratioPassed),
 			this.from.y + (this.diff.y) * this._optional.animationCurve.Evaluate(ratioPassed),
 			this.from.z + (this.diff.z) * this._optional.animationCurve.Evaluate(ratioPassed) );
 	}
+
+	// Vector3 Ease Methods
 
 	private Vector3 easeInOutQuad(){
 		val = this.ratioPassed * 2f;
@@ -1452,12 +1436,6 @@ public class LTDescrImpl : LTDescr {
 		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
 	}
 
-//	val /= .5f;
-//	end -= start;
-//	if (val < 1) return -end / 2 * (Mathf.Sqrt(1 - val * val) - 1) + start;
-//	val -= 2;
-//	return end / 2 * (Mathf.Sqrt(1 - val * val) + 1) + start;
-
 	private Vector3 easeInOutCirc(){
 		val = this.ratioPassed * 2f;
 		if (val < 1f){
@@ -1508,7 +1486,6 @@ public class LTDescrImpl : LTDescr {
 			return new Vector3(LeanTween.easeOutBounce(0, this.diff.x, val) * 0.5f + this.diffDiv2.x + this.from.x,
 			LeanTween.easeOutBounce(0, this.diff.y, val) * 0.5f + this.diffDiv2.y + this.from.y,
 			LeanTween.easeOutBounce(0, this.diff.z, val) * 0.5f + this.diffDiv2.z + this.from.z);
-
 		}
 	}
 
@@ -1628,7 +1605,6 @@ public class LTDescrImpl : LTDescr {
 	public LTDescr setFrom( Vector3 from ){
 		if(this.trans){
 			this.init();
-
 		}
 		this.from = from;
 		// this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts

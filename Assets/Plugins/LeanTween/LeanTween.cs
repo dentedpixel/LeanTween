@@ -350,11 +350,9 @@ public class LeanTween : MonoBehaviour {
 			dtEstimated = 0.2f;
 			previousRealTime = Time.realtimeSinceStartup;
 			#else
-			if(dtEstimated<0f){
-				dtEstimated = 0f;
-			}else{
-				dtEstimated = Time.unscaledDeltaTime;
-			}
+
+			dtEstimated = dtEstimated<0f ? 0f : dtEstimated = Time.unscaledDeltaTime;
+
 			//		Debug.Log("Time.unscaledDeltaTime:"+Time.unscaledDeltaTime);
 			#endif
 
@@ -388,29 +386,6 @@ public class LeanTween : MonoBehaviour {
 				removeTween(j);
 				if(tween.hasExtraOnCompletes)
 					tween.callOnCompletes();
-
-				//				if(tween.hasExtraOnCompletes){
-				//			// logError("removing tween:"+tween);
-				//					if(tween.optional.onComplete!=null){
-				//						System.Action onComplete = tween.optional.onComplete;
-				//						//logError("removing tween for j:"+j+" tween:"+tween);
-				//						removeTween(j);
-				//						//tween.cleanup();
-				//						onComplete();
-				//						
-				//					}else if(tween.optional.onCompleteObject!=null){
-				//							System.Action<object> onCompleteObject = tween.optional.onCompleteObject;
-				//							object onCompleteParam = tween.optional.onCompleteParam;
-				//						
-				//						//tween.cleanup();
-				//						onCompleteObject(onCompleteParam);
-				//					}else{
-				//						removeTween(j);
-				//						//tween.cleanup();
-				//					}
-				//				}else{
-				//					removeTween(j);
-				//				}
 			}
 
 		}

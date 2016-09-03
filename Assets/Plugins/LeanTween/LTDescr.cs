@@ -48,7 +48,6 @@ public interface LTDescr
 	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 	SpriteRenderer spriteRen{ get; set; }
 	#endif
-	void init();
 	bool update2();
 	void callOnCompletes();
 	LTDescr pause();
