@@ -40,6 +40,7 @@ public interface LTDescr
 
 	LTDescrImpl.EaseTypeDelegate easeMethod { get; set; }
 	LTDescrImpl.ActionMethodDelegate easeInternal {get; set; }
+	LTDescrImpl.ActionMethodDelegate initInternal {get; set; }
 	[System.Obsolete("Use 'LeanTween.cancel( id )' instead")]
 	LTDescr cancel(UnityEngine.GameObject gameObject);
 	int uniqueId { get; }
@@ -98,6 +99,57 @@ public interface LTDescr
 	LTDescr setFromColor(UnityEngine.Color col);
 	LTDescr setHasInitialized(bool has);
 	LTDescr setId(uint id);
+
+	LTDescr setMoveX();
+	LTDescr setMoveY();
+	LTDescr setMoveZ();
+	LTDescr setMoveLocalX();
+	LTDescr setMoveLocalY();
+	LTDescr setMoveLocalZ();
+	LTDescr setMoveCurved();
+	LTDescr setMoveCurvedLocal();
+	LTDescr setMoveSpline();
+	LTDescr setMoveSplineLocal();
+	LTDescr setScaleX();
+	LTDescr setScaleY();
+	LTDescr setScaleZ();
+	LTDescr setRotateX();
+	LTDescr setRotateY();
+	LTDescr setRotateZ();
+	LTDescr setRotateAround();
+	LTDescr setRotateAroundLocal();
+	LTDescr setAlpha();
+	LTDescr setTextAlpha();
+	LTDescr setAlphaVertex();
+	LTDescr setColor();
+	LTDescr setCallbackColor();
+	LTDescr setTextColor();
+	LTDescr setCanvasAlpha();
+	LTDescr setCanvasGroupAlpha();
+	LTDescr setCanvasColor();
+	LTDescr setCanvasMoveX();
+	LTDescr setCanvasMoveY();
+	LTDescr setCanvasMoveZ();
+	LTDescr setCanvasRotateAround();
+	LTDescr setCanvasRotateAroundLocal();
+	LTDescr setCanvasPlaySprite();
+	LTDescr setCallback();
+	LTDescr setValue3();
+	LTDescr setMove();
+	LTDescr setMoveLocal();
+	LTDescr setMoveToTransform();
+	LTDescr setRotate();
+	LTDescr setRotateLocal();
+	LTDescr setScale();
+	LTDescr setGUIMove();
+	LTDescr setGUIMoveMargin();
+	LTDescr setGUIScale();
+	LTDescr setGUIAlpha();
+	LTDescr setGUIRotate();
+	LTDescr setDelayedSound();
+	LTDescr setCanvasMove();
+	LTDescr setCanvasScale();
+
 	LTDescr setIgnoreTimeScale(bool useUnScaledTime);
 	LTDescr setSpeed( float speed );
 	LTDescr setLoopClamp();
