@@ -7,32 +7,34 @@ public class GeneralEasingTypes : MonoBehaviour {
 	public float lineDrawScale = 10f;
 	public AnimationCurve animationCurve;
 
+	private string[] easeTypes = new string[]{"EaseLinear","EaseAnimationCurve","EaseSpring",
+		"EaseInQuad","EaseOutQuad","EaseInOutQuad",
+		"EaseInCubic","EaseOutCubic","EaseInOutCubic",
+		"EaseInQuart","EaseOutQuart","EaseInOutQuart",
+		"EaseInQuint","EaseOutQuint","EaseInOutQuint",
+		"EaseInSine","EaseOutSine","EaseInOutSine",
+		"EaseInExpo","EaseOutExpo","EaseInOutExpo",
+		"EaseInCirc","EaseOutCirc","EaseInOutCirc",
+		"EaseInBounce","EaseOutBounce","EaseInOutBounce",
+		"EaseInBack","EaseOutBack","EaseInOutBack",
+		"EaseInElastic","EaseOutElastic","EaseInOutElastic",
+	};
+
 	void Start () {
 
-		string[] easeTypes = new string[]{"EaseLinear","EaseAnimationCurve","EaseSpring",
-			"EaseInQuad","EaseOutQuad","EaseInOutQuad",
-			"EaseInCubic","EaseOutCubic","EaseInOutCubic",
-			"EaseInQuart","EaseOutQuart","EaseInOutQuart",
-			"EaseInQuint","EaseOutQuint","EaseInOutQuint",
-			"EaseInSine","EaseOutSine","EaseInOutSine",
-			"EaseInExpo","EaseOutExpo","EaseInOutExpo",
-			"EaseInCirc","EaseOutCirc","EaseInOutCirc",
-			"EaseInBounce","EaseOutBounce","EaseInOutBounce",
-			"EaseInBack","EaseOutBack","EaseInOutBack",
-			"EaseInElastic","EaseOutElastic","EaseInOutElastic",
-		};
-	
+		demoEaseTypes();
+	}
+
+	private void demoEaseTypes(){
 		for(int i = 0; i < easeTypes.Length; i++){
 			string easeName = easeTypes[i];
 			Transform obj1 = GameObject.Find(easeName).transform.FindChild("Line");
 			float obj1val = 0f;
-			LTDescr lt = LeanTween.value( obj1.gameObject, 0f, 1f, 5f).setLoopCount(-1).setLoopPingPong().setOnUpdate( (float val)=>{
+			LTDescr lt = LeanTween.value( obj1.gameObject, 0f, 1f, 5f).setOnUpdate( (float val)=>{
 				Vector3 vec = obj1.localPosition;
 				vec.x = obj1val*lineDrawScale;
 				vec.y = val*lineDrawScale;
-				if(float.IsNaN(vec.y)){
-					Debug.Log("easeName:"+easeName);
-				}
+
 				obj1.localPosition = vec;
 
 				obj1val += Time.deltaTime/5f;
@@ -45,6 +47,16 @@ public class GeneralEasingTypes : MonoBehaviour {
 				MethodInfo theMethod = lt.GetType().GetMethod("set"+easeName);
 				theMethod.Invoke(lt, null);
 			}
+		}
+
+		LeanTween.delayedCall(gameObject, 10f, resetLines);
+		LeanTween.delayedCall(gameObject, 10.1f, demoEaseTypes);
+	}
+
+	private void resetLines(){
+		for(int i = 0; i < easeTypes.Length; i++){
+			Transform obj1 = GameObject.Find(easeTypes[i]).transform.FindChild("Line");
+			obj1.localPosition = new Vector3(0f,0f,0f);
 		}
 	}
 
