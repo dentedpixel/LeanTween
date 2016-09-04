@@ -7,7 +7,8 @@ public class GeneralEasingTypes : MonoBehaviour {
 	public float lineDrawScale = 10f;
 	public AnimationCurve animationCurve;
 
-	private string[] easeTypes = new string[]{"EaseLinear","EaseAnimationCurve","EaseSpring",
+	private string[] easeTypes = new string[]{
+		"EaseLinear","EaseAnimationCurve","EaseSpring",
 		"EaseInQuad","EaseOutQuad","EaseInOutQuad",
 		"EaseInCubic","EaseOutCubic","EaseInOutCubic",
 		"EaseInQuart","EaseOutQuart","EaseInOutQuart",

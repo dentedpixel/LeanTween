@@ -9,6 +9,8 @@ namespace DentedPixel.LTExamples{
 		public GameObject cube2;
 		public GameObject cube3;
 		public GameObject cube4;
+		public GameObject cubeAlpha1;
+		public GameObject cubeAlpha2;
 
 
 		private bool eventGameObjectWasCalled = false, eventGeneralWasCalled = false;
@@ -34,7 +36,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 40;
+			LeanTest.expected = 49;
 
 			LeanTween.init(15 + 1200);
 			// add a listener
@@ -126,8 +128,9 @@ namespace DentedPixel.LTExamples{
 				float beforeX = jumpCube.transform.position.x;
 				d.setTime( 0.5f );
 				LeanTween.delayedCall( 0.0f, ()=>{ }).setOnStart( ()=>{
-					float diffAmt = 20f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
-					LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < diffAmt , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ) +" beforeX:"+beforeX+" now:"+jumpCube.transform.position.x);
+					float diffAmt = 10f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
+					beforeX += Time.deltaTime * 100f;
+					LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < diffAmt , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ) +" beforeX:"+beforeX+" now:"+jumpCube.transform.position.x+" dt:"+Time.deltaTime);
 				});
 			});
 
@@ -143,26 +146,45 @@ namespace DentedPixel.LTExamples{
 			LeanTween.scale(cubeScale, new Vector3(5f,5f,5f),0.01f).setOnStart(()=>{
 				LeanTest.expect( true, "ON START WAS CALLED");
 			}).setOnComplete(()=>{
-				LeanTest.expect( cubeScale.transform.localScale.z == 5f, "SCALE WORKS","expected scale z:"+5f+" returned:"+cubeScale.transform.localScale.z);
+				LeanTest.expect( cubeScale.transform.localScale.z == 5f, "SCALE","expected scale z:"+5f+" returned:"+cubeScale.transform.localScale.z);
 			});
 
 			// Rotate
 			GameObject cubeRotate = cubeNamed("cubeRotate");
 			LeanTween.rotate(cubeRotate, new Vector3(0f,180f,0f),0.02f).setOnComplete(()=>{
-				LeanTest.expect( cubeRotate.transform.eulerAngles.y == 180f, "ROTATE WORKS","expected rotate y:"+180f+" returned:"+cubeRotate.transform.eulerAngles.y);
+				LeanTest.expect( cubeRotate.transform.eulerAngles.y == 180f, "ROTATE","expected rotate y:"+180f+" returned:"+cubeRotate.transform.eulerAngles.y);
 			});
 
 			// RotateAround
 			GameObject cubeRotateA = cubeNamed("cubeRotateA");
 			LeanTween.rotateAround(cubeRotateA,Vector3.forward,90f,0.3f).setOnComplete(()=>{
-				LeanTest.expect( cubeRotateA.transform.eulerAngles.z==90f, "ROTATE AROUND WORKS","expected rotate z:"+90f+" returned:"+cubeRotateA.transform.eulerAngles.z);
+				LeanTest.expect( cubeRotateA.transform.eulerAngles.z==90f, "ROTATE AROUND","expected rotate z:"+90f+" returned:"+cubeRotateA.transform.eulerAngles.z);
 			});
-			// Alpha
+			// Alpha, onUpdate with passing value, onComplete value
+			LeanTween.alpha(cubeAlpha1,0.5f,0.1f).setOnUpdate( (float val)=>{
+				LeanTest.expect(val!=0f ,"ON UPDATE VAL");
+			}).setOnCompleteParam( "Hi!" ).setOnComplete( (object completeObj)=>{
+				LeanTest.expect(((string)completeObj)=="Hi!","ONCOMPLETE OBJECT");
+				LeanTest.expect(cubeAlpha1.GetComponent<Renderer>().material.color.a == 0.5f,"ALPHA");
+			});
 			// Color
-			// OnUpdate
-			// OnStart
+			float onStartTime = -1f;
+			LeanTween.color(cubeAlpha2, Color.cyan, 0.3f).setOnComplete( ()=>{
+				LeanTest.expect(cubeAlpha2.GetComponent<Renderer>().material.color==Color.cyan, "COLOR");
+				LeanTest.expect(onStartTime>=0f && onStartTime<Time.time, "ON START","onStartTime:"+onStartTime+" time:"+Time.time);
+			}).setOnStart(()=>{
+				onStartTime = Time.time;
+			});
 			// moveLocalY (make sure uses y values)
-			// onUpdate with passing value
+			Vector3 beforePos = cubeAlpha1.transform.position;
+			LeanTween.moveY(cubeAlpha1, 3f, 0.2f).setOnComplete( ()=>{
+				LeanTest.expect(cubeAlpha1.transform.position.x==beforePos.x && cubeAlpha1.transform.position.z==beforePos.z,"MOVE Y");
+			});
+
+			Vector3 beforePos2 = cubeAlpha2.transform.localPosition;
+			LeanTween.moveLocalZ(cubeAlpha2, 3f, 0.2f).setOnComplete( ()=>{
+				LeanTest.expect(cubeAlpha2.transform.localPosition.x==beforePos2.x && cubeAlpha2.transform.localPosition.y==beforePos2.y,"MOVE LOCAL Z","ax:"+cubeAlpha2.transform.localPosition.x+" bx:"+beforePos.x+" ay:"+cubeAlpha2.transform.localPosition.y+" by:"+beforePos2.y);
+			});
 
 			
 			StartCoroutine( timeBasedTesting() );
@@ -177,7 +199,7 @@ namespace DentedPixel.LTExamples{
 		IEnumerator timeBasedTesting(){
 			yield return new WaitForSeconds(1.5f);
 
-			LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.15f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
+			LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.3f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
 
 			Time.timeScale = 4f;
 

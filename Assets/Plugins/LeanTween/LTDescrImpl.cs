@@ -826,26 +826,19 @@ public class LTDescrImpl : LTDescr {
 
 		usesNormalDt = !(useEstimatedTime || useManualTime || useFrames); // only set this to true if it uses non of the other timing modes
 
-        if (this.time <= 0f) { // avoid dividing by zero
-            this.ratioPassed = 1f;
-			this.time = Mathf.Epsilon;
-        }
+        if (this.time <= 0f) // avoid dividing by zero
+            this.time = Mathf.Epsilon;
 
 		this.initInternal();
 
 		this.diff = this.to - this.from;
 		this.diffDiv2 = this.diff * 0.5f;
 
-		if (this._optional.onStart != null){
+		if (this._optional.onStart != null)
 			this._optional.onStart();
-		}
-		if(this.onCompleteOnStart){
-			if(this._optional.onComplete!=null){
-				this._optional.onComplete();
-			}else if(this._optional.onCompleteObject!=null){
-				this._optional.onCompleteObject(this._optional.onCompleteParam);
-			}
-		}
+		
+		if(this.onCompleteOnStart)
+			callOnCompletes();
 
 		if(this.speed>=0){
 			if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
@@ -891,22 +884,8 @@ public class LTDescrImpl : LTDescr {
 			
 			this.easeInternal();
 			
-			if(this.hasUpdateCallback){
-				if(this._optional.onUpdateFloat!=null)
-					this._optional.onUpdateFloat(val);
-				
-				if (this._optional.onUpdateFloatRatio != null){
-					this._optional.onUpdateFloatRatio(val,ratioPassed);
-				}else if(this._optional.onUpdateFloatObject!=null){
-					this._optional.onUpdateFloatObject(val, this._optional.onUpdateParam);
-				}else if(this._optional.onUpdateVector3Object!=null){
-					this._optional.onUpdateVector3Object(newVect, this._optional.onUpdateParam);
-				}else if(this._optional.onUpdateVector3!=null){
-					this._optional.onUpdateVector3(newVect);
-				}else if(this._optional.onUpdateVector2!=null){
-					this._optional.onUpdateVector2(new Vector2(newVect.x,newVect.y));
-				}
-			}
+			if(this.hasUpdateCallback)
+				this._optional.callOnUpdate(val, this.ratioPassed);
 		}else{
 			this.delay -= dt;
 		}

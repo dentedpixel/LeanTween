@@ -62,4 +62,21 @@ public class LTDescrOptional  {
 
 		this.point = Vector3.zero;
 	}
+
+	public void callOnUpdate( float val, float ratioPassed){
+		if(this.onUpdateFloat!=null)
+			this.onUpdateFloat(val);
+
+		if (this.onUpdateFloatRatio != null){
+			this.onUpdateFloatRatio(val,ratioPassed);
+		}else if(this.onUpdateFloatObject!=null){
+			this.onUpdateFloatObject(val, this.onUpdateParam);
+		}else if(this.onUpdateVector3Object!=null){
+			this.onUpdateVector3Object(LTDescrImpl.newVect, this.onUpdateParam);
+		}else if(this.onUpdateVector3!=null){
+			this.onUpdateVector3(LTDescrImpl.newVect);
+		}else if(this.onUpdateVector2!=null){
+			this.onUpdateVector2(new Vector2(LTDescrImpl.newVect.x,LTDescrImpl.newVect.y));
+		}
+	}
 }
