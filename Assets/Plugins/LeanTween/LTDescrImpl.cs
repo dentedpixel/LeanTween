@@ -886,26 +886,26 @@ public class LTDescrImpl : LTDescr {
 			
 			if(this.hasUpdateCallback)
 				this._optional.callOnUpdate(val, this.ratioPassed);
+
+			isTweenFinished = this.direction>0f ? this.passed>=this.time : this.passed<=0f;
+//			Debug.Log("lt "+this+" dt:"+dt+" fin:"+isTweenFinished);
+			if(isTweenFinished){ // increment or flip tween
+				this.loopCount--;
+				if(this.loopType==LeanTweenType.pingPong){
+					this.direction = 0.0f-this.direction;
+				}else{
+					this.passed = Mathf.Epsilon;
+				}
+
+				isTweenFinished = this.loopCount == 0 || this.loopType == LeanTweenType.once; // only return true if it is fully complete
+
+				if(isTweenFinished==false && this.onCompleteOnRepeat && this.hasExtraOnCompletes)
+					callOnCompletes(); // this only gets called if onCompleteOnRepeat is set to true, otherwise LeanTween class takes care of calling it
+
+				return isTweenFinished;
+			}
 		}else{
 			this.delay -= dt;
-		}
-
-		isTweenFinished = this.direction>0f ? this.passed>=this.time : this.passed<=0f;
-		// Debug.Log("lt "+this+" dt:"+dt+" fin:"+isTweenFinished);
-		if(isTweenFinished){ // increment or flip tween
-			this.loopCount--;
-			if(this.loopType==LeanTweenType.pingPong){
-				this.direction = 0.0f-this.direction;
-			}else{
-				this.passed = Mathf.Epsilon;
-			}
-
-			isTweenFinished = this.loopCount == 0 || this.loopType == LeanTweenType.once; // only return true if it is fully complete
-		
-			if(isTweenFinished==false && this.onCompleteOnRepeat && this.hasExtraOnCompletes)
-				callOnCompletes(); // this only gets called if onCompleteOnRepeat is set to true, otherwise LeanTween class takes care of calling it
-
-			return isTweenFinished;
 		}
 
 		return false;
@@ -914,6 +914,7 @@ public class LTDescrImpl : LTDescr {
 	public void callOnCompletes(){
 		if(this.type==TweenAction.GUI_ROTATE)
 			this._optional.ltRect.rotateFinished = true;
+		
 		if(this.type==TweenAction.DELAYED_SOUND){
 			AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
 		}
