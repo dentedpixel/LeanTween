@@ -2110,30 +2110,6 @@ public class LeanTween : MonoBehaviour {
 		}
 	}
 
-	/*private static float easeOutBounce( float start, float end, float val, float overshoot = 1.0f ){
-		end -= start;
-		float baseAmt = 2.75f * overshoot;
-		float baseAmt2 = baseAmt * baseAmt;
-		Debug.Log("val:"+val); // 1f, 0.75f, 0.5f, 0.25f, 0.125f
-		if (val < ((baseAmt-(baseAmt - 1f)) / baseAmt)){ // 0.36
-			return end * (baseAmt2 * val * val) + start; // 1 - 1/1
-
-		}else if (val < ((baseAmt-0.75f) / baseAmt)){ // .72
-			val -= ((baseAmt-(baseAmt - 1f - 0.5f)) / baseAmt); // 1.25f
-			return end * (baseAmt2 * val * val + .75f) + start; // 1 - 1/(4)
-
-		}else if (val < ((baseAmt-(baseAmt - 1f - 0.5f - 0.25f)) / baseAmt)){ // .909
-			val -= ((baseAmt-0.5f) / baseAmt); // 0.5
-			return end * (baseAmt2 * val * val + .9375f) + start; // 1 - 1/(4*4)
-
-		}else{ // x
-			// Debug.Log("else val:"+val);
-			val -= ((baseAmt-0.125f) / baseAmt); // 0.125
-			return end * (baseAmt2 * val * val + .984375f) + start; // 1 - 1/(4*4*4)
-
-		}
-	}*/
-
 	public static float easeInOutBounce(float start, float end, float val){
 		end -= start;
 		float d= 1f;
