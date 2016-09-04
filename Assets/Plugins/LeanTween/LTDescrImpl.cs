@@ -816,7 +816,7 @@ public class LTDescrImpl : LTDescr {
 
 	public LTDescr setDelayedSound(){
 		this.type = TweenAction.DELAYED_SOUND;
-		this.initInternal = ()=>{};
+		this.initInternal = ()=>{ this.hasExtraOnCompletes = true; };
 		this.easeInternal = this.callback;
 		return this;
 	}

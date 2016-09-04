@@ -36,7 +36,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 49;
+			LeanTest.expected = 50;
 
 			LeanTween.init(15 + 1200);
 			// add a listener
@@ -185,7 +185,11 @@ namespace DentedPixel.LTExamples{
 			LeanTween.moveLocalZ(cubeAlpha2, 3f, 0.2f).setOnComplete( ()=>{
 				LeanTest.expect(cubeAlpha2.transform.localPosition.x==beforePos2.x && cubeAlpha2.transform.localPosition.y==beforePos2.y,"MOVE LOCAL Z","ax:"+cubeAlpha2.transform.localPosition.x+" bx:"+beforePos.x+" ay:"+cubeAlpha2.transform.localPosition.y+" by:"+beforePos2.y);
 			});
-
+				
+			AudioClip audioClip = LeanAudio.createAudio(new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f)), new AnimationCurve( new Keyframe(0f, 0.001f, 0f, 0f), new Keyframe(1f, 0.001f, 0f, 0f)), LeanAudio.options());
+			LeanTween.delayedSound(gameObject, audioClip, new Vector3(0f,0f,0f), 0.1f).setDelay(0.2f).setOnComplete( ()=>{
+				LeanTest.expect(Time.time>0,"DELAYED SOUND");
+			});
 			
 			StartCoroutine( timeBasedTesting() );
 		}
