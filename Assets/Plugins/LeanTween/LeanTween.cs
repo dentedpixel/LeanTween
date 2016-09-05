@@ -1521,6 +1521,9 @@ public class LeanTween : MonoBehaviour {
 	public static LTDescr value(GameObject gameObject, float from, float to, float time){
 		return pushNewTween( gameObject, new Vector3(to,0,0), time, options().setCallback().setFrom( new Vector3(from,0,0) ) );
 	}
+	public static LTDescr value(float from, float to, float time){
+		return pushNewTween( tweenEmpty, new Vector3(to,0,0), time, options().setCallback().setFrom( new Vector3(from,0,0) ) );
+	}
 
 	/**
 	* Tween any particular value (Vector2)
