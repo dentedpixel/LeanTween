@@ -841,13 +841,17 @@ public class LTDescrImpl : LTDescr {
 			callOnCompletes();
 
 		if(this.speed>=0){
-			if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
-				this.time = this._optional.path.distance / this.speed ;
-			}else if(this.type==TweenAction.MOVE_SPLINE || this.type==TweenAction.MOVE_SPLINE_LOCAL){
-				this.time = this._optional.spline.distance/ this.speed;
-			}else{
-				this.time = (this.to - this.from).magnitude / this.speed;
-			}
+			initSpeed();
+		}
+	}
+
+	private void initSpeed(){
+		if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
+			this.time = this._optional.path.distance / this.speed;
+		}else if(this.type==TweenAction.MOVE_SPLINE || this.type==TweenAction.MOVE_SPLINE_LOCAL){
+			this.time = this._optional.spline.distance/ this.speed;
+		}else{
+			this.time = (this.to - this.from).magnitude / this.speed;
 		}
 	}
 		
@@ -1641,6 +1645,8 @@ public class LTDescrImpl : LTDescr {
 	*/
 	public LTDescr setSpeed( float speed ){
 		this.speed = speed;
+		if(this.hasInitiliazed)
+			initSpeed();
 		return this;
 	}
 
