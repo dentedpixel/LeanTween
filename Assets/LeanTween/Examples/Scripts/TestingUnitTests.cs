@@ -83,19 +83,6 @@ namespace DentedPixel.LTExamples{
 //			Debug.Log("Point 2:"+cr.ratioAtPoint(splineArr[2]));
 
 			// OnStart Speed Test for ignoreTimeScale vs normal timeScale
-			GameObject cube = cubeNamed("normalTimeScale");
-			// float timeElapsedNormal = Time.time;
-			LeanTween.moveX(cube, 12f, 1.5f).setIgnoreTimeScale( false ).setOnComplete( ()=>{
-				timeElapsedNormalTimeScale = Time.time;
-			});
-
-			LTDescr[] descr = LeanTween.descriptions( cube );
-			LeanTest.expect( descr.Length >= 0 && descr[0].to.x == 12f, "WE CAN RETRIEVE A DESCRIPTION");
-
-			cube = cubeNamed("ignoreTimeScale");
-			LeanTween.moveX(cube, 5f, 1.5f).setIgnoreTimeScale( true ).setOnComplete( ()=>{
-				timeElapsedIgnoreTimeScale = Time.time;
-			});
 
 			GameObject cubeDest = cubeNamed("cubeDest");
 			Vector3 cubeDestEnd = new Vector3(100f,20f,0f);
@@ -128,15 +115,14 @@ namespace DentedPixel.LTExamples{
 				float beforeX = jumpCube.transform.position.x;
 				d.setTime( 0.5f );
 				LeanTween.delayedCall( 0.0f, ()=>{ }).setOnStart( ()=>{
-					float diffAmt = 10f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
-					beforeX += Time.deltaTime * 100f;
+					float diffAmt = 1f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
+					beforeX += Time.deltaTime * 100f * 2f;
 					LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < diffAmt , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ) +" beforeX:"+beforeX+" now:"+jumpCube.transform.position.x+" dt:"+Time.deltaTime);
 				});
 			});
 
 			// Tween with time of zero is needs to be set to it's final value
-			GameObject zeroCube = Instantiate( boxNoCollider ) as GameObject;
-			zeroCube.name = "zeroCube";
+			GameObject zeroCube = cubeNamed("zeroCube");
 			LeanTween.moveX( zeroCube, 10f, 0f).setOnComplete( ()=>{
 				LeanTest.expect( zeroCube.transform.position.x == 10f, "ZERO TIME FINSHES CORRECTLY", "final x:"+ zeroCube.transform.position.x);
 			});
@@ -182,7 +168,7 @@ namespace DentedPixel.LTExamples{
 			});
 
 			Vector3 beforePos2 = cubeAlpha2.transform.localPosition;
-			LeanTween.moveLocalZ(cubeAlpha2, 3f, 0.2f).setOnComplete( ()=>{
+			LeanTween.moveLocalZ(cubeAlpha2, 12f, 0.2f).setOnComplete( ()=>{
 				LeanTest.expect(cubeAlpha2.transform.localPosition.x==beforePos2.x && cubeAlpha2.transform.localPosition.y==beforePos2.y,"MOVE LOCAL Z","ax:"+cubeAlpha2.transform.localPosition.x+" bx:"+beforePos.x+" ay:"+cubeAlpha2.transform.localPosition.y+" by:"+beforePos2.y);
 			});
 				
@@ -201,10 +187,26 @@ namespace DentedPixel.LTExamples{
 		}
 
 		IEnumerator timeBasedTesting(){
+			yield return new WaitForEndOfFrame();
+
+			GameObject cubeNormal = cubeNamed("normalTimeScale");
+			// float timeElapsedNormal = Time.time;
+			LeanTween.moveX(cubeNormal, 12f, 1.5f).setIgnoreTimeScale( false ).setOnComplete( ()=>{
+				timeElapsedNormalTimeScale = Time.time;
+			});
+
+			LTDescr[] descr = LeanTween.descriptions( cubeNormal );
+			LeanTest.expect( descr.Length >= 0 && descr[0].to.x == 12f, "WE CAN RETRIEVE A DESCRIPTION");
+
+			GameObject cubeIgnore = cubeNamed("ignoreTimeScale");
+			LeanTween.moveX(cubeIgnore, 5f, 1.5f).setIgnoreTimeScale( true ).setOnComplete( ()=>{
+				timeElapsedIgnoreTimeScale = Time.time;
+			});
+
 			yield return new WaitForSeconds(1.5f);
+			LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.7f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
 
-			LeanTest.expect( Mathf.Abs( timeElapsedNormalTimeScale - timeElapsedIgnoreTimeScale ) < 0.3f, "START IGNORE TIMING", "timeElapsedIgnoreTimeScale:"+timeElapsedIgnoreTimeScale+" timeElapsedNormalTimeScale:"+timeElapsedNormalTimeScale );
-
+//			yield return new WaitForSeconds(100f);
 			Time.timeScale = 4f;
 
 			int pauseCount = 0;
@@ -214,8 +216,7 @@ namespace DentedPixel.LTExamples{
 
 			// Bezier should end at exact end position not just 99% close to it
 			Vector3[] roundCirc = new Vector3[]{ new Vector3(0f,0f,0f), new Vector3(-9.1f,25.1f,0f), new Vector3(-1.2f,15.9f,0f), new Vector3(-25f,25f,0f), new Vector3(-25f,25f,0f), new Vector3(-50.1f,15.9f,0f), new Vector3(-40.9f,25.1f,0f), new Vector3(-50f,0f,0f), new Vector3(-50f,0f,0f), new Vector3(-40.9f,-25.1f,0f), new Vector3(-50.1f,-15.9f,0f), new Vector3(-25f,-25f,0f), new Vector3(-25f,-25f,0f), new Vector3(0f,-15.9f,0f), new Vector3(-9.1f,-25.1f,0f), new Vector3(0f,0f,0f) };
-			GameObject cubeRound = Instantiate( boxNoCollider ) as GameObject;
-			cubeRound.name = "bRound";
+			GameObject cubeRound = cubeNamed("bRound");
 			Vector3 onStartPos = cubeRound.transform.position;
 			LeanTween.moveLocal(cubeRound, roundCirc, 0.5f).setOnComplete( ()=>{
 				LeanTest.expect(cubeRound.transform.position==onStartPos, "BEZIER CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPos+" onEnd:"+cubeRound.transform.position);
@@ -223,21 +224,19 @@ namespace DentedPixel.LTExamples{
 
 			// Spline should end at exact end position not just 99% close to it
 			Vector3[] roundSpline = new Vector3[]{ new Vector3(0f,0f,0f), new Vector3(0f,0f,0f), new Vector3(2f,0f,0f), new Vector3(0.9f,2f,0f), new Vector3(0f,0f,0f), new Vector3(0f,0f,0f) };
-			GameObject cubeSpline = Instantiate( boxNoCollider ) as GameObject;
-			cubeSpline.name = "bSpline";
+			GameObject cubeSpline = cubeNamed("bSpline");
 			Vector3 onStartPosSpline = cubeSpline.transform.position;
 			LeanTween.moveSplineLocal(cubeSpline, roundSpline, 0.5f).setOnComplete( ()=>{
 				LeanTest.expect(Vector3.Distance(onStartPosSpline, cubeSpline.transform.position) <= 0.01f, "SPLINE CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPosSpline+" onEnd:"+cubeSpline.transform.position+" dist:"+Vector3.Distance(onStartPosSpline, cubeSpline.transform.position));
 			});
 			
 			// Groups of tweens testing
-			groupTweens = new LTDescr[ 2 ];
+			groupTweens = new LTDescr[ 1200 ];
 			groupGOs = new GameObject[ groupTweens.Length ];
 			groupTweensCnt = 0;
 			int descriptionMatchCount = 0;
 			for(int i = 0; i < groupTweens.Length; i++){
-				GameObject cube = Instantiate( boxNoCollider ) as GameObject;
-				cube.name = "c"+i;
+				GameObject cube = cubeNamed("c"+i);
 				cube.transform.position = new Vector3(0,0,i*3);
 				
 				groupGOs[i] = cube;
