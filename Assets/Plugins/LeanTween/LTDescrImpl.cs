@@ -36,11 +36,14 @@ public class LTDescrImpl : LTDescr {
 	public bool useEstimatedTime { get; set; }
 	public bool useFrames { get; set; }
 	public bool useManualTime { get; set; }
+	public bool usesNormalDt {get; set;}
 	public bool hasInitiliazed { get; set; }
+	public bool hasExtraOnCompletes { get; set;}
 	public bool hasPhysics { get; set; }
 	public bool onCompleteOnRepeat { get; set; }
 	public bool onCompleteOnStart { get; set; }
 	public bool useRecursion { get; set; }
+    public float ratioPassed { get; set; }
 	public float passed { get; set; }
 	public float delay { get; set; }
 	public float time { get; set; }
@@ -55,44 +58,28 @@ public class LTDescrImpl : LTDescr {
 	public float period { get; set; }
 	public bool destroyOnComplete { get; set; }
 	public Transform trans { get; set; }
-	public Transform toTrans { get; set; }
 	public LTRect ltRect { get; set; }
 	internal Vector3 fromInternal;
 	public Vector3 from { get { return this.fromInternal; } set { this.fromInternal = value; } }
 	internal Vector3 toInternal;
 	public Vector3 to { get { return this.toInternal; } set { this.toInternal = value; } }
-	internal Vector3 diffInternal;
-	public Vector3 diff { get { return this.diffInternal; } set { this.diffInternal = value; } }
-	public Vector3 point { get; set; }
-	public Vector3 axis { get; set; }
-	public Quaternion origRotation { get; set; }
-	public LTBezierPath path { get; set; }
-	public LTSpline spline { get; set; }
+	internal Vector3 diff;
+	internal Vector3 diffDiv2;
 	public TweenAction type { get; set; }
 	public LeanTweenType tweenType { get; set; }
-	public AnimationCurve animationCurve { get; set; }
 	public LeanTweenType loopType { get; set; }
+
 	public bool hasUpdateCallback { get; set; }
-	public Action<float> onUpdateFloat { get; set; }
-    public Action<float,float> onUpdateFloatRatio { get; set; }
-	public Action<float,object> onUpdateFloatObject { get; set; }
-	public Action<Vector2> onUpdateVector2 { get; set; }
-	public Action<Vector3> onUpdateVector3 { get; set; }
-	public Action<Vector3,object> onUpdateVector3Object { get; set; }
-	public Action<Color> onUpdateColor { get; set; }
-	public Action<Color,object> onUpdateColorObject { get; set; }
-	public Action onComplete { get; set; }
-	public Action<object> onCompleteObject { get; set; }
-	public object onCompleteParam { get; set; }
-	public object onUpdateParam { get; set; }
-	public Action onStart { get; set; }
+
+	public EaseTypeDelegate easeMethod { get; set; }
+	public ActionMethodDelegate easeInternal {get; set; }
+	public ActionMethodDelegate initInternal {get; set; }
+	public delegate Vector3 EaseTypeDelegate();
+	public delegate void ActionMethodDelegate();
 	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 	public SpriteRenderer spriteRen { get; set; }
 	#endif
 
-	#if LEANTWEEN_1
-	public Hashtable optional;
-	#endif
 	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 	public RectTransform rectTransform;
     public UnityEngine.UI.Text uiText;
@@ -100,10 +87,12 @@ public class LTDescrImpl : LTDescr {
     public UnityEngine.Sprite[] sprites;
 	#endif
 
+	public LTDescrOptional _optional = new LTDescrOptional();
+
 	private static uint global_counter = 0;
 
     public override string ToString(){
-		return (trans!=null ? "gameObject:"+trans.gameObject : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
+		return (trans!=null ? "name:"+trans.gameObject.name : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" diff:"+diff+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
 
 	public LTDescrImpl(){
@@ -138,302 +127,941 @@ public class LTDescrImpl : LTDescr {
 		}
 	}
 
+	public LTDescrOptional optional{
+		get{ 
+			return _optional;
+		}
+		set{
+			this._optional = optional;
+		}
+	}
+
 	public void reset(){
-		this.toggle = this.useRecursion = true;
-		#if LEANTWEEN_1
-		this.optional = null;
-		#endif
-		this.trans = null;
+		this.toggle = this.useRecursion = this.usesNormalDt = true;
+        this.trans = null;
 		this.passed = this.delay = this.lastVal = 0.0f;
-		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = false;
-		this.animationCurve = null;
+		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = this.hasExtraOnCompletes = false;
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
 		this.direction = this.directionLast = this.overshoot = 1.0f;
 		this.period = 0.3f;
 		this.speed = -1f;
-		this.point = Vector3.zero;
-		cleanup();
+		this.easeMethod = this.easeLinear;
+		this._optional.reset();
 		
 		global_counter++;
 		if(global_counter>0x8000)
 			global_counter = 0;
 	}
 
-	public void cleanup(){
-		this.onUpdateFloat = null;
-        this.onUpdateFloatRatio = null;
-		this.onUpdateVector2 = null;
-		this.onUpdateVector3 = null;
-		this.onUpdateFloatObject = null;
-		this.onUpdateVector3Object = null;
-		this.onUpdateColor = null;
-		this.onComplete = null;
-		this.onCompleteObject = null;
-		this.onCompleteParam = null;
-		this.onStart = null;
-		
-		#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-		this.rectTransform = null;
-	    this.uiText = null;
-	   	this.uiImage = null;
-	    this.sprites = null;
-		#endif
+	// Initialize and Internal Methods
+
+	public LTDescr setMoveX(){
+		this.type = TweenAction.MOVE_X;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.position.x; };
+		this.easeInternal = ()=>{ trans.position=new Vector3( easeMethod().x,trans.position.y,trans.position.z); };
+		return this;
 	}
 
-	// This method is only for internal use
-	public void init(){
+	public LTDescr setMoveY(){
+		this.type = TweenAction.MOVE_Y;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.position.y; };
+		this.easeInternal = ()=>{ trans.position=new Vector3( trans.position.x,easeMethod().x,trans.position.z); };
+		return this;
+	}
+
+	public LTDescr setMoveZ(){
+		this.type = TweenAction.MOVE_Z;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.position.z; };;
+		this.easeInternal = ()=>{ trans.position=new Vector3( trans.position.x,trans.position.y,easeMethod().x);  };
+		return this;
+	}
+
+	public LTDescr setMoveLocalX(){
+		this.type = TweenAction.MOVE_LOCAL_X;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.localPosition.x; };
+		this.easeInternal = ()=>{ trans.localPosition=new Vector3( easeMethod().x,trans.localPosition.y,trans.localPosition.z); };
+		return this;
+	}
+
+	public LTDescr setMoveLocalY(){
+		this.type = TweenAction.MOVE_LOCAL_Y;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.localPosition.y; };
+		this.easeInternal = ()=>{ trans.localPosition=new Vector3( trans.localPosition.x,easeMethod().x,trans.localPosition.z); };
+		return this;
+	}
+
+	public LTDescr setMoveLocalZ(){
+		this.type = TweenAction.MOVE_LOCAL_Z;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.localPosition.z; };
+		this.easeInternal = ()=>{ trans.localPosition=new Vector3( trans.localPosition.x,trans.localPosition.y,easeMethod().x);  };
+		return this;
+	}
+
+	private void initFromInternal(){ this.fromInternal.x = 0; }
+
+	public LTDescr setMoveCurved(){
+		this.type = TweenAction.MOVE_CURVED;
+		this.initInternal = this.initFromInternal;
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			if(this._optional.path.orientToPath){
+				if(this._optional.path.orientToPath2d){
+					this._optional.path.place2d( trans, val );
+				}else{
+					this._optional.path.place( trans, val );
+				}
+			}else{
+				trans.position = this._optional.path.point( val );
+			}
+		};
+		return this;
+	}
+
+	public LTDescr setMoveCurvedLocal(){
+		this.type = TweenAction.MOVE_CURVED_LOCAL;
+		this.initInternal = this.initFromInternal;
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			if(this._optional.path.orientToPath){
+				if(this._optional.path.orientToPath2d){
+					this._optional.path.placeLocal2d( trans, val );
+				}else{
+					this._optional.path.placeLocal( trans, val );
+				}
+			}else{
+				trans.localPosition = this._optional.path.point( val );
+			}
+		};
+		return this;
+	}
+
+	public LTDescr setMoveSpline(){
+		this.type = TweenAction.MOVE_SPLINE;
+		this.initInternal = this.initFromInternal;
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			if(this._optional.spline.orientToPath){
+				if(this._optional.spline.orientToPath2d){
+					this._optional.spline.place2d( trans, val );
+				}else{
+					this._optional.spline.place( trans, val );
+				}
+			}else{
+				trans.position = this._optional.spline.point( val );
+			}
+		};
+		return this;
+	}
+
+	public LTDescr setMoveSplineLocal(){
+		this.type = TweenAction.MOVE_SPLINE_LOCAL;
+		this.initInternal = this.initFromInternal;
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			if(this._optional.spline.orientToPath){
+				if(this._optional.spline.orientToPath2d){
+					this._optional.spline.placeLocal2d( trans, val );
+				}else{
+					this._optional.spline.placeLocal( trans, val );
+				}
+			}else{
+				trans.localPosition = this._optional.spline.point( val );
+			}
+		};
+		return this;
+	}
+
+	public LTDescr setScaleX(){
+		this.type = TweenAction.SCALE_X;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.localScale.x; };
+		this.easeInternal = ()=>{ trans.localScale = new Vector3( easeMethod().x,trans.localScale.y,trans.localScale.z); };
+		return this;
+	}
+
+	public LTDescr setScaleY(){
+		this.type = TweenAction.SCALE_Y;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.localScale.y; };
+		this.easeInternal = ()=>{ trans.localScale=new Vector3( trans.localScale.x,easeMethod().x,trans.localScale.z); };
+		return this;
+	}
+
+	public LTDescr setScaleZ(){
+		this.type = TweenAction.SCALE_Z;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.localScale.z; };
+		this.easeInternal = ()=>{ trans.localScale=new Vector3( trans.localScale.x,trans.localScale.y,easeMethod().x); };
+		return this;
+	}
+
+	public LTDescr setRotateX(){
+		this.type = TweenAction.ROTATE_X;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.eulerAngles.x; this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);};
+		this.easeInternal = ()=>{ trans.eulerAngles=new Vector3(easeMethod().x,trans.eulerAngles.y,trans.eulerAngles.z); };
+		return this;
+	}
+
+	public LTDescr setRotateY(){
+		this.type = TweenAction.ROTATE_Y;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.eulerAngles.y;  this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);};
+		this.easeInternal = ()=>{ trans.eulerAngles=new Vector3(trans.eulerAngles.x,easeMethod().x,trans.eulerAngles.z); };
+		return this;
+	}
+
+	public LTDescr setRotateZ(){
+		this.type = TweenAction.ROTATE_Z;
+		this.initInternal = ()=>{
+			this.fromInternal.x = trans.eulerAngles.z; 
+			this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
+		};
+		this.easeInternal = ()=>{ trans.eulerAngles=new Vector3(trans.eulerAngles.x,trans.eulerAngles.y,easeMethod().x); };
+		return this;
+	}
+
+	public LTDescr setRotateAround(){
+		this.type = TweenAction.ROTATE_AROUND;
+		this.initInternal = ()=>{
+			this.lastVal = 0.0f;
+			this.fromInternal.x = 0f;
+			this._optional.origRotation = trans.rotation;
+		};
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			Vector3 origPos = trans.localPosition;
+			Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
+			trans.RotateAround(rotateAroundPt, this._optional.axis, -val);
+			Vector3 diff = origPos - trans.localPosition;
+
+			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			trans.rotation = this._optional.origRotation;
+
+			rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
+			trans.RotateAround(rotateAroundPt, this._optional.axis, val);
+		};
+		return this;
+	}
+
+	public LTDescr setRotateAroundLocal(){
+		this.type = TweenAction.ROTATE_AROUND_LOCAL;
+		this.initInternal = ()=>{
+			this.lastVal = 0.0f;
+			this.fromInternal.x = 0f;
+			this._optional.origRotation = trans.localRotation;
+		};
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			Vector3 origPos = trans.localPosition;
+			trans.RotateAround((Vector3)trans.TransformPoint( this._optional.point ), trans.TransformDirection(this._optional.axis), -val);
+			Vector3 diff = origPos - trans.localPosition;
+
+			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			trans.localRotation = this._optional.origRotation;
+			Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
+			trans.RotateAround(rotateAroundPt, trans.TransformDirection(this._optional.axis), val);
+		};
+		return this;
+	}
+
+	public LTDescr setAlpha(){
+		this.type = TweenAction.ALPHA;
+		this.initInternal = ()=>{
+			#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+			if(trans.gameObject.renderer){ this.fromInternal.x = trans.gameObject.renderer.material.color.a; }else if(trans.childCount>0){ foreach (Transform child in trans) { if(child.gameObject.renderer!=null){ Color col = child.gameObject.renderer.material.color; this.fromInternal.x = col.a; break; }}}
+			this.easeInternal = this.alpha;
+			break;	
+			#else
+			SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
+			if(ren!=null){
+				this.fromInternal.x = ren.color.a;
+			}else{
+				if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
+					this.fromInternal.x = trans.gameObject.GetComponent<Renderer>().material.color.a;
+				}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+					Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor("_TintColor");
+					this.fromInternal.x = col.a;
+				}else if(trans.childCount>0){
+					foreach (Transform child in trans) {
+						if(child.gameObject.GetComponent<Renderer>()!=null){
+							Color col = child.gameObject.GetComponent<Renderer>().material.color;
+							this.fromInternal.x = col.a;
+							break;
+						}
+					}
+				}
+			}
+			#endif
+
+			this.easeInternal = ()=>{
+				val = easeMethod().x;
+				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+				alphaRecursive(this.trans, val, this.useRecursion);
+				#else
+				if(this.spriteRen!=null){
+					this.spriteRen.color = new Color( this.spriteRen.color.r, this.spriteRen.color.g, this.spriteRen.color.b, val);
+					alphaRecursiveSprite(this.trans, val);
+				}else{
+					alphaRecursive(this.trans, val, this.useRecursion);
+				}
+				#endif
+			};
+
+		};
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+			alphaRecursive(this.trans, val, this.useRecursion);
+			#else
+			if(this.spriteRen!=null){
+				this.spriteRen.color = new Color( this.spriteRen.color.r, this.spriteRen.color.g, this.spriteRen.color.b, val);
+				alphaRecursiveSprite(this.trans, val);
+			}else{
+				alphaRecursive(this.trans, val, this.useRecursion);
+			}
+			#endif
+		};
+		return this;
+	}
+
+	public LTDescr setTextAlpha(){
+		this.type = TweenAction.TEXT_ALPHA;
+		this.initInternal = ()=>{
+			this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+			this.fromInternal.x = this.uiText != null ? this.uiText.color.a : 1f;
+		};
+		this.easeInternal = ()=>{ textAlphaRecursive( trans, easeMethod().x, this.useRecursion ); };
+		return this;
+	}
+
+	public LTDescr setAlphaVertex(){
+		this.type = TweenAction.ALPHA_VERTEX;
+		this.initInternal = ()=>{ this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a; };
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			Mesh mesh = trans.GetComponent<MeshFilter>().mesh;
+			Vector3[] vertices = mesh.vertices;
+			Color32[] colors = new Color32[vertices.Length];
+			if (colors.Length == 0){ //MaxFW fix: add vertex colors if the mesh doesn't have any             
+				Color32 transparentWhiteColor32 = new Color32(0xff, 0xff, 0xff, 0x00);
+				colors = new Color32[mesh.vertices.Length];
+				for (int k=0; k<colors.Length; k++)
+					colors[k] = transparentWhiteColor32;
+				mesh.colors32 = colors;
+			}// fix end
+			Color32 c = mesh.colors32[0];
+			c = new Color( c.r, c.g, c.b, val);
+			for (int k= 0; k < vertices.Length; k++)
+				colors[k] = c;
+			mesh.colors32 = colors;
+		};
+		return this;
+	}
+
+	public LTDescr setColor(){
+		this.type = TweenAction.COLOR;
+		this.initInternal = ()=>{
+			#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
+			if(trans.gameObject.renderer){
+			this.setFromColor( trans.gameObject.renderer.material.color );
+			}else if(trans.childCount>0){
+			foreach (Transform child in trans) {
+			if(child.gameObject.renderer!=null){
+			this.setFromColor( child.gameObject.renderer.material.color );
+			break;
+			}
+			}
+			}
+			#else
+			SpriteRenderer renColor = trans.gameObject.GetComponent<SpriteRenderer>();
+			if(renColor!=null){
+				this.setFromColor( renColor.color );
+			}else{
+				if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
+					Color col = trans.gameObject.GetComponent<Renderer>().material.color;
+					this.setFromColor( col );
+				}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+					Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor ("_TintColor");
+					this.setFromColor( col );
+				}else if(trans.childCount>0){
+					foreach (Transform child in trans) {
+						if(child.gameObject.GetComponent<Renderer>()!=null){
+							Color col = child.gameObject.GetComponent<Renderer>().material.color;
+							this.setFromColor( col );
+							break;
+						}
+					}
+				}
+			}
+			#endif
+		};
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			Color toColor = tweenColor(this, val);
+
+			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+
+			if(this.spriteRen!=null){
+				this.spriteRen.color = toColor;
+				colorRecursiveSprite( trans, toColor);
+			}else{
+			#endif
+			// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
+			if(this.type==TweenAction.COLOR)
+				colorRecursive(trans, toColor, this.useRecursion);
+
+			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+			}
+			#endif
+			if(dt!=0f && this._optional.onUpdateColor!=null){
+				this._optional.onUpdateColor(toColor);
+			}else if(dt!=0f && this._optional.onUpdateColorObject!=null){
+				this._optional.onUpdateColorObject(toColor, this._optional.onUpdateParam);
+			}
+		};
+		return this;
+	}
+
+	public LTDescr setCallbackColor(){
+		this.type = TweenAction.CALLBACK_COLOR;
+		this.initInternal = ()=>{ this.diff = new Vector3(1.0f,0.0f,0.0f); };
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			Color toColor = tweenColor(this, val);
+
+			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+			if(this.spriteRen!=null){
+				this.spriteRen.color = toColor;
+				colorRecursiveSprite( trans, toColor);
+			}else{
+			#endif
+			// Debug.Log("val:"+val+" tween:"+tween+" tween.diff:"+tween.diff);
+			if(this.type==TweenAction.COLOR)
+				colorRecursive(trans, toColor, this.useRecursion);
+
+			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
+			}
+			#endif
+			if(dt!=0f && this._optional.onUpdateColor!=null){
+				this._optional.onUpdateColor(toColor);
+			}else if(dt!=0f && this._optional.onUpdateColorObject!=null){
+				this._optional.onUpdateColorObject(toColor, this._optional.onUpdateParam);
+			}
+		};
+		return this;
+	}
+
+
+	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+
+	public LTDescr setTextColor(){
+		this.type = TweenAction.TEXT_COLOR;
+		this.initInternal = ()=>{
+			this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+			this.setFromColor( this.uiText != null ? this.uiText.color : Color.white );
+		};
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			Color toColor = tweenColor(this, val);
+			this.uiText.color = toColor;
+			if (dt!=0f && this._optional.onUpdateColor != null)
+				this._optional.onUpdateColor(toColor);
+
+			if(this.useRecursion && trans.childCount>0)
+				textColorRecursive(this.trans, toColor);
+		};
+		return this;
+	}
+
+	public LTDescr setCanvasAlpha(){
+		this.type = TweenAction.CANVAS_ALPHA;
+		this.initInternal = ()=>{
+			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
+			this.fromInternal.x = this.uiImage != null ? this.uiImage.color.a : 1f;
+		};
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			if(this.uiImage!=null){
+				Color c = this.uiImage.color; c.a = val; this.uiImage.color = c;
+			}
+			if(this.useRecursion){
+				alphaRecursive( this.rectTransform, val, 0 );
+				textAlphaRecursive( this.rectTransform, val);
+			}
+		};
+		return this;
+	}
+
+	public LTDescr setCanvasGroupAlpha(){
+		this.type = TweenAction.CANVASGROUP_ALPHA;
+		this.initInternal = ()=>{this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;};
+		this.easeInternal = ()=>{ this.trans.GetComponent<CanvasGroup>().alpha = easeMethod().x; };
+		return this;
+	}
+
+	public LTDescr setCanvasColor(){
+		this.type = TweenAction.CANVAS_COLOR;
+		this.initInternal = ()=>{
+			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
+			if(this.uiImage != null){
+				this.setFromColor( this.uiImage.color );
+			}else{
+				this.setFromColor( Color.white );
+			}
+		};
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			Color toColor = tweenColor(this, val);
+			this.uiImage.color = toColor;
+			if (dt!=0f && this._optional.onUpdateColor != null)
+				this._optional.onUpdateColor(toColor);
+
+			if(this.useRecursion)
+				colorRecursive(this.rectTransform, toColor);
+		};
+		return this;
+	}
+
+	public LTDescr setCanvasMoveX(){
+		this.type = TweenAction.CANVAS_MOVE_X;
+		this.initInternal = ()=>{ this.fromInternal.x = this.rectTransform.anchoredPosition3D.x; };
+		this.easeInternal = ()=>{ Vector3 c = this.rectTransform.anchoredPosition3D; this.rectTransform.anchoredPosition3D = new Vector3(easeMethod().x, c.y, c.z); };
+		return this;
+	}
+
+	public LTDescr setCanvasMoveY(){
+		this.type = TweenAction.CANVAS_MOVE_Y;
+		this.initInternal = ()=>{ this.fromInternal.x = this.rectTransform.anchoredPosition3D.y; };
+		this.easeInternal = ()=>{ Vector3 c = this.rectTransform.anchoredPosition3D; this.rectTransform.anchoredPosition3D = new Vector3(c.x, easeMethod().x, c.z); };
+		return this;
+	}
+
+	public LTDescr setCanvasMoveZ(){
+		this.type = TweenAction.CANVAS_MOVE_Z;
+		this.initInternal = ()=>{ this.fromInternal.x = this.rectTransform.anchoredPosition3D.z; };
+		this.easeInternal = ()=>{ Vector3 c = this.rectTransform.anchoredPosition3D; this.rectTransform.anchoredPosition3D = new Vector3(c.x, c.y, easeMethod().x); };
+		return this;
+	}
+
+	private void initCanvasRotateAround(){
+		this.lastVal = 0.0f;
+		this.fromInternal.x = 0.0f;
+		this._optional.origRotation = this.rectTransform.rotation;
+	}
+
+	public LTDescr setCanvasRotateAround(){
+		this.type = TweenAction.CANVAS_ROTATEAROUND;
+		this.initInternal = this.initCanvasRotateAround;
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			RectTransform rect = this.rectTransform;
+			Vector3 origPos = rect.localPosition;
+			rect.RotateAround((Vector3)rect.TransformPoint( this._optional.point ), this._optional.axis, -val);
+			Vector3 diff = origPos - rect.localPosition;
+
+			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			rect.rotation = this._optional.origRotation;
+			rect.RotateAround((Vector3)rect.TransformPoint( this._optional.point ), this._optional.axis, val);
+		};
+		return this;
+	}
+
+	public LTDescr setCanvasRotateAroundLocal(){
+		this.type = TweenAction.CANVAS_ROTATEAROUND_LOCAL;
+		this.initInternal = this.initCanvasRotateAround;
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			RectTransform rect = this.rectTransform;
+			Vector3 origPos = rect.localPosition;
+			rect.RotateAround((Vector3)rect.TransformPoint( this._optional.point ), rect.TransformDirection(this._optional.axis), -val);
+			Vector3 diff = origPos - rect.localPosition;
+
+			rect.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			rect.rotation = this._optional.origRotation;
+			rect.RotateAround((Vector3)rect.TransformPoint( this._optional.point ), rect.TransformDirection(this._optional.axis), val);
+		};
+		return this;
+	}
+
+	public LTDescr setCanvasPlaySprite(){
+		this.type = TweenAction.CANVAS_PLAYSPRITE;
+		this.initInternal = ()=>{
+			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
+			this.fromInternal.x = 0f;
+		};
+		this.easeInternal = ()=>{
+			val = easeMethod().x;
+			int frame = (int)Mathf.Round( val );
+			this.uiImage.sprite = this.sprites[ frame ];
+		};
+		return this;
+	}
+
+	public LTDescr setCanvasMove(){
+		this.type = TweenAction.CANVAS_MOVE;
+		this.initInternal = ()=>{ this.fromInternal = this.rectTransform.anchoredPosition3D; };
+		this.easeInternal = ()=>{ this.rectTransform.anchoredPosition3D = easeMethod(); };
+		return this;
+	}
+
+	public LTDescr setCanvasScale(){
+		this.type = TweenAction.CANVAS_SCALE;
+		this.initInternal = ()=>{ this.from = this.rectTransform.localScale; };
+		this.easeInternal = ()=>{ this.rectTransform.localScale = easeMethod(); };
+		return this;
+	}
+
+	public LTDescr setCanvasSizeDelta(){
+		this.type = TweenAction.CANVAS_SIZEDELTA;
+		this.initInternal = ()=>{ this.from = this.rectTransform.sizeDelta; };
+		this.easeInternal = ()=>{ this.rectTransform.sizeDelta = easeMethod(); };
+		return this;
+	}
+	#endif
+
+	private void callback(){ val = easeMethod().x; }
+
+	public LTDescr setCallback(){
+		this.type = TweenAction.CALLBACK;
+		this.initInternal = ()=>{};
+		this.easeInternal = this.callback;
+		return this;
+	}
+	public LTDescr setValue3(){
+		this.type = TweenAction.VALUE3;
+		this.initInternal = ()=>{};
+		this.easeInternal = this.callback;
+		return this;
+	}
+
+	public LTDescr setMove(){
+		this.type = TweenAction.MOVE;
+		this.initInternal = ()=>{ this.from = trans.position; };
+		this.easeInternal = ()=>{ trans.position = easeMethod(); };
+		return this;
+	}
+
+	public LTDescr setMoveLocal(){
+		this.type = TweenAction.MOVE_LOCAL;
+		this.initInternal = ()=>{ this.from = trans.localPosition; };
+		this.easeInternal = ()=>{ trans.localPosition = easeMethod(); };
+		return this;
+	}
+
+	public LTDescr setMoveToTransform(){
+		this.type = TweenAction.MOVE_TO_TRANSFORM;
+		this.initInternal = ()=>{ this.from = trans.position; };
+		this.easeInternal = ()=>{
+			this.to = this._optional.toTrans.position;
+			this.diff = this.to - this.from;
+			this.diffDiv2 = this.diff * 0.5f;
+
+			this.trans.position = easeMethod();
+		};
+		return this;
+	}
+
+	public LTDescr setRotate(){
+		this.type = TweenAction.ROTATE;
+		this.initInternal = ()=>{ this.from = trans.eulerAngles;  this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z)); };
+		this.easeInternal = ()=>{ trans.eulerAngles = easeMethod(); };
+		return this;
+	}
+
+	public LTDescr setRotateLocal(){
+		this.type = TweenAction.ROTATE_LOCAL;
+		this.initInternal = ()=>{ this.from = trans.localEulerAngles;  this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z)); };
+		this.easeInternal = ()=>{ trans.localEulerAngles = easeMethod(); };
+		return this;
+	}
+
+	public LTDescr setScale(){
+		this.type = TweenAction.SCALE;
+		this.initInternal = ()=>{ this.from = trans.localScale; };
+		this.easeInternal = ()=>{ trans.localScale = easeMethod(); };
+		return this;
+	}
+
+	public LTDescr setGUIMove(){
+		this.type = TweenAction.GUI_MOVE;
+		this.initInternal = ()=>{ this.from = new Vector3(this._optional.ltRect.rect.x, this._optional.ltRect.rect.y, 0); };
+		this.easeInternal = ()=>{ Vector3 v = easeMethod(); this._optional.ltRect.rect = new Rect( v.x, v.y, this._optional.ltRect.rect.width, this._optional.ltRect.rect.height); };
+		return this;
+	}
+
+	public LTDescr setGUIMoveMargin(){
+		this.type = TweenAction.GUI_MOVE_MARGIN;
+		this.initInternal = ()=>{ this.from = new Vector2(this._optional.ltRect.margin.x, this._optional.ltRect.margin.y); };
+		this.easeInternal = ()=>{ Vector3 v = easeMethod(); this._optional.ltRect.margin = new Vector2(v.x, v.y); };
+		return this;
+	}
+
+	public LTDescr setGUIScale(){
+		this.type = TweenAction.GUI_SCALE;
+		this.initInternal = ()=>{ this.from = new Vector3(this._optional.ltRect.rect.width, this._optional.ltRect.rect.height, 0); };
+		this.easeInternal = ()=>{ Vector3 v = easeMethod(); this._optional.ltRect.rect = new Rect( this._optional.ltRect.rect.x, this._optional.ltRect.rect.y, v.x, v.y); };
+		return this;
+	}
+
+	public LTDescr setGUIAlpha(){
+		this.type = TweenAction.GUI_ALPHA;
+		this.initInternal = ()=>{ this.fromInternal.x = this._optional.ltRect.alpha; };
+		this.easeInternal = ()=>{ this._optional.ltRect.alpha = easeMethod().x; };
+		return this;
+	}
+
+	public LTDescr setGUIRotate(){
+		this.type = TweenAction.GUI_ROTATE;
+		this.initInternal = ()=>{ if(this._optional.ltRect.rotateEnabled==false){
+				this._optional.ltRect.rotateEnabled = true;
+				this._optional.ltRect.resetForRotation();
+			}
+
+			this.fromInternal.x = this._optional.ltRect.rotation;
+		};
+		this.easeInternal = ()=>{ this._optional.ltRect.rotation = easeMethod().x; };
+		return this;
+	}
+
+	public LTDescr setDelayedSound(){
+		this.type = TweenAction.DELAYED_SOUND;
+		this.initInternal = ()=>{ this.hasExtraOnCompletes = true; };
+		this.easeInternal = this.callback;
+		return this;
+	}
+
+	private void init(){
 		this.hasInitiliazed = true;
 
-		if (this.onStart != null){
-            this.onStart();
-        }		 	
+		usesNormalDt = !(useEstimatedTime || useManualTime || useFrames); // only set this to true if it uses non of the other timing modes
 
-		// Initialize From Values
-		switch(this.type){
-			case TweenAction.MOVE:
-			case TweenAction.MOVE_TO_TRANSFORM:
-				this.from = trans.position; break;
-			case TweenAction.MOVE_X:
-				this.fromInternal.x = trans.position.x; break;
-			case TweenAction.MOVE_Y:
-				this.fromInternal.x = trans.position.y; break;
-			case TweenAction.MOVE_Z:
-				this.fromInternal.x = trans.position.z; break;
-			case TweenAction.MOVE_LOCAL_X:
-				this.fromInternal.x = trans.localPosition.x; break;
-			case TweenAction.MOVE_LOCAL_Y:
-				this.fromInternal.x = trans.localPosition.y; break;
-			case TweenAction.MOVE_LOCAL_Z:
-				this.fromInternal.x = trans.localPosition.z; break;
-			case TweenAction.SCALE_X:
-				this.fromInternal.x = trans.localScale.x; break;
-			case TweenAction.SCALE_Y:
-				this.fromInternal.x = trans.localScale.y; break;
-			case TweenAction.SCALE_Z:
-				this.fromInternal.x = trans.localScale.z; break;
-			case TweenAction.ALPHA:
-				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-					if(trans.gameObject.renderer){
-						this.fromInternal.x = trans.gameObject.renderer.material.color.a;
-					}else if(trans.childCount>0){
-						foreach (Transform child in trans) {
-							if(child.gameObject.renderer!=null){
-								Color col = child.gameObject.renderer.material.color;
-								this.fromInternal.x = col.a;
-								break;
-	    					}
-						}
-					}
-					break;	
-				#else
-					SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
-					if(ren!=null){
-						this.fromInternal.x = ren.color.a;
-					}else{
-						if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
-							this.fromInternal.x = trans.gameObject.GetComponent<Renderer>().material.color.a;
-						}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
-							Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor("_TintColor");
-							this.fromInternal.x = col.a;
-						}else if(trans.childCount>0){
-							foreach (Transform child in trans) {
-								if(child.gameObject.GetComponent<Renderer>()!=null){
-									Color col = child.gameObject.GetComponent<Renderer>().material.color;
-									this.fromInternal.x = col.a;
-									break;
-		    					}
-							}
-						}
-					}
-					break;
-				#endif
-			case TweenAction.MOVE_LOCAL:
-				this.from = trans.localPosition; break;
-			case TweenAction.MOVE_CURVED:
-			case TweenAction.MOVE_CURVED_LOCAL:
-			case TweenAction.MOVE_SPLINE:
-			case TweenAction.MOVE_SPLINE_LOCAL:
-				this.fromInternal.x = 0; break;
-			case TweenAction.ROTATE:
-				this.from = trans.eulerAngles; 
-				this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
-				break;
-			case TweenAction.ROTATE_X:
-				this.fromInternal.x = trans.eulerAngles.x; 
-				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
-				break;
-			case TweenAction.ROTATE_Y:
-				this.fromInternal.x = trans.eulerAngles.y; 
-				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
-				break;
-			case TweenAction.ROTATE_Z:
-				this.fromInternal.x = trans.eulerAngles.z; 
-				this.toInternal.x = LeanTween.closestRot( this.fromInternal.x, this.toInternal.x);
-				break;
-			case TweenAction.ROTATE_AROUND:
-				this.lastVal = 0.0f; // optional["last"]
-				this.fromInternal.x = 0.0f;
-				this.origRotation = trans.rotation; // optional["origRotation"
-				break;
-			case TweenAction.ROTATE_AROUND_LOCAL:
-				this.lastVal = 0.0f; // optional["last"]
-				this.fromInternal.x = 0.0f;
-				this.origRotation = trans.localRotation; // optional["origRotation"
-				break;
-			case TweenAction.ROTATE_LOCAL:
-				this.from = trans.localEulerAngles; 
-				this.to = new Vector3(LeanTween.closestRot( this.fromInternal.x, this.toInternal.x), LeanTween.closestRot( this.from.y, this.to.y), LeanTween.closestRot( this.from.z, this.to.z));
-				break;
-			case TweenAction.SCALE:
-				this.from = trans.localScale; break;
-			case TweenAction.GUI_MOVE:
-				this.from = new Vector3(this.ltRect.rect.x, this.ltRect.rect.y, 0); break;
-			case TweenAction.GUI_MOVE_MARGIN:
-				this.from = new Vector2(this.ltRect.margin.x, this.ltRect.margin.y); break;
-			case TweenAction.GUI_SCALE:
-				this.from = new Vector3(this.ltRect.rect.width, this.ltRect.rect.height, 0); break;
-			case TweenAction.GUI_ALPHA:
-				this.fromInternal.x = this.ltRect.alpha; break;
-			case TweenAction.GUI_ROTATE:
-				if(this.ltRect.rotateEnabled==false){
-					this.ltRect.rotateEnabled = true;
-					this.ltRect.resetForRotation();
-				}
-				
-				this.fromInternal.x = this.ltRect.rotation; break;
-			case TweenAction.ALPHA_VERTEX:
-				this.fromInternal.x = trans.GetComponent<MeshFilter>().mesh.colors32[0].a;
-				break;
-			case TweenAction.CALLBACK:
-				break;
-			case TweenAction.CALLBACK_COLOR:
-				this.diff = new Vector3(1.0f,0.0f,0.0f);
-				break;
-			case TweenAction.COLOR:
-				#if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2
-					if(trans.gameObject.renderer){
-						Color col = trans.gameObject.renderer.material.color;
-						this.setFromColor( col );
-					}else if(trans.childCount>0){
-						foreach (Transform child in trans) {
-							if(child.gameObject.renderer!=null){
-								Color col = child.gameObject.renderer.material.color;
-								this.setFromColor( col );
-								break;
-	    					}
-						}
-					}
-				#else
-					SpriteRenderer renColor = trans.gameObject.GetComponent<SpriteRenderer>();
-                    if(renColor!=null){
-                        Color col = renColor.color;
-                        this.setFromColor( col );
-                    }else{
-                        if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
-							Color col = trans.gameObject.GetComponent<Renderer>().material.color;
-							this.setFromColor( col );
-						}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
-							Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor ("_TintColor");
-							this.setFromColor( col );
-						}else if(trans.childCount>0){
-							foreach (Transform child in trans) {
-								if(child.gameObject.GetComponent<Renderer>()!=null){
-									Color col = child.gameObject.GetComponent<Renderer>().material.color;
-									this.setFromColor( col );
-									break;
-		    					}
-							}
-						}
-                    }
-				#endif
-				break;
-			#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
-			case TweenAction.CANVAS_ALPHA:
-				this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-                if(this.uiImage != null){
-	                this.fromInternal.x = this.uiImage.color.a;
-                }else{
-                	this.fromInternal.x = 1f;
-                }
-                break;
-            case TweenAction.CANVAS_COLOR:
-                this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-                if(this.uiImage != null){
-	               this.setFromColor( this.uiImage.color );
-	            }else{
-                	this.setFromColor( Color.white );
-                }
-                break;
-            case TweenAction.CANVASGROUP_ALPHA:
-				this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;
-                break;
-            case TweenAction.TEXT_ALPHA:
-                this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                if (this.uiText != null){
-                    this.fromInternal.x = this.uiText.color.a;
-                }else{
-                	this.fromInternal.x = 1f;
-                }
-                break;
-            case TweenAction.TEXT_COLOR:
-                this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
-                if (this.uiText != null){
-                    this.setFromColor( this.uiText.color );
-                }else{
-                	this.setFromColor( Color.white );
-                }
-                break;
-			case TweenAction.CANVAS_MOVE:
-				this.fromInternal = this.rectTransform.anchoredPosition3D; break;
-			case TweenAction.CANVAS_MOVE_X:
-				this.fromInternal.x = this.rectTransform.anchoredPosition3D.x; break;
-			case TweenAction.CANVAS_MOVE_Y:
-				this.fromInternal.x = this.rectTransform.anchoredPosition3D.y; break;
-			case TweenAction.CANVAS_MOVE_Z:
-				this.fromInternal.x = this.rectTransform.anchoredPosition3D.z; break;
-			case TweenAction.CANVAS_ROTATEAROUND:
-			case TweenAction.CANVAS_ROTATEAROUND_LOCAL:
-				this.lastVal = 0.0f;
-				this.fromInternal.x = 0.0f;
-				this.origRotation = this.rectTransform.rotation;
-				break;
-			case TweenAction.CANVAS_SCALE:
-				this.from = this.rectTransform.localScale; break;
-			case TweenAction.CANVAS_PLAYSPRITE:
-				this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-				this.fromInternal.x = 0f;
-				break;
-			#endif
-		}
-        if(this.type!=TweenAction.CALLBACK_COLOR && this.type!=TweenAction.COLOR && this.type!=TweenAction.TEXT_COLOR && this.type!=TweenAction.CANVAS_COLOR)
-			this.diff = this.to - this.from;
-		if(this.onCompleteOnStart){
-			if(this.onComplete!=null){
-				this.onComplete();
-			}else if(this.onCompleteObject!=null){
-				this.onCompleteObject(this.onCompleteParam);
-			}
-		}
+        if (this.time <= 0f) // avoid dividing by zero
+            this.time = Mathf.Epsilon;
+
+		this.initInternal();
+
+		this.diff = this.to - this.from;
+		this.diffDiv2 = this.diff * 0.5f;
+
+		if (this._optional.onStart != null)
+			this._optional.onStart();
+		
+		if(this.onCompleteOnStart)
+			callOnCompletes();
 
 		if(this.speed>=0){
-			if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
-				this.time = this.path.distance / this.speed ;
-			}else if(this.type==TweenAction.MOVE_SPLINE || this.type==TweenAction.MOVE_SPLINE_LOCAL){
-				this.time = this.spline.distance/ this.speed;
-			}else{
-				this.time = (this.to - this.from).magnitude / this.speed;
-			}
+			initSpeed();
 		}
 	}
+
+	private void initSpeed(){
+		if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
+			this.time = this._optional.path.distance / this.speed;
+		}else if(this.type==TweenAction.MOVE_SPLINE || this.type==TweenAction.MOVE_SPLINE_LOCAL){
+			this.time = this._optional.spline.distance/ this.speed;
+		}else{
+			this.time = (this.to - this.from).magnitude / this.speed;
+		}
+	}
+		
+	public static float val;
+	public static Vector3 newVect;
+
+    public static float dt;
+    private static bool isTweenFinished;
+
+	public bool update2(){
+		
+		if(usesNormalDt){
+			dt = LeanTween.dtActual;
+		}else if( this.useEstimatedTime ){
+			dt = LeanTween.dtEstimated;
+		}else if( this.useFrames ){
+			dt = 1;
+		}else if( this.useManualTime ){
+			dt = LeanTween.dtManual;
+		}
+
+		if(this.delay<=0f && this.direction!=0f){
+			if(trans==null)
+				return true;	
+
+			// initialize if has not done so yet
+			if(!this.hasInitiliazed)
+				this.init();
+
+			dt = dt*this.direction;
+			this.passed += dt;
+
+			this.ratioPassed = Mathf.Clamp01(this.passed / this.time); // need to clamp when finished so it will finish at the exact spot and not overshoot
+			
+			this.easeInternal();
+			
+			if(this.hasUpdateCallback)
+				this._optional.callOnUpdate(val, this.ratioPassed);
+
+			isTweenFinished = this.direction>0f ? this.passed>=this.time : this.passed<=0f;
+//			Debug.Log("lt "+this+" dt:"+dt+" fin:"+isTweenFinished);
+			if(isTweenFinished){ // increment or flip tween
+				this.loopCount--;
+				if(this.loopType==LeanTweenType.pingPong){
+					this.direction = 0.0f-this.direction;
+				}else{
+					this.passed = Mathf.Epsilon;
+				}
+
+				isTweenFinished = this.loopCount == 0 || this.loopType == LeanTweenType.once; // only return true if it is fully complete
+
+				if(isTweenFinished==false && this.onCompleteOnRepeat && this.hasExtraOnCompletes)
+					callOnCompletes(); // this only gets called if onCompleteOnRepeat is set to true, otherwise LeanTween class takes care of calling it
+
+				return isTweenFinished;
+			}
+		}else{
+			this.delay -= dt;
+		}
+
+		return false;
+	}
+
+	public void callOnCompletes(){
+		if(this.type==TweenAction.GUI_ROTATE)
+			this._optional.ltRect.rotateFinished = true;
+		
+		if(this.type==TweenAction.DELAYED_SOUND){
+			AudioSource.PlayClipAtPoint((AudioClip)this._optional.onCompleteParam, this.to, this.from.x);
+		}
+		if(this._optional.onComplete!=null){
+			this._optional.onComplete();
+		}else if(this._optional.onCompleteObject!=null){
+			this._optional.onCompleteObject(this._optional.onCompleteParam);
+		}
+	}
+
+	// Helper Methods
 
 	public LTDescr setFromColor( Color col ){
 		this.from = new Vector3(0.0f, col.a, 0.0f);
 		this.diff = new Vector3(1.0f,0.0f,0.0f);
-		this.axis = new Vector3( col.r, col.g, col.b );
+		this._optional.axis = new Vector3( col.r, col.g, col.b );
 		return this;
 	}
+
+    private static void alphaRecursive( Transform transform, float val, bool useRecursion = true){
+        Renderer renderer = transform.gameObject.GetComponent<Renderer>();
+        if(renderer!=null){
+            foreach(Material mat in renderer.materials){
+                if(mat.HasProperty("_Color")){
+                    mat.color = new Color( mat.color.r, mat.color.g, mat.color.b, val);
+                }else if(mat.HasProperty("_TintColor")){
+                    Color col = mat.GetColor ("_TintColor");
+                    mat.SetColor("_TintColor", new Color( col.r, col.g, col.b, val));
+				}
+            }
+        }
+        if(useRecursion && transform.childCount>0){
+            foreach (Transform child in transform) {
+                alphaRecursive(child, val);
+            }
+        }
+    }
+
+    private static void colorRecursive( Transform transform, Color toColor, bool useRecursion = true ){
+        Renderer ren = transform.gameObject.GetComponent<Renderer>();
+        if(ren!=null){
+            foreach(Material mat in ren.materials){
+                mat.color = toColor;
+            }
+        }
+        if(useRecursion && transform.childCount>0){
+            foreach (Transform child in transform) {
+                colorRecursive(child, toColor);
+            }
+        }
+    }
+
+    #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
+
+    private static void alphaRecursive( RectTransform rectTransform, float val, int recursiveLevel = 0){
+        if(rectTransform.childCount>0){
+            foreach (RectTransform child in rectTransform) {
+                UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
+                if(uiImage!=null){
+                    Color c = uiImage.color;
+                    c.a = val;
+                    uiImage.color = c;
+                }
+
+                alphaRecursive(child, val, recursiveLevel + 1);
+            }
+        }
+    }
+
+    private static void alphaRecursiveSprite( Transform transform, float val ){
+        if(transform.childCount>0){
+            foreach (Transform child in transform) {
+                SpriteRenderer ren = child.GetComponent<SpriteRenderer>();
+                if(ren!=null)
+                    ren.color = new Color( ren.color.r, ren.color.g, ren.color.b, val);
+                alphaRecursiveSprite(child, val);
+            }
+        }
+    }
+
+    private static void colorRecursiveSprite( Transform transform, Color toColor ){
+        if(transform.childCount>0){
+            foreach (Transform child in transform) {
+                SpriteRenderer ren = transform.gameObject.GetComponent<SpriteRenderer>();
+                if(ren!=null)
+                    ren.color = toColor;
+                colorRecursiveSprite(child, toColor);
+            }
+        }
+    }
+
+    private static void colorRecursive( RectTransform rectTransform, Color toColor ){
+
+        if(rectTransform.childCount>0){
+            foreach (RectTransform child in rectTransform) {
+                UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
+                if(uiImage!=null){
+                    uiImage.color = toColor;
+                }
+                colorRecursive(child, toColor);
+            }
+        }
+    }
+
+    private static void textAlphaRecursive( Transform trans, float val, bool useRecursion = true ){
+        UnityEngine.UI.Text uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+        if(uiText!=null){
+            Color c = uiText.color;
+            c.a = val;
+            uiText.color = c;
+        }
+        if(useRecursion && trans.childCount>0){
+            foreach (Transform child in trans) {
+                textAlphaRecursive(child, val);
+            }
+        }
+    }
+
+    private static void textColorRecursive(Transform trans, Color toColor ){
+        if(trans.childCount>0){
+            foreach (Transform child in trans) {
+                UnityEngine.UI.Text uiText = child.gameObject.GetComponent<UnityEngine.UI.Text>();
+                if(uiText!=null){
+                    uiText.color = toColor;
+                }
+                textColorRecursive(child, toColor);
+            }
+        }
+    }
+    #endif
+
+    private static Color tweenColor( LTDescrImpl tween, float val ){
+		Vector3 diff3 = tween._optional.point - tween._optional.axis;
+        float diffAlpha = tween.to.y - tween.from.y;
+		return new Color(tween._optional.axis.x + diff3.x*val, tween._optional.axis.y + diff3.y*val, tween._optional.axis.z + diff3.z*val, tween.from.y + diffAlpha*val);
+    }
 
 	/**
 	* Pause a tween
@@ -463,7 +1091,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public LTDescr setAxis( Vector3 axis ){
-		this.axis = axis;
+		this._optional.axis = axis;
 		return this;
 	}
 	
@@ -499,13 +1127,403 @@ public class LTDescrImpl : LTDescr {
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.easeInBounce );
 	*/
 	public LTDescr setEase( LeanTweenType easeType ){
-		this.tweenType = easeType;
+
+		switch( easeType ){
+			case LeanTweenType.linear:
+				setEaseLinear(); break;
+			case LeanTweenType.easeOutQuad:
+				setEaseOutQuad(); break;
+			case LeanTweenType.easeInQuad:
+				setEaseInQuad(); break;
+			case LeanTweenType.easeInOutQuad:
+				setEaseInOutQuad(); break;
+			case LeanTweenType.easeInCubic:
+				setEaseInCubic();break;
+			case LeanTweenType.easeOutCubic:
+				setEaseOutCubic(); break;
+			case LeanTweenType.easeInOutCubic:
+				setEaseInOutCubic(); break;
+			case LeanTweenType.easeInQuart:
+				setEaseInQuart(); break;
+			case LeanTweenType.easeOutQuart:
+				setEaseOutQuart(); break;
+			case LeanTweenType.easeInOutQuart:
+				setEaseInOutQuart(); break;
+			case LeanTweenType.easeInQuint:
+				setEaseInQuint(); break;
+			case LeanTweenType.easeOutQuint:
+				setEaseOutQuint(); break;
+			case LeanTweenType.easeInOutQuint:
+				setEaseInOutQuint(); break;
+			case LeanTweenType.easeInSine:
+				setEaseInSine(); break;
+			case LeanTweenType.easeOutSine:
+				setEaseOutSine(); break;
+			case LeanTweenType.easeInOutSine:
+				setEaseInOutSine(); break;
+			case LeanTweenType.easeInExpo:
+				setEaseInExpo(); break;
+			case LeanTweenType.easeOutExpo:
+				setEaseOutExpo(); break;
+			case LeanTweenType.easeInOutExpo:
+				setEaseInOutExpo(); break;
+			case LeanTweenType.easeInCirc:
+				setEaseInCirc(); break;
+			case LeanTweenType.easeOutCirc:
+				setEaseOutCirc(); break;
+			case LeanTweenType.easeInOutCirc:
+				setEaseInOutCirc(); break;
+			case LeanTweenType.easeInBounce:
+				setEaseInBounce(); break;
+			case LeanTweenType.easeOutBounce:
+				setEaseOutBounce(); break;
+			case LeanTweenType.easeInOutBounce:
+				setEaseInOutBounce(); break;
+			case LeanTweenType.easeInBack:
+				setEaseInBack(); break;
+			case LeanTweenType.easeOutBack:
+				setEaseOutBack(); break;
+			case LeanTweenType.easeInOutBack:
+				setEaseInOutBack();  break;
+			case LeanTweenType.easeInElastic:
+				setEaseInElastic();  break;
+			case LeanTweenType.easeOutElastic:
+				setEaseOutElastic(); break;
+			case LeanTweenType.easeInOutElastic:
+				setEaseInOutElastic(); break;
+			case LeanTweenType.punch:
+				setEasePunch(); break;
+			case LeanTweenType.easeShake:
+				setEaseShake(); break;
+			case LeanTweenType.easeSpring:
+				setEaseSpring(); break;
+			default:
+				setEaseLinear(); break;
+			}
+
 		return this;
 	}
 
-	public LTDescr setEaseInOutQuad(){
-		this.tweenType = LeanTweenType.easeInOutQuad;
-		return this;
+	public LTDescr setEaseLinear(){ this.tweenType = LeanTweenType.linear; this.easeMethod = this.easeLinear; return this; }
+
+	public LTDescr setEaseSpring(){ this.tweenType = LeanTweenType.easeSpring; this.easeMethod = this.easeSpring; return this; }
+
+	public LTDescr setEaseInQuad(){ this.tweenType = LeanTweenType.easeInQuad; this.easeMethod = this.easeInQuad; return this; }
+
+	public LTDescr setEaseOutQuad(){ this.tweenType = LeanTweenType.easeOutQuad; this.easeMethod = this.easeOutQuad; return this; }
+
+	public LTDescr setEaseInOutQuad(){ this.tweenType = LeanTweenType.easeInOutQuad; this.easeMethod = this.easeInOutQuad; return this;}
+
+	public LTDescr setEaseInCubic(){ this.tweenType = LeanTweenType.easeInCubic; this.easeMethod = this.easeInCubic; return this; }
+
+	public LTDescr setEaseOutCubic(){ this.tweenType = LeanTweenType.easeOutCubic; this.easeMethod = this.easeOutCubic; return this; }
+
+	public LTDescr setEaseInOutCubic(){ this.tweenType = LeanTweenType.easeInOutCubic; this.easeMethod = this.easeInOutCubic; return this; }
+
+	public LTDescr setEaseInQuart(){ this.tweenType = LeanTweenType.easeInQuart; this.easeMethod = this.easeInQuart; return this; }
+
+	public LTDescr setEaseOutQuart(){ this.tweenType = LeanTweenType.easeOutQuart; this.easeMethod = this.easeOutQuart; return this; }
+
+	public LTDescr setEaseInOutQuart(){ this.tweenType = LeanTweenType.easeInOutQuart; this.easeMethod = this.easeInOutQuart; return this; }
+
+	public LTDescr setEaseInQuint(){ this.tweenType = LeanTweenType.easeInQuint; this.easeMethod = this.easeInQuint; return this; }
+
+	public LTDescr setEaseOutQuint(){ this.tweenType = LeanTweenType.easeOutQuint; this.easeMethod = this.easeOutQuint; return this; }
+
+	public LTDescr setEaseInOutQuint(){ this.tweenType = LeanTweenType.easeInOutQuint; this.easeMethod = this.easeInOutQuint; return this; }
+
+	public LTDescr setEaseInSine(){ this.tweenType = LeanTweenType.easeInSine; this.easeMethod = this.easeInSine; return this; }
+
+	public LTDescr setEaseOutSine(){ this.tweenType = LeanTweenType.easeOutSine; this.easeMethod = this.easeOutSine; return this; }
+
+	public LTDescr setEaseInOutSine(){ this.tweenType = LeanTweenType.easeInOutSine; this.easeMethod = this.easeInOutSine; return this; }
+
+	public LTDescr setEaseInExpo(){ this.tweenType = LeanTweenType.easeInExpo; this.easeMethod = this.easeInExpo; return this; }
+
+	public LTDescr setEaseOutExpo(){ this.tweenType = LeanTweenType.easeOutExpo; this.easeMethod = this.easeOutExpo; return this; }
+
+	public LTDescr setEaseInOutExpo(){ this.tweenType = LeanTweenType.easeInOutExpo; this.easeMethod = this.easeInOutExpo; return this; }
+
+	public LTDescr setEaseInCirc(){ this.tweenType = LeanTweenType.easeInCirc; this.easeMethod = this.easeInCirc; return this; }
+
+	public LTDescr setEaseOutCirc(){ this.tweenType = LeanTweenType.easeOutCirc; this.easeMethod = this.easeOutCirc; return this; }
+
+	public LTDescr setEaseInOutCirc(){ this.tweenType = LeanTweenType.easeInOutCirc; this.easeMethod = this.easeInOutCirc; return this; }
+
+	public LTDescr setEaseInBounce(){ this.tweenType = LeanTweenType.easeInBounce; this.easeMethod = this.easeInBounce; return this; }
+
+	public LTDescr setEaseOutBounce(){ this.tweenType = LeanTweenType.easeOutBounce; this.easeMethod = this.easeOutBounce; return this; }
+
+	public LTDescr setEaseInOutBounce(){ this.tweenType = LeanTweenType.easeInOutBounce; this.easeMethod = this.easeInOutBounce; return this; }
+
+	public LTDescr setEaseInBack(){ this.tweenType = LeanTweenType.easeInBack; this.easeMethod = this.easeInBack; return this; }
+
+	public LTDescr setEaseOutBack(){ this.tweenType = LeanTweenType.easeOutBack; this.easeMethod = this.easeOutBack; return this; }
+
+	public LTDescr setEaseInOutBack(){ this.tweenType = LeanTweenType.easeInOutBack; this.easeMethod = this.easeInOutBack; return this; }
+
+	public LTDescr setEaseInElastic(){ this.tweenType = LeanTweenType.easeInElastic; this.easeMethod = this.easeInElastic; return this; }
+
+	public LTDescr setEaseOutElastic(){ this.tweenType = LeanTweenType.easeOutElastic; this.easeMethod = this.easeOutElastic; return this; }
+
+	public LTDescr setEaseInOutElastic(){ this.tweenType = LeanTweenType.easeInOutElastic; this.easeMethod = this.easeInOutElastic; return this; }
+
+	public LTDescr setEasePunch(){ this._optional.animationCurve = LeanTween.punch; this.toInternal.x = this.from.x + this.to.x; this.easeMethod = this.tweenOnCurve; return this; }
+
+	public LTDescr setEaseShake(){ this._optional.animationCurve = LeanTween.shake; this.toInternal.x = this.from.x + this.to.x; this.easeMethod = this.tweenOnCurve; return this; }
+
+	private Vector3 tweenOnCurve(){
+		return	new Vector3(this.from.x + (this.diff.x) * this._optional.animationCurve.Evaluate(ratioPassed),
+			this.from.y + (this.diff.y) * this._optional.animationCurve.Evaluate(ratioPassed),
+			this.from.z + (this.diff.z) * this._optional.animationCurve.Evaluate(ratioPassed) );
+	}
+
+	// Vector3 Ease Methods
+
+	private Vector3 easeInOutQuad(){
+		val = this.ratioPassed * 2f;
+
+		if (val < 1f) {
+			val = val * val;
+			return new Vector3( this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+		}
+		val = (1f-val) * (val - 3f) + 1f;
+		return new Vector3( this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+	} 
+
+	private Vector3 easeInQuad(){
+		val = ratioPassed * ratioPassed;
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeOutQuad(){
+		val = this.ratioPassed;
+		val = -val * (val - 2f);
+		return (this.diff * val + this.from);
+	}
+
+	private Vector3 easeLinear(){
+		val = this.ratioPassed;
+		return new Vector3(this.from.x+this.diff.x*val, this.from.y+this.diff.y*val, this.from.z+this.diff.z*val);
+	}
+
+	private Vector3 easeSpring(){
+		val = Mathf.Clamp01(this.ratioPassed);
+		val = (Mathf.Sin(val * Mathf.PI * (0.2f + 2.5f * val * val * val)) * Mathf.Pow(1f - val, 2.2f ) + val) * (1f + (1.2f * (1f - val) ));
+		return this.from + this.diff * val;
+	}
+
+	private Vector3 easeInCubic(){
+		val = this.ratioPassed * this.ratioPassed * this.ratioPassed;
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeOutCubic(){
+		val = this.ratioPassed - 1f;
+		val = (val * val * val + 1);
+		return new Vector3( this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z) ;
+	}
+
+	private Vector3 easeInOutCubic(){
+		val = this.ratioPassed * 2f;
+		if (val < 1f) {
+			val = val * val * val;
+			return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+		}
+		val -= 2f;
+		val = val * val * val + 2f;
+		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y,this.diffDiv2.z * val + this.from.z);
+	}
+
+	private Vector3 easeInQuart(){
+		val = this.ratioPassed * this.ratioPassed * this.ratioPassed * this.ratioPassed;
+		return diff * val + this.from;
+	}
+
+	private Vector3 easeOutQuart(){
+		val = this.ratioPassed - 1f;
+		val = -(val * val * val * val - 1);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y,this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeInOutQuart(){
+		val = this.ratioPassed * 2f;
+		if (val < 1f) {
+			val = val * val * val * val;
+			return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+		}
+		val -= 2f;
+		val = (val * val * val * val - 2f);
+		return new Vector3(-this.diffDiv2.x * val + this.from.x, -this.diffDiv2.x * val + this.from.x, -this.diffDiv2.x * val + this.from.x);
+	}
+
+	private Vector3 easeInQuint(){
+		val = this.ratioPassed;
+		val = val * val * val * val * val;
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeOutQuint(){
+		val = this.ratioPassed - 1f;
+		val = (val * val * val * val * val + 1f);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeInOutQuint(){
+		val = this.ratioPassed * 2f;
+		if (val < 1f){
+			val = val * val * val * val * val;
+			return new Vector3(this.diffDiv2.x * val + this.from.x,this.diffDiv2.y * val + this.from.y,this.diffDiv2.z * val + this.from.z);
+		}
+		val -= 2f;
+		val = (val * val * val * val * val + 2f);
+		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+	}
+
+	private Vector3 easeInSine(){
+		val = - Mathf.Cos(this.ratioPassed * LeanTween.PI_DIV2);
+		return new Vector3(this.diff.x * val + this.diff.x + this.from.x, this.diff.y * val + this.diff.y + this.from.y, this.diff.z * val + this.diff.z + this.from.z);
+	}
+
+	private Vector3 easeOutSine(){
+		val = Mathf.Sin(this.ratioPassed * LeanTween.PI_DIV2);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y,this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeInOutSine(){
+		val = -(Mathf.Cos(Mathf.PI * this.ratioPassed) - 1f);
+		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+	}
+
+	private Vector3 easeInExpo(){
+		val = Mathf.Pow(2f, 10f * (this.ratioPassed - 1f));
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeOutExpo(){
+		val = (-Mathf.Pow(2f, -10f * this.ratioPassed) + 1f);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeInOutExpo(){
+		val = this.ratioPassed * 2f;
+		val = Mathf.Pow(2f, 10f * (val - 1f));
+		if (val < 1f)
+			return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+		val--;
+		val = (-Mathf.Pow(2f, -10f * val) + 2f);
+		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+	}
+
+	private Vector3 easeInCirc(){
+		val = -(Mathf.Sqrt(1f - this.ratioPassed * this.ratioPassed) - 1f);
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeOutCirc(){
+		val = this.ratioPassed - 1f;
+		val = Mathf.Sqrt(1f - val * val);
+
+		return new Vector3(this.diff.x * val + this.from.x, this.diff.y * val + this.from.y, this.diff.z * val + this.from.z);
+	}
+
+	private Vector3 easeInOutCirc(){
+		val = this.ratioPassed * 2f;
+		if (val < 1f){
+			val = -(Mathf.Sqrt(1f - val * val) - 1f);
+			return new Vector3(this.diffDiv2.x * val  + this.from.x, this.diffDiv2.y * val  + this.from.y, this.diffDiv2.z * val  + this.from.z);
+		}
+		val -= 2f;
+		val = (Mathf.Sqrt(1f - val * val) + 1f);
+		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+	}
+
+	private Vector3 easeInBounce(){
+		val = this.ratioPassed;
+		val = 1f - val;
+		return new Vector3(this.diff.x - LeanTween.easeOutBounce(0, this.diff.x, val) + this.from.x, 
+			this.diff.y - LeanTween.easeOutBounce(0, this.diff.y, val) + this.from.y, 
+			this.diff.z - LeanTween.easeOutBounce(0, this.diff.z, val) + this.from.z);
+	}
+
+	private Vector3 easeOutBounce(){
+		val = ratioPassed;
+		if (val < (1 / 2.75f)){
+			val = (7.5625f * val * val);
+			return this.diff * val + this.from;
+		}else if (val < (2 / 2.75f)){
+			val -= (1.5f / 2.75f);
+			val = (7.5625f * (val) * val + .75f);
+			return this.diff * val + this.from;
+		}else if (val < (2.5 / 2.75)){
+			val -= (2.25f / 2.75f);
+			val = (7.5625f * (val) * val + .9375f);
+			return this.diff * val + this.from;
+		}else{
+			val -= (2.625f / 2.75f);
+			val = 7.5625f * (val) * val + .984375f;
+			return this.diff * val + this.from;
+		}
+	}
+		
+	private Vector3 easeInOutBounce(){
+		val = this.ratioPassed * 2f;
+		if (val < 1f){
+			return new Vector3(LeanTween.easeInBounce(0, this.diff.x, val) * 0.5f + this.from.x, 
+				LeanTween.easeInBounce(0, this.diff.y, val) * 0.5f + this.from.y, 
+				LeanTween.easeInBounce(0, this.diff.z, val) * 0.5f + this.from.z);
+		}else {
+			val = val - 1f;
+			return new Vector3(LeanTween.easeOutBounce(0, this.diff.x, val) * 0.5f + this.diffDiv2.x + this.from.x,
+			LeanTween.easeOutBounce(0, this.diff.y, val) * 0.5f + this.diffDiv2.y + this.from.y,
+			LeanTween.easeOutBounce(0, this.diff.z, val) * 0.5f + this.diffDiv2.z + this.from.z);
+		}
+	}
+
+	private Vector3 easeInBack(){
+		val = this.ratioPassed;
+		val /= 1;
+		float s = 1.70158f * this.overshoot;
+		return this.diff * (val) * val * ((s + 1) * val - s) + this.from;
+	}
+
+	private Vector3 easeOutBack(){
+		float s = 1.70158f * this.overshoot;
+		val = (this.ratioPassed / 1) - 1;
+		val = ((val) * val * ((s + 1) * val + s) + 1);
+		return this.diff * val + this.from;
+	}
+
+	private Vector3 easeInOutBack(){
+		float s = 1.70158f * this.overshoot;
+		val = this.ratioPassed * 2f;
+		if ((val) < 1){
+			s *= (1.525f) * overshoot;
+			return this.diffDiv2 * (val * val * (((s) + 1) * val - s)) + this.from;
+		}
+		val -= 2;
+		s *= (1.525f) * overshoot;
+		val = ((val) * val * (((s) + 1) * val + s) + 2);
+		return this.diffDiv2 * val + this.from;
+	}
+
+	private Vector3 easeInElastic(){
+		return new Vector3(LeanTween.easeInElastic(this.from.x,this.to.x,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeInElastic(this.from.y,this.to.y,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeInElastic(this.from.z,this.to.z,this.ratioPassed,this.overshoot,this.period));
+	}		
+
+	private Vector3 easeOutElastic(){
+		return new Vector3(LeanTween.easeOutElastic(this.from.x,this.to.x,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeOutElastic(this.from.y,this.to.y,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeOutElastic(this.from.z,this.to.z,this.ratioPassed,this.overshoot,this.period));
+	}
+
+	private Vector3 easeInOutElastic()
+	{
+		return new Vector3(LeanTween.easeInOutElastic(this.from.x,this.to.x,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeInOutElastic(this.from.y,this.to.y,this.ratioPassed,this.overshoot,this.period),
+			LeanTween.easeInOutElastic(this.from.z,this.to.z,this.ratioPassed,this.overshoot,this.period));
 	}
 
 	/**
@@ -543,7 +1561,9 @@ public class LTDescrImpl : LTDescr {
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.easeInBounce );
 	*/
 	public LTDescr setEase( AnimationCurve easeCurve ){
-		this.animationCurve = easeCurve;
+		this._optional.animationCurve = easeCurve;
+		this.easeMethod = this.tweenOnCurve;
+		this.tweenType = LeanTweenType.animationCurve;
 		return this;
 	}
 
@@ -569,14 +1589,13 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public LTDescr setTo( Transform to ){
-		this.toTrans = to;
+		this._optional.toTrans = to;
 		return this;
 	}
 
 	public LTDescr setFrom( Vector3 from ){
 		if(this.trans){
 			this.init();
-
 		}
 		this.from = from;
 		// this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
@@ -633,6 +1652,8 @@ public class LTDescrImpl : LTDescr {
 	*/
 	public LTDescr setSpeed( float speed ){
 		this.speed = speed;
+		if(this.hasInitiliazed)
+			initSpeed();
 		return this;
 	}
 
@@ -759,7 +1780,8 @@ public class LTDescrImpl : LTDescr {
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );
 	*/
 	public LTDescr setOnComplete( Action onComplete ){
-		this.onComplete = onComplete;
+		this._optional.onComplete = onComplete;
+		this.hasExtraOnCompletes = true;
 		return this;
 	}
 
@@ -772,13 +1794,15 @@ public class LTDescrImpl : LTDescr {
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnComplete( tweenFinished );
 	*/
 	public LTDescr setOnComplete( Action<object> onComplete ){
-		this.onCompleteObject = onComplete;
+		this._optional.onCompleteObject = onComplete;
+		this.hasExtraOnCompletes = true;
 		return this;
 	}
 	public LTDescr setOnComplete( Action<object> onComplete, object onCompleteParam ){
-		this.onCompleteObject = onComplete;
+		this._optional.onCompleteObject = onComplete;
+		this.hasExtraOnCompletes = true;
 		if(onCompleteParam!=null)
-			this.onCompleteParam = onCompleteParam;
+			this._optional.onCompleteParam = onCompleteParam;
 		return this;
 	}
 
@@ -795,7 +1819,8 @@ public class LTDescrImpl : LTDescr {
     * }<br>
 	*/
 	public LTDescr setOnCompleteParam( object onCompleteParam ){
-		this.onCompleteParam = onCompleteParam;
+		this._optional.onCompleteParam = onCompleteParam;
+		this.hasExtraOnCompletes = true;
 		return this;
 	}
 
@@ -811,39 +1836,39 @@ public class LTDescrImpl : LTDescr {
 	* void tweenMoved( float val ){ }<br>
 	*/
 	public LTDescr setOnUpdate( Action<float> onUpdate ){
-		this.onUpdateFloat = onUpdate;
+		this._optional.onUpdateFloat = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
     public LTDescr setOnUpdateRatio(Action<float,float> onUpdate)
     {
-        this.onUpdateFloatRatio = onUpdate;
+		this._optional.onUpdateFloatRatio = onUpdate;
         this.hasUpdateCallback = true;
         return this;
     }
 	
 	public LTDescr setOnUpdateObject( Action<float,object> onUpdate ){
-		this.onUpdateFloatObject = onUpdate;
+		this._optional.onUpdateFloatObject = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
 	public LTDescr setOnUpdateVector2( Action<Vector2> onUpdate ){
-		this.onUpdateVector2 = onUpdate;
+		this._optional.onUpdateVector2 = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
 	public LTDescr setOnUpdateVector3( Action<Vector3> onUpdate ){
-		this.onUpdateVector3 = onUpdate;
+		this._optional.onUpdateVector3 = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
 	public LTDescr setOnUpdateColor( Action<Color> onUpdate ){
-		this.onUpdateColor = onUpdate;
+		this._optional.onUpdateColor = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
 	public LTDescr setOnUpdateColor( Action<Color,object> onUpdate ){
-		this.onUpdateColorObject = onUpdate;
+		this._optional.onUpdateColorObject = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
@@ -851,13 +1876,13 @@ public class LTDescrImpl : LTDescr {
 	#if !UNITY_FLASH
 
 	public LTDescr setOnUpdate( Action<Color> onUpdate ){
-		this.onUpdateColor = onUpdate;
+		this._optional.onUpdateColor = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
 
 	public LTDescr setOnUpdate( Action<Color,object> onUpdate ){
-		this.onUpdateColorObject = onUpdate;
+		this._optional.onUpdateColorObject = onUpdate;
 		this.hasUpdateCallback = true;
 		return this;
 	}
@@ -873,26 +1898,26 @@ public class LTDescrImpl : LTDescr {
 	* void tweenMoved( float val, object obj ){ }<br>
 	*/
 	public LTDescr setOnUpdate( Action<float,object> onUpdate, object onUpdateParam = null ){
-		this.onUpdateFloatObject = onUpdate;
+		this._optional.onUpdateFloatObject = onUpdate;
 		this.hasUpdateCallback = true;
 		if(onUpdateParam!=null)
-			this.onUpdateParam = onUpdateParam;
+			this._optional.onUpdateParam = onUpdateParam;
 		return this;
 	}
 
 	public LTDescr setOnUpdate( Action<Vector3,object> onUpdate, object onUpdateParam = null ){
-		this.onUpdateVector3Object = onUpdate;
+		this._optional.onUpdateVector3Object = onUpdate;
 		this.hasUpdateCallback = true;
 		if(onUpdateParam!=null)
-			this.onUpdateParam = onUpdateParam;
+			this._optional.onUpdateParam = onUpdateParam;
 		return this;
 	}
 
 	public LTDescr setOnUpdate( Action<Vector2> onUpdate, object onUpdateParam = null ){
-		this.onUpdateVector2 = onUpdate;
+		this._optional.onUpdateVector2 = onUpdate;
 		this.hasUpdateCallback = true;
 		if(onUpdateParam!=null)
-			this.onUpdateParam = onUpdateParam;
+			this._optional.onUpdateParam = onUpdateParam;
 		return this;
 	}
 
@@ -907,10 +1932,10 @@ public class LTDescrImpl : LTDescr {
 	* void tweenMoved( Vector3 val ){ }<br>
 	*/
 	public LTDescr setOnUpdate( Action<Vector3> onUpdate, object onUpdateParam = null ){
-		this.onUpdateVector3 = onUpdate;
+		this._optional.onUpdateVector3 = onUpdate;
 		this.hasUpdateCallback = true;
 		if(onUpdateParam!=null)
-			this.onUpdateParam = onUpdateParam;
+			this._optional.onUpdateParam = onUpdateParam;
 		return this;
 	}
 	#endif
@@ -927,7 +1952,7 @@ public class LTDescrImpl : LTDescr {
 	* void tweenMoved( float val, object obj ){ }<br>
 	*/
 	public LTDescr setOnUpdateParam( object onUpdateParam ){
-		this.onUpdateParam = onUpdateParam;
+		this._optional.onUpdateParam = onUpdateParam;
 		return this;
 	}
 
@@ -941,11 +1966,11 @@ public class LTDescrImpl : LTDescr {
 	*/
 	public LTDescr setOrientToPath( bool doesOrient ){
 		if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
-			if(this.path==null)
-				this.path = new LTBezierPath();
-			this.path.orientToPath = doesOrient;
+			if(this._optional.path==null)
+				this._optional.path = new LTBezierPath();
+			this._optional.path.orientToPath = doesOrient;
 		}else{
-			this.spline.orientToPath = doesOrient;
+			this._optional.spline.orientToPath = doesOrient;
 		}
 		return this;
 	}
@@ -961,25 +1986,25 @@ public class LTDescrImpl : LTDescr {
 	public LTDescr setOrientToPath2d( bool doesOrient2d ){
 		setOrientToPath(doesOrient2d);
 		if(this.type==TweenAction.MOVE_CURVED || this.type==TweenAction.MOVE_CURVED_LOCAL){
-			this.path.orientToPath2d = doesOrient2d;
+			this._optional.path.orientToPath2d = doesOrient2d;
 		}else{
-			this.spline.orientToPath2d = doesOrient2d;
+			this._optional.spline.orientToPath2d = doesOrient2d;
 		}
 		return this;
 	}
 
 	public LTDescr setRect( LTRect rect ){
-		this.ltRect = rect;
+		this._optional.ltRect = rect;
 		return this;
 	}
 
 	public LTDescr setRect( Rect rect ){
-		this.ltRect = new LTRect(rect);
+		this._optional.ltRect = new LTRect(rect);
 		return this;
 	}
 
 	public LTDescr setPath( LTBezierPath path ){
-		this.path = path;
+		this._optional.path = path;
 		return this;
 	}
 
@@ -992,7 +2017,7 @@ public class LTDescrImpl : LTDescr {
 	* LeanTween.rotateAround( cube, Vector3.up, 360.0f, 1.0f ) .setPoint( new Vector3(1f,0f,0f) ) .setEase( LeanTweenType.easeInOutBounce );<br>
 	*/
 	public LTDescr setPoint( Vector3 point ){
-		this.point = point;
+		this._optional.point = point;
 		return this;
 	}
 
@@ -1002,7 +2027,7 @@ public class LTDescrImpl : LTDescr {
 	}
 
 	public LTDescr setAudio( object audio ){
-		this.onCompleteParam = audio;
+		this._optional.onCompleteParam = audio;
 		return this;
 	}
 	
@@ -1064,7 +2089,7 @@ public class LTDescrImpl : LTDescr {
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setOnStart( function(){ Debug.Log("I started!"); } );
 	*/
 	public LTDescr setOnStart( Action onStart ){
-        this.onStart = onStart;
+		this._optional.onStart = onStart;
         return this;
     }
 
@@ -1084,14 +2109,14 @@ public class LTDescrImpl : LTDescr {
     	}
 
     	if(this.direction!=direction){
-	    	// Debug.Log("reverse path:"+this.path+" spline:"+this.spline+" hasInitiliazed:"+this.hasInitiliazed);
+	    	// Debug.Log("reverse path:"+this.path+" spline:"+this._optional.spline+" hasInitiliazed:"+this.hasInitiliazed);
 	    	if(this.hasInitiliazed){
 	    		this.direction = direction;
     		}else{
-    			if(this.path!=null){
-		    		this.path = new LTBezierPath( LTUtility.reverse( this.path.pts ) );
-				}else if(this.spline!=null){
-					this.spline = new LTSpline( LTUtility.reverse( this.spline.pts ) );
+				if(this._optional.path!=null){
+					this._optional.path = new LTBezierPath( LTUtility.reverse( this._optional.path.pts ) );
+				}else if(this._optional.spline!=null){
+					this._optional.spline = new LTSpline( LTUtility.reverse( this._optional.spline.pts ) );
 				}
 				// this.passed = this.time - this.passed;
     		}

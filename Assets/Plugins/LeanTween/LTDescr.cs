@@ -9,10 +9,12 @@ public interface LTDescr
 	bool useFrames { get; set; }
 	bool useManualTime { get; set; }
 	bool hasInitiliazed { get; set; }
+	bool hasExtraOnCompletes { get; }
 	bool hasPhysics { get; set; }
 	bool onCompleteOnRepeat { get; set; }
 	bool onCompleteOnStart { get; set; }
 	bool useRecursion { get; set; }
+    float ratioPassed { get; set; }
 	float passed { get; set; }
 	float delay { get; set; }
 	float time { get; set; }
@@ -25,42 +27,29 @@ public interface LTDescr
 	float period { get; set; }
 	bool destroyOnComplete { get; set; }
 	Transform trans { get; set; }
-	Transform toTrans { get; set; }
-	LTRect ltRect { get; set; }
 	Vector3 from { get; set; }
 	Vector3 to { get; set; }
-	Vector3 diff { get; set; }
-	Vector3 point { get; set; }
-	Vector3 axis { get; set; }
-	Quaternion origRotation { get; set; }
-	LTBezierPath path { get; set; }
-	LTSpline spline { get; set; }
+
 	TweenAction type { get; set; }
 	LeanTweenType tweenType { get; set; }
-	AnimationCurve animationCurve { get; set; }
+
 	LeanTweenType loopType { get; set; }
 	bool hasUpdateCallback { get; set; }
-	Action<float> onUpdateFloat { get; set; }
-    Action<float,float> onUpdateFloatRatio { get; set; }
-	Action<float,object> onUpdateFloatObject { get; set; }
-	Action<Vector2> onUpdateVector2 { get; set; }
-	Action<Vector3> onUpdateVector3 { get; set; }
-	Action<Vector3,object> onUpdateVector3Object { get; set; }
-	Action<Color> onUpdateColor { get; set; }
-	Action onComplete { get; set; }
-	Action<object> onCompleteObject { get; set; }
-	object onCompleteParam { get; set; }
-	object onUpdateParam { get; set; }
-	Action onStart { get; set; }
+
+	LTDescrOptional optional { get; set; }
+
+	LTDescrImpl.EaseTypeDelegate easeMethod { get; set; }
+	LTDescrImpl.ActionMethodDelegate easeInternal {get; set; }
+	LTDescrImpl.ActionMethodDelegate initInternal {get; set; }
 	[System.Obsolete("Use 'LeanTween.cancel( id )' instead")]
 	LTDescr cancel(UnityEngine.GameObject gameObject);
-	void cleanup();
 	int uniqueId { get; }
 	int id { get; }
 	#if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2
 	SpriteRenderer spriteRen{ get; set; }
 	#endif
-	void init();
+	bool update2();
+	void callOnCompletes();
 	LTDescr pause();
 	void reset();
 	LTDescr resume();
@@ -71,12 +60,99 @@ public interface LTDescr
 	LTDescr setDiff(UnityEngine.Vector3 diff);
 	LTDescr setDirection(float direction);
 	LTDescr setEase(LeanTweenType easeType);
+	LTDescr setEaseLinear();
+	LTDescr setEaseSpring();
+	LTDescr setEaseOutQuad();
+	LTDescr setEaseInQuad();
+	LTDescr setEaseInOutQuad();
+	LTDescr setEaseInCubic();
+	LTDescr setEaseOutCubic();
+	LTDescr setEaseInOutCubic();
+	LTDescr setEaseInQuart();
+	LTDescr setEaseOutQuart();
+	LTDescr setEaseInOutQuart();
+	LTDescr setEaseInQuint();
+	LTDescr setEaseOutQuint();
+	LTDescr setEaseInOutQuint();
+	LTDescr setEaseInSine();
+	LTDescr setEaseOutSine();
+	LTDescr setEaseInOutSine();
+	LTDescr setEaseInExpo();
+	LTDescr setEaseOutExpo();
+	LTDescr setEaseInOutExpo();
+	LTDescr setEaseInCirc();
+	LTDescr setEaseOutCirc();
+	LTDescr setEaseInOutCirc();
+	LTDescr setEaseInBounce();
+	LTDescr setEaseOutBounce();
+	LTDescr setEaseInOutBounce();
+	LTDescr setEaseInBack();
+	LTDescr setEaseOutBack();
+	LTDescr setEaseInOutBack(); 
+	LTDescr setEaseInElastic(); 
+	LTDescr setEaseOutElastic();
+	LTDescr setEaseInOutElastic();
+	LTDescr setEasePunch();
+	LTDescr setEaseShake();
 	LTDescr setEase(UnityEngine.AnimationCurve easeCurve);
+
 	LTDescr setFrom(float from);
 	LTDescr setFrom(UnityEngine.Vector3 from);
 	LTDescr setFromColor(UnityEngine.Color col);
 	LTDescr setHasInitialized(bool has);
 	LTDescr setId(uint id);
+
+	LTDescr setMoveX();
+	LTDescr setMoveY();
+	LTDescr setMoveZ();
+	LTDescr setMoveLocalX();
+	LTDescr setMoveLocalY();
+	LTDescr setMoveLocalZ();
+	LTDescr setMoveCurved();
+	LTDescr setMoveCurvedLocal();
+	LTDescr setMoveSpline();
+	LTDescr setMoveSplineLocal();
+	LTDescr setScaleX();
+	LTDescr setScaleY();
+	LTDescr setScaleZ();
+	LTDescr setRotateX();
+	LTDescr setRotateY();
+	LTDescr setRotateZ();
+	LTDescr setRotateAround();
+	LTDescr setRotateAroundLocal();
+	LTDescr setAlpha();
+	LTDescr setTextAlpha();
+	LTDescr setAlphaVertex();
+	LTDescr setColor();
+	LTDescr setCallbackColor();
+	LTDescr setTextColor();
+	LTDescr setCanvasAlpha();
+	LTDescr setCanvasGroupAlpha();
+	LTDescr setCanvasColor();
+	LTDescr setCanvasMoveX();
+	LTDescr setCanvasMoveY();
+	LTDescr setCanvasMoveZ();
+	LTDescr setCanvasRotateAround();
+	LTDescr setCanvasRotateAroundLocal();
+	LTDescr setCanvasPlaySprite();
+	LTDescr setCallback();
+	LTDescr setValue3();
+	LTDescr setMove();
+	LTDescr setMoveLocal();
+	LTDescr setMoveToTransform();
+	LTDescr setRotate();
+	LTDescr setRotateLocal();
+	LTDescr setScale();
+	LTDescr setGUIMove();
+	LTDescr setGUIMoveMargin();
+	LTDescr setGUIScale();
+	LTDescr setGUIAlpha();
+	LTDescr setGUIRotate();
+	LTDescr setDelayedSound();
+	LTDescr setCanvasMove();
+	LTDescr setCanvasScale();
+	LTDescr setCanvasSizeDelta();
+
 	LTDescr setIgnoreTimeScale(bool useUnScaledTime);
 	LTDescr setSpeed( float speed );
 	LTDescr setLoopClamp();
