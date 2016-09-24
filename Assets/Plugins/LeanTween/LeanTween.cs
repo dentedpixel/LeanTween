@@ -192,6 +192,7 @@ public enum TweenAction{
 	DELAYED_SOUND,
 	CANVAS_MOVE,
 	CANVAS_SCALE,
+	CANVAS_SIZEDELTA,
 }
 
 public enum LeanTweenType{
@@ -1851,17 +1852,31 @@ public class LeanTween : MonoBehaviour {
 	}
 
 	/**
-	* Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
+	* Scale a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)
 	* 
 	* @method LeanTween.scale (RectTransform)
 	* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
-	* @param {float} to:float The final Vector3 with which to tween to (localScale)
+	* @param {Vector3} to:Vector3 The final Vector3 with which to tween to (localScale)
 	* @param {float} time:float The time to complete the tween in
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example LeanTween.scale(gameObject.GetComponent&lt;RectTransform&gt;(), gameObject.GetComponent&lt;RectTransform&gt;().localScale*2f, 1f).setDelay(1f);
 	*/
 	public static LTDescr scale(RectTransform rectTrans, Vector3 to, float time){
 		return pushNewTween( rectTrans.gameObject, to, time, options().setCanvasScale().setRect( rectTrans ) );
+	}
+
+	/**
+	* Change the sizeDelta of a RectTransform object (used in Unity Canvas, for Buttons, Panel, Scrollbar, etc...)
+	* 
+	* @method LeanTween.size (RectTransform)
+	* @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
+	* @param {Vector2} to:Vector2 The final Vector2 the tween will end at for sizeDelta property
+	* @param {float} time:float The time to complete the tween in
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example LeanTween.size(gameObject.GetComponent&lt;RectTransform&gt;(), gameObject.GetComponent&lt;RectTransform&gt;().sizeDelta*2f, 1f).setDelay(1f);
+	*/
+	public static LTDescr size(RectTransform rectTrans, Vector2 to, float time){
+		return pushNewTween( rectTrans.gameObject, to, time, options().setCanvasSizeDelta().setRect( rectTrans ) );
 	}
 
 	/**

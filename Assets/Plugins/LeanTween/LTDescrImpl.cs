@@ -708,6 +708,13 @@ public class LTDescrImpl : LTDescr {
 		this.easeInternal = ()=>{ this.rectTransform.localScale = easeMethod(); };
 		return this;
 	}
+
+	public LTDescr setCanvasSizeDelta(){
+		this.type = TweenAction.CANVAS_SIZEDELTA;
+		this.initInternal = ()=>{ this.from = this.rectTransform.sizeDelta; };
+		this.easeInternal = ()=>{ this.rectTransform.sizeDelta = easeMethod(); };
+		return this;
+	}
 	#endif
 
 	private void callback(){ val = easeMethod().x; }
@@ -1185,13 +1192,9 @@ public class LTDescrImpl : LTDescr {
 			case LeanTweenType.easeInOutElastic:
 				setEaseInOutElastic(); break;
 			case LeanTweenType.punch:
-				this._optional.animationCurve = LeanTween.punch;
-				this.toInternal.x = this.from.x + this.to.x;
-				this.easeMethod = this.tweenOnCurve; break;
+				setEasePunch(); break;
 			case LeanTweenType.easeShake:
-				this._optional.animationCurve = LeanTween.shake;
-				this.toInternal.x = this.from.x + this.to.x;
-				this.easeMethod = this.tweenOnCurve; break;
+				setEaseShake(); break;
 			case LeanTweenType.easeSpring:
 				setEaseSpring(); break;
 			default:
@@ -1264,6 +1267,10 @@ public class LTDescrImpl : LTDescr {
 	public LTDescr setEaseOutElastic(){ this.tweenType = LeanTweenType.easeOutElastic; this.easeMethod = this.easeOutElastic; return this; }
 
 	public LTDescr setEaseInOutElastic(){ this.tweenType = LeanTweenType.easeInOutElastic; this.easeMethod = this.easeInOutElastic; return this; }
+
+	public LTDescr setEasePunch(){ this._optional.animationCurve = LeanTween.punch; this.toInternal.x = this.from.x + this.to.x; this.easeMethod = this.tweenOnCurve; return this; }
+
+	public LTDescr setEaseShake(){ this._optional.animationCurve = LeanTween.shake; this.toInternal.x = this.from.x + this.to.x; this.easeMethod = this.tweenOnCurve; return this; }
 
 	private Vector3 tweenOnCurve(){
 		return	new Vector3(this.from.x + (this.diff.x) * this._optional.animationCurve.Evaluate(ratioPassed),

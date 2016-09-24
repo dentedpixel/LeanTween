@@ -92,7 +92,10 @@ public interface LTDescr
 	LTDescr setEaseInElastic(); 
 	LTDescr setEaseOutElastic();
 	LTDescr setEaseInOutElastic();
+	LTDescr setEasePunch();
+	LTDescr setEaseShake();
 	LTDescr setEase(UnityEngine.AnimationCurve easeCurve);
+
 	LTDescr setFrom(float from);
 	LTDescr setFrom(UnityEngine.Vector3 from);
 	LTDescr setFromColor(UnityEngine.Color col);
@@ -148,6 +151,7 @@ public interface LTDescr
 	LTDescr setDelayedSound();
 	LTDescr setCanvasMove();
 	LTDescr setCanvasScale();
+	LTDescr setCanvasSizeDelta();
 
 	LTDescr setIgnoreTimeScale(bool useUnScaledTime);
 	LTDescr setSpeed( float speed );
