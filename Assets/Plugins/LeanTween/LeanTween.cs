@@ -228,9 +228,9 @@ public class LeanTween : MonoBehaviour {
 	public static float tau = Mathf.PI*2.0f; 
 	public static float PI_DIV2 = Mathf.PI / 2.0f; 
 
-	private static LTDescrImpl[] tweens;
+	private static LTDescr[] tweens;
 	private static int[] tweensFinished;
-	private static LTDescrImpl tween;
+	private static LTDescr tween;
 	private static int tweenMaxSearch = -1;
 	private static int maxTweens = 400;
 	private static int frameRendered= -1;
@@ -293,7 +293,7 @@ public class LeanTween : MonoBehaviour {
 	public static void init(int maxSimultaneousTweens){
 		if(tweens==null){
 			maxTweens = maxSimultaneousTweens;
-			tweens = new LTDescrImpl[maxTweens];
+			tweens = new LTDescr[maxTweens];
 			tweensFinished = new int[maxTweens];
 			_tweenEmpty = new GameObject();
 			_tweenEmpty.name = "~LeanTween";
@@ -304,7 +304,7 @@ public class LeanTween : MonoBehaviour {
 			#endif
 			DontDestroyOnLoad( _tweenEmpty );
 			for(int i = 0; i < maxTweens; i++){
-				tweens[i] = new LTDescrImpl();
+				tweens[i] = new LTDescr();
 			}
 
 			#if UNITY_5_4_OR_NEWER
@@ -361,11 +361,11 @@ public class LeanTween : MonoBehaviour {
 			maxTweenReached = 0;
 			finishedCnt = 0;
 			// if(tweenMaxSearch>1500)
-			// Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" maxTweens:"+maxTweens);
+			//			 Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" maxTweens:"+maxTweens);
 			for( int i = 0; i <= tweenMaxSearch && i < maxTweens; i++){
 				tween = tweens[i];
-				//if(i==0 && tweens[i].toggle)
-				//	Debug.Log("tweens["+i+"]"+tweens[i]+" dt:"+dt);
+				//				if(i==0 && tweens[i].toggle)
+				//					Debug.Log("tweens["+i+"]"+tweens[i]);
 				if(tween.toggle){
 					maxTweenReached = i;
 
@@ -383,7 +383,7 @@ public class LeanTween : MonoBehaviour {
 			for(int i = 0; i < finishedCnt; i++){
 				j = tweensFinished[i];
 				tween = tweens[ j ];
-
+//				Debug.Log("removing tween:"+tween);
 				removeTween(j);
 				if(tween.hasExtraOnCompletes)
 					tween.callOnCompletes();
@@ -1911,12 +1911,12 @@ public class LeanTween : MonoBehaviour {
 
 	// Tweening Functions - Thanks to Robert Penner and GFX47
 
-	public static float tweenOnCurve( LTDescrImpl tweenDescr, float ratioPassed ){
+	public static float tweenOnCurve( LTDescr tweenDescr, float ratioPassed ){
 		// Debug.Log("single ratio:"+ratioPassed+" tweenDescr.animationCurve.Evaluate(ratioPassed):"+tweenDescr.animationCurve.Evaluate(ratioPassed));
 		return tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.optional.animationCurve.Evaluate(ratioPassed);
 	}
 
-	public static Vector3 tweenOnCurveVector( LTDescrImpl tweenDescr, float ratioPassed ){
+	public static Vector3 tweenOnCurveVector( LTDescr tweenDescr, float ratioPassed ){
 		return	new Vector3(tweenDescr.from.x + (tweenDescr.diff.x) * tweenDescr.optional.animationCurve.Evaluate(ratioPassed),
 			tweenDescr.from.y + (tweenDescr.diff.y) * tweenDescr.optional.animationCurve.Evaluate(ratioPassed),
 			tweenDescr.from.z + (tweenDescr.diff.z) * tweenDescr.optional.animationCurve.Evaluate(ratioPassed) );
