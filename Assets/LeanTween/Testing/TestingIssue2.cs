@@ -10,6 +10,7 @@ public class TestingIssue2 : MonoBehaviour {
 	void Start () {
 		descr = LeanTween.move(go, new Vector3(0f,0,100f), 10f);
 		descr.passed = 5f; // this should put it at the midway
+		descr.updateNow();
 		descr.pause(); // doesn't matter if pause after or before setting descr.passed I think if I set the passed property and paused the next frame it would work
 	}
 	bool set = false;
