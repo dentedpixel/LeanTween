@@ -369,7 +369,7 @@ public class LeanTween : MonoBehaviour {
 				if(tween.toggle){
 					maxTweenReached = i;
 
-					if (tween.update2()) { // returns true if the tween is finished with it's loop
+					if (tween.updateInternal()) { // returns true if the tween is finished with it's loop
 						tweensFinished[finishedCnt] = i;
 						finishedCnt++;
 					}

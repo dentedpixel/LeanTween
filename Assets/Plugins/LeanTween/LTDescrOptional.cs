@@ -72,11 +72,11 @@ public class LTDescrOptional  {
 		}else if(this.onUpdateFloatObject!=null){
 			this.onUpdateFloatObject(val, this.onUpdateParam);
 		}else if(this.onUpdateVector3Object!=null){
-			this.onUpdateVector3Object(LTDescrImpl.newVect, this.onUpdateParam);
+			this.onUpdateVector3Object(LTDescr.newVect, this.onUpdateParam);
 		}else if(this.onUpdateVector3!=null){
-			this.onUpdateVector3(LTDescrImpl.newVect);
+			this.onUpdateVector3(LTDescr.newVect);
 		}else if(this.onUpdateVector2!=null){
-			this.onUpdateVector2(new Vector2(LTDescrImpl.newVect.x,LTDescrImpl.newVect.y));
+			this.onUpdateVector2(new Vector2(LTDescr.newVect.x,LTDescr.newVect.y));
 		}
 	}
 }

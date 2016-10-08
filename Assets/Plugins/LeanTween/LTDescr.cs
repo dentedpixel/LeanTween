@@ -838,7 +838,20 @@ public class LTDescr
 	public static float dt;
 	public static Vector3 newVect;
 
-	public bool update2(){
+	/**
+	* If you need a tween to happen immediately instead of waiting for the next Update call, you can force it with this method
+	* 
+	* @method updateNow
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.moveX(gameObject, 5f, 0f ).updateNow();
+	*/
+	public LTDescr updateNow(){
+		updateInternal();
+		return this;
+	}
+
+	public bool updateInternal(){
 
 		float directionLocal = this.direction;
 		if(usesNormalDt){
