@@ -293,21 +293,22 @@ public class LTDescr
 	public LTDescr setRotateAround(){
 		this.type = TweenAction.ROTATE_AROUND;
 		this.initInternal = ()=>{
-			this.lastVal = 0.0f;
+			this._optional.origPosition = trans.localPosition;
 			this.fromInternal.x = 0f;
 			this._optional.origRotation = trans.rotation;
 		};
 		this.easeInternal = ()=>{
 			val = easeMethod().x;
-			Vector3 origPos = trans.localPosition;
-			Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
-			trans.RotateAround(rotateAroundPt, this._optional.axis, -val);
-			Vector3 diff = origPos - trans.localPosition;
+//			Vector3 origPos = trans.localPosition;
+//			Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
+//			// Debug.Log("this._optional.point:"+this._optional.point);
+//			trans.RotateAround(rotateAroundPt, this._optional.axis, -val);
+//			Vector3 diff = origPos - trans.localPosition;
 
-			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			trans.localPosition = this._optional.origPosition;//origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
 			trans.rotation = this._optional.origRotation;
 
-			rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
+			Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
 			trans.RotateAround(rotateAroundPt, this._optional.axis, val);
 		};
 		return this;
@@ -316,17 +317,17 @@ public class LTDescr
 	public LTDescr setRotateAroundLocal(){
 		this.type = TweenAction.ROTATE_AROUND_LOCAL;
 		this.initInternal = ()=>{
-			this.lastVal = 0.0f;
+			this._optional.origPosition = trans.localPosition;
 			this.fromInternal.x = 0f;
 			this._optional.origRotation = trans.localRotation;
 		};
 		this.easeInternal = ()=>{
 			val = easeMethod().x;
-			Vector3 origPos = trans.localPosition;
-			trans.RotateAround((Vector3)trans.TransformPoint( this._optional.point ), trans.TransformDirection(this._optional.axis), -val);
-			Vector3 diff = origPos - trans.localPosition;
+//			Vector3 origPos = trans.localPosition;
+//			trans.RotateAround((Vector3)trans.TransformPoint( this._optional.point ), trans.TransformDirection(this._optional.axis), -val);
+//			Vector3 diff = origPos - trans.localPosition;
 
-			trans.localPosition = origPos - diff; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
+			trans.localPosition = this._optional.origPosition; // Subtract the amount the object has been shifted over by the rotate, to get it back to it's orginal position
 			trans.localRotation = this._optional.origRotation;
 			Vector3 rotateAroundPt = (Vector3)trans.TransformPoint( this._optional.point );
 			trans.RotateAround(rotateAroundPt, trans.TransformDirection(this._optional.axis), val);

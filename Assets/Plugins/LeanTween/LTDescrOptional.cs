@@ -8,6 +8,7 @@ public class LTDescrOptional  {
 	public Transform toTrans { get; set; }
 	public Vector3 point { get; set; }
 	public Vector3 axis { get; set; }
+	public Vector3 origPosition { get; set; }
 	public Quaternion origRotation { get; set; }
 	public LTBezierPath path { get; set; }
 	public LTSpline spline { get; set; }
