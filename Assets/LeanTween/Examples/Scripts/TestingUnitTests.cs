@@ -36,7 +36,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 50;
+			LeanTest.expected = 51;
 
 			LeanTween.init(15 + 1200);
 			// add a listener
@@ -146,6 +146,14 @@ namespace DentedPixel.LTExamples{
 			LeanTween.rotateAround(cubeRotateA,Vector3.forward,90f,0.3f).setOnComplete(()=>{
 				LeanTest.expect( cubeRotateA.transform.eulerAngles.z==90f, "ROTATE AROUND","expected rotate z:"+90f+" returned:"+cubeRotateA.transform.eulerAngles.z);
 			});
+
+			// RotateAround 360
+			GameObject cubeRotateB = cubeNamed("cubeRotateB");
+			cubeRotateB.transform.position = new Vector3(200f,10f,8f);
+			LeanTween.rotateAround(cubeRotateB,Vector3.forward,360f,0.3f).setPoint(new Vector3(5f,3f,2f)).setOnComplete(()=>{
+				LeanTest.expect( cubeRotateB.transform.position==new Vector3(200f,10f,8f), "ROTATE AROUND 360","expected rotate pos:"+(new Vector3(200f,10f,8f))+" returned:"+cubeRotateB.transform.position);
+			});
+
 			// Alpha, onUpdate with passing value, onComplete value
 			LeanTween.alpha(cubeAlpha1,0.5f,0.1f).setOnUpdate( (float val)=>{
 				LeanTest.expect(val!=0f ,"ON UPDATE VAL");
