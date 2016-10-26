@@ -28,6 +28,7 @@ public class LTDescr
 	public float directionLast;
 	public float overshoot;
 	public float period;
+    public float scale;
 	public bool destroyOnComplete;
 	public Transform trans;
 	public LTRect ltRect;
@@ -1258,9 +1259,10 @@ public class LTDescr
 	public LTDescr setEaseShake(){ this._optional.animationCurve = LeanTween.shake; this.toInternal.x = this.from.x + this.to.x; this.easeMethod = this.tweenOnCurve; return this; }
 
 	private Vector3 tweenOnCurve(){
-		return	new Vector3(this.from.x + (this.diff.x) * this._optional.animationCurve.Evaluate(ratioPassed),
-			this.from.y + (this.diff.y) * this._optional.animationCurve.Evaluate(ratioPassed),
-			this.from.z + (this.diff.z) * this._optional.animationCurve.Evaluate(ratioPassed) );
+        float r = this._optional.animationCurve.Evaluate(ratioPassed) * this.scale;
+		return	new Vector3(this.from.x + (this.diff.x) * r,
+			this.from.y + (this.diff.y) * r,
+			this.from.z + (this.diff.z) * r );
 	}
 
 	// Vector3 Ease Methods
@@ -1536,6 +1538,11 @@ public class LTDescr
 		this.period = period;
 		return this;
 	}
+
+    public LTDescr setScale( float scale ){
+        this.scale = scale;
+        return this;
+    }
 
 	/**
 	* Set the type of easing used for the tween with a custom curve. <br>

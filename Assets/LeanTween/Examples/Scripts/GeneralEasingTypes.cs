@@ -19,6 +19,7 @@ public class GeneralEasingTypes : MonoBehaviour {
 		"EaseInBounce","EaseOutBounce","EaseInOutBounce",
 		"EaseInBack","EaseOutBack","EaseInOutBack",
 		"EaseInElastic","EaseOutElastic","EaseInOutElastic",
+        "EasePunch","EaseShake",
 	};
 
 	void Start () {
@@ -44,10 +45,14 @@ public class GeneralEasingTypes : MonoBehaviour {
 			});
 			if(easeName.IndexOf("AnimationCurve")>=0){
 				lt.setEase(animationCurve);
-			}else{
+            }else{
 				MethodInfo theMethod = lt.GetType().GetMethod("set"+easeName);
 				theMethod.Invoke(lt, null);
 			}
+
+            if(easeName.IndexOf("EasePunch")>=0){
+                lt.setScale(2f);
+            }
 		}
 
 		LeanTween.delayedCall(gameObject, 10f, resetLines);
