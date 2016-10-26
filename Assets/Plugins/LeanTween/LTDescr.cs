@@ -1539,6 +1539,14 @@ public class LTDescr
 		return this;
 	}
 
+    /**
+    * Set how large the effect is for certain ease types (compatible: punch, shake, animation curves). <br>
+    * @method setScale
+    * @param {float} scale:float how much the ease will be multiplied by (default 1f)
+    * @return {LTDescr} LTDescr an object that distinguishes the tween
+    * @example
+    * LeanTween.moveX(gameObject, 5f, 2.0f ).setEase( LeanTweenType.punch ).setScale(2f);
+    */
     public LTDescr setScale( float scale ){
         this.scale = scale;
         return this;
