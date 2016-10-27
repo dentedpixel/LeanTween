@@ -36,7 +36,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 51;
+			LeanTest.expected = 52;
 
 			LeanTween.init(15 + 1200);
 			// add a listener
@@ -347,6 +347,13 @@ namespace DentedPixel.LTExamples{
 				LeanTest.expect( Mathf.Approximately(cube1.transform.position.x, -5f), "SCALED ENDING POSITION", "expected to end at -5f, but it ended at "+cube1.transform.position.x);
 				LeanTest.expect( onUpdateWasCalled, "ON UPDATE FIRED" );
 			});
+
+            bool didGetCorrectOnUpdate = false;
+            LeanTween.value(gameObject, new Vector3(1f,1f,1f), new Vector3(10f,10f,10f), 1f).setOnUpdate( ( Vector3 val )=>{
+                didGetCorrectOnUpdate = val.x >= 1f && val.y >= 1f && val.z >= 1f;
+            }).setOnComplete( ()=>{
+                LeanTest.expect( didGetCorrectOnUpdate, "VECTOR3 CALLBACK CALLED");
+            });
 
 			yield return new WaitForSeconds( expectedTime );
 			Time.timeScale = 1f;
