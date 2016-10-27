@@ -693,7 +693,7 @@ public class LTDescr
 	}
 	#endif
 
-	private void callback(){ val = easeMethod().x; }
+    private void callback(){ newVect = easeMethod(); val = newVect.x; }
 
 	public LTDescr setCallback(){
 		this.type = TweenAction.CALLBACK;
