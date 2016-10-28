@@ -385,7 +385,7 @@ public class LeanTween : MonoBehaviour {
 				tween = tweens[ j ];
 //				Debug.Log("removing tween:"+tween);
 				removeTween(j);
-				if(tween.hasExtraOnCompletes)
+                if(tween.hasExtraOnCompletes && tween.trans!=null)
 					tween.callOnCompletes();
 			}
 
