@@ -4,6 +4,8 @@ using System.Collections;
 public class Testing240 : MonoBehaviour {
 
     public GameObject cube1;
+    public GameObject cube2;
+    public RectTransform rect1;
 
 	// Use this for initialization
 	void Start () {
@@ -14,9 +16,21 @@ public class Testing240 : MonoBehaviour {
         LeanTween.rotateAround(cube1, Vector3.forward, 360.0f, 10f).setRepeat(-1);
 
         LeanTween.value(gameObject, new Vector3(1f,1f,1f), new Vector3(10f,10f,10f), 1f).setOnUpdate( ( Vector3 val )=>{
-            Debug.Log("val:"+val);
+//            Debug.Log("val:"+val);
         });
+
+        LeanTween.value(gameObject, ScaleGroundColor, new Color(1f, 0f, 0f, 0.2f), Color.blue, 2f).setEaseInOutBounce();
+
+        LeanTween.scale(cube2, Vector3.one * 2f, 1f).setEasePunch().setScale(5f);
+
+        LeanTween.scale(rect1, Vector3.one * 2f, 1f).setEasePunch().setScale(-1f);
 	}
+
+    public static void ScaleGroundColor(Color to)
+    {
+//        Debug.Log("Color col:"+to);
+        RenderSettings.ambientGroundColor = to;
+    }
 	
 	// Update is called once per frame
 	void Update () {

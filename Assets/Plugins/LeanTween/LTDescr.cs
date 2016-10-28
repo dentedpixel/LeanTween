@@ -117,7 +117,7 @@ public class LTDescr
 		this.tweenType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
-		this.direction = this.directionLast = this.overshoot = 1.0f;
+        this.direction = this.directionLast = this.overshoot = this.scale = 1.0f;
 		this.period = 0.3f;
 		this.speed = -1f;
 		this.easeMethod = this.easeLinear;
