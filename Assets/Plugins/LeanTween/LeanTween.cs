@@ -1,4 +1,4 @@
-// LeanTween version 2.40 - http://dentedpixel.com/developer-diary/
+1// LeanTween version 2.41 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
