@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace DentedPixel.LTExamples{
 	
@@ -36,7 +37,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 52;
+			LeanTest.expected = 55;
 
 			LeanTween.init(15 + 1200);
 			// add a listener
@@ -184,6 +185,15 @@ namespace DentedPixel.LTExamples{
 			LeanTween.delayedSound(gameObject, audioClip, new Vector3(0f,0f,0f), 0.1f).setDelay(0.2f).setOnComplete( ()=>{
 				LeanTest.expect(Time.time>0,"DELAYED SOUND");
 			});
+
+			// value2
+			bool value2UpdateCalled = false;
+			LeanTween.value(gameObject, new Vector2(0, 0), new Vector2(256, 96), 0.1f).setOnUpdate((Vector2 value) => {
+				value2UpdateCalled = true;
+			});
+			LeanTween.delayedCall(0.2f, ()=>{
+				LeanTest.expect( value2UpdateCalled, "VALUE2 UPDATE");
+			} );
 			
 			StartCoroutine( timeBasedTesting() );
 		}
@@ -254,15 +264,36 @@ namespace DentedPixel.LTExamples{
 
 			bool hasGroupTweensCheckStarted = false;
 			int setOnStartNum = 0;
+			int setPosNum = 0;
+			bool setPosOnUpdate = true;
 			for(int i = 0; i < groupTweens.Length; i++){
-				groupTweens[i] = LeanTween.move(groupGOs[i], transform.position + Vector3.one*3f, 3f ).setOnStart( ()=>{
+				Vector3 finalPos = transform.position + Vector3.one*3f;
+				Dictionary<string,object> finalDict = new Dictionary<string,object>{ {"final",finalPos}, {"go",groupGOs[i]} };
+				groupTweens[i] = LeanTween.move(groupGOs[i], finalPos, 3f ).setOnStart( ()=>{
 					setOnStartNum++;
-				}).setOnComplete( ()=>{
+				}).setOnUpdate( (Vector3 newPosition) => {
+					if(transform.position.z > newPosition.z){
+						setPosOnUpdate = false;
+					}
+//					Debug.LogWarning("New Position: " + newPosition.ToString());
+				}).
+				setOnCompleteParam( finalDict ).
+				setOnComplete( (object param)=>{
+					Dictionary<string,object> finalDictRetr = param as Dictionary<string,object>;
+					Vector3 neededPos = (Vector3)finalDictRetr["final"];
+					GameObject tweenedGo = finalDictRetr["go"] as GameObject;
+					if(neededPos.ToString() == tweenedGo.transform.position.ToString())
+						setPosNum++;
+					else{
+						Debug.Log("neededPos:"+neededPos+" tweenedGo.transform.position:"+tweenedGo.transform.position);
+					}
 					if(hasGroupTweensCheckStarted==false){
 						hasGroupTweensCheckStarted = true;
 						LeanTween.delayedCall(gameObject, 0.1f, ()=>{
 							LeanTest.expect( setOnStartNum == groupTweens.Length, "SETONSTART CALLS", "expected:"+groupTweens.Length+" was:"+setOnStartNum);
 							LeanTest.expect( groupTweensCnt==groupTweens.Length, "GROUP FINISH", "expected "+groupTweens.Length+" tweens but got "+groupTweensCnt);
+							LeanTest.expect( setPosNum==groupTweens.Length, "GROUP POSITION FINISH", "expected "+groupTweens.Length+" tweens but got "+setPosNum);
+							LeanTest.expect( setPosOnUpdate, "GROUP POSITION ON UPDATE");
 						});
 					}
 					groupTweensCnt++;

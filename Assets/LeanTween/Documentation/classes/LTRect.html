@@ -29,7 +29,7 @@
                 <h1><a href="http://dentedpixel.com/developer-diary/leantween-speed-comparison-to-itween/"><img src="http://s3.amazonaws.com/dentedpixel.com/LeanTween/leantween-logo.png" title=""></a></h1> <div style="position:absolute; left:146px; top:90px;">- Developed by <a href="http://www.dentedpixel.com">Dented Pixel</a></div>
         </div>
         <div class="yui3-u-1-4 version">
-            <em style="margin-top:2px">API Docs for: LeanTween 2.41</em><br>
+            <em style="margin-top:2px">API Docs for: LeanTween 2.42</em><br>
             <table id="support">
                 <tr>
                 <td>
@@ -78,6 +78,7 @@
                                 <li><a href="../classes/LeanTween.html">LeanTween</a></li>
                                 <li><a href="../classes/LeanTweenType.html">LeanTweenType</a></li>
                                 <li><a href="../classes/LTBezierPath.html">LTBezierPath</a></li>
+                                <li><a href="../classes/LTDescr.html">LTDescr</a></li>
                                 <li><a href="../classes/LTEvent.html">LTEvent</a></li>
                                 <li><a href="../classes/LTRect.html">LTRect</a></li>
                                 <li><a href="../classes/LTSpline.html">LTSpline</a></li>
@@ -92,7 +93,7 @@
                     <h2>More From<br><a href="http://www.dentedpixel.com">Dented Pixel</a></h2><br>
                     <a href="https://www.assetstore.unity3d.com/en/#!/content/9455" target="_blank"><img src="http://dentedpixel.com/assets/LTEditor-doc-icon.jpg" width="175" height="175" /><br>Create tweens with: Visual Editor. Sculpt complex spline paths.</a>
                     <br>
-                    <a href="https://itunes.apple.com/us/app/monkeyshines/id530998075?mt=8" target="_blank"><img src="http://a5.mzstatic.com/us/r1000/102/Purple/v4/00/5c/57/005c571e-ef17-2370-6aad-058a17ff9fd9/mzm.yvphsjfk.175x175-75.jpg" width="175" height="175" /><br>RIN - A swinging good time!</a>
+                    <a href="https://itunes.apple.com/us/app/monkeyshines/id530998075?mt=8" target="_blank"><img src="http://a1.mzstatic.com/us/r30/Purple3/v4/d4/2b/ce/d42bce69-b3d3-d7f8-88e9-caa92664b5b1/icon350x350.jpeg" width="175" height="175" /><br>RIN - A swinging good time!</a>
                     <br>
                     <a href="https://itunes.apple.com/us/app/princess-piano/id445283531?mt=8" target="_blank"><img src="http://a3.mzstatic.com/us/r1000/096/Purple/v4/8c/1e/05/8c1e0590-db82-1d72-2956-2b6470f37ed0/mza_4230031260893485317.175x175-75.jpg" width="175" height="175" /><br>Princess Piano - Learn musical notation<br>in this melodious adventure!</a>
                 </div>
@@ -130,7 +131,7 @@
                         
                         
                                 <div class="foundat">
-                                    Defined in: <a href="../files/LeanTween.cs.html#l3079"><code>LeanTween.cs:3079</code></a>
+                                    Defined in: <a href="../files/LeanTween.cs.html#l3083"><code>LeanTween.cs:3083</code></a>
                                 </div>
                         
                         
@@ -138,18 +139,18 @@
                         
                         
                         <div class="box intro">
-                            <p>Animate GUI Elements by creating this object and passing the <em>.rect variable to the GUI method<br><br>
+                            <p>Animate GUI Elements by creating this object and passing the *.rect variable to the GUI method<br><br>
                         <strong>Example Javascript: </strong><br>var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br>
-                        LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) </em> 1.3, 0.25 );<br>
+                        LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 );<br>
                         function OnGUI(){<br>
-                        &nbsp; if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
+                          if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
                         }<br>
                         <br>
                         <strong>Example C#: </strong> <br>
                         LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br>
                         LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f );<br>
                         void OnGUI(){<br>
-                        &nbsp; if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
+                          if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
                         }<br></p>
                         
                         </div>
@@ -192,7 +193,7 @@
                                     <div class="meta">
                                                 <p>
                                                 Defined in
-                                        <a href="../files/LeanTween.cs.html#l3079"><code>LeanTween.cs:3079</code></a>
+                                        <a href="../files/LeanTween.cs.html#l3083"><code>LeanTween.cs:3083</code></a>
                                         </p>
                                 
                                 
@@ -321,7 +322,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3106"><code>LeanTween.cs:3106</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3110"><code>LeanTween.cs:3110</code></a>
                                                     </p>
                                             
                                             

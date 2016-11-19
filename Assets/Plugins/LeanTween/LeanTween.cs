@@ -1,4 +1,4 @@
-// LeanTween version 2.41 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.42 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
@@ -1819,6 +1819,10 @@ public class LeanTween : MonoBehaviour {
 	*/
 	public static LTDescr rotate(RectTransform rectTrans, float to, float time){
 		return pushNewTween( rectTrans.gameObject, new Vector3(to,0f,0f), time, options().setCanvasRotateAround().setRect( rectTrans ).setAxis(Vector3.forward) );
+	}
+
+	public static LTDescr rotate(RectTransform rectTrans, Vector3 to, float time){
+		return pushNewTween( rectTrans.gameObject, to, time, options().setCanvasRotateAround().setRect( rectTrans ).setAxis(Vector3.forward) );
 	}
 
 	/**

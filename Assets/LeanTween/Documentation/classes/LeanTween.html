@@ -29,7 +29,7 @@
                 <h1><a href="http://dentedpixel.com/developer-diary/leantween-speed-comparison-to-itween/"><img src="http://s3.amazonaws.com/dentedpixel.com/LeanTween/leantween-logo.png" title=""></a></h1> <div style="position:absolute; left:146px; top:90px;">- Developed by <a href="http://www.dentedpixel.com">Dented Pixel</a></div>
         </div>
         <div class="yui3-u-1-4 version">
-            <em style="margin-top:2px">API Docs for: LeanTween 2.41</em><br>
+            <em style="margin-top:2px">API Docs for: LeanTween 2.42</em><br>
             <table id="support">
                 <tr>
                 <td>
@@ -78,6 +78,7 @@
                                 <li><a href="../classes/LeanTween.html">LeanTween</a></li>
                                 <li><a href="../classes/LeanTweenType.html">LeanTweenType</a></li>
                                 <li><a href="../classes/LTBezierPath.html">LTBezierPath</a></li>
+                                <li><a href="../classes/LTDescr.html">LTDescr</a></li>
                                 <li><a href="../classes/LTEvent.html">LTEvent</a></li>
                                 <li><a href="../classes/LTRect.html">LTRect</a></li>
                                 <li><a href="../classes/LTSpline.html">LTSpline</a></li>
@@ -92,7 +93,7 @@
                     <h2>More From<br><a href="http://www.dentedpixel.com">Dented Pixel</a></h2><br>
                     <a href="https://www.assetstore.unity3d.com/en/#!/content/9455" target="_blank"><img src="http://dentedpixel.com/assets/LTEditor-doc-icon.jpg" width="175" height="175" /><br>Create tweens with: Visual Editor. Sculpt complex spline paths.</a>
                     <br>
-                    <a href="https://itunes.apple.com/us/app/monkeyshines/id530998075?mt=8" target="_blank"><img src="http://a5.mzstatic.com/us/r1000/102/Purple/v4/00/5c/57/005c571e-ef17-2370-6aad-058a17ff9fd9/mzm.yvphsjfk.175x175-75.jpg" width="175" height="175" /><br>RIN - A swinging good time!</a>
+                    <a href="https://itunes.apple.com/us/app/monkeyshines/id530998075?mt=8" target="_blank"><img src="http://a1.mzstatic.com/us/r30/Purple3/v4/d4/2b/ce/d42bce69-b3d3-d7f8-88e9-caa92664b5b1/icon350x350.jpeg" width="175" height="175" /><br>RIN - A swinging good time!</a>
                     <br>
                     <a href="https://itunes.apple.com/us/app/princess-piano/id445283531?mt=8" target="_blank"><img src="http://a3.mzstatic.com/us/r1000/096/Purple/v4/8c/1e/05/8c1e0590-db82-1d72-2956-2b6470f37ed0/mza_4230031260893485317.175x175-75.jpg" width="175" height="175" /><br>Princess Piano - Learn musical notation<br>in this melodious adventure!</a>
                 </div>
@@ -140,19 +141,19 @@
                         <div class="box intro">
                             <p>LeanTween is an efficient tweening engine for Unity3d<br><br>
                         <a href="#index">Index of All Methods</a> | <a href="LTDescr.html">Optional Paramaters that can be passed</a><br><br>
-                        <strong id='optional'>Optional Parameters</strong> are passed at the end of every method<br> 
+                        <strong id='optional'>Optional Parameters</strong> are passed at the end of every method<br>
                         <br>
                         <i>Example:</i><br>
                         LeanTween.moveX( gameObject, 1f, 1f).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInQuad ).setDelay(1f);<br>
                         <br>
                         You can pass the optional parameters in any order, and chain on as many as you wish!<br><br>
-                        You can also modify this tween later, just save the unique id of the tween.<br></p>
-                        <p><h4>Example:</h4>
+                        You can also modify this tween later, just save the unique id of the tween.<br>
+                        <h4>Example:</h4>
                         int id = LeanTween.moveX(gameObject, 1f, 1f).id;<br>
                         <a href="LTDescr.html">LTDescr</a> d = LeanTween.<a href="#method_LeanTween.descr">descr</a>( id );<br><br>
                         if(d!=null){ <span style="color:gray">// if the tween has already finished it will return null</span><br>
-                        <span style="color:gray">&nbsp;&nbsp; // change some parameters</span><br>
-                        &nbsp;&nbsp; d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br>
+                        <span style="color:gray">   // change some parameters</span><br>
+                           d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br>
                         }</p>
                         
                         </div>
@@ -506,7 +507,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2265"><code>LeanTween.cs:2265</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2269"><code>LeanTween.cs:2269</code></a>
                                                     </p>
                                             
                                             
@@ -588,7 +589,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -656,7 +657,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -689,7 +690,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -709,7 +710,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Fade a gameobject&#39;s material to a certain alpha value. The material&#39;s shader needs to support alpha. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>.</p>
+                                                    <p>Fade a gameobject's material to a certain alpha value. The material's shader needs to support alpha. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>.</p>
                                             
                                                 </div>
                                             
@@ -757,7 +758,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -790,7 +791,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -802,7 +803,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1882"><code>LeanTween.cs:1882</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1886"><code>LeanTween.cs:1886</code></a>
                                                     </p>
                                             
                                             
@@ -858,7 +859,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -868,7 +869,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.alpha(gameObject.GetComponent&lt;RectTransform&gt;(), 0.5f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.alpha(gameObject.GetComponent&lt;RectTransform&gt;(), 0.5f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -891,7 +892,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -903,7 +904,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1896"><code>LeanTween.cs:1896</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1900"><code>LeanTween.cs:1900</code></a>
                                                     </p>
                                             
                                             
@@ -959,7 +960,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -969,7 +970,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.color(gameObject.GetComponent&lt;RectTransform&gt;(), 0.5f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.color(gameObject.GetComponent&lt;RectTransform&gt;(), 0.5f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -992,7 +993,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -1060,7 +1061,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -1093,7 +1094,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -1161,7 +1162,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -1194,7 +1195,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -1215,12 +1216,12 @@
                                             
                                                 <div class="description">
                                                     <p>This works by tweening the vertex colors directly.<br>
-                                                <br>
-                                                Vertex-based coloring is useful because you avoid making a copy of your
-                                                object&#39;s material for each instance that needs a different color.<br>
-                                                <br>
-                                                A shader that supports vertex colors is required for it to work
-                                                (for example the shaders in Mobile/Particles/)</p>
+                                            <br>
+                                            Vertex-based coloring is useful because you avoid making a copy of your
+                                            object's material for each instance that needs a different color.<br>
+                                            <br>
+                                            A shader that supports vertex colors is required for it to work
+                                            (for example the shaders in Mobile/Particles/)</p>
                                             
                                                 </div>
                                             
@@ -1268,7 +1269,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -1345,7 +1346,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
+                                                            <p>int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br>
                                             LeanTween.cancel( id );</p>
                                             
                                                         </div>
@@ -1421,7 +1422,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
+                                                            <p>LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br>
                                             LeanTween.cancel( gameObject );</p>
                                             
                                                         </div>
@@ -1483,7 +1484,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.cancelAll(true); <br></p>
+                                                            <p>LeanTween.cancelAll(true); <br></p>
                                             
                                                         </div>
                                                     </div>
@@ -1506,7 +1507,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -1526,7 +1527,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Change a gameobject&#39;s material to a certain color value. The material&#39;s shader needs to support color tinting. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>.</p>
+                                                    <p>Change a gameobject's material to a certain color value. The material's shader needs to support color tinting. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>.</p>
                                             
                                                 </div>
                                             
@@ -1574,7 +1575,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -1607,7 +1608,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -1675,7 +1676,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -1705,7 +1706,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -1762,7 +1763,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -1772,7 +1773,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.delayedCall(gameObject, 1f, ()=&gt;{ <br>Debug.Log(&quot;I am called one second later!&quot;);<br> }));</p>
+                                                            <p>LeanTween.delayedCall(gameObject, 1f, ()=&gt;{ <br>Debug.Log(&quot;I am called one second later!&quot;);<br> }));</p>
                                             
                                                         </div>
                                                     </div>
@@ -1833,12 +1834,11 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).setOnComplete( oldMethod ).id; <br><br></p>
-                                            <p><div style="color:gray">// later I want decide I want to change onComplete method </div>
+                                                            <p>int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).setOnComplete( oldMethod ).id; <br><br></p>
+                                            <div style="color:gray">// later I want decide I want to change onComplete method </div>
                                             LTDescr descr = LeanTween.descr( id );<br>
                                             if(descr!=null) <span style="color:gray">// if the tween has already finished it will come back null</span><br>
-                                            &nbsp;&nbsp;descr.setOnComplete( newMethod );<br></p>
-                                            
+                                            &nbsp;&nbsp;descr.setOnComplete( newMethod );<br>
                                                         </div>
                                                     </div>
                                             </div>
@@ -1898,12 +1898,11 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).setOnComplete( oldMethod ); <br><br></p>
-                                            <p><div style="color:gray">// later I want decide I want to change onComplete method </div>
+                                                            <p>LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).setOnComplete( oldMethod ); <br><br></p>
+                                            <div style="color:gray">// later I want decide I want to change onComplete method </div>
                                             LTDescr[] descr = LeanTween.descriptions( gameObject );<br>
-                                            if(descr.Length&gt;0) <span style="color:gray">// make sure there is a valid description for this target</span><br>
-                                            &nbsp;&nbsp;descr[0].setOnComplete( newMethod );<span style="color:gray">// in this case we only ever expect there to be one tween on this object</span><br></p>
-                                            
+                                            if(descr.Length>0) <span style="color:gray">// make sure there is a valid description for this target</span><br>
+                                            &nbsp;&nbsp;descr[0].setOnComplete( newMethod );<span style="color:gray">// in this case we only ever expect there to be one tween on this object</span><br>
                                                         </div>
                                                     </div>
                                             </div>
@@ -1931,7 +1930,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2352"><code>LeanTween.cs:2352</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2356"><code>LeanTween.cs:2356</code></a>
                                                     </p>
                                             
                                             
@@ -1980,7 +1979,7 @@
                                                             <p>LeanTween.dispatchEvent( (int)MyEvents.JUMP, transform );<br>
                                             <br>
                                             void jumpUp( LTEvent e ){<br>
-                                            &nbsp; Transform tran = (Transform)e.data;<br>
+                                              Transform tran = (Transform)e.data;<br>
                                             }<br></p>
                                             
                                                         </div>
@@ -2007,7 +2006,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2341"><code>LeanTween.cs:2341</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2345"><code>LeanTween.cs:2345</code></a>
                                                     </p>
                                             
                                             
@@ -2090,7 +2089,7 @@
                                             
                                             
                                                                 <div class="param-description">
-                                                                    <p>The maximum number of tweens you will use, make sure you don&#39;t go over this limit, otherwise the code will throw an error</p>
+                                                                    <p>The maximum number of tweens you will use, make sure you don't go over this limit, otherwise the code will throw an error</p>
                                             
                                                                 </div>
                                             
@@ -2103,7 +2102,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>  LeanTween.init( 800 );</p>
+                                                            <p>LeanTween.init( 800 );</p>
                                             
                                                         </div>
                                                     </div>
@@ -2166,7 +2165,7 @@
                                                         <div class="example-content">
                                                             <p>int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br>
                                             if(LeanTween.isTweening( id ))<br>
-                                            &nbsp;&nbsp; &nbsp;&nbsp;Debug.Log(&quot;I am tweening!&quot;);<br></p>
+                                                 Debug.Log(&quot;I am tweening!&quot;);<br></p>
                                             
                                                         </div>
                                                     </div>
@@ -2242,7 +2241,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -2310,7 +2309,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -2320,7 +2319,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.move(gameObject, anotherTransform, 2.0f) .setEase( LeanTweenType.easeOutQuad );</p>
+                                                            <p>LeanTween.move(gameObject, anotherTransform, 2.0f) .setEase( LeanTweenType.easeOutQuad );</p>
                                             
                                                         </div>
                                                     </div>
@@ -2343,7 +2342,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -2411,7 +2410,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -2421,7 +2420,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.move(gameObject, new Vector3(0f,-3f,5f), 2.0f) .setEase( LeanTweenType.easeOutQuad );</p>
+                                                            <p>LeanTween.move(gameObject, new Vector3(0f,-3f,5f), 2.0f) .setEase( LeanTweenType.easeOutQuad );</p>
                                             
                                                         </div>
                                                     </div>
@@ -2444,7 +2443,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -2512,7 +2511,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -2548,7 +2547,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -2616,7 +2615,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -2641,7 +2640,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -2709,7 +2708,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -2719,7 +2718,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.move(gameObject.GetComponent&lt;RectTransform&gt;(), new Vector3(200f,-100f,0f), 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.move(gameObject.GetComponent&lt;RectTransform&gt;(), new Vector3(200f,-100f,0f), 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -2745,7 +2744,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -2824,7 +2823,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -2849,7 +2848,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -2917,7 +2916,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -2953,7 +2952,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3021,7 +3020,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3057,7 +3056,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3125,7 +3124,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3161,7 +3160,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3229,7 +3228,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3265,7 +3264,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3333,7 +3332,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3358,7 +3357,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3426,7 +3425,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3436,7 +3435,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.moveX(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.moveX(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -3459,7 +3458,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3527,7 +3526,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3552,7 +3551,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3620,7 +3619,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3630,7 +3629,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.moveY(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.moveY(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -3653,7 +3652,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3721,7 +3720,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3746,7 +3745,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -3814,7 +3813,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -3824,7 +3823,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.moveZ(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.moveZ(gameObject.GetComponent&lt;RectTransform&gt;(), 200f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -3991,7 +3990,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -4048,7 +4047,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -4090,7 +4089,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2314"><code>LeanTween.cs:2314</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2318"><code>LeanTween.cs:2318</code></a>
                                                     </p>
                                             
                                             
@@ -4322,7 +4321,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -4401,7 +4400,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -4412,7 +4411,7 @@
                                             
                                                         <div class="example-content">
                                                             <p>if(GUI.Button(buttonRect.rect, &quot;Rotate&quot;))<br>
-                                                LeanTween.rotate( buttonRect4, 150.0f, 1.0f).setEase(LeanTweenType.easeOutElastic);<br>
+                                            LeanTween.rotate( buttonRect4, 150.0f, 1.0f).setEase(LeanTweenType.easeOutElastic);<br>
                                             GUI.matrix = Matrix4x4.identity;<br></p>
                                             
                                                         </div>
@@ -4436,7 +4435,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -4504,7 +4503,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -4514,7 +4513,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.rotate(cube, new Vector3(180f,30f,0f), 1.5f);</p>
+                                                            <p>LeanTween.rotate(cube, new Vector3(180f,30f,0f), 1.5f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -4537,7 +4536,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -4605,7 +4604,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -4615,7 +4614,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.rotate(gameObject.GetComponent&lt;RectTransform&gt;(), 90f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.rotate(gameObject.GetComponent&lt;RectTransform&gt;(), 90f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -4641,7 +4640,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -4720,7 +4719,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -4757,7 +4756,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -4769,7 +4768,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1824"><code>LeanTween.cs:1824</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1828"><code>LeanTween.cs:1828</code></a>
                                                     </p>
                                             
                                             
@@ -4836,7 +4835,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -4846,7 +4845,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.rotateAround(gameObject.GetComponent&lt;RectTransform&gt;(), Vector3.forward, 90f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.rotateAround(gameObject.GetComponent&lt;RectTransform&gt;(), Vector3.forward, 90f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -4872,7 +4871,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -4951,7 +4950,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -4988,7 +4987,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5000,7 +4999,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1839"><code>LeanTween.cs:1839</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1843"><code>LeanTween.cs:1843</code></a>
                                                     </p>
                                             
                                             
@@ -5008,7 +5007,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Rotate a RectTransform object around it&#39;s local axis (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</p>
+                                                    <p>Rotate a RectTransform object around it's local axis (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</p>
                                             
                                                 </div>
                                             
@@ -5067,7 +5066,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5077,7 +5076,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.rotateAroundLocal(gameObject.GetComponent&lt;RectTransform&gt;(), Vector3.forward, 90f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.rotateAroundLocal(gameObject.GetComponent&lt;RectTransform&gt;(), Vector3.forward, 90f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -5100,7 +5099,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5168,7 +5167,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5193,7 +5192,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5261,7 +5260,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5286,7 +5285,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5354,7 +5353,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5379,7 +5378,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5447,7 +5446,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5472,7 +5471,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5540,7 +5539,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5565,7 +5564,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5633,7 +5632,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5647,14 +5646,14 @@
                                             var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br>
                                             LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 ).setEase(LeanTweenType.easeOutBounce);<br>
                                             function OnGUI(){<br>
-                                            &nbsp; if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
+                                              if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
                                             }<br>
                                             <br>
                                             <i>Example C#: </i> <br>
                                             LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br>
                                             LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f ).setEase(LeanTweenType.easeOutBounce);<br>
                                             void OnGUI(){<br>
-                                            &nbsp; if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
+                                              if(GUI.Button(bRect.rect, &quot;Scale&quot;)){ }<br>
                                             }<br></p>
                                             
                                                         </div>
@@ -5678,7 +5677,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5690,7 +5689,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1854"><code>LeanTween.cs:1854</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1858"><code>LeanTween.cs:1858</code></a>
                                                     </p>
                                             
                                             
@@ -5746,7 +5745,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5756,7 +5755,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.scale(gameObject.GetComponent&lt;RectTransform&gt;(), gameObject.GetComponent&lt;RectTransform&gt;().localScale*2f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.scale(gameObject.GetComponent&lt;RectTransform&gt;(), gameObject.GetComponent&lt;RectTransform&gt;().localScale*2f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -5779,7 +5778,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5847,7 +5846,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5872,7 +5871,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -5940,7 +5939,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -5965,7 +5964,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -6033,7 +6032,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -6058,7 +6057,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -6070,7 +6069,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1868"><code>LeanTween.cs:1868</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1872"><code>LeanTween.cs:1872</code></a>
                                                     </p>
                                             
                                             
@@ -6126,7 +6125,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -6136,7 +6135,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p> LeanTween.size(gameObject.GetComponent&lt;RectTransform&gt;(), gameObject.GetComponent&lt;RectTransform&gt;().sizeDelta*2f, 1f).setDelay(1f);</p>
+                                                            <p>LeanTween.size(gameObject.GetComponent&lt;RectTransform&gt;(), gameObject.GetComponent&lt;RectTransform&gt;().sizeDelta*2f, 1f).setDelay(1f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -6174,7 +6173,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>  Debug.Log(&quot;I have &quot;+LeanTween.tweensRunning+&quot; animating!&quot;);</p>
+                                                            <p>Debug.Log(&quot;I have &quot;+LeanTween.tweensRunning+&quot; animating!&quot;);</p>
                                             
                                                         </div>
                                                     </div>
@@ -6203,7 +6202,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -6293,7 +6292,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -6306,13 +6305,13 @@
                                                             <p><i>Example Javascript: </i><br>
                                             LeanTween.value( gameObject, updateValueExampleCallback, Color.red, Color.green, 1f).setEase(LeanTweenType.easeOutElastic);<br>
                                             function updateValueExampleCallback( val:Color ){<br>
-                                            &nbsp; Debug.Log(&quot;tweened color:&quot;+val+&quot; set this to whatever variable you are tweening...&quot;);<br>
+                                              Debug.Log(&quot;tweened color:&quot;+val+&quot; set this to whatever variable you are tweening...&quot;);<br>
                                             }<br>
                                             <br>
                                             <i>Example C#: </i> <br>
                                             LeanTween.value( gameObject, updateValueExampleCallback, Color.red, Color.green, 1f).setEase(LeanTweenType.easeOutElastic);<br>
                                             void updateValueExampleCallback( Color val ){<br>
-                                            &nbsp; Debug.Log(&quot;tweened color:&quot;+val+&quot; set this to whatever variable you are tweening...&quot;);<br>
+                                              Debug.Log(&quot;tweened color:&quot;+val+&quot; set this to whatever variable you are tweening...&quot;);<br>
                                             }<br></p>
                                             
                                                         </div>
@@ -6339,7 +6338,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -6418,7 +6417,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -6430,12 +6429,12 @@
                                                         <div class="example-content">
                                                             <p><i>Example Javascript: </i><br>
                                             LeanTween.value( gameObject, Color.red, Color.yellow, 5f).setOnUpdate( function( val:Color ){ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br>
                                             <br>
                                             <i>Example C#: </i> <br>
                                             LeanTween.value( gameObject, Color.red, Color.yellow, 5f).setOnUpdate( (Color val)=&gt;{ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br></p>
                                             
                                                         </div>
@@ -6465,7 +6464,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -6510,7 +6509,7 @@
                                             
                                             
                                                                 <div class="param-description">
-                                                                    <p>Function that&#39;s called every Update frame. It must accept two float values ex: function updateValue( float val, float ratio){ }</p>
+                                                                    <p>Function that's called every Update frame. It must accept two float values ex: function updateValue( float val, float ratio){ }</p>
                                             
                                                                 </div>
                                             
@@ -6555,7 +6554,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -6568,13 +6567,13 @@
                                                             <p><i>Example Javascript: </i><br>
                                             LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br>
                                             function updateValueExampleCallback( val:float, ratio:float ){<br>
-                                            &nbsp; Debug.Log(&quot;tweened value:&quot;+val+&quot; percent complete:&quot;+ratio<em>100);<br>
+                                              Debug.Log(&quot;tweened value:&quot;+val+&quot; percent complete:&quot;+ratio<em>100);<br>
                                             }<br>
                                             <br>
                                             <i>Example C#: </i> <br>
                                             LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br>
                                             void updateValueExampleCallback( float val, float ratio ){<br>
-                                            &nbsp; Debug.Log(&quot;tweened value:&quot;+val+&quot; percent complete:&quot;+ratio</em>100);<br>
+                                              Debug.Log(&quot;tweened value:&quot;+val+&quot; percent complete:&quot;+ratio</em>100);<br>
                                             }<br></p>
                                             
                                                         </div>
@@ -6601,7 +6600,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -6680,7 +6679,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -6692,12 +6691,12 @@
                                                         <div class="example-content">
                                                             <p><i>Example Javascript: </i><br>
                                             LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( function( val:float ){ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br>
                                             <br>
                                             <i>Example C#: </i> <br>
                                             LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( (float val)=&gt;{ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br></p>
                                             
                                                         </div>
@@ -6727,7 +6726,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -6817,7 +6816,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -6830,13 +6829,13 @@
                                                             <p><i>Example Javascript: </i><br>
                                             LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br>
                                             function updateValueExampleCallback( val:float ){<br>
-                                            &nbsp; Debug.Log(&quot;tweened value:&quot;+val+&quot; set this to whatever variable you are tweening...&quot;);<br>
+                                              Debug.Log(&quot;tweened value:&quot;+val+&quot; set this to whatever variable you are tweening...&quot;);<br>
                                             }<br>
                                             <br>
                                             <i>Example C#: </i> <br>
                                             LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br>
                                             void updateValueExampleCallback( float val ){<br>
-                                            &nbsp; Debug.Log(&quot;tweened value:&quot;+val+&quot; set this to whatever variable you are tweening...&quot;);<br>
+                                              Debug.Log(&quot;tweened value:&quot;+val+&quot; set this to whatever variable you are tweening...&quot;);<br>
                                             }<br></p>
                                             
                                                         </div>
@@ -6866,7 +6865,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -6956,7 +6955,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -6987,7 +6986,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -7077,7 +7076,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -7105,7 +7104,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -7184,7 +7183,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -7196,12 +7195,12 @@
                                                         <div class="example-content">
                                                             <p><i>Example Javascript: </i><br>
                                             LeanTween.value( gameObject, new Vector2(1f,0f), new Vector3(5f,0f), 5f).setOnUpdate( function( val:Vector2 ){ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br>
                                             <br>
                                             <i>Example C#: </i> <br>
                                             LeanTween.value( gameObject, new Vector3(1f,0f), new Vector3(5f,0f), 5f).setOnUpdate( (Vector2 val)=&gt;{ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br></p>
                                             
                                                         </div>
@@ -7228,7 +7227,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -7307,7 +7306,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
@@ -7319,12 +7318,12 @@
                                                         <div class="example-content">
                                                             <p><i>Example Javascript: </i><br>
                                             LeanTween.value( gameObject, new Vector3(1f,0f,0f), new Vector3(5f,0f,0f), 5f).setOnUpdate( function( val:Vector3 ){ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br>
                                             <br>
                                             <i>Example C#: </i> <br>
                                             LeanTween.value( gameObject, new Vector3(1f,0f,0f), new Vector3(5f,0f,0f), 5f).setOnUpdate( (Vector3 val)=&gt;{ <br>
-                                            &nbsp;Debug.Log(&quot;tweened val:&quot;+val);<br>
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br>
                                             } );<br></p>
                                             
                                                         </div>
@@ -7354,7 +7353,7 @@
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">LTDescr</span>
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
                                                     </span>
                                             
                                             
@@ -7444,7 +7443,7 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">LTDescr</span>:
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween</p>
                                             
                                                         </div>
