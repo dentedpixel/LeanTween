@@ -1,7 +1,34 @@
 ﻿using System;
 using UnityEngine;
 
-
+/**
+* Internal Representation of a Tween<br>
+* <br>
+* This class represents all of the optional parameters you can pass to a method (it also represents the internal representation of the tween).<br><br>
+* <strong id='optional'>Optional Parameters</strong> are passed at the end of every method:<br> 
+* <br>
+* &nbsp;&nbsp;<i>Example:</i><br>
+* &nbsp;&nbsp;LeanTween.moveX( gameObject, 1f, 1f).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInQuad ).setDelay(1f);<br>
+* <br>
+* You can pass the optional parameters in any order, and chain on as many as you wish.<br>
+* You can also <strong>pass parameters at a later time</strong> by saving a reference to what is returned.<br>
+* <br>
+* Retrieve a <strong>unique id</strong> for the tween by using the "id" property. You can pass this to LeanTween.pause, LeanTween.resume, LeanTween.cancel, LeanTween.isTweening methods<br>
+* <br>
+* &nbsp;&nbsp;<h4>Example:</h4>
+* &nbsp;&nbsp;int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br>
+* <div style="color:gray">&nbsp;&nbsp;// pause a specific tween</div>
+* &nbsp;&nbsp;LeanTween.pause(id);<br>
+* <div style="color:gray">&nbsp;&nbsp;// resume later</div>
+* &nbsp;&nbsp;LeanTween.resume(id);<br>
+* <div style="color:gray">&nbsp;&nbsp;// check if it is tweening before kicking of a new tween</div>
+* &nbsp;&nbsp;if( LeanTween.isTweening( id ) ){<br>
+* &nbsp;&nbsp; &nbsp;&nbsp;	LeanTween.cancel( id );<br>
+* &nbsp;&nbsp; &nbsp;&nbsp;	LeanTween.moveZ(gameObject, 10f, 3f);<br>
+* &nbsp;&nbsp;}<br>
+* @class LTDescr
+* @constructor
+*/
 public class LTDescr
 {
 	public bool toggle;
