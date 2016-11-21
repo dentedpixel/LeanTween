@@ -383,9 +383,9 @@ public class LeanTween : MonoBehaviour {
 			for(int i = 0; i < finishedCnt; i++){
 				j = tweensFinished[i];
 				tween = tweens[ j ];
-//				Debug.Log("removing tween:"+tween);
+				//				Debug.Log("removing tween:"+tween);
 				removeTween(j);
-                if(tween.hasExtraOnCompletes && tween.trans!=null)
+				if(tween.hasExtraOnCompletes && tween.trans!=null)
 					tween.callOnCompletes();
 			}
 
@@ -497,6 +497,10 @@ public class LeanTween : MonoBehaviour {
 				removeTween(i);
 			}
 		}
+	}
+
+	public static void cancel( RectTransform rect ){
+		cancel( rect.gameObject, false);
 	}
 
 	public static void cancel( GameObject gameObject, int uniqueId ){
@@ -719,6 +723,10 @@ public class LeanTween : MonoBehaviour {
 				return true;
 		}
 		return false;
+	}
+
+	public static bool isTweening( RectTransform rect ){
+		return isTweening(rect.gameObject);
 	}
 
 	/**
@@ -2850,10 +2858,15 @@ public class LTSpline {
 	}
 
 	public void placeLocal2d( Transform transform, float ratio ){
+		Transform trans = transform.parent;
+		if(trans==null){ // this has no parent, just do a regular transform
+			place2d(transform, ratio);
+			return;
+		}
 		transform.localPosition = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f){
-			Vector3 v3Dir = transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition;
+			Vector3 v3Dir = trans.TransformPoint( point( ratio ) ) - transform.localPosition;
 			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
 			transform.eulerAngles = new Vector3(0, 0, angle);
 		}

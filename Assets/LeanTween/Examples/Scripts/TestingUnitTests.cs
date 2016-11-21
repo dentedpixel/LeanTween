@@ -285,7 +285,7 @@ namespace DentedPixel.LTExamples{
 					if(neededPos.ToString() == tweenedGo.transform.position.ToString())
 						setPosNum++;
 					else{
-						Debug.Log("neededPos:"+neededPos+" tweenedGo.transform.position:"+tweenedGo.transform.position);
+//						Debug.Log("neededPos:"+neededPos+" tweenedGo.transform.position:"+tweenedGo.transform.position);
 					}
 					if(hasGroupTweensCheckStarted==false){
 						hasGroupTweensCheckStarted = true;
