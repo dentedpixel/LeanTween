@@ -551,6 +551,20 @@ public class LeanTween : MonoBehaviour {
 		}
 	}
 
+public static void cancel( GameObject gameObject, int uniqueId, bool callOnComplete = false ){
+	if(uniqueId>=0){
+		init();
+		int backId = uniqueId & 0xFFFF;
+		int backCounter = uniqueId >> 16;
+		// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" counter:"+backCounter + " setCounter:"+ tw     eens[backId].counter + " tweens[id].type:"+tweens[backId].type);
+		if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter)) {
+			if (callOnComplete && tweens[backId].optional.onComplete != null)
+				tweens[backId].optional.onComplete();
+			removeTween((int)backId);
+    }
+	}
+}
+
 	/**
 	* Retrieve a tweens LTDescr object to modify
 	* 
