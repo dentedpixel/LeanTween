@@ -51,7 +51,7 @@ public class GeneralEasingTypes : MonoBehaviour {
 			}
 
             if(easeName.IndexOf("EasePunch")>=0){
-                lt.setScale(2f);
+				lt.setScale(1f);
             }
 		}
 

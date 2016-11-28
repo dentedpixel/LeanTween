@@ -11,11 +11,14 @@ public class Testing240 : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        LTDescr lt1 = LeanTween.moveY(cube1, cube1.transform.position.y - 15.0f, 10f).setEase(LeanTweenType.easeInQuad).setDestroyOnComplete(false).setOnComplete(()=>{
+        LeanTween.moveY(cube1, cube1.transform.position.y - 15.0f, 10f).setEase(LeanTweenType.easeInQuad).setDestroyOnComplete(false).setOnComplete(()=>{
             Debug.Log("Done");
         });
 
-        LeanTween.rotateAround(cube1, Vector3.forward, 360.0f, 10f).setRepeat(-1);
+		Vector3 before = cube1.transform.position;
+		LeanTween.rotateAround(cube1, Vector3.forward, 360.0f, 10f).setOnComplete( ()=>{
+			Debug.Log("before:"+before+" after :"+cube1.transform.position);
+		});
 
         LeanTween.value(gameObject, new Vector3(1f,1f,1f), new Vector3(10f,10f,10f), 1f).setOnUpdate( ( Vector3 val )=>{
 //            Debug.Log("val:"+val);
@@ -27,8 +30,22 @@ public class Testing240 : MonoBehaviour {
 
         LeanTween.scale(rect1, Vector3.one * 2f, 1f).setEasePunch().setScale(-1f);
 
-		LeanTween.moveSplineLocal(sprite2,new Vector3[]{ new Vector3(0f,0f,0f), new Vector3(0f,0f,0f), new Vector3(2f,1f,0f), new Vector3(5f,1.5f,0f), new Vector3(5f,1.5f,0f) },4f)
-			.setOrientToPath2d(true);
+		Vector3[] path = new Vector3[] {
+			Vector2.zero,
+			Vector2.zero,
+			new Vector2 (1, -.5f),
+			new Vector2 (1.4f, 0),
+			new Vector2 (1, .5f),
+			Vector2.zero,
+			new Vector2 (-1, -.5f),
+			new Vector2 (-1.4f, 0),
+			new Vector2 (-1, .5f),
+			Vector2.zero,
+			Vector2.zero
+		};
+
+		LeanTween.moveSplineLocal(sprite2,path,4f)
+			.setOrientToPath2d(true).setRepeat(-1);
 	}
 
     public static void ScaleGroundColor(Color to)

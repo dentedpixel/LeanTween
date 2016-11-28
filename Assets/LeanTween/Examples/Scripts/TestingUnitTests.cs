@@ -152,7 +152,7 @@ namespace DentedPixel.LTExamples{
 			GameObject cubeRotateB = cubeNamed("cubeRotateB");
 			cubeRotateB.transform.position = new Vector3(200f,10f,8f);
 			LeanTween.rotateAround(cubeRotateB,Vector3.forward,360f,0.3f).setPoint(new Vector3(5f,3f,2f)).setOnComplete(()=>{
-				LeanTest.expect( cubeRotateB.transform.position==new Vector3(200f,10f,8f), "ROTATE AROUND 360","expected rotate pos:"+(new Vector3(200f,10f,8f))+" returned:"+cubeRotateB.transform.position);
+				LeanTest.expect( cubeRotateB.transform.position.ToString()==(new Vector3(200f,10f,8f)).ToString(), "ROTATE AROUND 360","expected rotate pos:"+(new Vector3(200f,10f,8f))+" returned:"+cubeRotateB.transform.position);
 			});
 
 			// Alpha, onUpdate with passing value, onComplete value

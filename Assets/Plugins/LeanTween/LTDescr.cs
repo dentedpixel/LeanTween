@@ -1320,10 +1320,9 @@ public class LTDescr
 	public LTDescr setEaseShake(){ this._optional.animationCurve = LeanTween.shake; this.toInternal.x = this.from.x + this.to.x; this.easeMethod = this.tweenOnCurve; return this; }
 
 	private Vector3 tweenOnCurve(){
-        float r = this._optional.animationCurve.Evaluate(ratioPassed) * this.scale;
-		return	new Vector3(this.from.x + (this.diff.x) * r,
-			this.from.y + (this.diff.y) * r,
-			this.from.z + (this.diff.z) * r );
+		return	new Vector3(this.from.x + (this.diff.x) * this._optional.animationCurve.Evaluate(ratioPassed),
+			this.from.y + (this.diff.y) * this._optional.animationCurve.Evaluate(ratioPassed),
+			this.from.z + (this.diff.z) * this._optional.animationCurve.Evaluate(ratioPassed) );
 	}
 
 	// Vector3 Ease Methods
