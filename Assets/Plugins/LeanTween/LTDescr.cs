@@ -149,6 +149,8 @@ public class LTDescr
 		this.speed = -1f;
 		this.easeMethod = this.easeLinear;
 		this._optional.reset();
+		this.from = Vector3.zero;
+		this.to = Vector3.zero;
 
 		global_counter++;
 		if(global_counter>0x8000)
