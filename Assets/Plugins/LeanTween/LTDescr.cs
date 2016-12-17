@@ -148,6 +148,7 @@ public class LTDescr
 		this.period = 0.3f;
 		this.speed = -1f;
 		this.easeMethod = this.easeLinear;
+		this.from = this.to = Vector3.zero;
 		this._optional.reset();
 
 		global_counter++;
