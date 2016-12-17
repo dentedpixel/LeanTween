@@ -42,10 +42,12 @@ public class PathSplineTrackCS : MonoBehaviour {
 		// Update avatar's position on correct track
 		track.place( car.transform, trackPosition );
 
-		trackPosition += Time.deltaTime * 0.03f;
+		trackPosition += Time.deltaTime * 0.03f;// * Input.GetAxis("Vertical"); // Uncomment to have the forward and backwards controlled by the directional arrows
 
-		if(trackPosition>1f)
-			trackPosition = 0f; // We need to keep the ratio between 0-1 so after one we will loop back to the beginning of the track
+		if (trackPosition < 0f) // We need to keep the ratio between 0-1 so after one we will loop back to the beginning of the track
+			trackPosition = 1f;
+		else if(trackPosition>1f)
+			trackPosition = 0f; 
 	}
 
 	// Use this for visualizing what the track looks like in the editor (for a full suite of spline tools check out the LeanTween Editor)
