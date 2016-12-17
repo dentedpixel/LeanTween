@@ -839,8 +839,10 @@ public class LeanTween : MonoBehaviour {
 
 		bool found = false;
 		//		Debug.Log("Search start");
-		for(j=0, i = startSearch; j < maxTweens; i++){
-			if(i>=maxTweens-1)
+		for(j=0, i = startSearch; j <= maxTweens; i++){
+			if(j >= maxTweens)
+				return logError("LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );") as LTDescr;
+			if(i>=maxTweens)
 				i = 0;
 			//			Debug.Log("searching i:"+i);
 			if(tweens[i].toggle==false){
@@ -852,8 +854,6 @@ public class LeanTween : MonoBehaviour {
 			}
 
 			j++;
-			if(j >= maxTweens)
-				return logError("LeanTween - You have run out of available spaces for tweening. To avoid this error increase the number of spaces to available for tweening when you initialize the LeanTween class ex: LeanTween.init( "+(maxTweens*2)+" );") as LTDescr;
 		}
 		if(found==false)
 			logError("no available tween found!");
