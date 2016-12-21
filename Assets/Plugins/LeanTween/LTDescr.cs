@@ -918,7 +918,7 @@ public class LTDescr
 	public bool updateInternal(){
 
 		float directionLocal = this.direction;
-		if(usesNormalDt){
+		if(this.usesNormalDt){
 			dt = LeanTween.dtActual;
 		}else if( this.useEstimatedTime ){
 			dt = LeanTween.dtEstimated;
@@ -928,6 +928,7 @@ public class LTDescr
 			dt = LeanTween.dtManual;
 		}
 
+//		Debug.Log ("tween:" + this+ " dt:"+dt);
 		if(this.delay<=0f && directionLocal!=0f){
 			if(trans==null)
 				return true;	
@@ -1153,11 +1154,7 @@ public class LTDescr
 	* LeanTween.moveX(gameObject, 5f, 2.0f ).setDelay( 1.5f );
 	*/
 	public LTDescr setDelay( float delay ){
-		if(this.useEstimatedTime){
-			this.delay = delay;
-		}else{
-			this.delay = delay;//*Time.timeScale;
-		}
+		this.delay = delay;
 
 		return this;
 	}
@@ -1744,6 +1741,7 @@ public class LTDescr
 
 	public LTDescr setUseEstimatedTime( bool useEstimatedTime ){
 		this.useEstimatedTime = useEstimatedTime;
+		this.usesNormalDt = false;
 		return this;
 	}
 
@@ -1757,6 +1755,7 @@ public class LTDescr
 	*/
 	public LTDescr setIgnoreTimeScale( bool useUnScaledTime ){
 		this.useEstimatedTime = useUnScaledTime;
+		this.usesNormalDt = false;
 		return this;
 	}
 
@@ -1770,11 +1769,13 @@ public class LTDescr
 	*/
 	public LTDescr setUseFrames( bool useFrames ){
 		this.useFrames = useFrames;
+		this.usesNormalDt = false;
 		return this;
 	}
 
 	public LTDescr setUseManualTime( bool useManualTime ){
 		this.useManualTime = useManualTime;
+		this.usesNormalDt = false;
 		return this;
 	}
 
