@@ -1,4 +1,6 @@
-// LeanTween version 2.42 - http://dentedpixel.com/developer-diary/
+// namespace com.dentedpixel{
+
+// LeanTween version 2.43 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
@@ -1258,7 +1260,6 @@ public class LeanTween : MonoBehaviour {
 	* @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
 	* @param {Vector3} Vector3 to The final positin with which to move to
 	* @param {float} float time The time to complete the tween in
-	* @param {Hashtable} Hashtable optional Hashtable where you can pass <a href="#optional">optional items</a>.
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	*/
 	public static LTDescr moveLocal(GameObject gameObject, Vector3 to, float time){
@@ -1275,9 +1276,9 @@ public class LeanTween : MonoBehaviour {
 	* @return {LTDescr} LTDescr an object that distinguishes the tween
 	* @example
 	* <i>Javascript:</i><br>
-	* LeanTween.move(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
+	* LeanTween.moveLocal(gameObject, [Vector3(0,0,0),Vector3(1,0,0),Vector3(1,0,0),Vector3(1,0,1)], 2.0).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br><br>
 	* <i>C#:</i><br>
-	* LeanTween.move(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
+	* LeanTween.moveLocal(gameObject, new Vector3[]{Vector3(0f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,0f),Vector3(1f,0f,1f)}).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true);<br>
 	*/
 	public static LTDescr moveLocal(GameObject gameObject, Vector3[] to, float time){
 		d = options().setMoveCurvedLocal();
@@ -3608,3 +3609,5 @@ public class LTGUI {
 	}
 
 }
+
+//}
