@@ -1,4 +1,5 @@
-﻿using System;
+﻿namespace com.dentedpixel{
+using System;
 using UnityEngine;
 
 /**
@@ -2222,3 +2223,4 @@ public class LTDescr
 	}
 }
 
+}

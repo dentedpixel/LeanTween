@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿namespace com.dentedpixel{
+using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -80,4 +81,6 @@ public class LTDescrOptional  {
 			this.onUpdateVector2(new Vector2(LTDescr.newVect.x,LTDescr.newVect.y));
 		}
 	}
+}
+
 }

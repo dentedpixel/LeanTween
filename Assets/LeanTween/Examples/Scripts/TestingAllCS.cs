@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System;
 using System.Threading;
+using com.dentedpixel;
 
 public class TestingAllCS : MonoBehaviour {
 	public AnimationCurve customAnimationCurve;

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using com.dentedpixel;
 
 public class PathSplineEndlessCS : MonoBehaviour {
 	public GameObject trackTrailRenderers;

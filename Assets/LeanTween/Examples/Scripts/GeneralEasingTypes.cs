@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Reflection;
+using com.dentedpixel;
 
 public class GeneralEasingTypes : MonoBehaviour {
 

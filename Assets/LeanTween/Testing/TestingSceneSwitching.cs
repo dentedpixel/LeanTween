@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using com.dentedpixel;
 
 public class TestingSceneSwitching : MonoBehaviour {
 
