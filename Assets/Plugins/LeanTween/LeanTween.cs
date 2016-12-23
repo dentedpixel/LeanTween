@@ -1,4 +1,4 @@
-namespace com.dentedpixel{
+//namespace com.dentedpixel{
 
 // LeanTween version 2.43 - http://dentedpixel.com/developer-diary/
 //
@@ -3610,4 +3610,4 @@ public class LTGUI {
 
 }
 
-}
+//}

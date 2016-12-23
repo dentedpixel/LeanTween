@@ -1,4 +1,4 @@
-﻿namespace com.dentedpixel{
+//namespace com.dentedpixel{
 using UnityEngine;
 using System;
 using System.Collections;
@@ -83,4 +83,4 @@ public class LTDescrOptional  {
 	}
 }
 
-}
+//}

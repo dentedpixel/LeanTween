@@ -1,3 +1,4 @@
+namespace com.dentedpixel{
 using UnityEngine;
 using System.Collections;
 
@@ -119,4 +120,6 @@ public class LeanTest : object {
 		string failedStr = failedCnt > 0 ? formatBC(""+failedCnt,"red") : ""+failedCnt;
 		Debug.Log(formatB("Final Report:")+" _____________________ PASSED: "+formatBC(""+passes,"green")+" FAILED: "+failedStr+" ");
 	}
+}
+
 }
