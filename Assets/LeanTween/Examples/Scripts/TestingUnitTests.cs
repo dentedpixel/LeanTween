@@ -37,7 +37,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 55;
+			LeanTest.expected = 56;
 
 			LeanTween.init(15 + 1200);
 			// add a listener
@@ -74,6 +74,35 @@ namespace DentedPixel.LTExamples{
 			LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
 
 			LeanTween.reset();
+
+			// Queue up a bunch of tweens, cancel some of them but expect the remainder to finish
+			GameObject[] cubes = new GameObject[99];
+			int[] tweenIds = new int[cubes.Length];
+			for (int i = 0; i < cubes.Length; i++) {
+				GameObject c = cubeNamed("cancel"+i);
+				tweenIds[i] = LeanTween.moveX (c, 100f, 1f).id;
+				cubes [i] = c;
+			}
+			int onCompleteCount = 0;
+			LeanTween.delayedCall (cubes[0], 0.2f, () => {
+				for (int i = 0; i < cubes.Length; i++) {
+					if(i%3==0){
+						LeanTween.cancel( cubes [i] );
+					}else if(i%3==1){
+						LeanTween.cancel( tweenIds[i] );
+					}else if(i%3==2){
+						LTDescr descr = LeanTween.descr(tweenIds[i]);
+//						Debug.Log("descr:"+descr);
+						descr.setOnComplete( ()=>{
+							onCompleteCount++;
+//							Debug.Log("onCompleteCount:"+onCompleteCount);
+							if(onCompleteCount>=33){
+								LeanTest.expect(true, "CANCELS DO NOT EFFECT FINISHING" );
+							}
+						});
+					}
+				}
+			});
 
 			Vector3[] splineArr = new Vector3[] {new Vector3(-1f,0f,0f), new Vector3(0f,0f,0f), new Vector3(4f,0f,0f), new Vector3(20f,0f,0f), new Vector3(30f,0f,0f)};
 			LTSpline cr = new LTSpline( splineArr );
