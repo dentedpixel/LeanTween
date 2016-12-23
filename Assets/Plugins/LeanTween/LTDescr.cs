@@ -593,11 +593,14 @@ public class LTDescr
 		this.initInternal = ()=>{
 			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
 			if(this.uiImage!=null){
-				this.fromInternal.x = this.uiImage != null ? this.uiImage.color.a : 1f;
+				this.fromInternal.x = this.uiImage.color.a;
 			}else{
 				this.rawImage = trans.gameObject.GetComponent<UnityEngine.UI.RawImage>();
-				if(this.rawImage!=null)
-					this.fromInternal.x = this.rawImage != null ? this.rawImage.color.a : 1f;
+				if(this.rawImage != null){
+					this.fromInternal.x = this.rawImage.color.a;
+				}else{
+					this.fromInternal.x = 1f;
+				}
 			}
 
 		};
