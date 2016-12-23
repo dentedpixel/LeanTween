@@ -302,7 +302,12 @@ public class LeanTween : MonoBehaviour {
 			#if !UNITY_EDITOR
 			_tweenEmpty.hideFlags = HideFlags.HideAndDontSave;
 			#endif
+			#if UNITY_EDITOR
+			if(Application.isPlaying)
+				DontDestroyOnLoad( _tweenEmpty );
+			#else
 			DontDestroyOnLoad( _tweenEmpty );
+			#endif
 			for(int i = 0; i < maxTweens; i++){
 				tweens[i] = new LTDescr();
 			}
@@ -364,8 +369,8 @@ public class LeanTween : MonoBehaviour {
 			//			 Debug.Log("tweenMaxSearch:"+tweenMaxSearch +" maxTweens:"+maxTweens);
 			for( int i = 0; i <= tweenMaxSearch && i < maxTweens; i++){
 				tween = tweens[i];
-				//				if(i==0 && tweens[i].toggle)
-				//					Debug.Log("tweens["+i+"]"+tweens[i]);
+//				if(i==0 && tweens[i].toggle)
+//					Debug.Log("tweens["+i+"]"+tweens[i]);
 				if(tween.toggle){
 					maxTweenReached = i;
 

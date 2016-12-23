@@ -84,6 +84,7 @@ public class LTDescr
 	public RectTransform rectTransform;
 	public UnityEngine.UI.Text uiText;
 	public UnityEngine.UI.Image uiImage;
+	public UnityEngine.UI.RawImage rawImage;
 	public UnityEngine.Sprite[] sprites;
 	#endif
 
@@ -590,6 +591,8 @@ public class LTDescr
 		this.type = TweenAction.CANVAS_ALPHA;
 		this.initInternal = ()=>{
 			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
+			if(this.uiImage==null)
+				this.rawImage = trans.gameObject.GetComponent<UnityEngine.UI.RawImage>();
 			this.fromInternal.x = this.uiImage != null ? this.uiImage.color.a : 1f;
 		};
 		this.easeInternal = ()=>{
@@ -597,6 +600,8 @@ public class LTDescr
 			val = newVect.x;
 			if(this.uiImage!=null){
 				Color c = this.uiImage.color; c.a = val; this.uiImage.color = c;
+			}else if(this.rawImage!=null){
+				Color c = this.rawImage.color; c.a = val; this.rawImage.color = c;
 			}
 			if(this.useRecursion){
 				alphaRecursive( this.rectTransform, val, 0 );
@@ -617,17 +622,24 @@ public class LTDescr
 		this.type = TweenAction.CANVAS_COLOR;
 		this.initInternal = ()=>{
 			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-			if(this.uiImage != null){
-				this.setFromColor( this.uiImage.color );
+			if(this.uiImage==null){
+				this.rawImage = trans.gameObject.GetComponent<UnityEngine.UI.RawImage>();
+				this.setFromColor( this.rawImage!=null ? this.rawImage.color : Color.white );
 			}else{
-				this.setFromColor( Color.white );
+				this.setFromColor( this.uiImage.color );
 			}
+
 		};
 		this.easeInternal = ()=>{
 			newVect = easeMethod();
 			val = newVect.x;
 			Color toColor = tweenColor(this, val);
-			this.uiImage.color = toColor;
+			if(this.uiImage!=null){
+				this.uiImage.color = toColor;
+			}else{
+				this.rawImage.color = toColor;
+			}
+
 			if (dt!=0f && this._optional.onUpdateColor != null)
 				this._optional.onUpdateColor(toColor);
 
@@ -1032,11 +1044,14 @@ public class LTDescr
 	private static void alphaRecursive( RectTransform rectTransform, float val, int recursiveLevel = 0){
 		if(rectTransform.childCount>0){
 			foreach (RectTransform child in rectTransform) {
-				UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
-				if(uiImage!=null){
-					Color c = uiImage.color;
-					c.a = val;
-					uiImage.color = c;
+				UnityEngine.UI.MaskableGraphic uiImage = child.GetComponent<UnityEngine.UI.Image>();
+				if (uiImage != null) {
+					Color c = uiImage.color; c.a = val; uiImage.color = c;
+				} else {
+					uiImage = child.GetComponent<UnityEngine.UI.RawImage>();
+					if (uiImage != null) {
+						Color c = uiImage.color; c.a = val; uiImage.color = c;
+					}
 				}
 
 				alphaRecursive(child, val, recursiveLevel + 1);
@@ -1070,9 +1085,13 @@ public class LTDescr
 
 		if(rectTransform.childCount>0){
 			foreach (RectTransform child in rectTransform) {
-				UnityEngine.UI.Image uiImage = child.GetComponent<UnityEngine.UI.Image>();
-				if(uiImage!=null){
+				UnityEngine.UI.MaskableGraphic uiImage = child.GetComponent<UnityEngine.UI.Image>();
+				if (uiImage != null) {
 					uiImage.color = toColor;
+				} else {
+					uiImage = child.GetComponent<UnityEngine.UI.RawImage>();
+					if (uiImage != null)
+						uiImage.color = toColor;
 				}
 				colorRecursive(child, toColor);
 			}
