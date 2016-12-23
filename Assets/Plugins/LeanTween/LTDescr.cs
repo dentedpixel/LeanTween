@@ -592,9 +592,14 @@ public class LTDescr
 		this.type = TweenAction.CANVAS_ALPHA;
 		this.initInternal = ()=>{
 			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
-			if(this.uiImage==null)
+			if(this.uiImage!=null){
+				this.fromInternal.x = this.uiImage != null ? this.uiImage.color.a : 1f;
+			}else{
 				this.rawImage = trans.gameObject.GetComponent<UnityEngine.UI.RawImage>();
-			this.fromInternal.x = this.uiImage != null ? this.uiImage.color.a : 1f;
+				if(this.rawImage!=null)
+					this.fromInternal.x = this.rawImage != null ? this.rawImage.color.a : 1f;
+			}
+
 		};
 		this.easeInternal = ()=>{
 			newVect = easeMethod();
@@ -637,7 +642,7 @@ public class LTDescr
 			Color toColor = tweenColor(this, val);
 			if(this.uiImage!=null){
 				this.uiImage.color = toColor;
-			}else{
+			}else if(this.rawImage!=null){
 				this.rawImage.color = toColor;
 			}
 
