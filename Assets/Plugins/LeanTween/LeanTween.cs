@@ -1,4 +1,4 @@
-//namespace com.dentedpixel{
+//namespace DentedPixel{
 
 // LeanTween version 2.43 - http://dentedpixel.com/developer-diary/
 //

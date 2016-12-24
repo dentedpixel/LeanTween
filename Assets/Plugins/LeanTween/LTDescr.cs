@@ -1,4 +1,4 @@
-//namespace com.dentedpixel{
+//namespace DentedPixel{
 using System;
 using UnityEngine;
 
