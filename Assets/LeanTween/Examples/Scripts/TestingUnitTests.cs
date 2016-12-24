@@ -42,199 +42,191 @@ namespace DentedPixel.LTExamples{
 
 			LeanTween.init(15 + 1200);
 
-			LeanTween.delayedCall(cube1, 1f, ()=>{
-				Debug.Log("Finish 1");
+			// add a listener
+			LeanTween.addListener(cube1, 0, eventGameObjectCalled);
 
-			}).setOnComplete(()=>{
+			LeanTest.expect(LeanTween.isTweening() == false, "NOTHING TWEEENING AT BEGINNING" );
 
-				Debug.Log("Finish 2");
+			LeanTest.expect(LeanTween.isTweening(cube1) == false, "OBJECT NOT TWEEENING AT BEGINNING" );
+
+			LeanTween.scaleX( cube4, 2f, 0f).setOnComplete( ()=>{
+				LeanTest.expect( cube4.transform.localScale.x == 2f, "TWEENED WITH ZERO TIME" );
 			});
 
+			// dispatch event that is received
+			LeanTween.dispatchEvent(0);
+			LeanTest.expect( eventGameObjectWasCalled, "EVENT GAMEOBJECT RECEIVED" );
+
+			// do not remove listener
+			LeanTest.expect(LeanTween.removeListener(cube2, 0, eventGameObjectCalled)==false, "EVENT GAMEOBJECT NOT REMOVED" );
+			// remove listener
+			LeanTest.expect(LeanTween.removeListener(cube1, 0, eventGameObjectCalled), "EVENT GAMEOBJECT REMOVED" );
+
 			// add a listener
-//			LeanTween.addListener(cube1, 0, eventGameObjectCalled);
-//
-//			LeanTest.expect(LeanTween.isTweening() == false, "NOTHING TWEEENING AT BEGINNING" );
-//
-//			LeanTest.expect(LeanTween.isTweening(cube1) == false, "OBJECT NOT TWEEENING AT BEGINNING" );
-//
-//			LeanTween.scaleX( cube4, 2f, 0f).setOnComplete( ()=>{
-//				LeanTest.expect( cube4.transform.localScale.x == 2f, "TWEENED WITH ZERO TIME" );
-//			});
-//
-//			// dispatch event that is received
-//			LeanTween.dispatchEvent(0);
-//			LeanTest.expect( eventGameObjectWasCalled, "EVENT GAMEOBJECT RECEIVED" );
-//
-//			// do not remove listener
-//			LeanTest.expect(LeanTween.removeListener(cube2, 0, eventGameObjectCalled)==false, "EVENT GAMEOBJECT NOT REMOVED" );
-//			// remove listener
-//			LeanTest.expect(LeanTween.removeListener(cube1, 0, eventGameObjectCalled), "EVENT GAMEOBJECT REMOVED" );
-//
-//			// add a listener
-//			LeanTween.addListener(1, eventGeneralCalled);
-//			
-//			// dispatch event that is received
-//			LeanTween.dispatchEvent(1);
-//			LeanTest.expect( eventGeneralWasCalled, "EVENT ALL RECEIVED" );
-//
-//			// remove listener
-//			LeanTest.expect( LeanTween.removeListener( 1, eventGeneralCalled), "EVENT ALL REMOVED" );
-//
-//			lt1Id = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f ).id;
-//			LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
-//
-//			LeanTween.reset();
-//
-//			// Queue up a bunch of tweens, cancel some of them but expect the remainder to finish
-//			GameObject[] cubes = new GameObject[99];
-//			int[] tweenIds = new int[cubes.Length];
-//			for (int i = 0; i < cubes.Length; i++) {
-//				GameObject c = cubeNamed("cancel"+i);
-//				tweenIds[i] = LeanTween.moveX (c, 100f, 1f).id;
-//				cubes [i] = c;
-//			}
-//			int onCompleteCount = 0;
-//			LeanTween.delayedCall (cubes[0], 0.2f, () => {
-//				for (int i = 0; i < cubes.Length; i++) {
-//					if(i%3==0){
-//						LeanTween.cancel( cubes [i] );
-//					}else if(i%3==1){
-//						LeanTween.cancel( tweenIds[i] );
-//					}else if(i%3==2){
-//						LTDescr descr = LeanTween.descr(tweenIds[i]);
-////						Debug.Log("descr:"+descr);
-//						descr.setOnComplete( ()=>{
-//							onCompleteCount++;
-////							Debug.Log("onCompleteCount:"+onCompleteCount);
-//							if(onCompleteCount>=33){
-//								LeanTest.expect(true, "CANCELS DO NOT EFFECT FINISHING" );
-//							}
-//						});
-//					}
-//				}
-//			});
-//
-//			Vector3[] splineArr = new Vector3[] {new Vector3(-1f,0f,0f), new Vector3(0f,0f,0f), new Vector3(4f,0f,0f), new Vector3(20f,0f,0f), new Vector3(30f,0f,0f)};
-//			LTSpline cr = new LTSpline( splineArr );
-//			cr.place( cube4.transform, 0.5f );
-//			LeanTest.expect( (Vector3.Distance( cube4.transform.position, new Vector3(10f,0f,0f) ) <= 0.7f), "SPLINE POSITIONING AT HALFWAY", "position is:"+cube4.transform.position+" but should be:(10f,0f,0f)");
-//			LeanTween.color(cube4, Color.green, 0.01f);	
-//
-////			Debug.Log("Point 2:"+cr.ratioAtPoint(splineArr[2]));
-//
-//			// OnStart Speed Test for ignoreTimeScale vs normal timeScale
-//
-//			GameObject cubeDest = cubeNamed("cubeDest");
-//			Vector3 cubeDestEnd = new Vector3(100f,20f,0f);
-//			LeanTween.move( cubeDest, cubeDestEnd, 0.7f);
-//
-//			GameObject cubeToTrans = cubeNamed("cubeToTrans");
-//			LeanTween.move( cubeToTrans, cubeDest.transform, 1.2f).setEase( LeanTweenType.easeOutQuad ).setOnComplete( ()=>{
-//				LeanTest.expect( cubeToTrans.transform.position == cubeDestEnd, "MOVE TO TRANSFORM WORKS");
-//			});
-//
-//			GameObject cubeDestroy = cubeNamed("cubeDestroy");
-//			LeanTween.moveX( cubeDestroy, 200f, 0.05f).setDelay(0.02f).setDestroyOnComplete(true);
-//			LeanTween.moveX( cubeDestroy, 200f, 0.1f).setDestroyOnComplete(true).setOnComplete( ()=>{
-//				LeanTest.expect(true, "TWO DESTROY ON COMPLETE'S SUCCEED");
-//			});
-//
-//			GameObject cubeSpline = cubeNamed("cubeSpline");
-//			LeanTween.moveSpline(cubeSpline, new Vector3[]{new Vector3(0.5f,0f,0.5f),new Vector3(0.75f,0f,0.75f),new Vector3(1f,0f,1f),new Vector3(1f,0f,1f)}, 0.1f).setOnComplete( ()=>{
-//				LeanTest.expect(Vector3.Distance(new Vector3(1f,0f,1f), cubeSpline.transform.position) < 0.01f, "SPLINE WITH TWO POINTS SUCCEEDS");
-//			});
-//			
-//			// This test works when it is positioned last in the test queue (probably worth fixing when you have time)
-//			GameObject jumpCube = cubeNamed("jumpTime");
-//			jumpCube.transform.position = new Vector3(100f,0f,0f);
-//			jumpCube.transform.localScale *= 100f;
-//			int jumpTimeId = LeanTween.moveX( jumpCube, 200f, 1f).id;
-//
-//			LeanTween.delayedCall(gameObject, 0.2f, ()=>{
-//				LTDescr d = LeanTween.descr( jumpTimeId );
-//				float beforeX = jumpCube.transform.position.x;
-//				d.setTime( 0.5f );
-//				LeanTween.delayedCall( 0.0f, ()=>{ }).setOnStart( ()=>{
-//					float diffAmt = 1f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
-//					beforeX += Time.deltaTime * 100f * 2f;
-//					LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < diffAmt , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ) +" beforeX:"+beforeX+" now:"+jumpCube.transform.position.x+" dt:"+Time.deltaTime);
-//				});
-//			});
-//
-//			// Tween with time of zero is needs to be set to it's final value
-//			GameObject zeroCube = cubeNamed("zeroCube");
-//			LeanTween.moveX( zeroCube, 10f, 0f).setOnComplete( ()=>{
-//				LeanTest.expect( zeroCube.transform.position.x == 10f, "ZERO TIME FINSHES CORRECTLY", "final x:"+ zeroCube.transform.position.x);
-//			});
-//
-//			// Scale, and OnStart
-//			GameObject cubeScale = cubeNamed("cubeScale");
-//			LeanTween.scale(cubeScale, new Vector3(5f,5f,5f),0.01f).setOnStart(()=>{
-//				LeanTest.expect( true, "ON START WAS CALLED");
-//			}).setOnComplete(()=>{
-//				LeanTest.expect( cubeScale.transform.localScale.z == 5f, "SCALE","expected scale z:"+5f+" returned:"+cubeScale.transform.localScale.z);
-//			});
-//
-//			// Rotate
-//			GameObject cubeRotate = cubeNamed("cubeRotate");
-//			LeanTween.rotate(cubeRotate, new Vector3(0f,180f,0f),0.02f).setOnComplete(()=>{
-//				LeanTest.expect( cubeRotate.transform.eulerAngles.y == 180f, "ROTATE","expected rotate y:"+180f+" returned:"+cubeRotate.transform.eulerAngles.y);
-//			});
-//
-//			// RotateAround
-//			GameObject cubeRotateA = cubeNamed("cubeRotateA");
-//			LeanTween.rotateAround(cubeRotateA,Vector3.forward,90f,0.3f).setOnComplete(()=>{
-//				LeanTest.expect( cubeRotateA.transform.eulerAngles.z==90f, "ROTATE AROUND","expected rotate z:"+90f+" returned:"+cubeRotateA.transform.eulerAngles.z);
-//			});
-//
-//			// RotateAround 360
-//			GameObject cubeRotateB = cubeNamed("cubeRotateB");
-//			cubeRotateB.transform.position = new Vector3(200f,10f,8f);
-//			LeanTween.rotateAround(cubeRotateB,Vector3.forward,360f,0.3f).setPoint(new Vector3(5f,3f,2f)).setOnComplete(()=>{
-//				LeanTest.expect( cubeRotateB.transform.position.ToString()==(new Vector3(200f,10f,8f)).ToString(), "ROTATE AROUND 360","expected rotate pos:"+(new Vector3(200f,10f,8f))+" returned:"+cubeRotateB.transform.position);
-//			});
-//
-//			// Alpha, onUpdate with passing value, onComplete value
-//			LeanTween.alpha(cubeAlpha1,0.5f,0.1f).setOnUpdate( (float val)=>{
-//				LeanTest.expect(val!=0f ,"ON UPDATE VAL");
-//			}).setOnCompleteParam( "Hi!" ).setOnComplete( (object completeObj)=>{
-//				LeanTest.expect(((string)completeObj)=="Hi!","ONCOMPLETE OBJECT");
-//				LeanTest.expect(cubeAlpha1.GetComponent<Renderer>().material.color.a == 0.5f,"ALPHA");
-//			});
-//			// Color
-//			float onStartTime = -1f;
-//			LeanTween.color(cubeAlpha2, Color.cyan, 0.3f).setOnComplete( ()=>{
-//				LeanTest.expect(cubeAlpha2.GetComponent<Renderer>().material.color==Color.cyan, "COLOR");
-//				LeanTest.expect(onStartTime>=0f && onStartTime<Time.time, "ON START","onStartTime:"+onStartTime+" time:"+Time.time);
-//			}).setOnStart(()=>{
-//				onStartTime = Time.time;
-//			});
-//			// moveLocalY (make sure uses y values)
-//			Vector3 beforePos = cubeAlpha1.transform.position;
-//			LeanTween.moveY(cubeAlpha1, 3f, 0.2f).setOnComplete( ()=>{
-//				LeanTest.expect(cubeAlpha1.transform.position.x==beforePos.x && cubeAlpha1.transform.position.z==beforePos.z,"MOVE Y");
-//			});
-//
-//			Vector3 beforePos2 = cubeAlpha2.transform.localPosition;
-//			LeanTween.moveLocalZ(cubeAlpha2, 12f, 0.2f).setOnComplete( ()=>{
-//				LeanTest.expect(cubeAlpha2.transform.localPosition.x==beforePos2.x && cubeAlpha2.transform.localPosition.y==beforePos2.y,"MOVE LOCAL Z","ax:"+cubeAlpha2.transform.localPosition.x+" bx:"+beforePos.x+" ay:"+cubeAlpha2.transform.localPosition.y+" by:"+beforePos2.y);
-//			});
-//				
-//			AudioClip audioClip = LeanAudio.createAudio(new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f)), new AnimationCurve( new Keyframe(0f, 0.001f, 0f, 0f), new Keyframe(1f, 0.001f, 0f, 0f)), LeanAudio.options());
-//			LeanTween.delayedSound(gameObject, audioClip, new Vector3(0f,0f,0f), 0.1f).setDelay(0.2f).setOnComplete( ()=>{
-//				LeanTest.expect(Time.time>0,"DELAYED SOUND");
-//			});
-//
-//			// value2
-//			bool value2UpdateCalled = false;
-//			LeanTween.value(gameObject, new Vector2(0, 0), new Vector2(256, 96), 0.1f).setOnUpdate((Vector2 value) => {
-//				value2UpdateCalled = true;
-//			});
-//			LeanTween.delayedCall(0.2f, ()=>{
-//				LeanTest.expect( value2UpdateCalled, "VALUE2 UPDATE");
-//			} );
-//			
-//			StartCoroutine( timeBasedTesting() );
+			LeanTween.addListener(1, eventGeneralCalled);
+			
+			// dispatch event that is received
+			LeanTween.dispatchEvent(1);
+			LeanTest.expect( eventGeneralWasCalled, "EVENT ALL RECEIVED" );
+
+			// remove listener
+			LeanTest.expect( LeanTween.removeListener( 1, eventGeneralCalled), "EVENT ALL REMOVED" );
+
+			lt1Id = LeanTween.move( cube1, new Vector3(3f,2f,0.5f), 1.1f ).id;
+			LeanTween.move( cube2, new Vector3(-3f,-2f,-0.5f), 1.1f );
+
+			LeanTween.reset();
+
+			// Queue up a bunch of tweens, cancel some of them but expect the remainder to finish
+			GameObject[] cubes = new GameObject[99];
+			int[] tweenIds = new int[cubes.Length];
+			for (int i = 0; i < cubes.Length; i++) {
+				GameObject c = cubeNamed("cancel"+i);
+				tweenIds[i] = LeanTween.moveX (c, 100f, 1f).id;
+				cubes [i] = c;
+			}
+			int onCompleteCount = 0;
+			LeanTween.delayedCall (cubes[0], 0.2f, () => {
+				for (int i = 0; i < cubes.Length; i++) {
+					if(i%3==0){
+						LeanTween.cancel( cubes [i] );
+					}else if(i%3==1){
+						LeanTween.cancel( tweenIds[i] );
+					}else if(i%3==2){
+						LTDescr descr = LeanTween.descr(tweenIds[i]);
+//						Debug.Log("descr:"+descr);
+						descr.setOnComplete( ()=>{
+							onCompleteCount++;
+//							Debug.Log("onCompleteCount:"+onCompleteCount);
+							if(onCompleteCount>=33){
+								LeanTest.expect(true, "CANCELS DO NOT EFFECT FINISHING" );
+							}
+						});
+					}
+				}
+			});
+
+			Vector3[] splineArr = new Vector3[] {new Vector3(-1f,0f,0f), new Vector3(0f,0f,0f), new Vector3(4f,0f,0f), new Vector3(20f,0f,0f), new Vector3(30f,0f,0f)};
+			LTSpline cr = new LTSpline( splineArr );
+			cr.place( cube4.transform, 0.5f );
+			LeanTest.expect( (Vector3.Distance( cube4.transform.position, new Vector3(10f,0f,0f) ) <= 0.7f), "SPLINE POSITIONING AT HALFWAY", "position is:"+cube4.transform.position+" but should be:(10f,0f,0f)");
+			LeanTween.color(cube4, Color.green, 0.01f);	
+
+//			Debug.Log("Point 2:"+cr.ratioAtPoint(splineArr[2]));
+
+			// OnStart Speed Test for ignoreTimeScale vs normal timeScale
+
+			GameObject cubeDest = cubeNamed("cubeDest");
+			Vector3 cubeDestEnd = new Vector3(100f,20f,0f);
+			LeanTween.move( cubeDest, cubeDestEnd, 0.7f);
+
+			GameObject cubeToTrans = cubeNamed("cubeToTrans");
+			LeanTween.move( cubeToTrans, cubeDest.transform, 1.2f).setEase( LeanTweenType.easeOutQuad ).setOnComplete( ()=>{
+				LeanTest.expect( cubeToTrans.transform.position == cubeDestEnd, "MOVE TO TRANSFORM WORKS");
+			});
+
+			GameObject cubeDestroy = cubeNamed("cubeDestroy");
+			LeanTween.moveX( cubeDestroy, 200f, 0.05f).setDelay(0.02f).setDestroyOnComplete(true);
+			LeanTween.moveX( cubeDestroy, 200f, 0.1f).setDestroyOnComplete(true).setOnComplete( ()=>{
+				LeanTest.expect(true, "TWO DESTROY ON COMPLETE'S SUCCEED");
+			});
+
+			GameObject cubeSpline = cubeNamed("cubeSpline");
+			LeanTween.moveSpline(cubeSpline, new Vector3[]{new Vector3(0.5f,0f,0.5f),new Vector3(0.75f,0f,0.75f),new Vector3(1f,0f,1f),new Vector3(1f,0f,1f)}, 0.1f).setOnComplete( ()=>{
+				LeanTest.expect(Vector3.Distance(new Vector3(1f,0f,1f), cubeSpline.transform.position) < 0.01f, "SPLINE WITH TWO POINTS SUCCEEDS");
+			});
+			
+			// This test works when it is positioned last in the test queue (probably worth fixing when you have time)
+			GameObject jumpCube = cubeNamed("jumpTime");
+			jumpCube.transform.position = new Vector3(100f,0f,0f);
+			jumpCube.transform.localScale *= 100f;
+			int jumpTimeId = LeanTween.moveX( jumpCube, 200f, 1f).id;
+
+			LeanTween.delayedCall(gameObject, 0.2f, ()=>{
+				LTDescr d = LeanTween.descr( jumpTimeId );
+				float beforeX = jumpCube.transform.position.x;
+				d.setTime( 0.5f );
+				LeanTween.delayedCall( 0.0f, ()=>{ }).setOnStart( ()=>{
+					float diffAmt = 1f;// This variable is dependent on a good frame-rate because it evalutes at the next Update
+					beforeX += Time.deltaTime * 100f * 2f;
+					LeanTest.expect( Mathf.Abs( jumpCube.transform.position.x - beforeX ) < diffAmt , "CHANGING TIME DOESN'T JUMP AHEAD", "Difference:"+Mathf.Abs( jumpCube.transform.position.x - beforeX ) +" beforeX:"+beforeX+" now:"+jumpCube.transform.position.x+" dt:"+Time.deltaTime);
+				});
+			});
+
+			// Tween with time of zero is needs to be set to it's final value
+			GameObject zeroCube = cubeNamed("zeroCube");
+			LeanTween.moveX( zeroCube, 10f, 0f).setOnComplete( ()=>{
+				LeanTest.expect( zeroCube.transform.position.x == 10f, "ZERO TIME FINSHES CORRECTLY", "final x:"+ zeroCube.transform.position.x);
+			});
+
+			// Scale, and OnStart
+			GameObject cubeScale = cubeNamed("cubeScale");
+			LeanTween.scale(cubeScale, new Vector3(5f,5f,5f),0.01f).setOnStart(()=>{
+				LeanTest.expect( true, "ON START WAS CALLED");
+			}).setOnComplete(()=>{
+				LeanTest.expect( cubeScale.transform.localScale.z == 5f, "SCALE","expected scale z:"+5f+" returned:"+cubeScale.transform.localScale.z);
+			});
+
+			// Rotate
+			GameObject cubeRotate = cubeNamed("cubeRotate");
+			LeanTween.rotate(cubeRotate, new Vector3(0f,180f,0f),0.02f).setOnComplete(()=>{
+				LeanTest.expect( cubeRotate.transform.eulerAngles.y == 180f, "ROTATE","expected rotate y:"+180f+" returned:"+cubeRotate.transform.eulerAngles.y);
+			});
+
+			// RotateAround
+			GameObject cubeRotateA = cubeNamed("cubeRotateA");
+			LeanTween.rotateAround(cubeRotateA,Vector3.forward,90f,0.3f).setOnComplete(()=>{
+				LeanTest.expect( cubeRotateA.transform.eulerAngles.z==90f, "ROTATE AROUND","expected rotate z:"+90f+" returned:"+cubeRotateA.transform.eulerAngles.z);
+			});
+
+			// RotateAround 360
+			GameObject cubeRotateB = cubeNamed("cubeRotateB");
+			cubeRotateB.transform.position = new Vector3(200f,10f,8f);
+			LeanTween.rotateAround(cubeRotateB,Vector3.forward,360f,0.3f).setPoint(new Vector3(5f,3f,2f)).setOnComplete(()=>{
+				LeanTest.expect( cubeRotateB.transform.position.ToString()==(new Vector3(200f,10f,8f)).ToString(), "ROTATE AROUND 360","expected rotate pos:"+(new Vector3(200f,10f,8f))+" returned:"+cubeRotateB.transform.position);
+			});
+
+			// Alpha, onUpdate with passing value, onComplete value
+			LeanTween.alpha(cubeAlpha1,0.5f,0.1f).setOnUpdate( (float val)=>{
+				LeanTest.expect(val!=0f ,"ON UPDATE VAL");
+			}).setOnCompleteParam( "Hi!" ).setOnComplete( (object completeObj)=>{
+				LeanTest.expect(((string)completeObj)=="Hi!","ONCOMPLETE OBJECT");
+				LeanTest.expect(cubeAlpha1.GetComponent<Renderer>().material.color.a == 0.5f,"ALPHA");
+			});
+			// Color
+			float onStartTime = -1f;
+			LeanTween.color(cubeAlpha2, Color.cyan, 0.3f).setOnComplete( ()=>{
+				LeanTest.expect(cubeAlpha2.GetComponent<Renderer>().material.color==Color.cyan, "COLOR");
+				LeanTest.expect(onStartTime>=0f && onStartTime<Time.time, "ON START","onStartTime:"+onStartTime+" time:"+Time.time);
+			}).setOnStart(()=>{
+				onStartTime = Time.time;
+			});
+			// moveLocalY (make sure uses y values)
+			Vector3 beforePos = cubeAlpha1.transform.position;
+			LeanTween.moveY(cubeAlpha1, 3f, 0.2f).setOnComplete( ()=>{
+				LeanTest.expect(cubeAlpha1.transform.position.x==beforePos.x && cubeAlpha1.transform.position.z==beforePos.z,"MOVE Y");
+			});
+
+			Vector3 beforePos2 = cubeAlpha2.transform.localPosition;
+			LeanTween.moveLocalZ(cubeAlpha2, 12f, 0.2f).setOnComplete( ()=>{
+				LeanTest.expect(cubeAlpha2.transform.localPosition.x==beforePos2.x && cubeAlpha2.transform.localPosition.y==beforePos2.y,"MOVE LOCAL Z","ax:"+cubeAlpha2.transform.localPosition.x+" bx:"+beforePos.x+" ay:"+cubeAlpha2.transform.localPosition.y+" by:"+beforePos2.y);
+			});
+				
+			AudioClip audioClip = LeanAudio.createAudio(new AnimationCurve( new Keyframe(0f, 1f, 0f, -1f), new Keyframe(1f, 0f, -1f, 0f)), new AnimationCurve( new Keyframe(0f, 0.001f, 0f, 0f), new Keyframe(1f, 0.001f, 0f, 0f)), LeanAudio.options());
+			LeanTween.delayedSound(gameObject, audioClip, new Vector3(0f,0f,0f), 0.1f).setDelay(0.2f).setOnComplete( ()=>{
+				LeanTest.expect(Time.time>0,"DELAYED SOUND");
+			});
+
+			// value2
+			bool value2UpdateCalled = false;
+			LeanTween.value(gameObject, new Vector2(0, 0), new Vector2(256, 96), 0.1f).setOnUpdate((Vector2 value) => {
+				value2UpdateCalled = true;
+			});
+			LeanTween.delayedCall(0.2f, ()=>{
+				LeanTest.expect( value2UpdateCalled, "VALUE2 UPDATE");
+			} );
+			
+			StartCoroutine( timeBasedTesting() );
 		}
 
 		private GameObject cubeNamed( string name ){
