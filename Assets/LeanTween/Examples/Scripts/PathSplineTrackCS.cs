@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using com.dentedpixel;
+using DentedPixel;
 
 // This project demonstrates how you can use the spline behaviour for a multi-track game (like an endless runner style)
 

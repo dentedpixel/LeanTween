@@ -890,6 +890,9 @@ public class LTDescr
 
 		usesNormalDt = !(useEstimatedTime || useManualTime || useFrames); // only set this to true if it uses non of the other timing modes
 
+		if (useFrames)
+			this.optional.initFrameCount = Time.frameCount;
+
 		if (this.time <= 0f) // avoid dividing by zero
 			this.time = Mathf.Epsilon;
 
@@ -944,7 +947,8 @@ public class LTDescr
 		}else if( this.useEstimatedTime ){
 			dt = LeanTween.dtEstimated;
 		}else if( this.useFrames ){
-			dt = 1;
+			dt = this.optional.initFrameCount==0 ? 0 : 1;
+			this.optional.initFrameCount = Time.frameCount;
 		}else if( this.useManualTime ){
 			dt = LeanTween.dtManual;
 		}

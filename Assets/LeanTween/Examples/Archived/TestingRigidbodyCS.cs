@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using com.dentedpixel;
+using DentedPixel;
 
 public class TestingRigidbodyCS : MonoBehaviour {
 

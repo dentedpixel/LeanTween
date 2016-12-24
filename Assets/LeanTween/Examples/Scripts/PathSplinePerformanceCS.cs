@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using com.dentedpixel;
+using DentedPixel;
 // This class is to test the upper limits of a complex spline
 
 public class PathSplinePerformanceCS : MonoBehaviour {
