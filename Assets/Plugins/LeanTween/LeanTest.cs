@@ -1,4 +1,3 @@
-namespace DentedPixel{
 using UnityEngine;
 using System.Collections;
 
@@ -121,5 +120,4 @@ public class LeanTest : object {
 		Debug.Log(formatB("Final Report:")+" _____________________ PASSED: "+formatBC(""+passes,"green")+" FAILED: "+failedStr+" ");
 	}
 }
-
-}
+	

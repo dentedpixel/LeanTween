@@ -25,6 +25,7 @@
 // SOFTWARE.
 
 
+
 /*
 TERMS OF USE - EASING EQUATIONS#
 Open source under the BSD License.
@@ -3610,4 +3611,5 @@ public class LTGUI {
 
 }
 
+namespace DentedPixel { public class LeanDummy {}  }
 //}
