@@ -1,4 +1,5 @@
 #pragma strict
+import DentedPixel;
 
 private var towardsRotation:Vector3;
 private var turnForLength:float = 0.5f;

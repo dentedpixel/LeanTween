@@ -1,4 +1,5 @@
 ﻿#pragma strict
+import DentedPixel;
 
 #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 

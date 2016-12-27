@@ -1,4 +1,5 @@
 #pragma strict
+import DentedPixel;
 
 public var customAnimationCurve:AnimationCurve;
 

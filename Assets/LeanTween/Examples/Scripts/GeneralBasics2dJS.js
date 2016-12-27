@@ -1,4 +1,5 @@
 #pragma strict
+import DentedPixel;
 
 public var dudeTexture:Texture2D;
 public var prefabParticles:GameObject;
