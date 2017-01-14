@@ -47,6 +47,12 @@ public class Testing240 : MonoBehaviour {
 
 		LeanTween.moveSplineLocal(sprite2,path,4f)
 			.setOrientToPath2d(true).setRepeat(-1);
+
+//		int tweenId = LeanTween.move (gameObject, new Vector3 (4f, 4f, 4f), 1f).setUseManualTime (true).id;
+
+		// Later
+//		LTDescr d = LeanTween.description( tweenId );
+//		d.setTime = 0.2f;
 	}
 
     public static void ScaleGroundColor(Color to)

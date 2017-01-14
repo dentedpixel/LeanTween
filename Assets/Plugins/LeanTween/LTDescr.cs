@@ -1430,8 +1430,8 @@ public class LTDescr
 			return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
 		}
 		val -= 2f;
-		val = (val * val * val * val - 2f);
-		return new Vector3(-this.diffDiv2.x * val + this.from.x, -this.diffDiv2.x * val + this.from.x, -this.diffDiv2.x * val + this.from.x);
+//		val = (val * val * val * val - 2f);
+		return -this.diffDiv2 * (val * val * val * val - 2f) + this.from;
 	}
 
 	private Vector3 easeInQuint(){
@@ -1665,7 +1665,7 @@ public class LTDescr
 	* @example
 	* LTDescr descr = LeanTween.move( cube, Vector3.up, new Vector3(1f,3f,0f), 1.0f ).setEase( LeanTweenType.easeInOutBounce );<br>
 	* // Later your want to change your destination or your destiation is constantly moving<br>
-	* descr.setTo( new Vector3(5f,10f,3f); );<br>
+	* descr.setTo( new Vector3(5f,10f,3f) );<br>
 	*/
 	public LTDescr setTo( Vector3 to ){
 		if(this.hasInitiliazed){
@@ -1683,6 +1683,14 @@ public class LTDescr
 		return this;
 	}
 
+	/**
+	* Set the beginning of the tween
+	* @method setFrom
+	* @param {Vector3} from:Vector3 the point you would like the tween to start at
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LTDescr descr = LeanTween.move( cube, Vector3.up, new Vector3(1f,3f,0f), 1.0f ).setFrom( new Vector3(5f,10f,3f) );<br>
+	*/
 	public LTDescr setFrom( Vector3 from ){
 		if(this.trans){
 			this.init();
