@@ -67,7 +67,7 @@ public class LTDescr
 	internal Vector3 diff;
 	internal Vector3 diffDiv2;
 	public TweenAction type;
-	public LeanTweenType tweenType;
+	private LeanTweenType easeType;
 	public LeanTweenType loopType;
 
 	public bool hasUpdateCallback;
@@ -94,7 +94,7 @@ public class LTDescr
 	private static uint global_counter = 0;
 
 	public override string ToString(){
-		return (trans!=null ? "name:"+trans.gameObject.name : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" diff:"+diff+" type:"+type+" ease:"+tweenType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
+		return (trans!=null ? "name:"+trans.gameObject.name : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" diff:"+diff+" type:"+type+" ease:"+easeType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
 
 	public LTDescr(){
@@ -143,7 +143,7 @@ public class LTDescr
 		this.trans = null;
 		this.passed = this.delay = this.lastVal = 0.0f;
 		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = this.hasExtraOnCompletes = false;
-		this.tweenType = LeanTweenType.linear;
+		this.easeType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
         this.direction = this.directionLast = this.overshoot = this.scale = 1.0f;
@@ -1281,69 +1281,69 @@ public class LTDescr
 		return this;
 	}
 
-	public LTDescr setEaseLinear(){ this.tweenType = LeanTweenType.linear; this.easeMethod = this.easeLinear; return this; }
+	public LTDescr setEaseLinear(){ this.easeType = LeanTweenType.linear; this.easeMethod = this.easeLinear; return this; }
 
-	public LTDescr setEaseSpring(){ this.tweenType = LeanTweenType.easeSpring; this.easeMethod = this.easeSpring; return this; }
+	public LTDescr setEaseSpring(){ this.easeType = LeanTweenType.easeSpring; this.easeMethod = this.easeSpring; return this; }
 
-	public LTDescr setEaseInQuad(){ this.tweenType = LeanTweenType.easeInQuad; this.easeMethod = this.easeInQuad; return this; }
+	public LTDescr setEaseInQuad(){ this.easeType = LeanTweenType.easeInQuad; this.easeMethod = this.easeInQuad; return this; }
 
-	public LTDescr setEaseOutQuad(){ this.tweenType = LeanTweenType.easeOutQuad; this.easeMethod = this.easeOutQuad; return this; }
+	public LTDescr setEaseOutQuad(){ this.easeType = LeanTweenType.easeOutQuad; this.easeMethod = this.easeOutQuad; return this; }
 
-	public LTDescr setEaseInOutQuad(){ this.tweenType = LeanTweenType.easeInOutQuad; this.easeMethod = this.easeInOutQuad; return this;}
+	public LTDescr setEaseInOutQuad(){ this.easeType = LeanTweenType.easeInOutQuad; this.easeMethod = this.easeInOutQuad; return this;}
 
-	public LTDescr setEaseInCubic(){ this.tweenType = LeanTweenType.easeInCubic; this.easeMethod = this.easeInCubic; return this; }
+	public LTDescr setEaseInCubic(){ this.easeType = LeanTweenType.easeInCubic; this.easeMethod = this.easeInCubic; return this; }
 
-	public LTDescr setEaseOutCubic(){ this.tweenType = LeanTweenType.easeOutCubic; this.easeMethod = this.easeOutCubic; return this; }
+	public LTDescr setEaseOutCubic(){ this.easeType = LeanTweenType.easeOutCubic; this.easeMethod = this.easeOutCubic; return this; }
 
-	public LTDescr setEaseInOutCubic(){ this.tweenType = LeanTweenType.easeInOutCubic; this.easeMethod = this.easeInOutCubic; return this; }
+	public LTDescr setEaseInOutCubic(){ this.easeType = LeanTweenType.easeInOutCubic; this.easeMethod = this.easeInOutCubic; return this; }
 
-	public LTDescr setEaseInQuart(){ this.tweenType = LeanTweenType.easeInQuart; this.easeMethod = this.easeInQuart; return this; }
+	public LTDescr setEaseInQuart(){ this.easeType = LeanTweenType.easeInQuart; this.easeMethod = this.easeInQuart; return this; }
 
-	public LTDescr setEaseOutQuart(){ this.tweenType = LeanTweenType.easeOutQuart; this.easeMethod = this.easeOutQuart; return this; }
+	public LTDescr setEaseOutQuart(){ this.easeType = LeanTweenType.easeOutQuart; this.easeMethod = this.easeOutQuart; return this; }
 
-	public LTDescr setEaseInOutQuart(){ this.tweenType = LeanTweenType.easeInOutQuart; this.easeMethod = this.easeInOutQuart; return this; }
+	public LTDescr setEaseInOutQuart(){ this.easeType = LeanTweenType.easeInOutQuart; this.easeMethod = this.easeInOutQuart; return this; }
 
-	public LTDescr setEaseInQuint(){ this.tweenType = LeanTweenType.easeInQuint; this.easeMethod = this.easeInQuint; return this; }
+	public LTDescr setEaseInQuint(){ this.easeType = LeanTweenType.easeInQuint; this.easeMethod = this.easeInQuint; return this; }
 
-	public LTDescr setEaseOutQuint(){ this.tweenType = LeanTweenType.easeOutQuint; this.easeMethod = this.easeOutQuint; return this; }
+	public LTDescr setEaseOutQuint(){ this.easeType = LeanTweenType.easeOutQuint; this.easeMethod = this.easeOutQuint; return this; }
 
-	public LTDescr setEaseInOutQuint(){ this.tweenType = LeanTweenType.easeInOutQuint; this.easeMethod = this.easeInOutQuint; return this; }
+	public LTDescr setEaseInOutQuint(){ this.easeType = LeanTweenType.easeInOutQuint; this.easeMethod = this.easeInOutQuint; return this; }
 
-	public LTDescr setEaseInSine(){ this.tweenType = LeanTweenType.easeInSine; this.easeMethod = this.easeInSine; return this; }
+	public LTDescr setEaseInSine(){ this.easeType = LeanTweenType.easeInSine; this.easeMethod = this.easeInSine; return this; }
 
-	public LTDescr setEaseOutSine(){ this.tweenType = LeanTweenType.easeOutSine; this.easeMethod = this.easeOutSine; return this; }
+	public LTDescr setEaseOutSine(){ this.easeType = LeanTweenType.easeOutSine; this.easeMethod = this.easeOutSine; return this; }
 
-	public LTDescr setEaseInOutSine(){ this.tweenType = LeanTweenType.easeInOutSine; this.easeMethod = this.easeInOutSine; return this; }
+	public LTDescr setEaseInOutSine(){ this.easeType = LeanTweenType.easeInOutSine; this.easeMethod = this.easeInOutSine; return this; }
 
-	public LTDescr setEaseInExpo(){ this.tweenType = LeanTweenType.easeInExpo; this.easeMethod = this.easeInExpo; return this; }
+	public LTDescr setEaseInExpo(){ this.easeType = LeanTweenType.easeInExpo; this.easeMethod = this.easeInExpo; return this; }
 
-	public LTDescr setEaseOutExpo(){ this.tweenType = LeanTweenType.easeOutExpo; this.easeMethod = this.easeOutExpo; return this; }
+	public LTDescr setEaseOutExpo(){ this.easeType = LeanTweenType.easeOutExpo; this.easeMethod = this.easeOutExpo; return this; }
 
-	public LTDescr setEaseInOutExpo(){ this.tweenType = LeanTweenType.easeInOutExpo; this.easeMethod = this.easeInOutExpo; return this; }
+	public LTDescr setEaseInOutExpo(){ this.easeType = LeanTweenType.easeInOutExpo; this.easeMethod = this.easeInOutExpo; return this; }
 
-	public LTDescr setEaseInCirc(){ this.tweenType = LeanTweenType.easeInCirc; this.easeMethod = this.easeInCirc; return this; }
+	public LTDescr setEaseInCirc(){ this.easeType = LeanTweenType.easeInCirc; this.easeMethod = this.easeInCirc; return this; }
 
-	public LTDescr setEaseOutCirc(){ this.tweenType = LeanTweenType.easeOutCirc; this.easeMethod = this.easeOutCirc; return this; }
+	public LTDescr setEaseOutCirc(){ this.easeType = LeanTweenType.easeOutCirc; this.easeMethod = this.easeOutCirc; return this; }
 
-	public LTDescr setEaseInOutCirc(){ this.tweenType = LeanTweenType.easeInOutCirc; this.easeMethod = this.easeInOutCirc; return this; }
+	public LTDescr setEaseInOutCirc(){ this.easeType = LeanTweenType.easeInOutCirc; this.easeMethod = this.easeInOutCirc; return this; }
 
-	public LTDescr setEaseInBounce(){ this.tweenType = LeanTweenType.easeInBounce; this.easeMethod = this.easeInBounce; return this; }
+	public LTDescr setEaseInBounce(){ this.easeType = LeanTweenType.easeInBounce; this.easeMethod = this.easeInBounce; return this; }
 
-	public LTDescr setEaseOutBounce(){ this.tweenType = LeanTweenType.easeOutBounce; this.easeMethod = this.easeOutBounce; return this; }
+	public LTDescr setEaseOutBounce(){ this.easeType = LeanTweenType.easeOutBounce; this.easeMethod = this.easeOutBounce; return this; }
 
-	public LTDescr setEaseInOutBounce(){ this.tweenType = LeanTweenType.easeInOutBounce; this.easeMethod = this.easeInOutBounce; return this; }
+	public LTDescr setEaseInOutBounce(){ this.easeType = LeanTweenType.easeInOutBounce; this.easeMethod = this.easeInOutBounce; return this; }
 
-	public LTDescr setEaseInBack(){ this.tweenType = LeanTweenType.easeInBack; this.easeMethod = this.easeInBack; return this; }
+	public LTDescr setEaseInBack(){ this.easeType = LeanTweenType.easeInBack; this.easeMethod = this.easeInBack; return this; }
 
-	public LTDescr setEaseOutBack(){ this.tweenType = LeanTweenType.easeOutBack; this.easeMethod = this.easeOutBack; return this; }
+	public LTDescr setEaseOutBack(){ this.easeType = LeanTweenType.easeOutBack; this.easeMethod = this.easeOutBack; return this; }
 
-	public LTDescr setEaseInOutBack(){ this.tweenType = LeanTweenType.easeInOutBack; this.easeMethod = this.easeInOutBack; return this; }
+	public LTDescr setEaseInOutBack(){ this.easeType = LeanTweenType.easeInOutBack; this.easeMethod = this.easeInOutBack; return this; }
 
-	public LTDescr setEaseInElastic(){ this.tweenType = LeanTweenType.easeInElastic; this.easeMethod = this.easeInElastic; return this; }
+	public LTDescr setEaseInElastic(){ this.easeType = LeanTweenType.easeInElastic; this.easeMethod = this.easeInElastic; return this; }
 
-	public LTDescr setEaseOutElastic(){ this.tweenType = LeanTweenType.easeOutElastic; this.easeMethod = this.easeOutElastic; return this; }
+	public LTDescr setEaseOutElastic(){ this.easeType = LeanTweenType.easeOutElastic; this.easeMethod = this.easeOutElastic; return this; }
 
-	public LTDescr setEaseInOutElastic(){ this.tweenType = LeanTweenType.easeInOutElastic; this.easeMethod = this.easeInOutElastic; return this; }
+	public LTDescr setEaseInOutElastic(){ this.easeType = LeanTweenType.easeInOutElastic; this.easeMethod = this.easeInOutElastic; return this; }
 
 	public LTDescr setEasePunch(){ this._optional.animationCurve = LeanTween.punch; this.toInternal.x = this.from.x + this.to.x; this.easeMethod = this.tweenOnCurve; return this; }
 
@@ -1653,7 +1653,7 @@ public class LTDescr
 	public LTDescr setEase( AnimationCurve easeCurve ){
 		this._optional.animationCurve = easeCurve;
 		this.easeMethod = this.tweenOnCurve;
-		this.tweenType = LeanTweenType.animationCurve;
+		this.easeType = LeanTweenType.animationCurve;
 		return this;
 	}
 
