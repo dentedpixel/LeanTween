@@ -1,6 +1,6 @@
 //namespace DentedPixel{
 
-// LeanTween version 2.43 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.44 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
