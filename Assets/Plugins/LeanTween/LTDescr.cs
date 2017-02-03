@@ -140,7 +140,8 @@ public class LTDescr
 
 	public void reset(){
 		this.toggle = this.useRecursion = this.usesNormalDt = true;
-		this.trans = this.spriteRen = null;
+		this.trans = null;
+		this.spriteRen = null;
 		this.passed = this.delay = this.lastVal = 0.0f;
 		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = this.hasExtraOnCompletes = false;
 		this.easeType = LeanTweenType.linear;
