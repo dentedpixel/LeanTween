@@ -383,14 +383,14 @@ public class LTDescr
 			this.easeInternal = this.alpha;
 			break;	
 			#else
-			SpriteRenderer ren = trans.gameObject.GetComponent<SpriteRenderer>();
+			SpriteRenderer ren = trans.GetComponent<SpriteRenderer>();
 			if(ren!=null){
 				this.fromInternal.x = ren.color.a;
 			}else{
-				if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
-					this.fromInternal.x = trans.gameObject.GetComponent<Renderer>().material.color.a;
-				}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
-					Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor("_TintColor");
+				if(trans.GetComponent<Renderer>()!=null && trans.GetComponent<Renderer>().material.HasProperty("_Color")){
+					this.fromInternal.x = trans.GetComponent<Renderer>().material.color.a;
+				}else if(trans.GetComponent<Renderer>()!=null && trans.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+					Color col = trans.GetComponent<Renderer>().material.GetColor("_TintColor");
 					this.fromInternal.x = col.a;
 				}else if(trans.childCount>0){
 					foreach (Transform child in trans) {
@@ -439,7 +439,7 @@ public class LTDescr
 	public LTDescr setTextAlpha(){
 		this.type = TweenAction.TEXT_ALPHA;
 		this.initInternal = ()=>{
-			this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+			this.uiText = trans.GetComponent<UnityEngine.UI.Text>();
 			this.fromInternal.x = this.uiText != null ? this.uiText.color.a : 1f;
 		};
 		this.easeInternal = ()=>{ textAlphaRecursive( trans, easeMethod().x, this.useRecursion ); };
@@ -486,15 +486,15 @@ public class LTDescr
 			}
 			}
 			#else
-			SpriteRenderer renColor = trans.gameObject.GetComponent<SpriteRenderer>();
+			SpriteRenderer renColor = trans.GetComponent<SpriteRenderer>();
 			if(renColor!=null){
 				this.setFromColor( renColor.color );
 			}else{
-				if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_Color")){
-					Color col = trans.gameObject.GetComponent<Renderer>().material.color;
+				if(trans.GetComponent<Renderer>()!=null && trans.GetComponent<Renderer>().material.HasProperty("_Color")){
+					Color col = trans.GetComponent<Renderer>().material.color;
 					this.setFromColor( col );
-				}else if(trans.gameObject.GetComponent<Renderer>()!=null && trans.gameObject.GetComponent<Renderer>().material.HasProperty("_TintColor")){
-					Color col = trans.gameObject.GetComponent<Renderer>().material.GetColor ("_TintColor");
+				}else if(trans.GetComponent<Renderer>()!=null && trans.GetComponent<Renderer>().material.HasProperty("_TintColor")){
+					Color col = trans.GetComponent<Renderer>().material.GetColor ("_TintColor");
 					this.setFromColor( col );
 				}else if(trans.childCount>0){
 					foreach (Transform child in trans) {
@@ -572,7 +572,7 @@ public class LTDescr
 	public LTDescr setTextColor(){
 		this.type = TweenAction.TEXT_COLOR;
 		this.initInternal = ()=>{
-			this.uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+			this.uiText = trans.GetComponent<UnityEngine.UI.Text>();
 			this.setFromColor( this.uiText != null ? this.uiText.color : Color.white );
 		};
 		this.easeInternal = ()=>{
@@ -592,11 +592,11 @@ public class LTDescr
 	public LTDescr setCanvasAlpha(){
 		this.type = TweenAction.CANVAS_ALPHA;
 		this.initInternal = ()=>{
-			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
+			this.uiImage = trans.GetComponent<UnityEngine.UI.Image>();
 			if(this.uiImage!=null){
 				this.fromInternal.x = this.uiImage.color.a;
 			}else{
-				this.rawImage = trans.gameObject.GetComponent<UnityEngine.UI.RawImage>();
+				this.rawImage = trans.GetComponent<UnityEngine.UI.RawImage>();
 				if(this.rawImage != null){
 					this.fromInternal.x = this.rawImage.color.a;
 				}else{
@@ -623,7 +623,7 @@ public class LTDescr
 
 	public LTDescr setCanvasGroupAlpha(){
 		this.type = TweenAction.CANVASGROUP_ALPHA;
-		this.initInternal = ()=>{this.fromInternal.x = trans.gameObject.GetComponent<CanvasGroup>().alpha;};
+		this.initInternal = ()=>{this.fromInternal.x = trans.GetComponent<CanvasGroup>().alpha;};
 		this.easeInternal = ()=>{ this.trans.GetComponent<CanvasGroup>().alpha = easeMethod().x; };
 		return this;
 	}
@@ -631,9 +631,9 @@ public class LTDescr
 	public LTDescr setCanvasColor(){
 		this.type = TweenAction.CANVAS_COLOR;
 		this.initInternal = ()=>{
-			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
+			this.uiImage = trans.GetComponent<UnityEngine.UI.Image>();
 			if(this.uiImage==null){
-				this.rawImage = trans.gameObject.GetComponent<UnityEngine.UI.RawImage>();
+				this.rawImage = trans.GetComponent<UnityEngine.UI.RawImage>();
 				this.setFromColor( this.rawImage!=null ? this.rawImage.color : Color.white );
 			}else{
 				this.setFromColor( this.uiImage.color );
@@ -725,7 +725,7 @@ public class LTDescr
 	public LTDescr setCanvasPlaySprite(){
 		this.type = TweenAction.CANVAS_PLAYSPRITE;
 		this.initInternal = ()=>{
-			this.uiImage = trans.gameObject.GetComponent<UnityEngine.UI.Image>();
+			this.uiImage = trans.GetComponent<UnityEngine.UI.Image>();
 			this.fromInternal.x = 0f;
 		};
 		this.easeInternal = ()=>{
