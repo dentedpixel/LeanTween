@@ -935,6 +935,10 @@ public class LeanTween : MonoBehaviour {
 		return lt;
 	}
 
+	public static LTSeq sequence(){
+		return new LTSeq();
+	}
+
 	/**
 	* Fade a GUI Object
 	* 
