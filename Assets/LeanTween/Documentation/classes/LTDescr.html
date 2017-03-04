@@ -29,7 +29,7 @@
                 <h1><a href="http://dentedpixel.com/developer-diary/leantween-speed-comparison-to-itween/"><img src="http://s3.amazonaws.com/dentedpixel.com/LeanTween/leantween-logo.png" title=""></a></h1> <div style="position:absolute; left:146px; top:90px;">- Developed by <a href="http://www.dentedpixel.com">Dented Pixel</a></div>
         </div>
         <div class="yui3-u-1-4 version">
-            <em style="margin-top:2px">API Docs for: LeanTween 2.42</em><br>
+            <em style="margin-top:2px">API Docs for: LeanTween 2.44</em><br>
             <table id="support">
                 <tr>
                 <td>
@@ -131,7 +131,7 @@
                         
                         
                                 <div class="foundat">
-                                    Defined in: <a href="../files/LTDescr.cs.html#l4"><code>LTDescr.cs:4</code></a>
+                                    Defined in: <a href="../files/LTDescr.cs.html#l5"><code>LTDescr.cs:5</code></a>
                                 </div>
                         
                         
@@ -182,7 +182,7 @@
                                     <div class="meta">
                                                 <p>
                                                 Defined in
-                                        <a href="../files/LTDescr.cs.html#l4"><code>LTDescr.cs:4</code></a>
+                                        <a href="../files/LTDescr.cs.html#l5"><code>LTDescr.cs:5</code></a>
                                         </p>
                                 
                                 
@@ -222,6 +222,10 @@
                         
                                                     </li>
                                                     <li class="index-item method">
+                                                        <a href="#method_setAxis">setAxis</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
                                                         <a href="#method_setDelay">setDelay</a>
                         
                                                     </li>
@@ -235,6 +239,10 @@
                                                     </li>
                                                     <li class="index-item method">
                                                         <a href="#method_setEase (AnimationCurve)">setEase (AnimationCurve)</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
+                                                        <a href="#method_setFrom">setFrom</a>
                         
                                                     </li>
                                                     <li class="index-item method">
@@ -373,7 +381,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1113"><code>LTDescr.cs:1113</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1148"><code>LTDescr.cs:1148</code></a>
                                                     </p>
                                             
                                             
@@ -415,7 +423,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1128"><code>LTDescr.cs:1128</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1163"><code>LTDescr.cs:1163</code></a>
                                                     </p>
                                             
                                             
@@ -438,6 +446,79 @@
                                                         </div>
                                                     </div>
                                             
+                                            </div>
+                                            <div id="method_setAxis" class="method item">
+                                                <h3 class="name"><code>setAxis</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>axis</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LTDescr.cs.html#l1175"><code>LTDescr.cs:1175</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Set Axis optional axis for tweens where it is relevant</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">axis</code>
+                                                                    <span class="type">Vector3</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>either the tween rotates around, or the direction it faces in the case of setOrientToPath</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true).setAxis(Vector3.forward);</p>
+                                            
+                                                        </div>
+                                                    </div>
                                             </div>
                                             <div id="method_setDelay" class="method item">
                                                 <h3 class="name"><code>setDelay</code></h3>
@@ -463,7 +544,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1145"><code>LTDescr.cs:1145</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1189"><code>LTDescr.cs:1189</code></a>
                                                     </p>
                                             
                                             
@@ -536,7 +617,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2157"><code>LTDescr.cs:2157</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2208"><code>LTDescr.cs:2208</code></a>
                                                     </p>
                                             
                                             
@@ -609,7 +690,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1164"><code>LTDescr.cs:1164</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1204"><code>LTDescr.cs:1204</code></a>
                                                     </p>
                                             
                                             
@@ -684,7 +765,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1616"><code>LTDescr.cs:1616</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1655"><code>LTDescr.cs:1655</code></a>
                                                     </p>
                                             
                                             
@@ -733,6 +814,79 @@
                                                         </div>
                                                     </div>
                                             </div>
+                                            <div id="method_setFrom" class="method item">
+                                                <h3 class="name"><code>setFrom</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>from:Vector3</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LTDescr.cs.html#l1696"><code>LTDescr.cs:1696</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Set the beginning of the tween</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">from:Vector3</code>
+                                                                    <span class="type">Vector3</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>the point you would like the tween to start at</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LTDescr descr = LeanTween.move( cube, Vector3.up, new Vector3(1f,3f,0f), 1.0f ).setFrom( new Vector3(5f,10f,3f) );<br></p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
                                             <div id="method_setIgnoreTimeScale" class="method item">
                                                 <h3 class="name"><code>setIgnoreTimeScale</code></h3>
                                             
@@ -757,7 +911,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1750"><code>LTDescr.cs:1750</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1798"><code>LTDescr.cs:1798</code></a>
                                                     </p>
                                             
                                             
@@ -830,7 +984,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1796"><code>LTDescr.cs:1796</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1847"><code>LTDescr.cs:1847</code></a>
                                                     </p>
                                             
                                             
@@ -897,7 +1051,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1787"><code>LTDescr.cs:1787</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1838"><code>LTDescr.cs:1838</code></a>
                                                     </p>
                                             
                                             
@@ -953,7 +1107,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1815"><code>LTDescr.cs:1815</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1866"><code>LTDescr.cs:1866</code></a>
                                                     </p>
                                             
                                             
@@ -1026,7 +1180,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1835"><code>LTDescr.cs:1835</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1886"><code>LTDescr.cs:1886</code></a>
                                                     </p>
                                             
                                             
@@ -1099,7 +1253,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1849"><code>LTDescr.cs:1849</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1900"><code>LTDescr.cs:1900</code></a>
                                                     </p>
                                             
                                             
@@ -1172,7 +1326,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2095"><code>LTDescr.cs:2095</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2146"><code>LTDescr.cs:2146</code></a>
                                                     </p>
                                             
                                             
@@ -1245,7 +1399,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2108"><code>LTDescr.cs:2108</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2159"><code>LTDescr.cs:2159</code></a>
                                                     </p>
                                             
                                             
@@ -1321,7 +1475,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1870"><code>LTDescr.cs:1870</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1921"><code>LTDescr.cs:1921</code></a>
                                                     </p>
                                             
                                             
@@ -1398,7 +1552,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2141"><code>LTDescr.cs:2141</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2192"><code>LTDescr.cs:2192</code></a>
                                                     </p>
                                             
                                             
@@ -1474,7 +1628,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1889"><code>LTDescr.cs:1889</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1940"><code>LTDescr.cs:1940</code></a>
                                                     </p>
                                             
                                             
@@ -1549,7 +1703,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1951"><code>LTDescr.cs:1951</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2002"><code>LTDescr.cs:2002</code></a>
                                                     </p>
                                             
                                             
@@ -1624,7 +1778,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1985"><code>LTDescr.cs:1985</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2036"><code>LTDescr.cs:2036</code></a>
                                                     </p>
                                             
                                             
@@ -1699,7 +1853,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2005"><code>LTDescr.cs:2005</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2056"><code>LTDescr.cs:2056</code></a>
                                                     </p>
                                             
                                             
@@ -1774,7 +1928,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2020"><code>LTDescr.cs:2020</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2071"><code>LTDescr.cs:2071</code></a>
                                                     </p>
                                             
                                             
@@ -1847,7 +2001,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2039"><code>LTDescr.cs:2039</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2090"><code>LTDescr.cs:2090</code></a>
                                                     </p>
                                             
                                             
@@ -1920,7 +2074,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1577"><code>LTDescr.cs:1577</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1616"><code>LTDescr.cs:1616</code></a>
                                                     </p>
                                             
                                             
@@ -1993,7 +2147,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1590"><code>LTDescr.cs:1590</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1629"><code>LTDescr.cs:1629</code></a>
                                                     </p>
                                             
                                             
@@ -2066,7 +2220,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2072"><code>LTDescr.cs:2072</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2123"><code>LTDescr.cs:2123</code></a>
                                                     </p>
                                             
                                             
@@ -2139,7 +2293,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l2189"><code>LTDescr.cs:2189</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l2240"><code>LTDescr.cs:2240</code></a>
                                                     </p>
                                             
                                             
@@ -2212,7 +2366,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1721"><code>LTDescr.cs:1721</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1768"><code>LTDescr.cs:1768</code></a>
                                                     </p>
                                             
                                             
@@ -2285,7 +2439,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1603"><code>LTDescr.cs:1603</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1642"><code>LTDescr.cs:1642</code></a>
                                                     </p>
                                             
                                             
@@ -2358,7 +2512,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1706"><code>LTDescr.cs:1706</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1753"><code>LTDescr.cs:1753</code></a>
                                                     </p>
                                             
                                             
@@ -2431,7 +2585,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1688"><code>LTDescr.cs:1688</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1735"><code>LTDescr.cs:1735</code></a>
                                                     </p>
                                             
                                             
@@ -2507,7 +2661,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1631"><code>LTDescr.cs:1631</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1670"><code>LTDescr.cs:1670</code></a>
                                                     </p>
                                             
                                             
@@ -2553,7 +2707,7 @@
                                                         <div class="example-content">
                                                             <p>LTDescr descr = LeanTween.move( cube, Vector3.up, new Vector3(1f,3f,0f), 1.0f ).setEase( LeanTweenType.easeInOutBounce );<br>
                                             // Later your want to change your destination or your destiation is constantly moving<br>
-                                            descr.setTo( new Vector3(5f,10f,3f); );<br></p>
+                                            descr.setTo( new Vector3(5f,10f,3f) );<br></p>
                                             
                                                         </div>
                                                     </div>
@@ -2582,7 +2736,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l1763"><code>LTDescr.cs:1763</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l1812"><code>LTDescr.cs:1812</code></a>
                                                     </p>
                                             
                                             
@@ -2649,7 +2803,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTDescr.cs.html#l904"><code>LTDescr.cs:904</code></a>
+                                                    <a href="../files/LTDescr.cs.html#l930"><code>LTDescr.cs:930</code></a>
                                                     </p>
                                             
                                             

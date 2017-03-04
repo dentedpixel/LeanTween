@@ -1172,6 +1172,15 @@ public class LTDescr
 		return this;
 	}
 
+	/**
+	* Set Axis optional axis for tweens where it is relevant
+	* 
+	* @method setAxis
+	* @param {Vector3} axis either the tween rotates around, or the direction it faces in the case of setOrientToPath
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* LeanTween.move( ltLogo, path, 1.0f ).setEase(LeanTweenType.easeOutQuad).setOrientToPath(true).setAxis(Vector3.forward);
+	*/
 	public LTDescr setAxis( Vector3 axis ){
 		this._optional.axis = axis;
 		return this;
