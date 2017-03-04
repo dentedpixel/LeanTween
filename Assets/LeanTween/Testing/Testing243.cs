@@ -17,7 +17,7 @@ public class Testing243 : MonoBehaviour {
 //	}
 
 	void Start () {
-		LeanTween.alpha (imageRectTransform, 0, 0.3f).setLoopPingPong (-1).setRecursive(false);
+		LeanTween.alpha (imageRectTransform, 0, 0.3f).setLoopPingPong (-1);
 	} 
 	
 	// Update is called once per frame

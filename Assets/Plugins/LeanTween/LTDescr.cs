@@ -615,7 +615,7 @@ public class LTDescr
 			}
 			if(this.useRecursion){
 				alphaRecursive( this.rectTransform, val, 0 );
-				textAlphaRecursive( this.rectTransform, val);
+				textAlphaChildrenRecursive( this.rectTransform, val);
 			}
 		};
 		return this;
@@ -1112,8 +1112,23 @@ public class LTDescr
 		}
 	}
 
+	private static void textAlphaChildrenRecursive( Transform trans, float val, bool useRecursion = true ){
+		
+		if(useRecursion && trans.childCount>0){
+			foreach (Transform child in trans) {
+				UnityEngine.UI.Text uiText = child.GetComponent<UnityEngine.UI.Text>();
+				if(uiText!=null){
+					Color c = uiText.color;
+					c.a = val;
+					uiText.color = c;
+				}
+				textAlphaChildrenRecursive(child, val);
+			}
+		}
+	}
+
 	private static void textAlphaRecursive( Transform trans, float val, bool useRecursion = true ){
-		UnityEngine.UI.Text uiText = trans.gameObject.GetComponent<UnityEngine.UI.Text>();
+		UnityEngine.UI.Text uiText = trans.GetComponent<UnityEngine.UI.Text>();
 		if(uiText!=null){
 			Color c = uiText.color;
 			c.a = val;
@@ -1129,7 +1144,7 @@ public class LTDescr
 	private static void textColorRecursive(Transform trans, Color toColor ){
 		if(trans.childCount>0){
 			foreach (Transform child in trans) {
-				UnityEngine.UI.Text uiText = child.gameObject.GetComponent<UnityEngine.UI.Text>();
+				UnityEngine.UI.Text uiText = child.GetComponent<UnityEngine.UI.Text>();
 				if(uiText!=null){
 					uiText.color = toColor;
 				}
