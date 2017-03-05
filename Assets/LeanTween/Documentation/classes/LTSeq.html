@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>LTBezierPath</title>
+    <title>LTSeq</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.8.0pr2/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -127,12 +127,12 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>LTBezierPath Class</h1>
+                        <h1>LTSeq Class</h1>
                         <div class="box meta">
                         
                         
                                 <div class="foundat">
-                                    Defined in: <a href="../files/LeanTween.cs.html#l2511"><code>LeanTween.cs:2511</code></a>
+                                    Defined in: <a href="../files/LTSeq.cs.html#l5"><code>LTSeq.cs:5</code></a>
                                 </div>
                         
                         
@@ -140,22 +140,28 @@
                         
                         
                         <div class="box intro">
-                            <p>Manually animate along a bezier path with this class</p>
+                            <p>Internal Representation of a Sequence<br>
+                        <br>
+                          <h4>Example:</h4>
+                        var seq = LeanTween.sequence();<br>
+                        seq.add(1f); <span style="color:gray">// delay everything one second</span><br>
+                        seq.add( () =&gt; { <span style="color:gray">// fire an event before start</span><br>
+                         Debug.Log(&quot;I have started&quot;);<br>
+                        });<br>
+                        seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); <span style="color:gray">// do a tween</span><br>
+                        seq.add( (object obj) =&gt; { <span style="color:gray">// fire event after tween</span><br>
+                         var dict = obj as Dictionary&lt;string,string&gt;;<br>
+                         Debug.Log(&quot;We are done now obj value:&quot;+dict[&quot;hi&quot;]);<br>
+                        }, new Dictionary&lt;string,string&gt;(){ {&quot;hi&quot;,&quot;sup&quot;} } );<br></p>
                         
                         </div>
                         
                             <div class="constructor">
                                 <h2>Constructor</h2>
-                                <div id="method_LTBezierPath" class="method item">
-                                    <h3 class="name"><code>LTBezierPath</code></h3>
+                                <div id="method_LTSeq" class="method item">
+                                    <h3 class="name"><code>LTSeq</code></h3>
                                 
-                                        <div class="args">
-                                            <span class="paren">(</span><ul class="args-list inline commas">
-                                                <li class="arg">
-                                                        <code>pts</code>
-                                                </li>
-                                            </ul><span class="paren">)</span>
-                                        </div>
+                                        <span class="paren">()</span>
                                 
                                 
                                 
@@ -167,7 +173,7 @@
                                     <div class="meta">
                                                 <p>
                                                 Defined in
-                                        <a href="../files/LeanTween.cs.html#l2511"><code>LeanTween.cs:2511</code></a>
+                                        <a href="../files/LTSeq.cs.html#l5"><code>LTSeq.cs:5</code></a>
                                         </p>
                                 
                                 
@@ -178,37 +184,8 @@
                                         
                                     </div>
                                 
-                                        <div class="params">
-                                            <h4>Parameters:</h4>
-                                
-                                            <ul class="params-list">
-                                                <li class="param">
-                                                        <code class="param-name">pts</code>
-                                                        <span class="type">Vector3 Array</span>
                                 
                                 
-                                                    <div class="param-description">
-                                                        <p>A set of points that define one or many bezier paths (the paths should be passed in multiples of 4, which correspond to each individual bezier curve)<br>
-                                It goes in the order: <strong>startPoint</strong>,endControl,startControl,<strong>endPoint</strong> - <strong>Note:</strong> the control for the end and start are reversed! This is just a <em>quirk</em> of the API.<br>
-                                <img src="http://dentedpixel.com/assets/LTBezierExplanation.gif" width="413" height="196" style="margin-top:10px" /></p>
-                                
-                                                    </div>
-                                
-                                                </li>
-                                            </ul>
-                                        </div>
-                                
-                                
-                                        <div class="example">
-                                            <h4>Example:</h4>
-                                
-                                            <div class="example-content">
-                                                <p>LTBezierPath ltPath = new LTBezierPath( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(1f,0f,0f), new Vector3(1f,0f,0f), new Vector3(1f,1f,0f)} );<br><br>
-                                LeanTween.move(lt, ltPath.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
-                                Vector3 pt = ltPath.point( 0.6f ); // retrieve a point along the path</p>
-                                
-                                            </div>
-                                        </div>
                                 </div>
                             </div>
                         
@@ -217,7 +194,6 @@
                                 <li class="api-class-tab index"><a href="#index">Index</a></li>
                         
                                     <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
-                                    <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
                             </ul>
                         
                             <div>
@@ -229,38 +205,24 @@
                         
                                             <ul class="index-list methods">
                                                     <li class="index-item method">
-                                                        <a href="#method_place">place</a>
+                                                        <a href="#method_add (delay)">add (delay)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_place">place</a>
+                                                        <a href="#method_add (method(object))">add (method(object))</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_placeLocal">placeLocal</a>
+                                                        <a href="#method_add (method)">add (method)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_placeLocal">placeLocal</a>
-                        
-                                                    </li>
-                                                    <li class="index-item method">
-                                                        <a href="#method_point">point</a>
+                                                        <a href="#method_add (tween)">add (tween)</a>
                         
                                                     </li>
                                             </ul>
                                         </div>
                         
-                                        <div class="index-section properties">
-                                            <h3>Properties</h3>
-                        
-                                            <ul class="index-list properties">
-                                                    <li class="index-item property">
-                                                        <a href="#property_distance distance of the path (in unity units)">distance distance of the path (in unity units)</a>
-                        
-                                                    </li>
-                                            </ul>
-                                        </div>
                         
                         
                                 </div>
@@ -268,347 +230,19 @@
                                     <div id="methods" class="api-class-tabpanel">
                                         <h2 class="off-left">Methods</h2>
                         
-                                            <div id="method_place" class="method item">
-                                                <h3 class="name"><code>place</code></h3>
+                                            <div id="method_add (delay)" class="method item">
+                                                <h3 class="name"><code>add (delay)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
                                                             <li class="arg">
-                                                                    <code>transform:Transform</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>ratio:float</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2610"><code>LeanTween.cs:2610</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Place an object along a certain point on the path (facing the direction perpendicular to the path)</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">transform:Transform</code>
-                                                                    <span class="type">Transform</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>the transform of the object you wish to place along the path</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">ratio:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>ratio of the point along the path you wish to receive (0-1)</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>ltPath.place( transform, 0.6f );</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_place" class="method item">
-                                                <h3 class="name"><code>place</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>transform:Transform</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>ratio:float</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>rotation:Vector3</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2624"><code>LeanTween.cs:2624</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">transform:Transform</code>
-                                                                    <span class="type">Transform</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>the transform of the object you wish to place along the path</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">ratio:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>ratio of the point along the path you wish to receive (0-1)</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">rotation:Vector3</code>
-                                                                    <span class="type">Vector3</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>the direction in which to place the transform ex: Vector3.up</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>ltPath.place( transform, 0.6f, Vector3.left );</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_placeLocal" class="method item">
-                                                <h3 class="name"><code>placeLocal</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>transform:Transform</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>ratio:float</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2642"><code>LeanTween.cs:2642</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Place an object along a certain point on the path (facing the direction perpendicular to the path) - Local Space, not world-space</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">transform:Transform</code>
-                                                                    <span class="type">Transform</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>the transform of the object you wish to place along the path</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">ratio:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>ratio of the point along the path you wish to receive (0-1)</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>ltPath.placeLocal( transform, 0.6f );</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_placeLocal" class="method item">
-                                                <h3 class="name"><code>placeLocal</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>transform:Transform</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>ratio:float</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>rotation:Vector3</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2655"><code>LeanTween.cs:2655</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path - Local Space, not world-space</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">transform:Transform</code>
-                                                                    <span class="type">Transform</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>the transform of the object you wish to place along the path</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">ratio:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>ratio of the point along the path you wish to receive (0-1)</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">rotation:Vector3</code>
-                                                                    <span class="type">Vector3</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>the direction in which to place the transform ex: Vector3.up</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>ltPath.placeLocal( transform, 0.6f, Vector3.left );</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_point" class="method item">
-                                                <h3 class="name"><code>point</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>ratio:float</code>
+                                                                    <code>delay:float</code>
                                                             </li>
                                                         </ul><span class="paren">)</span>
                                                     </div>
                                             
                                                     <span class="returns-inline">
-                                                        <span class="type">Vector3</span>
+                                                        <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>
                                                     </span>
                                             
                                             
@@ -620,7 +254,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2571"><code>LeanTween.cs:2571</code></a>
+                                                    <a href="../files/LTSeq.cs.html#l43"><code>LTSeq.cs:43</code></a>
                                                     </p>
                                             
                                             
@@ -628,7 +262,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Retrieve a point along a path</p>
+                                                    <p>Add a time delay to the sequence</p>
                                             
                                                 </div>
                                             
@@ -637,12 +271,12 @@
                                             
                                                         <ul class="params-list">
                                                             <li class="param">
-                                                                    <code class="param-name">ratio:float</code>
+                                                                    <code class="param-name">delay:float</code>
                                                                     <span class="type">Float</span>
                                             
                                             
                                                                 <div class="param-description">
-                                                                    <p>ratio of the point along the path you wish to receive (0-1)</p>
+                                                                    <p>amount of time to add to the sequence</p>
                                             
                                                                 </div>
                                             
@@ -654,29 +288,32 @@
                                                         <h4>Returns:</h4>
                                             
                                                         <div class="returns-description">
-                                                                    <span class="type">Vector3</span>:
-                                                                <p>Vector3 position of the point along the path</p>
+                                                                    <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween
+                                            var seq = LeanTween.sequence();<br>
+                                            seq.add(1f); // delay everything one second<br>
+                                            seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br></p>
                                             
                                                         </div>
                                                     </div>
                                             
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>transform.position = ltPath.point( 0.6f );</p>
-                                            
-                                                        </div>
-                                                    </div>
                                             </div>
-                                    </div>
-                        
-                                    <div id="properties" class="api-class-tabpanel">
-                                        <h2 class="off-left">Properties</h2>
-                        
-                                            <div id="property_distance distance of the path (in unity units)" class="property item">
-                                                <h3 class="name"><code>distance distance of the path (in unity units)</code></h3>
-                                                <span class="type">Float</span>
+                                            <div id="method_add (method(object))" class="method item">
+                                                <h3 class="name"><code>add (method(object))</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>callback:System.Action</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>
+                                                    </span>
+                                            
+                                            
                                             
                                             
                                             
@@ -685,20 +322,197 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2562"><code>LeanTween.cs:2562</code></a>
+                                                    <a href="../files/LTSeq.cs.html#l81"><code>LTSeq.cs:81</code></a>
                                                     </p>
+                                            
                                             
                                             
                                                 </div>
                                             
                                                 <div class="description">
-                                                    
+                                                    <p>Add a time delay to the sequence</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">callback:System.Action</code>
+                                                                    <span class="type">System.Action</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>method you want to be called</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
+                                                                <p>LTSeq an object that you can add tweens, methods and time on to</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>var seq = LeanTween.sequence();<br>
+                                            seq.add( () =&gt; { // fire an event before start<br>
+                                             Debug.Log(&quot;I have started&quot;);<br>
+                                            });<br>
+                                            seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
+                                            seq.add((object obj) =&gt; { // fire event after tween
+                                             var dict = obj as Dictionary&lt;string,string&gt;;
+                                             Debug.Log(&quot;We are done now obj value:&quot;+dict[&quot;hi&quot;]);
+                                             }, new Dictionary&lt;string,string&gt;(){ {&quot;hi&quot;,&quot;sup&quot;} } );</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_add (method)" class="method item">
+                                                <h3 class="name"><code>add (method)</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>callback:System.Action</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LTSeq.cs.html#l60"><code>LTSeq.cs:60</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Add a time delay to the sequence</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">callback:System.Action</code>
+                                                                    <span class="type">System.Action</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>method you want to be called</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
+                                                                <p>LTSeq an object that you can add tweens, methods and time on to</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>var seq = LeanTween.sequence();<br>
+                                            seq.add( () =&gt; { // fire an event before start<br>
+                                             Debug.Log(&quot;I have started&quot;);<br>
+                                            });<br>
+                                            seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
+                                            seq.add( () =&gt; { // fire event after tween<br>
+                                             Debug.Log(&quot;We are done now&quot;);<br>
+                                            });;<br></p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_add (tween)" class="method item">
+                                                <h3 class="name"><code>add (tween)</code></h3>
+                                            
+                                                    <span class="paren">()</span>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LTSeq.cs.html#l115"><code>LTSeq.cs:115</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Retrieve a sequencer object where you can easily chain together tweens and methods one after another</p>
+                                            
                                                 </div>
                                             
                                             
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
                                             
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
+                                                                <p>LTSeq an object that you can add tweens, methods and time on to</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>var seq = LeanTween.sequence();<br>
+                                            seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a move tween<br>
+                                            seq.add( LeanTween.rotateAround( avatar1, Vector3.forward, 360f, 1f ) ); // then do a rotate tween<br></p>
+                                            
+                                                        </div>
+                                                    </div>
                                             </div>
                                     </div>
+                        
                         
                         
                             </div>

@@ -1,6 +1,6 @@
 //namespace DentedPixel{
 
-// LeanTween version 2.44 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.45 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
@@ -935,6 +935,22 @@ public class LeanTween : MonoBehaviour {
 		return lt;
 	}
 
+	/**
+	* Retrieve a sequencer object where you can easily chain together tweens and methods one after another
+	* 
+	* @method LeanTween.sequence
+	* @return {LTSeq} LTSeq an object that you can add tweens, methods and time on to
+	* @example
+	* var seq = LeanTween.sequence();<br>
+	* seq.add(1f); // delay everything one second<br>
+	* seq.add( () => { // fire an event before start<br>
+	* &nbsp;Debug.Log("I have started");<br>
+	* });<br>
+	* seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
+	* seq.add( () => { // fire event after tween<br>
+	* &nbsp;Debug.Log("We are done now");<br>
+	* });;<br>
+	*/
 	public static LTSeq sequence(){
 		return new LTSeq();
 	}

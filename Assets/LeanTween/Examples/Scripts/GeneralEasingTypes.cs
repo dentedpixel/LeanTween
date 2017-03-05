@@ -51,9 +51,11 @@ public class GeneralEasingTypes : MonoBehaviour {
 				theMethod.Invoke(lt, null);
 			}
 
-            if(easeName.IndexOf("EasePunch")>=0){
+			if (easeName.IndexOf("EasePunch") >= 0) {
 				lt.setScale(1f);
-            }
+			} else if (easeName.IndexOf("EaseOutBounce") >= 0) {
+//				lt.setOvershoot(2f);
+			}
 		}
 
 		LeanTween.delayedCall(gameObject, 10f, resetLines);

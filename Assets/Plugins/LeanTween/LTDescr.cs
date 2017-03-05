@@ -1550,20 +1550,21 @@ public class LTDescr
 
 	private Vector3 easeOutBounce(){
 		val = ratioPassed;
+
 		if (val < (1 / 2.75f)){
 			val = (7.5625f * val * val);
 			return this.diff * val + this.from;
 		}else if (val < (2 / 2.75f)){
 			val -= (1.5f / 2.75f);
-			val = (7.5625f * (val) * val + .75f);
+			val = (7.5625f * val * val + .75f);
 			return this.diff * val + this.from;
 		}else if (val < (2.5 / 2.75)){
 			val -= (2.25f / 2.75f);
-			val = (7.5625f * (val) * val + .9375f);
+			val = (7.5625f * val * val + .9375f);
 			return this.diff * val + this.from;
 		}else{
 			val -= (2.625f / 2.75f);
-			val = 7.5625f * (val) * val + .984375f;
+			val = 7.5625f * val * val + .984375f;
 			return this.diff * val + this.from;
 		}
 	}
