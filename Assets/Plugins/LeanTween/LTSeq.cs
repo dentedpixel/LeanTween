@@ -21,23 +21,29 @@ using UnityEngine;
 */
 public class LTSeq {
 
-	public LTSeq last;
-
-	public LTSeq next;
+	public LTSeq previous;
 
 	public LTDescr tween;
 
 	public float totalDelay;
 
+	public float timeScale;
+
 	public void reset(){
-		last = null;
+		previous = null;
 		tween = null;
 		totalDelay = 0f;
 	}
 
+	private LTSeq addOn(){
+		var newSeq = new LTSeq();
+		newSeq.previous = this;
+		return newSeq;
+	}
+
 	private void addPreviousDelays(){
-		if (last != null)
-			totalDelay += last.totalDelay;
+		if (previous != null)
+			totalDelay += previous.totalDelay;
 	}
 
 	/**
@@ -54,7 +60,7 @@ public class LTSeq {
 		
 		totalDelay += delay;
 
-		return this;
+		return addOn();
 	}
 
 	/**
@@ -75,7 +81,7 @@ public class LTSeq {
 	public LTSeq add( System.Action callback ){
 		add(LeanTween.delayedCall(0f, callback));
 
-		return this;
+		return addOn();
 	}
 
 	/**
@@ -97,19 +103,19 @@ public class LTSeq {
 	public LTSeq add( System.Action<object> callback, object obj ){
 		add(LeanTween.delayedCall(0f, callback).setOnCompleteParam(obj));
 
-		return this;
+		return addOn();
 	}
 
 	public LTSeq add( GameObject gameObject, System.Action callback ){
 		add(LeanTween.delayedCall(gameObject, 0f, callback));
 
-		return this;
+		return addOn();
 	}
 
 	public LTSeq add( GameObject gameObject, System.Action<object> callback, object obj ){
 		add(LeanTween.delayedCall(gameObject, 0f, callback).setOnCompleteParam(obj));
 
-		return this;
+		return addOn();
 	}
 
 	/**
@@ -131,16 +137,37 @@ public class LTSeq {
 		tween.setDelay( delay );
 
 		totalDelay = delay + tween.time;
-		return this;
+		return addOn();
 	}
 
 	public LTSeq addFrame( int frameCount ){
 
-		return this;
+		return addOn();
 	}
 
 	public LTSeq subtract( float delay ){
 
-		return this;
+		return addOn();
+	}
+
+	public LTSeq setScale( float timeScale ){
+		
+		setScaleRecursive(this, timeScale);
+
+		return addOn();
+	}
+
+	private void setScaleRecursive( LTSeq seq, float timeScale ){
+		this.timeScale = timeScale;
+
+		Debug.Log("seq.tween:" + seq.tween.type + " seq.totalDelay:" + seq.totalDelay+" seq.previous:"+seq.previous);
+		seq.totalDelay *= timeScale;
+		if (seq.tween != null) {
+			seq.tween.setTime(seq.tween.time * timeScale);
+			seq.tween.setDelay(seq.totalDelay);
+		}
+
+		if(seq.previous!=null)
+			setScaleRecursive(seq.previous, timeScale);
 	}
 }

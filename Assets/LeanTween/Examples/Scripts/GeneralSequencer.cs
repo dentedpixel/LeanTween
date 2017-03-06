@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GeneralSequences : MonoBehaviour {
+public class GeneralSequencer : MonoBehaviour {
 
 	public GameObject avatar1;
 
 	public GameObject dustCloudPrefab;
+
+	public float speedScale = 1f;
 
 	public void Start(){
 
@@ -36,5 +38,7 @@ public class GeneralSequences : MonoBehaviour {
 				LeanTween.alpha(cloud,0f,3f).setEaseOutCirc().setDestroyOnComplete(true);
 			}
 		});
+
+		seq.setScale(speedScale);
 	}
 }
