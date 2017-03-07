@@ -952,7 +952,10 @@ public class LeanTween : MonoBehaviour {
 	* });;<br>
 	*/
 	public static LTSeq sequence(){
-		return new LTSeq();
+		LTSeq seq = new LTSeq();
+		seq.current = seq;
+		seq.first = seq;
+		return seq;
 	}
 
 	/**

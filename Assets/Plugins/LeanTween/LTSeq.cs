@@ -23,11 +23,17 @@ public class LTSeq {
 
 	public LTSeq previous;
 
+	public LTSeq current;
+
+	public LTSeq first;
+
 	public LTDescr tween;
 
 	public float totalDelay;
 
 	public float timeScale;
+
+	public int count;
 
 	public void reset(){
 		previous = null;
@@ -36,14 +42,18 @@ public class LTSeq {
 	}
 
 	private LTSeq addOn(){
-		var newSeq = new LTSeq();
-		newSeq.previous = this;
-		return newSeq;
+		LTSeq lastCurrent = first.current;
+		first.current = new LTSeq();
+		first.current.previous = lastCurrent;
+		first.current.totalDelay = lastCurrent.totalDelay;
+		first.current.count = lastCurrent.count + 1;
+		return current;
 	}
 
-	private void addPreviousDelays(){
-		if (previous != null)
-			totalDelay += previous.totalDelay;
+	private void addPreviousDelays( float delay ){
+//		Debug.Log("delay:"+delay+" count:"+this.current.count+" this.current.totalDelay:"+this.current.totalDelay);
+
+		this.current.totalDelay += delay;
 	}
 
 	/**
@@ -56,9 +66,7 @@ public class LTSeq {
 	* seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
 	*/
 	public LTSeq add( float delay ){
-		addPreviousDelays();
-		
-		totalDelay += delay;
+		addPreviousDelays(delay);
 
 		return addOn();
 	}
@@ -79,7 +87,9 @@ public class LTSeq {
 	* });;<br>
 	*/
 	public LTSeq add( System.Action callback ){
-		add(LeanTween.delayedCall(0f, callback));
+		LTDescr newTween = LeanTween.delayedCall(0f, callback);
+//		Debug.Log("newTween:" + newTween);
+		add(newTween);
 
 		return addOn();
 	}
@@ -129,14 +139,14 @@ public class LTSeq {
 	* seq.add( LeanTween.rotateAround( avatar1, Vector3.forward, 360f, 1f ) ); // then do a rotate tween<br>
 	*/
 	public LTSeq add( LTDescr tween ){
-		this.tween = tween;
+		this.current.tween = tween;
 
-		addPreviousDelays();
+//		Debug.Log("tween:" + tween + " delay:" + this.current.totalDelay);
 
-		float delay = tween.delay + totalDelay;
-		tween.setDelay( delay );
+		tween.setDelay( this.current.totalDelay );
 
-		totalDelay = delay + tween.time;
+		addPreviousDelays(tween.time);
+
 		return addOn();
 	}
 
@@ -151,8 +161,8 @@ public class LTSeq {
 	}
 
 	public LTSeq setScale( float timeScale ){
-		
-		setScaleRecursive(this, timeScale);
+//		Debug.Log("this.first.current:" + this.first.current.previous.count+" tween:"+this.first.current.previous.tween);
+		setScaleRecursive(this.first.current, timeScale);
 
 		return addOn();
 	}
@@ -160,11 +170,13 @@ public class LTSeq {
 	private void setScaleRecursive( LTSeq seq, float timeScale ){
 		this.timeScale = timeScale;
 
-		Debug.Log("seq.tween:" + seq.tween.type + " seq.totalDelay:" + seq.totalDelay+" seq.previous:"+seq.previous);
+//		Debug.Log("seq.count:" + seq.count + " seq.tween:" + seq.tween);
 		seq.totalDelay *= timeScale;
 		if (seq.tween != null) {
-			seq.tween.setTime(seq.tween.time * timeScale);
-			seq.tween.setDelay(seq.totalDelay);
+//			Debug.Log("seq.tween.time * timeScale:" + seq.tween.time * timeScale + " seq.totalDelay:"+seq.totalDelay +" time:"+seq.tween.time+" seq.tween.delay:"+seq.tween.delay);
+			if(seq.tween.time!=0f)
+				seq.tween.setTime(seq.tween.time * timeScale);
+			seq.tween.setDelay(seq.tween.delay * timeScale);
 		}
 
 		if(seq.previous!=null)
