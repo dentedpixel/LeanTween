@@ -25,8 +25,6 @@ public class LTSeq {
 
 	public LTSeq current;
 
-	public LTSeq first;
-
 	public LTDescr tween;
 
 	public float totalDelay;
@@ -42,11 +40,11 @@ public class LTSeq {
 	}
 
 	private LTSeq addOn(){
-		LTSeq lastCurrent = first.current;
-		first.current = new LTSeq();
-		first.current.previous = lastCurrent;
-		first.current.totalDelay = lastCurrent.totalDelay;
-		first.current.count = lastCurrent.count + 1;
+		LTSeq lastCurrent = this.current;
+		this.current = new LTSeq();
+		this.current.previous = lastCurrent;
+		this.current.totalDelay = lastCurrent.totalDelay;
+		this.current.count = lastCurrent.count + 1;
 		return current;
 	}
 
@@ -161,8 +159,8 @@ public class LTSeq {
 	}
 
 	public LTSeq setScale( float timeScale ){
-//		Debug.Log("this.first.current:" + this.first.current.previous.count+" tween:"+this.first.current.previous.tween);
-		setScaleRecursive(this.first.current, timeScale);
+//		Debug.Log("this.current:" + this.current.previous.count+" tween:"+this.current.previous.tween);
+		setScaleRecursive(this.current, timeScale);
 
 		return addOn();
 	}
