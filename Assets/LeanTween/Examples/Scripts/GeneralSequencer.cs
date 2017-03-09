@@ -15,16 +15,16 @@ public class GeneralSequencer : MonoBehaviour {
 		// Jump up
 		var seq = LeanTween.sequence();
 
-		seq.add( LeanTween.moveY( avatar1, avatar1.transform.localPosition.y + 6f, 1f).setEaseOutQuad() );
+		seq.append( LeanTween.moveY( avatar1, avatar1.transform.localPosition.y + 6f, 1f).setEaseOutQuad() );
 
 		// Rotate 360
-		seq.add( LeanTween.rotateAround( avatar1, Vector3.forward, 360f, 0.6f ).setEaseInBack() );
+		seq.append( LeanTween.rotateAround( avatar1, Vector3.forward, 360f, 0.6f ).setEaseInBack() );
 
 		// Return to ground
-		seq.add( LeanTween.moveY( avatar1, avatar1.transform.localPosition.y, 1f).setEaseInQuad() );
+		seq.append( LeanTween.moveY( avatar1, avatar1.transform.localPosition.y, 1f).setEaseInQuad() );
 
 		// Kick off spiraling clouds
-		seq.add(() => {
+		seq.append(() => {
 			for(int i = 0; i < 50f; i++){
 				GameObject cloud = Instantiate(dustCloudPrefab, avatar1.transform) as GameObject;
 				cloud.transform.localPosition = new Vector3(Random.Range(-2f,2f),0f,0f);
