@@ -155,7 +155,7 @@ public class LTSeq {
 	public LTSeq insert( LTDescr tween ){
 		this.current.tween = tween;
 
-		tween.setDelay( this.current.totalDelay - this.current.tween.time );
+		tween.setDelay( this.current.totalDelay );
 
 		return addOn();
 	}

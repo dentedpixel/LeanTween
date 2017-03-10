@@ -1548,25 +1548,26 @@ public class LTDescr
 			this.diff.z - LeanTween.easeOutBounce(0, this.diff.z, val) + this.from.z);
 	}
 
-	private Vector3 easeOutBounce(){
+	private Vector3 easeOutBounce ()
+	{
 		val = ratioPassed;
-
-		if (val < (1 / 2.75f)){
-			val = (7.5625f * val * val);
-			return this.diff * val + this.from;
-		}else if (val < (2 / 2.75f)){
-			val -= (1.5f / 2.75f);
-			val = (7.5625f * val * val + .75f);
-			return this.diff * val + this.from;
-		}else if (val < (2.5 / 2.75)){
-			val -= (2.25f / 2.75f);
-			val = (7.5625f * val * val + .9375f);
-			return this.diff * val + this.from;
-		}else{
-			val -= (2.625f / 2.75f);
-			val = 7.5625f * val * val + .984375f;
-			return this.diff * val + this.from;
+		float valM, valN; // bounce values
+		if (val < (valM = 1 - 1.75f * this.overshoot / 2.75f)) {
+			val = 1 / valM / valM * val * val;
+		} else if (val < (valN = 1 - .75f * this.overshoot / 2.75f)) {
+			val -= (valM + valN) / 2;
+			// first bounce, height: 1/4
+			val = 7.5625f * val * val + 1 - .25f * this.overshoot * this.overshoot;
+		} else if (val < (valM = 1 - .25f * this.overshoot / 2.75f)) {
+			val -= (valM + valN) / 2;
+			// second bounce, height: 1/16
+			val = 7.5625f * val * val + 1 - .0625f * this.overshoot * this.overshoot;
+		} else { // valN = 1
+			val -= (valM + 1) / 2;
+			// third bounce, height: 1/64
+			val = 7.5625f * val * val + 1 - .015625f * this.overshoot * this.overshoot;
 		}
+		return this.diff * val + this.from;
 	}
 
 	private Vector3 easeInOutBounce(){

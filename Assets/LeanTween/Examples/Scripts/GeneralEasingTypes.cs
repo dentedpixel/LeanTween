@@ -54,7 +54,7 @@ public class GeneralEasingTypes : MonoBehaviour {
 			if (easeName.IndexOf("EasePunch") >= 0) {
 				lt.setScale(1f);
 			} else if (easeName.IndexOf("EaseOutBounce") >= 0) {
-//				lt.setOvershoot(2f);
+				lt.setOvershoot(2f);
 			}
 		}
 
