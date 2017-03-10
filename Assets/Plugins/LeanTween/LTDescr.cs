@@ -1725,6 +1725,7 @@ public class LTDescr
 		this.from = from;
 		// this.hasInitiliazed = true; // this is set, so that the "from" value isn't overwritten later on when the tween starts
 		this.diff = this.to - this.from;
+		this.diffDiv2 = this.diff * 0.5f;
 		return this;
 	}
 
