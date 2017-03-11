@@ -48,14 +48,15 @@ public class LTSeq {
 		return current;
 	}
 
-	private void addPreviousDelays(){
+	private float addPreviousDelays(){
 //		Debug.Log("delay:"+delay+" count:"+this.current.count+" this.current.totalDelay:"+this.current.totalDelay);
 
 		LTSeq prev = this.current.previous;
 
 		if (prev != null && prev.tween!=null) {
-			this.current.totalDelay += prev.tween.time;
+            return this.current.totalDelay + prev.tween.time;
 		}
+        return this.current.totalDelay;
 	}
 
 	/**
@@ -68,7 +69,7 @@ public class LTSeq {
 	* seq.append( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
 	*/
 	public LTSeq append( float delay ){
-		addPreviousDelays();
+        this.current.totalDelay = addPreviousDelays();
 
 		return addOn();
 	}
@@ -145,7 +146,7 @@ public class LTSeq {
 
 //		Debug.Log("tween:" + tween + " delay:" + this.current.totalDelay);
 
-		addPreviousDelays();
+        this.current.totalDelay = addPreviousDelays();
 
 		tween.setDelay( this.current.totalDelay );
 
@@ -155,7 +156,7 @@ public class LTSeq {
 	public LTSeq insert( LTDescr tween ){
 		this.current.tween = tween;
 
-		tween.setDelay( this.current.totalDelay );
+        tween.setDelay( addPreviousDelays() );
 
 		return addOn();
 	}
