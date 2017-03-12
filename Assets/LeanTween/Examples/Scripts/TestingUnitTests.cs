@@ -38,7 +38,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 56;
+			LeanTest.expected = 57;
 
 			LeanTween.init(15 + 1200);
 
@@ -216,6 +216,31 @@ namespace DentedPixel.LTExamples{
 			LeanTween.delayedSound(gameObject, audioClip, new Vector3(0f,0f,0f), 0.1f).setDelay(0.2f).setOnComplete( ()=>{
 				LeanTest.expect(Time.time>0,"DELAYED SOUND");
 			});
+
+			// Easing Methods
+			int totalEasingCheck = 0;
+			int totalEasingCheckSuccess = 0;
+			for (int j = 0; j < 2; j++) {
+				bool isCheckingFrom = j == 1;
+				int totalTweenTypeLength = (int)LeanTweenType.easeShake;
+				for (int i = (int)LeanTweenType.notUsed; i < totalTweenTypeLength; i++) {
+					LeanTweenType easeType = (LeanTweenType)i;
+					GameObject cube = cubeNamed("cube" + easeType);
+					LTDescr descr = LeanTween.moveLocalX(cube, 5, 0.1f).setOnComplete((object obj) => {
+						GameObject cubeIn = obj as GameObject;
+						totalEasingCheck++;
+						if (cube.transform.position.x == 5f) {
+							totalEasingCheckSuccess++;
+						}
+						if(totalEasingCheck==(2*totalTweenTypeLength)){
+							LeanTest.expect(totalEasingCheck==totalEasingCheckSuccess,"EASING TYPES");
+						}
+					}).setOnCompleteParam(cube);
+
+					if (isCheckingFrom)
+						descr.setFrom(-5f);
+				}
+			}
 
 			// value2
 			bool value2UpdateCalled = false;
