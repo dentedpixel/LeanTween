@@ -1509,12 +1509,9 @@ public class LTDescr
 
 	private Vector3 easeInOutExpo(){
 		val = this.ratioPassed * 2f;
-		val = Mathf.Pow(2f, 10f * (val - 1f));
-		if (val < 1f)
-			return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+		if (val < 1) return this.diffDiv2 * Mathf.Pow(2, 10 * (val - 1)) + this.from;
 		val--;
-		val = (-Mathf.Pow(2f, -10f * val) + 2f);
-		return new Vector3(this.diffDiv2.x * val + this.from.x, this.diffDiv2.y * val + this.from.y, this.diffDiv2.z * val + this.from.z);
+		return this.diffDiv2 * (-Mathf.Pow(2, -10 * val) + 2) + this.from;
 	}
 
 	private Vector3 easeInCirc(){
