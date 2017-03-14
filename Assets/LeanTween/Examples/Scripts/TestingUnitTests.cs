@@ -229,7 +229,7 @@ namespace DentedPixel.LTExamples{
 					LTDescr descr = LeanTween.moveLocalX(cube, 5, 0.1f).setOnComplete((object obj) => {
 						GameObject cubeIn = obj as GameObject;
 						totalEasingCheck++;
-						if (cube.transform.position.x == 5f) {
+						if (cubeIn.transform.position.x == 5f) {
 							totalEasingCheckSuccess++;
 						}
 						if(totalEasingCheck==(2*totalTweenTypeLength)){

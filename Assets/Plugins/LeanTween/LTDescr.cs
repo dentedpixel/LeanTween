@@ -1748,6 +1748,22 @@ public class LTDescr
 	}
 
 	/**
+	* Set the point of time the tween will start in
+	* @method setPassed
+	* @param {float} passedTime:float the length of time in seconds the tween will start in
+	* @return {LTDescr} LTDescr an object that distinguishes the tween
+	* @example
+	* int tweenId = LeanTween.moveX(gameObject, 5f, 2.0f ).id;<br>
+	* // Later<br>
+	* LTDescr descr = description( tweenId );<br>
+	* descr.setPassed( 1f );<br>
+	*/
+	public LTDescr setPassed( float passed ){
+		this.passed = passed;
+		return this;
+	}
+
+	/**
 	* Set the finish time of the tween
 	* @method setTime
 	* @param {float} finishTime:float the length of time in seconds you wish the tween to complete in
