@@ -144,12 +144,12 @@
                         <br>
                           <h4>Example:</h4>
                         var seq = LeanTween.sequence();<br>
-                        seq.add(1f); <span style="color:gray">// delay everything one second</span><br>
-                        seq.add( () =&gt; { <span style="color:gray">// fire an event before start</span><br>
+                        seq.append(1f); <span style="color:gray">// delay everything one second</span><br>
+                        seq.append( () =&gt; { <span style="color:gray">// fire an event before start</span><br>
                          Debug.Log(&quot;I have started&quot;);<br>
                         });<br>
-                        seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); <span style="color:gray">// do a tween</span><br>
-                        seq.add( (object obj) =&gt; { <span style="color:gray">// fire event after tween</span><br>
+                        seq.append( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); <span style="color:gray">// do a tween</span><br>
+                        seq.append( (object obj) =&gt; { <span style="color:gray">// fire event after tween</span><br>
                          var dict = obj as Dictionary&lt;string,string&gt;;<br>
                          Debug.Log(&quot;We are done now obj value:&quot;+dict[&quot;hi&quot;]);<br>
                         }, new Dictionary&lt;string,string&gt;(){ {&quot;hi&quot;,&quot;sup&quot;} } );<br></p>
@@ -205,19 +205,19 @@
                         
                                             <ul class="index-list methods">
                                                     <li class="index-item method">
-                                                        <a href="#method_add (delay)">add (delay)</a>
-                        
-                                                    </li>
-                                                    <li class="index-item method">
                                                         <a href="#method_add (method(object))">add (method(object))</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_add (method)">add (method)</a>
+                                                        <a href="#method_add (tween)">add (tween)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_add (tween)">add (tween)</a>
+                                                        <a href="#method_append (delay)">append (delay)</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
+                                                        <a href="#method_append (method)">append (method)</a>
                         
                                                     </li>
                                             </ul>
@@ -230,8 +230,141 @@
                                     <div id="methods" class="api-class-tabpanel">
                                         <h2 class="off-left">Methods</h2>
                         
-                                            <div id="method_add (delay)" class="method item">
-                                                <h3 class="name"><code>add (delay)</code></h3>
+                                            <div id="method_add (method(object))" class="method item">
+                                                <h3 class="name"><code>add (method(object))</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>callback:System.Action</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LTSeq.cs.html#l100"><code>LTSeq.cs:100</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Add a time delay to the sequence</p>
+                                            
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">callback:System.Action</code>
+                                                                    <span class="type">System.Action</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>method you want to be called</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
+                                                                <p>LTSeq an object that you can add tweens, methods and time on to</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>var seq = LeanTween.sequence();<br>
+                                            seq.append( () =&gt; { // fire an event before start<br>
+                                             Debug.Log(&quot;I have started&quot;);<br>
+                                            });<br>
+                                            seq.append( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
+                                            seq.append((object obj) =&gt; { // fire event after tween
+                                             var dict = obj as Dictionary&lt;string,string&gt;;
+                                             Debug.Log(&quot;We are done now obj value:&quot;+dict[&quot;hi&quot;]);
+                                             }, new Dictionary&lt;string,string&gt;(){ {&quot;hi&quot;,&quot;sup&quot;} } );</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_add (tween)" class="method item">
+                                                <h3 class="name"><code>add (tween)</code></h3>
+                                            
+                                                    <span class="paren">()</span>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LTSeq.cs.html#l134"><code>LTSeq.cs:134</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <p>Retrieve a sequencer object where you can easily chain together tweens and methods one after another</p>
+                                            
+                                                </div>
+                                            
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
+                                                                <p>LTSeq an object that you can add tweens, methods and time on to</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>var seq = LeanTween.sequence();<br>
+                                            seq.append( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a move tween<br>
+                                            seq.append( LeanTween.rotateAround( avatar1, Vector3.forward, 360f, 1f ) ); // then do a rotate tween<br></p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_append (delay)" class="method item">
+                                                <h3 class="name"><code>append (delay)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -254,7 +387,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTSeq.cs.html#l43"><code>LTSeq.cs:43</code></a>
+                                                    <a href="../files/LTSeq.cs.html#l62"><code>LTSeq.cs:62</code></a>
                                                     </p>
                                             
                                             
@@ -291,15 +424,15 @@
                                                                     <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
                                                                 <p>LTDescr an object that distinguishes the tween
                                             var seq = LeanTween.sequence();<br>
-                                            seq.add(1f); // delay everything one second<br>
-                                            seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br></p>
+                                            seq.append(1f); // delay everything one second<br>
+                                            seq.append( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br></p>
                                             
                                                         </div>
                                                     </div>
                                             
                                             </div>
-                                            <div id="method_add (method(object))" class="method item">
-                                                <h3 class="name"><code>add (method(object))</code></h3>
+                                            <div id="method_append (method)" class="method item">
+                                                <h3 class="name"><code>append (method)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -322,7 +455,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LTSeq.cs.html#l81"><code>LTSeq.cs:81</code></a>
+                                                    <a href="../files/LTSeq.cs.html#l77"><code>LTSeq.cs:77</code></a>
                                                     </p>
                                             
                                             
@@ -367,146 +500,13 @@
                                             
                                                         <div class="example-content">
                                                             <p>var seq = LeanTween.sequence();<br>
-                                            seq.add( () =&gt; { // fire an event before start<br>
+                                            seq.append( () =&gt; { // fire an event before start<br>
                                              Debug.Log(&quot;I have started&quot;);<br>
                                             });<br>
-                                            seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
-                                            seq.add((object obj) =&gt; { // fire event after tween
-                                             var dict = obj as Dictionary&lt;string,string&gt;;
-                                             Debug.Log(&quot;We are done now obj value:&quot;+dict[&quot;hi&quot;]);
-                                             }, new Dictionary&lt;string,string&gt;(){ {&quot;hi&quot;,&quot;sup&quot;} } );</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_add (method)" class="method item">
-                                                <h3 class="name"><code>add (method)</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>callback:System.Action</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LTSeq.cs.html#l60"><code>LTSeq.cs:60</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Add a time delay to the sequence</p>
-                                            
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">callback:System.Action</code>
-                                                                    <span class="type">System.Action</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>method you want to be called</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
-                                                                <p>LTSeq an object that you can add tweens, methods and time on to</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>var seq = LeanTween.sequence();<br>
-                                            seq.add( () =&gt; { // fire an event before start<br>
-                                             Debug.Log(&quot;I have started&quot;);<br>
-                                            });<br>
-                                            seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
-                                            seq.add( () =&gt; { // fire event after tween<br>
+                                            seq.append( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
+                                            seq.append( () =&gt; { // fire event after tween<br>
                                              Debug.Log(&quot;We are done now&quot;);<br>
                                             });;<br></p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_add (tween)" class="method item">
-                                                <h3 class="name"><code>add (tween)</code></h3>
-                                            
-                                                    <span class="paren">()</span>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LTSeq.cs.html#l115"><code>LTSeq.cs:115</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <p>Retrieve a sequencer object where you can easily chain together tweens and methods one after another</p>
-                                            
-                                                </div>
-                                            
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTSeq.html" class="crosslink">LTSeq</a></span>:
-                                                                <p>LTSeq an object that you can add tweens, methods and time on to</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>var seq = LeanTween.sequence();<br>
-                                            seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a move tween<br>
-                                            seq.add( LeanTween.rotateAround( avatar1, Vector3.forward, 360f, 1f ) ); // then do a rotate tween<br></p>
                                             
                                                         </div>
                                                     </div>

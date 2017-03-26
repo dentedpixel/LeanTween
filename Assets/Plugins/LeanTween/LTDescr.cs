@@ -91,8 +91,6 @@ public class LTDescr
 
 	public LTDescrOptional _optional = new LTDescrOptional();
 
-	private static uint global_counter = 0;
-
 	public override string ToString(){
 		return (trans!=null ? "name:"+trans.gameObject.name : "gameObject:null")+" toggle:"+toggle+" passed:"+passed+" time:"+time+" delay:"+delay+" direction:"+direction+" from:"+from+" to:"+to+" diff:"+diff+" type:"+type+" ease:"+easeType+" useEstimatedTime:"+useEstimatedTime+" id:"+id+" hasInitiliazed:"+hasInitiliazed;
 	}
@@ -154,9 +152,7 @@ public class LTDescr
 		this.from = this.to = Vector3.zero;
 		this._optional.reset();
 
-		global_counter++;
-		if(global_counter>0x8000)
-			global_counter = 0;
+
 	}
 
 	// Initialize and Internal Methods
@@ -1740,7 +1736,7 @@ public class LTDescr
 		return this;
 	}
 
-	public LTDescr setId( uint id ){
+	public LTDescr setId( uint id, uint global_counter ){
 		this._id = id;
 		this.counter = global_counter;
 		// Debug.Log("Global counter:"+global_counter);

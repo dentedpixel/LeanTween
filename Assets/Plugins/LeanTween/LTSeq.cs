@@ -31,7 +31,27 @@ public class LTSeq {
 
 	public float timeScale;
 
-	public int count;
+	private int debugIter;
+
+	public uint counter;
+
+	public bool toggle = false;
+
+	private uint _id;
+
+	public int id{
+		get{ 
+			uint toId = _id | counter << 16;
+
+			/*uint backId = toId & 0xFFFF;
+			uint backCounter = toId >> 16;
+			if(_id!=backId || backCounter!=counter){
+				Debug.LogError("BAD CONVERSION toId:"+_id);
+			}*/
+
+			return (int)toId;
+		}
+	}
 
 	public void reset(){
 		previous = null;
@@ -39,12 +59,23 @@ public class LTSeq {
 		totalDelay = 0f;
 	}
 
+	public void init(uint id, uint global_counter){
+		reset();
+		_id = id;
+
+		counter = global_counter;
+
+		this.current = this;
+	}
+
 	private LTSeq addOn(){
+		this.current.toggle = true;
 		LTSeq lastCurrent = this.current;
-		this.current = new LTSeq();
+		this.current = LeanTween.sequence(false);
 		this.current.previous = lastCurrent;
+		lastCurrent.toggle = false;
 		this.current.totalDelay = lastCurrent.totalDelay;
-		this.current.count = lastCurrent.count + 1;
+		this.current.debugIter = lastCurrent.debugIter + 1;
 		return current;
 	}
 
@@ -69,9 +100,9 @@ public class LTSeq {
 	* seq.append( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br>
 	*/
 	public LTSeq append( float delay ){
-        this.current.totalDelay = addPreviousDelays();
+        this.current.totalDelay += delay;
 
-		return addOn();
+		return this.current;
 	}
 
 	/**
@@ -163,25 +194,28 @@ public class LTSeq {
 
 
 	public LTSeq setScale( float timeScale ){
-//		Debug.Log("this.current:" + this.current.previous.count+" tween:"+this.current.previous.tween);
-		setScaleRecursive(this.current, timeScale);
+//		Debug.Log("this.current:" + this.current.previous.debugIter+" tween:"+this.current.previous.tween);
+		setScaleRecursive(this.current, timeScale, 500);
 
 		return addOn();
 	}
 
-	private void setScaleRecursive( LTSeq seq, float timeScale ){
-		this.timeScale = timeScale;
+	private void setScaleRecursive( LTSeq seq, float timeScale, int count ){
+		if (count > 0) {
+			this.timeScale = timeScale;
 
-//		Debug.Log("seq.count:" + seq.count + " seq.tween:" + seq.tween);
-		seq.totalDelay *= timeScale;
-		if (seq.tween != null) {
+//			Debug.Log("seq.count:" + count + " seq.tween:" + seq.tween);
+			seq.totalDelay *= timeScale;
+			if (seq.tween != null) {
 //			Debug.Log("seq.tween.time * timeScale:" + seq.tween.time * timeScale + " seq.totalDelay:"+seq.totalDelay +" time:"+seq.tween.time+" seq.tween.delay:"+seq.tween.delay);
-			if(seq.tween.time!=0f)
-				seq.tween.setTime(seq.tween.time * timeScale);
-			seq.tween.setDelay(seq.tween.delay * timeScale);
-		}
+				if (seq.tween.time != 0f)
+					seq.tween.setTime(seq.tween.time * timeScale);
+				seq.tween.setDelay(seq.tween.delay * timeScale);
+			}
 
-		if(seq.previous!=null)
-			setScaleRecursive(seq.previous, timeScale);
+			if (seq.previous != null)
+				setScaleRecursive(seq.previous, timeScale, count - 1);
+		}
 	}
+
 }

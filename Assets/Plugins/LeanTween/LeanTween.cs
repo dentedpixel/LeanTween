@@ -231,11 +231,14 @@ public class LeanTween : MonoBehaviour {
 	public static float tau = Mathf.PI*2.0f; 
 	public static float PI_DIV2 = Mathf.PI / 2.0f; 
 
+	private static LTSeq[] sequences;
+
 	private static LTDescr[] tweens;
 	private static int[] tweensFinished;
 	private static LTDescr tween;
 	private static int tweenMaxSearch = -1;
 	private static int maxTweens = 400;
+	private static int maxSequences = 400;
 	private static int frameRendered= -1;
 	private static GameObject _tweenEmpty;
 	public static float dtEstimated = -1f;
@@ -244,6 +247,7 @@ public class LeanTween : MonoBehaviour {
 	private static float previousRealTime;
 	#endif
 	public static float dtActual;
+	private static uint global_counter = 0;
 	private static int i;
 	private static int j;
 	private static int finishedCnt;
@@ -293,7 +297,11 @@ public class LeanTween : MonoBehaviour {
 	* @example
 	*   LeanTween.init( 800 );
 	*/
-	public static void init(int maxSimultaneousTweens){
+	public static void init(int maxSimultaneousTweens ){
+		init(maxSimultaneousTweens, maxSequences);
+	}
+		
+	public static void init(int maxSimultaneousTweens, int maxSimultaneousSequences){
 		if(tweens==null){
 			maxTweens = maxSimultaneousTweens;
 			tweens = new LTDescr[maxTweens];
@@ -318,6 +326,12 @@ public class LeanTween : MonoBehaviour {
 			#if UNITY_5_4_OR_NEWER
 			UnityEngine.SceneManagement.SceneManager.sceneLoaded += onLevelWasLoaded54;
 			#endif
+
+			sequences = new LTSeq[ maxSimultaneousSequences ]; 
+
+			for(int i = 0; i < maxSimultaneousSequences; i++){
+				sequences[i] = new LTSeq();
+			}
 		}
 	}
 
@@ -564,11 +578,26 @@ public class LeanTween : MonoBehaviour {
 			init();
 			int backId = uniqueId & 0xFFFF;
 			int backCounter = uniqueId >> 16;
-			// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
-			if(tweens[backId].counter==backCounter){
-				if(callOnComplete && tweens[backId].optional.onComplete != null)
-					tweens[backId].optional.onComplete();
-				removeTween((int)backId);
+			if (backId > tweens.Length - 1) { // sequence
+				int sequenceId = backId - tweens.Length;
+				LTSeq seq = sequences[sequenceId];
+				for (int i = 0; i < maxSequences; i++) {
+					if (seq.current.tween != null) {
+						int tweenId = seq.current.tween.uniqueId;
+						int tweenIndex = tweenId & 0xFFFF;
+						removeTween(tweenIndex);
+					}
+					if (seq.previous == null)
+						break;
+					seq.current = seq.previous;
+				}
+			} else { // tween
+				// Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
+				if (tweens[backId].counter == backCounter) {
+					if (callOnComplete && tweens[backId].optional.onComplete != null)
+						tweens[backId].optional.onComplete();
+					removeTween((int)backId);
+				}
 			}
 		}
 	}
@@ -868,10 +897,16 @@ public class LeanTween : MonoBehaviour {
 
 		// Debug.Log("new tween with i:"+i+" counter:"+tweens[i].counter+" tweenMaxSearch:"+tweenMaxSearch+" tween:"+tweens[i]);
 		tweens[i].reset();
-		tweens[i].setId( (uint)i );
+
+		global_counter++;
+		if(global_counter>0x8000)
+			global_counter = 0;
+		
+		tweens[i].setId( (uint)i, global_counter );
 
 		return tweens[i];
 	}
+
 
 	public static GameObject tweenEmpty{
 		get{
@@ -951,11 +986,32 @@ public class LeanTween : MonoBehaviour {
 	* &nbsp;Debug.Log("We are done now");<br>
 	* });;<br>
 	*/
-	public static LTSeq sequence(){
-		LTSeq seq = new LTSeq();
-		seq.current = seq;
-		return seq;
+	public static LTSeq sequence( bool initSequence = true){
+		init(maxTweens);
+		// Loop through and find available sequence
+		for (int i = 0; i < sequences.Length; i++) {
+//			Debug.Log("i:" + i + " sequences[i]:" + sequences[i]);
+			if (sequences[i].tween==null || sequences[i].tween.toggle == false) {
+				if (sequences[i].toggle == false) {
+					LTSeq seq = sequences[i];
+					if (initSequence) {
+						seq.init((uint)(i + tweens.Length), global_counter);
+
+						global_counter++;
+						if (global_counter > 0x8000)
+							global_counter = 0;
+					} else {
+						seq.reset();
+					}
+				
+					return seq;
+				}
+			}
+		}
+
+		return null;
 	}
+
 
 	/**
 	* Fade a GUI Object

@@ -29,7 +29,7 @@ public class GeneralSequencer : MonoBehaviour {
 		// Return to ground
 		seq.append( LeanTween.moveY( avatar1, avatar1.transform.localPosition.y, 1f).setEaseInQuad() );
 
-		// Kick off spiraling clouds
+		// Kick off spiraling clouds - Example of appending a callback method
 		seq.append(() => {
 			for(int i = 0; i < 50f; i++){
 				GameObject cloud = Instantiate(dustCloudPrefab, avatar1.transform) as GameObject;
@@ -45,6 +45,7 @@ public class GeneralSequencer : MonoBehaviour {
 			}
 		});
 
+		// You can speed up or slow down the sequence of events
 		seq.setScale(speedScale);
 	}
 }
