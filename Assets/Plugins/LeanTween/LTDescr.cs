@@ -151,6 +151,8 @@ public class LTDescr
 		this.easeMethod = this.easeLinear;
 		this.from = this.to = Vector3.zero;
 		this._optional.reset();
+		this.from = Vector3.zero;
+		this.to = Vector3.zero;
 
 
 	}
