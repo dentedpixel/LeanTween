@@ -2422,6 +2422,14 @@ public class LeanTween : MonoBehaviour {
 		return removeListener( tweenEmpty, eventId, callback);
 	}
 
+	public static bool removeListener( int eventId ){
+		int point = eventId*INIT_LISTENERS_MAX + i;
+		eventListeners[ point ] = null;
+		goListeners[ point ] = null;
+		return true;
+	}
+
+
 	/**
 	* Remove an event listener you have added
 	* @method LeanTween.removeListener
@@ -2659,9 +2667,9 @@ public class LTBezierPath {
 		transform.localPosition = point( ratio );
 		ratio += 0.001f;
 		if(ratio<=1.0f){
-			Vector3 v3Dir = transform.parent.TransformPoint( point( ratio ) ) - transform.localPosition;
+			Vector3 v3Dir = point( ratio ) - transform.localPosition;
 			float angle = Mathf.Atan2(v3Dir.y, v3Dir.x) * Mathf.Rad2Deg;
-			transform.eulerAngles = new Vector3(0, 0, angle);
+			transform.localEulerAngles = new Vector3(0, 0, angle);
 		}
 	}
 
