@@ -37,15 +37,17 @@ public class GeneralSequencer : MonoBehaviour {
 				cloud.transform.eulerAngles = new Vector3(0f,0f,Random.Range(0,360f));
 
 				var range = new Vector3(cloud.transform.localPosition.x, Random.Range(2f,4f), Random.Range(-10f,10f));
-				LeanTween.moveLocal( cloud, range, 3f*speedScale).setEaseOutCirc();
 
+				// Tweens not in a sequence, because we want them all to animate at the same time
+				LeanTween.moveLocal(cloud, range, 3f*speedScale).setEaseOutCirc();
 				LeanTween.rotateAround(cloud, Vector3.forward, 360f*2, 3f*speedScale).setEaseOutCirc();
-
-				LeanTween.alpha(cloud,0f,3f*speedScale).setEaseOutCirc().setDestroyOnComplete(true);
+				LeanTween.alpha(cloud, 0f, 3f*speedScale).setEaseOutCirc().setDestroyOnComplete(true);
 			}
 		});
 
 		// You can speed up or slow down the sequence of events
 		seq.setScale(speedScale);
+
+		// seq.reverse();
 	}
 }

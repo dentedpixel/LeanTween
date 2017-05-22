@@ -218,4 +218,9 @@ public class LTSeq {
 		}
 	}
 
+	public LTSeq reverse(){
+
+		return addOn();
+	}
+
 }
