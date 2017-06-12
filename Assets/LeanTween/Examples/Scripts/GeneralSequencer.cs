@@ -32,7 +32,8 @@ public class GeneralSequencer : MonoBehaviour {
 		// Kick off spiraling clouds - Example of appending a callback method
 		seq.append(() => {
 			for(int i = 0; i < 50f; i++){
-				GameObject cloud = Instantiate(dustCloudPrefab, avatar1.transform) as GameObject;
+				GameObject cloud = Instantiate(dustCloudPrefab) as GameObject;
+				cloud.transform.parent = avatar1.transform;
 				cloud.transform.localPosition = new Vector3(Random.Range(-2f,2f),0f,0f);
 				cloud.transform.eulerAngles = new Vector3(0f,0f,Random.Range(0,360f));
 
