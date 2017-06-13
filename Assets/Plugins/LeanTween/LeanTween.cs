@@ -235,6 +235,7 @@ public class LeanTween : MonoBehaviour {
 
 	private static LTDescr[] tweens;
 	private static int[] tweensFinished;
+	private static int[] tweensFinishedIds;
 	private static LTDescr tween;
 	private static int tweenMaxSearch = -1;
 	private static int maxTweens = 400;
@@ -306,6 +307,7 @@ public class LeanTween : MonoBehaviour {
 			maxTweens = maxSimultaneousTweens;
 			tweens = new LTDescr[maxTweens];
 			tweensFinished = new int[maxTweens];
+			tweensFinishedIds = new int[maxTweens];
 			_tweenEmpty = new GameObject();
 			_tweenEmpty.name = "~LeanTween";
 			_tweenEmpty.AddComponent(typeof(LeanTween));
@@ -393,6 +395,7 @@ public class LeanTween : MonoBehaviour {
 
 					if (tween.updateInternal()) { // returns true if the tween is finished with it's loop
 						tweensFinished[finishedCnt] = i;
+						tweensFinishedIds[finishedCnt] = tweens[i].id;
 						finishedCnt++;
 					}
 				}
@@ -405,10 +408,13 @@ public class LeanTween : MonoBehaviour {
 			for(int i = 0; i < finishedCnt; i++){
 				j = tweensFinished[i];
 				tween = tweens[ j ];
-				//				Debug.Log("removing tween:"+tween);
-				removeTween(j);
-				if(tween.hasExtraOnCompletes && tween.trans!=null)
-					tween.callOnCompletes();
+
+				if (tween.id == tweensFinishedIds[i]){
+					//				Debug.Log("removing tween:"+tween);
+					removeTween(j);
+					if(tween.hasExtraOnCompletes && tween.trans!=null)
+						tween.callOnCompletes();
+				}
 			}
 
 		}
