@@ -14,11 +14,13 @@ public class PathBezier2d : MonoBehaviour {
 	void Start () {
 		// move 
 		Vector3[] path = new Vector3[]{cubes[0].position,cubes[1].position,cubes[2].position,cubes[3].position};
+		// 90 degree test
+		// path = new Vector3[] {new Vector3(7.5f, 0f, 0f), new Vector3(0f, 0f, 2.5f), new Vector3(2.5f, 0f, 0f), new Vector3(0f, 0f, 7.5f)};
 		visualizePath = new LTBezierPath(path);
-		LeanTween.move(dude1, path, 10f).setOrientToPath2d(true);
+		LeanTween.move(dude1, path, 10f).setOrientToPath(true);
 
 		// move local
-		LeanTween.moveLocal(dude2, path, 10f).setOrientToPath2d(true);
+		LeanTween.moveLocal(dude2, path, 10f).setOrientToPath(true).setEaseLinear(;
 	}
 
 	void OnDrawGizmos(){

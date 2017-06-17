@@ -962,7 +962,10 @@ public class LTDescr
 			dt = dt*directionLocal;
 			this.passed += dt;
 
-			this.ratioPassed = Mathf.Clamp01(this.passed / this.time); // need to clamp when finished so it will finish at the exact spot and not overshoot
+			if (this.passed > this.time)
+				this.passed = this.time;
+
+			this.ratioPassed = (this.passed / this.time); // need to clamp when finished so it will finish at the exact spot and not overshoot
 
 			this.easeInternal();
 
