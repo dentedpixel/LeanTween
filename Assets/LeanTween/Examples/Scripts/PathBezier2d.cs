@@ -20,7 +20,7 @@ public class PathBezier2d : MonoBehaviour {
 		LeanTween.move(dude1, path, 10f).setOrientToPath(true);
 
 		// move local
-		LeanTween.moveLocal(dude2, path, 10f).setOrientToPath(true).setEaseLinear(;
+		LeanTween.moveLocal(dude2, path, 10f).setOrientToPath(true);
 	}
 
 	void OnDrawGizmos(){
