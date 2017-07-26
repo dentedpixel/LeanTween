@@ -19,7 +19,8 @@ public class Testing243 : MonoBehaviour {
 	void Start () {
 //		LeanTween.alpha (imageRectTransform, 0, 0.3f).setLoopPingPong (-1);
 
-		LeanTween.move (cube1, new Vector3(10f,10f,10f), 10f).setLoopPingPong (-1).setPassed(5f);
+		// LeanTween.move (cube1, new Vector3(10f,10f,10f), 10f).setLoopPingPong (-1).setPassed(5f);
+		LeanTween.moveLocal(cube1, cube1.transform.localPosition+new Vector3(0f,1f,0f),1f).setEaseShake();
 	} 
 	
 	// Update is called once per frame
