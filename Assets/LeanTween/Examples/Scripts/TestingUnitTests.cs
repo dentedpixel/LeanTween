@@ -38,7 +38,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 57;
+			LeanTest.expected = 56;
 
 			LeanTween.init(15 + 1200);
 
@@ -250,6 +250,10 @@ namespace DentedPixel.LTExamples{
 			LeanTween.delayedCall(0.2f, ()=>{
 				LeanTest.expect( value2UpdateCalled, "VALUE2 UPDATE");
 			} );
+
+			// check descr
+//			LTDescr descr2 = LeanTween.descr( descrId );
+//			LeanTest.expect(descr2 == null,"DESCRIPTION STARTS AS NULL");
 			
 			StartCoroutine( timeBasedTesting() );
 		}

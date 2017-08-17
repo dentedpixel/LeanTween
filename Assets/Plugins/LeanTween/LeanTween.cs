@@ -432,6 +432,7 @@ public class LeanTween : MonoBehaviour {
 	public static void removeTween( int i ){
 		if(tweens[i].toggle){
 			tweens[i].toggle = false;
+			tweens[i].counter = uint.MaxValue;
 			//logError("Removing tween["+i+"]:"+tweens[i]);
 			if(tweens[i].destroyOnComplete){
 				//Debug.Log("destroying tween.type:"+tween.type);
@@ -620,14 +621,20 @@ public class LeanTween : MonoBehaviour {
 	* &nbsp;&nbsp;descr.setOnComplete( newMethod );<br>
 	*/
 	public static LTDescr descr( int uniqueId ){
+		init();
+
 		int backId = uniqueId & 0xFFFF;
 		int backCounter = uniqueId >> 16;
 
-		if(tweens[backId]!=null && tweens[backId].uniqueId == uniqueId && tweens[backId].counter==backCounter)
+//		Debug.Log("backId:" + backId+" backCounter:"+backCounter);
+		if (tweens[backId] != null && tweens[backId].uniqueId == uniqueId && tweens[backId].counter == backCounter) {
+			// Debug.Log("tween count:" + tweens[backId].counter);
 			return tweens[backId];
+		}
 		for(int i = 0; i <= tweenMaxSearch; i++){
-			if(tweens[i].uniqueId == uniqueId && tweens[i].counter==backCounter)
+			if (tweens[i].uniqueId == uniqueId && tweens[i].counter == backCounter) {
 				return tweens[i];
+			}
 		}
 		return null;
 	}

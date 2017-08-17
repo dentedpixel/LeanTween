@@ -51,7 +51,7 @@ public class LTDescr
 	public float lastVal;
 	private uint _id;
 	public int loopCount;
-	public uint counter;
+	public uint counter = uint.MaxValue;
 	public float direction;
 	public float directionLast;
 	public float overshoot;

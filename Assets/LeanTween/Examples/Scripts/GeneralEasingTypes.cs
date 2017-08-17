@@ -31,7 +31,7 @@ public class GeneralEasingTypes : MonoBehaviour {
 	private void demoEaseTypes(){
 		for(int i = 0; i < easeTypes.Length; i++){
 			string easeName = easeTypes[i];
-			Transform obj1 = GameObject.Find(easeName).transform.FindChild("Line");
+			Transform obj1 = GameObject.Find(easeName).transform.Find("Line");
 			float obj1val = 0f;
 			LTDescr lt = LeanTween.value( obj1.gameObject, 0f, 1f, 5f).setOnUpdate( (float val)=>{
 				Vector3 vec = obj1.localPosition;
@@ -64,7 +64,7 @@ public class GeneralEasingTypes : MonoBehaviour {
 
 	private void resetLines(){
 		for(int i = 0; i < easeTypes.Length; i++){
-			Transform obj1 = GameObject.Find(easeTypes[i]).transform.FindChild("Line");
+			Transform obj1 = GameObject.Find(easeTypes[i]).transform.Find("Line");
 			obj1.localPosition = new Vector3(0f,0f,0f);
 		}
 	}
