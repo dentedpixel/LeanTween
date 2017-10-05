@@ -38,7 +38,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 58;
+			LeanTest.expected = 59;
 
 			LeanTween.init(15 + 1200);
 
@@ -316,6 +316,21 @@ namespace DentedPixel.LTExamples{
 				LeanTest.expect(cubeSeq.transform.position.x==100f,"SEQ MOVE X FINISHED","move x:"+cubeSeq.transform.position.x);
 				LeanTest.expect(cubeSeq.transform.localScale.x==2f,"SEQ SCALE X FINISHED","scale x:"+cubeSeq.transform.localScale.x);
 			}).setScale(0.2f);
+
+			// Bounds check
+			GameObject cubeBounds = cubeNamed("cBounds");
+			bool didPassBounds = true;
+			Vector3 failPoint = Vector3.zero;
+			LeanTween.move(cubeBounds, new Vector3(10,10,10), 0.1f).setOnUpdate((float val) => {
+//				Debug.LogWarning("cubeBounds x:"+cubeBounds.transform.position.x + " y:"+ cubeBounds.transform.position.y+" z:"+cubeBounds.transform.position.z);
+				if(cubeBounds.transform.position.x<0f || cubeBounds.transform.position.x>10f || cubeBounds.transform.position.y<0f || cubeBounds.transform.position.y>10f || cubeBounds.transform.position.z<0f || cubeBounds.transform.position.z>10f){
+					didPassBounds = false;
+					failPoint = cubeBounds.transform.position;
+//					Debug.LogError("OUT OF BOUNDS");
+				}
+			}).setLoopPingPong().setRepeat(8).setOnComplete(()=>{
+				LeanTest.expect(didPassBounds,"OUT OF BOUNDS","pos x:"+failPoint.x + " y:"+ failPoint.y+" z:"+failPoint.z);
+			});
 
 			
 			// Groups of tweens testing
