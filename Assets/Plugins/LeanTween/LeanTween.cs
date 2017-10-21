@@ -218,8 +218,8 @@ public enum LeanTweenType{
 * int id = LeanTween.moveX(gameObject, 1f, 1f).id;<br />
 * <a href="LTDescr.html">LTDescr</a> d = LeanTween.<a href="#method_LeanTween.descr">descr</a>( id );<br /><br />
 * if(d!=null){ <span style="color:gray">// if the tween has already finished it will return null</span><br />
-* <span style="color:gray">&nbsp;&nbsp; // change some parameters</span><br />
-* &nbsp;&nbsp; d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br />
+* <span style="color:gray">&#160;&#160; // change some parameters</span><br />
+* &#160;&#160; d.setOnComplete( onCompleteFunc ).setEase( <a href="LeanTweenType.html">LeanTweenType</a>.easeInOutBack );<br />
 * }
 *
 * @class LeanTween
@@ -618,7 +618,7 @@ public class LeanTween : MonoBehaviour {
     * <div style="color:gray">// later I want decide I want to change onComplete method </div>
     * LTDescr descr = LeanTween.descr( id );<br />
     * if(descr!=null) <span style="color:gray">// if the tween has already finished it will come back null</span><br />
-    * &nbsp;&nbsp;descr.setOnComplete( newMethod );<br />
+    * &#160;&#160;descr.setOnComplete( newMethod );<br />
     */
     public static LTDescr descr( int uniqueId ){
         init();
@@ -652,7 +652,7 @@ public class LeanTween : MonoBehaviour {
     * <div style="color:gray">// later I want decide I want to change onComplete method </div>
     * LTDescr[] descr = LeanTween.descriptions( gameObject );<br />
     * if(descr.Length>0) <span style="color:gray">// make sure there is a valid description for this target</span><br />
-    * &nbsp;&nbsp;descr[0].setOnComplete( newMethod );<span style="color:gray">// in this case we only ever expect there to be one tween on this object</span><br />
+    * &#160;&#160;descr[0].setOnComplete( newMethod );<span style="color:gray">// in this case we only ever expect there to be one tween on this object</span><br />
     */
     public static LTDescr[] descriptions(GameObject gameObject = null) {
         if (gameObject == null) return null;
@@ -801,7 +801,7 @@ public class LeanTween : MonoBehaviour {
     * @example
     * int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br />
     * if(LeanTween.isTweening( id ))<br />
-    * &nbsp;&nbsp; &nbsp;&nbsp;Debug.Log("I am tweening!");<br />
+    * &#160;&#160; &#160;&#160;Debug.Log("I am tweening!");<br />
     */  
     public static bool isTweening( int uniqueId ){
         int backId = uniqueId & 0xFFFF;
@@ -993,11 +993,11 @@ public class LeanTween : MonoBehaviour {
     * var seq = LeanTween.sequence();<br />
     * seq.add(1f); // delay everything one second<br />
     * seq.add( () => { // fire an event before start<br />
-    * &nbsp;Debug.Log("I have started");<br />
+    * &#160;Debug.Log("I have started");<br />
     * });<br />
     * seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br />
     * seq.add( () => { // fire event after tween<br />
-    * &nbsp;Debug.Log("We are done now");<br />
+    * &#160;Debug.Log("We are done now");<br />
     * });;<br />
     */
     public static LTSeq sequence( bool initSequence = true){
@@ -1568,14 +1568,14 @@ public class LeanTween : MonoBehaviour {
     * var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br />
     * LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 ).setEase(LeanTweenType.easeOutBounce);<br />
     * function OnGUI(){<br />
-    * &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br />
+    * &#160; if(GUI.Button(bRect.rect, "Scale")){ }<br />
     * }<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br />
     * LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f ).setEase(LeanTweenType.easeOutBounce);<br />
     * void OnGUI(){<br />
-    * &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br />
+    * &#160; if(GUI.Button(bRect.rect, "Scale")){ }<br />
     * }<br />
     */
     public static LTDescr scale(LTRect ltRect, Vector2 to, float time){
@@ -1622,7 +1622,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value (float) <summary>Tween any particular value</summary>
+    * Tween any particular value (float) <summary>Tween any particular value (float)</summary>
     * 
     * @method LeanTween.value (float)
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -1633,12 +1633,12 @@ public class LeanTween : MonoBehaviour {
     * @example
     * <i>Example Javascript: </i><br />
     * LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( function( val:float ){ <br />
-    * &nbsp;Debug.Log("tweened val:"+val);<br />
+    * &#160;Debug.Log("tweened val:"+val);<br />
     * } );<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( (float val)=>{ <br />
-    * &nbsp;Debug.Log("tweened val:"+val);<br />
+    * &#160;Debug.Log("tweened val:"+val);<br />
     * } );<br />
     */
     public static LTDescr value(GameObject gameObject, float from, float to, float time){
@@ -1660,12 +1660,12 @@ public class LeanTween : MonoBehaviour {
     * @example
     * <i>Example Javascript: </i><br />
     * LeanTween.value( gameObject, new Vector2(1f,0f), new Vector3(5f,0f), 5f).setOnUpdate( function( val:Vector2 ){ <br />
-    * &nbsp;Debug.Log("tweened val:"+val);<br />
+    * &#160;Debug.Log("tweened val:"+val);<br />
     * } );<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LeanTween.value( gameObject, new Vector3(1f,0f), new Vector3(5f,0f), 5f).setOnUpdate( (Vector2 val)=>{ <br />
-    * &nbsp;Debug.Log("tweened val:"+val);<br />
+    * &#160;Debug.Log("tweened val:"+val);<br />
     * } );<br />
     */
     public static LTDescr value(GameObject gameObject, Vector2 from, Vector2 to, float time){
@@ -1684,12 +1684,12 @@ public class LeanTween : MonoBehaviour {
     * @example
     * <i>Example Javascript: </i><br />
     * LeanTween.value( gameObject, new Vector3(1f,0f,0f), new Vector3(5f,0f,0f), 5f).setOnUpdate( function( val:Vector3 ){ <br />
-    * &nbsp;Debug.Log("tweened val:"+val);<br />
+    * &#160;Debug.Log("tweened val:"+val);<br />
     * } );<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LeanTween.value( gameObject, new Vector3(1f,0f,0f), new Vector3(5f,0f,0f), 5f).setOnUpdate( (Vector3 val)=>{ <br />
-    * &nbsp;Debug.Log("tweened val:"+val);<br />
+    * &#160;Debug.Log("tweened val:"+val);<br />
     * } );<br />
     */
     public static LTDescr value(GameObject gameObject, Vector3 from, Vector3 to, float time){
@@ -1708,12 +1708,12 @@ public class LeanTween : MonoBehaviour {
     * @example
     * <i>Example Javascript: </i><br />
     * LeanTween.value( gameObject, Color.red, Color.yellow, 5f).setOnUpdate( function( val:Color ){ <br />
-    * &nbsp;Debug.Log("tweened val:"+val);<br />
+    * &#160;Debug.Log("tweened val:"+val);<br />
     * } );<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LeanTween.value( gameObject, Color.red, Color.yellow, 5f).setOnUpdate( (Color val)=>{ <br />
-    * &nbsp;Debug.Log("tweened val:"+val);<br />
+    * &#160;Debug.Log("tweened val:"+val);<br />
     * } );<br />
     */
     public static LTDescr value(GameObject gameObject, Color from, Color to, float time){
@@ -1741,13 +1741,13 @@ public class LeanTween : MonoBehaviour {
     * <i>Example Javascript: </i><br />
     * LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br />
     * function updateValueExampleCallback( val:float ){<br />
-    * &nbsp; Debug.Log("tweened value:"+val+" set this to whatever variable you are tweening...");<br />
+    * &#160; Debug.Log("tweened value:"+val+" set this to whatever variable you are tweening...");<br />
     * }<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br />
     * void updateValueExampleCallback( float val ){<br />
-    * &nbsp; Debug.Log("tweened value:"+val+" set this to whatever variable you are tweening...");<br />
+    * &#160; Debug.Log("tweened value:"+val+" set this to whatever variable you are tweening...");<br />
     * }<br />
     */
 
@@ -1769,13 +1769,13 @@ public class LeanTween : MonoBehaviour {
     * <i>Example Javascript: </i><br />
     * LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br />
     * function updateValueExampleCallback( val:float, ratio:float ){<br />
-    * &nbsp; Debug.Log("tweened value:"+val+" percent complete:"+ratio*100);<br />
+    * &#160; Debug.Log("tweened value:"+val+" percent complete:"+ratio*100);<br />
     * }<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LeanTween.value( gameObject, updateValueExampleCallback, 180f, 270f, 1f).setEase(LeanTweenType.easeOutElastic);<br />
     * void updateValueExampleCallback( float val, float ratio ){<br />
-    * &nbsp; Debug.Log("tweened value:"+val+" percent complete:"+ratio*100);<br />
+    * &#160; Debug.Log("tweened value:"+val+" percent complete:"+ratio*100);<br />
     * }<br />
     */
 
@@ -1797,13 +1797,13 @@ public class LeanTween : MonoBehaviour {
     * <i>Example Javascript: </i><br />
     * LeanTween.value( gameObject, updateValueExampleCallback, Color.red, Color.green, 1f).setEase(LeanTweenType.easeOutElastic);<br />
     * function updateValueExampleCallback( val:Color ){<br />
-    * &nbsp; Debug.Log("tweened color:"+val+" set this to whatever variable you are tweening...");<br />
+    * &#160; Debug.Log("tweened color:"+val+" set this to whatever variable you are tweening...");<br />
     * }<br />
     * <br />
     * <i>Example C#: </i> <br />
     * LeanTween.value( gameObject, updateValueExampleCallback, Color.red, Color.green, 1f).setEase(LeanTweenType.easeOutElastic);<br />
     * void updateValueExampleCallback( Color val ){<br />
-    * &nbsp; Debug.Log("tweened color:"+val+" set this to whatever variable you are tweening...");<br />
+    * &#160; Debug.Log("tweened color:"+val+" set this to whatever variable you are tweening...");<br />
     * }<br />
     */
 
@@ -2492,7 +2492,7 @@ public class LeanTween : MonoBehaviour {
     * LeanTween.dispatchEvent( (int)MyEvents.JUMP, transform );<br />
     * <br />
     * void jumpUp( LTEvent e ){<br />
-    * &nbsp; Transform tran = (Transform)e.data;<br />
+    * &#160; Transform tran = (Transform)e.data;<br />
     * }<br />
     */
     public static void dispatchEvent( int eventId, object data ){
@@ -3214,14 +3214,14 @@ public class LTSpline {
 * <strong>Example Javascript: </strong><br />var bRect:LTRect = new LTRect( 0, 0, 100, 50 );<br />
 * LeanTween.scale( bRect, Vector2(bRect.rect.width, bRect.rect.height) * 1.3, 0.25 );<br />
 * function OnGUI(){<br />
-* &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br />
+* &#160; if(GUI.Button(bRect.rect, "Scale")){ }<br />
 * }<br />
 * <br />
 * <strong>Example C#: </strong> <br />
 * LTRect bRect = new LTRect( 0f, 0f, 100f, 50f );<br />
 * LeanTween.scale( bRect, new Vector2(150f,75f), 0.25f );<br />
 * void OnGUI(){<br />
-* &nbsp; if(GUI.Button(bRect.rect, "Scale")){ }<br />
+* &#160; if(GUI.Button(bRect.rect, "Scale")){ }<br />
 * }<br />
 *
 * @class LTRect
