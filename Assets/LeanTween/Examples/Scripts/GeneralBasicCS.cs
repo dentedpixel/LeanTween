@@ -30,6 +30,7 @@ public class GeneralBasicCS : MonoBehaviour {
 	
 		// Call methods after a certain time period
 		LeanTween.delayedCall(gameObject, 0.2f, advancedExamples);
+
 	}
 
 	// Advanced Examples

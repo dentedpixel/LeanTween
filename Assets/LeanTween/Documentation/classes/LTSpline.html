@@ -29,7 +29,7 @@
                 <h1><a href="http://dentedpixel.com/developer-diary/leantween-speed-comparison-to-itween/"><img src="http://s3.amazonaws.com/dentedpixel.com/LeanTween/leantween-logo.png" title=""></a></h1> <div style="position:absolute; left:146px; top:90px;">- Developed by <a href="http://www.dentedpixel.com">Dented Pixel</a></div>
         </div>
         <div class="yui3-u-1-4 version">
-            <em style="margin-top:2px">API Docs for: LeanTween 2.45</em><br>
+            <em style="margin-top:2px">API Docs for: LeanTween 2.46</em><br>
             <table id="support">
                 <tr>
                 <td>
@@ -132,7 +132,7 @@
                         
                         
                                 <div class="foundat">
-                                    Defined in: <a href="../files/LeanTween.cs.html#l2768"><code>LeanTween.cs:2768</code></a>
+                                    Defined in: <a href="../files/LeanTween.cs.html#l2774"><code>LeanTween.cs:2774</code></a>
                                 </div>
                         
                         
@@ -140,7 +140,7 @@
                         
                         
                         <div class="box intro">
-                            <p>Animate along a set of points that need to be in the format: controlPoint, point1, point2.... pointLast, endControlPoint</p>
+                            <p>Animate along a set of points that need to be in the format: controlPoint, point1, point2.... pointLast, endControlPoint <summary>Move a GameObject to a certain location</summary></p>
                         
                         </div>
                         
@@ -167,7 +167,7 @@
                                     <div class="meta">
                                                 <p>
                                                 Defined in
-                                        <a href="../files/LeanTween.cs.html#l2768"><code>LeanTween.cs:2768</code></a>
+                                        <a href="../files/LeanTween.cs.html#l2774"><code>LeanTween.cs:2774</code></a>
                                         </p>
                                 
                                 
@@ -188,7 +188,7 @@
                                 
                                 
                                                     <div class="param-description">
-                                                        <p>A set of points that define the points the path will pass through (starting with starting control point, and ending with a control point)<br>
+                                                        <p>A set of points that define the points the path will pass through (starting with starting control point, and ending with a control point)<br />
                                 <i><strong>Note:</strong> The first and last item just define the angle of the end points, they are not actually used in the spline path itself. If you do not care about the angle you can jus set the first two items and last two items as the same value.</i></p>
                                 
                                                     </div>
@@ -202,8 +202,8 @@
                                             <h4>Example:</h4>
                                 
                                             <div class="example-content">
-                                                <p>LTSpline ltSpline = new LTSpline( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(0f,0f,0f), new Vector3(0f,0.5f,0f), new Vector3(1f,1f,0f), new Vector3(1f,1f,0f)} );<br><br>
-                                LeanTween.moveSpline(lt, ltSpline.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br>
+                                                <p>LTSpline ltSpline = new LTSpline( new Vector3[] { new Vector3(0f,0f,0f),new Vector3(0f,0f,0f), new Vector3(0f,0.5f,0f), new Vector3(1f,1f,0f), new Vector3(1f,1f,0f)} );<br /><br />
+                                LeanTween.moveSpline(lt, ltSpline.vec3, 4.0f).setOrientToPath(true).setDelay(1f).setEase(LeanTweenType.easeInOutQuad); // animate <br />
                                 Vector3 pt = ltSpline.point( 0.6f ); // retrieve a point along the path</p>
                                 
                                             </div>
@@ -295,7 +295,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2986"><code>LeanTween.cs:2986</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2992"><code>LeanTween.cs:2992</code></a>
                                                     </p>
                                             
                                             
@@ -303,7 +303,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Place an object along a certain point on the path (facing the direction perpendicular to the path)</p>
+                                                    <p>Place an object along a certain point on the path (facing the direction perpendicular to the path) <summary>Move a GameObject to a certain location</summary></p>
                                             
                                                 </div>
                                             
@@ -373,7 +373,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2999"><code>LeanTween.cs:2999</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3005"><code>LeanTween.cs:3005</code></a>
                                                     </p>
                                             
                                             
@@ -381,7 +381,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path</p>
+                                                    <p>Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path <summary>Move a GameObject to a certain location</summary></p>
                                             
                                                 </div>
                                             
@@ -459,7 +459,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3018"><code>LeanTween.cs:3018</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3024"><code>LeanTween.cs:3024</code></a>
                                                     </p>
                                             
                                             
@@ -467,7 +467,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Place an object along a certain point on the path (facing the direction perpendicular to the path) - Local Space, not world-space</p>
+                                                    <p>Place an object along a certain point on the path (facing the direction perpendicular to the path) - Local Space, not world-space <summary>Move a GameObject to a certain location</summary></p>
                                             
                                                 </div>
                                             
@@ -537,7 +537,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l3031"><code>LeanTween.cs:3031</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3037"><code>LeanTween.cs:3037</code></a>
                                                     </p>
                                             
                                             
@@ -545,7 +545,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path - Local Space, not world-space</p>
+                                                    <p>Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path - Local Space, not world-space <summary>Move a GameObject to a certain location</summary></p>
                                             
                                                 </div>
                                             
@@ -623,7 +623,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2945"><code>LeanTween.cs:2945</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2951"><code>LeanTween.cs:2951</code></a>
                                                     </p>
                                             
                                             
@@ -631,7 +631,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Retrieve a point along a path</p>
+                                                    <p>Retrieve a point along a path <summary>Move a GameObject to a certain location</summary></p>
                                             
                                                 </div>
                                             
@@ -696,7 +696,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2921"><code>LeanTween.cs:2921</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2927"><code>LeanTween.cs:2927</code></a>
                                                     </p>
                                             
                                             
@@ -704,7 +704,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <p>Retrieve a point along a path</p>
+                                                    <p>Retrieve a point along a path <summary>Move a GameObject to a certain location</summary></p>
                                             
                                                 </div>
                                             
@@ -761,7 +761,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2784"><code>LeanTween.cs:2784</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2790"><code>LeanTween.cs:2790</code></a>
                                                     </p>
                                             
                                             

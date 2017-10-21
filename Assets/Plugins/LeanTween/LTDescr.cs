@@ -59,7 +59,6 @@ public class LTDescr
     public float scale;
 	public bool destroyOnComplete;
 	public Transform trans;
-	public LTRect ltRect;
 	internal Vector3 fromInternal;
 	public Vector3 from { get { return this.fromInternal; } set { this.fromInternal = value; } }
 	internal Vector3 toInternal;
