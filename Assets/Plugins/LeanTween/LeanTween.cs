@@ -573,7 +573,7 @@ public class LeanTween : MonoBehaviour {
     * 
     * @method LeanTween.cancel
     * @param {int} id:int unique id that represents that tween
-    * @param {bool} callOnComplete:int (optional) whether to call the onComplete method before canceling
+    * @param {bool} callOnComplete:bool (optional) whether to call the onComplete method before canceling
     * @example int id = LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f).id; <br />
     * LeanTween.cancel( id );
     */
