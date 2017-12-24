@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using DentedPixel;
 
-public class GeneralBasics2dCS : MonoBehaviour {
+public class GeneralBasics2d : MonoBehaviour {
 
 	public Texture2D dudeTexture;
 	public GameObject prefabParticles;

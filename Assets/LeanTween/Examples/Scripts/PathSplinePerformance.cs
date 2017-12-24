@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using DentedPixel;
 // This class is to test the upper limits of a complex spline
 
-public class PathSplinePerformanceCS : MonoBehaviour {
+public class PathSplinePerformance : MonoBehaviour {
 
 	public GameObject trackTrailRenderers;
 	public GameObject car;

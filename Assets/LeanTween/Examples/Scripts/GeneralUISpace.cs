@@ -2,7 +2,7 @@
 using System.Collections;
 using DentedPixel;
 
-public class GeneralUISpaceCS : MonoBehaviour {
+public class GeneralUISpace : MonoBehaviour {
 
 	public RectTransform mainWindow;
 	public RectTransform mainParagraphText;

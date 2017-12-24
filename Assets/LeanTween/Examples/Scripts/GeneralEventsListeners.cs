@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using DentedPixel;
 
-public class GeneralEventsListenersCS : MonoBehaviour {
+public class GeneralEventsListeners : MonoBehaviour {
 
 	Vector3 towardsRotation;
 	float turnForLength = 0.5f;

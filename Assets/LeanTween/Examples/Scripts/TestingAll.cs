@@ -4,7 +4,7 @@ using System;
 using System.Threading;
 using DentedPixel;
 
-public class TestingAllCS : MonoBehaviour {
+public class TestingAll : MonoBehaviour {
 	public AnimationCurve customAnimationCurve;
 	public Transform pt1;
 	public Transform pt2;

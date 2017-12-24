@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using DentedPixel;
 
-public class GeneralBasicCS : MonoBehaviour {
+public class GeneralBasic : MonoBehaviour {
 
 	public GameObject prefabAvatar;
 

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using DentedPixel;
 
-public class PathSplineEndlessCS : MonoBehaviour {
+public class PathSplineEndless : MonoBehaviour {
 	public GameObject trackTrailRenderers;
 	public GameObject car;
 	public GameObject carInternal;
