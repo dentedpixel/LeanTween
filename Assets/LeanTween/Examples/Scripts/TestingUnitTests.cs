@@ -38,7 +38,7 @@ namespace DentedPixel.LTExamples{
 //			Time.timeScale = 0.25f;
 
 			LeanTest.timeout = 46f;
-			LeanTest.expected = 59;
+			LeanTest.expected = 60;
 
 			LeanTween.init(15 + 1200);
 
@@ -299,6 +299,11 @@ namespace DentedPixel.LTExamples{
 			LeanTween.moveLocal(cubeRound, roundCirc, 0.5f).setOnComplete( ()=>{
 				LeanTest.expect(cubeRound.transform.position==onStartPos, "BEZIER CLOSED LOOP SHOULD END AT START","onStartPos:"+onStartPos+" onEnd:"+cubeRound.transform.position);
 			});
+
+            // should be able to retrieve a point
+            LTBezierPath roundCircPath = new LTBezierPath(roundCirc);
+            float ratioPoint = roundCircPath.ratioAtPoint(new Vector3(-25f, 25f, 0f));
+            LeanTest.expect( Mathf.Equals(ratioPoint, 0.25f), "BEZIER RATIO POINT");
 
 			// Spline should end at exact end position not just 99% close to it
 			Vector3[] roundSpline = new Vector3[]{ new Vector3(0f,0f,0f), new Vector3(0f,0f,0f), new Vector3(2f,0f,0f), new Vector3(0.9f,2f,0f), new Vector3(0f,0f,0f), new Vector3(0f,0f,0f) };

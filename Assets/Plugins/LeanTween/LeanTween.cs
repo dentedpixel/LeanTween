@@ -1,6 +1,6 @@
 //namespace DentedPixel{
 
-// LeanTween version 2.46 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.47 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
@@ -947,7 +947,7 @@ public class LeanTween : MonoBehaviour {
 
     #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
     /**
-    * Play a sequence of images on a Unity UI Object <summary>Play a sequence of images on a Unity UI Object</summary>
+    * <summary>Play a sequence of images on a Unity UI Object</summary>
     * 
     * @method LeanTween.play
     * @param {RectTransform} rectTransform:RectTransform RectTransform that you want to play the sequence of sprites on
@@ -964,7 +964,7 @@ public class LeanTween : MonoBehaviour {
     #endif
 
     /**
-    * Fade a gameobject's material to a certain alpha value. The material's shader needs to support alpha. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>. <summary>Fade a gameobject's material to a certain alpha value.</summary>
+    * <summary>Fade a gameobject's material to a certain alpha value.</summary>
     * 
     * @method LeanTween.alpha
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to fade
@@ -985,7 +985,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Retrieve a sequencer object where you can easily chain together tweens and methods one after another <summary>Retrieve a sequencer object where you can easily chain together tweens and methods one after another</summary>
+    * <summary>Retrieve a sequencer object where you can easily chain together tweens and methods one after another</summary>
     * 
     * @method LeanTween.sequence
     * @return {LTSeq} LTSeq an object that you can add tweens, methods and time on to
@@ -1028,7 +1028,7 @@ public class LeanTween : MonoBehaviour {
 
 
     /**
-    * Fade a GUI Object <summary>Fade a GUI Object</summary>
+    * <summary>Fade a GUI Object</summary>
     * 
     * @method LeanTween.alpha
     * @param {LTRect} ltRect:LTRect LTRect that you wish to fade
@@ -1046,7 +1046,7 @@ public class LeanTween : MonoBehaviour {
 
     #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
     /**
-    * Fade a Unity UI Object <summary>Fade a Unity UI Object</summary>
+    * <summary>Fade a Unity UI Object</summary>
     * 
     * @method LeanTween.alphaText
     * @param {RectTransform} rectTransform:RectTransform RectTransform associated with the Text Component you wish to fade
@@ -1064,7 +1064,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Fade a Unity UI Canvas Group <summary>Fade a Unity UI Canvas Group</summary>
+    * <summary>Fade a Unity UI Canvas Group</summary>
     * 
     * @method LeanTween.alphaCanvas
     * @param {RectTransform} rectTransform:RectTransform RectTransform that the CanvasGroup is attached to
@@ -1080,7 +1080,7 @@ public class LeanTween : MonoBehaviour {
     #endif
 
     /**
-    * This works by tweening the vertex colors directly.<br />  <summary>This works by tweening the vertex colors directly</summary>
+    * <summary>This works by tweening the vertex colors directly</summary>
     <br />
     Vertex-based coloring is useful because you avoid making a copy of your
     object's material for each instance that needs a different color.<br />
@@ -1099,7 +1099,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Change a gameobject's material to a certain color value. The material's shader needs to support color tinting. <a href="http://owlchemylabs.com/content/">Owl labs has some excellent efficient shaders</a>. <summary>Change a gameobject's material to a certain color value</summary>
+    * <summary>Change a gameobject's material to a certain color value</summary>
     * 
     * @method LeanTween.color
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to change the color
@@ -1120,7 +1120,7 @@ public class LeanTween : MonoBehaviour {
 
     #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
     /**
-    * Change the color a Unity UI Object <summary>Change the color a Unity UI Object</summary>
+    * <summary>Change the color a Unity UI Object</summary>
     * 
     * @method LeanTween.colorText
     * @param {RectTransform} rectTransform:RectTransform RectTransform attached to the Text Component whose color you want to change
@@ -1139,7 +1139,7 @@ public class LeanTween : MonoBehaviour {
     #endif
 
     /**
-    * Call a method after a specified amount of time <summary>Call a method after a specified amount of time</summary>
+    * <summary>Call a method after a specified amount of time</summary>
     * 
     * @method LeanTween.delayedCall
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to associate with this delayed call
@@ -1173,7 +1173,7 @@ public class LeanTween : MonoBehaviour {
 
 
     /**
-    * Move a GameObject to a certain location <summary>Move a GameObject to a certain location</summary>
+    * <summary>Move a GameObject to a certain location</summary>
     * 
     * @method LeanTween.move
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
@@ -1191,7 +1191,7 @@ public class LeanTween : MonoBehaviour {
 
 
     /**
-    * Move a GameObject along a set of bezier curves <summary>Move a GameObject along a set of bezier curves</summary>
+    * <summary>Move a GameObject along a set of bezier curves</summary>
     * 
     * @method LeanTween.move
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
@@ -1229,7 +1229,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject through a set of points <summary>Move a GameObject through a set of points</summary>
+    * <summary>Move a GameObject through a set of points</summary>
     * 
     * @method LeanTween.moveSpline
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
@@ -1250,7 +1250,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject through a set of points <summary>Move a GameObject through a set of points</summary>
+    * <summary>Move a GameObject through a set of points</summary>
     * 
     * @method LeanTween.moveSpline
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
@@ -1271,7 +1271,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject through a set of points, in local space <summary>Move a GameObject through a set of points, in local space</summary>
+    * <summary>Move a GameObject through a set of points, in local space</summary>
     * 
     * @method LeanTween.moveSplineLocal
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
@@ -1292,7 +1292,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GUI Element to a certain location <summary>Move a GUI Element to a certain location</summary>
+    * <summary>Move a GUI Element to a certain location</summary>
     * 
     * @method LeanTween.move (GUI)
     * @param {LTRect} ltRect:LTRect ltRect LTRect object that you wish to move
@@ -1309,7 +1309,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject along the x-axis <summary>Move a GameObject along the x-axis</summary>
+    * <summary>Move a GameObject along the x-axis</summary>
     * 
     * @method LeanTween.moveX
     * @param {GameObject} gameObject:GameObject gameObject Gameobject that you wish to move
@@ -1322,7 +1322,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject along the y-axis <summary>Move a GameObject along the y-axis</summary>
+    * <summary>Move a GameObject along the y-axis</summary>
     * 
     * @method LeanTween.moveY
     * @param {GameObject} GameObject gameObject Gameobject that you wish to move
@@ -1335,7 +1335,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject along the z-axis <summary>Move a GameObject along the z-axis</summary>
+    * <summary>Move a GameObject along the z-axis</summary>
     * 
     * @method LeanTween.moveZ
     * @param {GameObject} GameObject gameObject Gameobject that you wish to move
@@ -1348,7 +1348,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject to a certain location relative to the parent transform. <summary>Move a GameObject to a certain location relative to the parent transform.</summary>
+    * <summary>Move a GameObject to a certain location relative to the parent transform.</summary>
     * 
     * @method LeanTween.moveLocal
     * @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
@@ -1361,7 +1361,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject along a set of bezier curves, in local space <summary>Move a GameObject along a set of bezier curves, in local space</summary>
+    * <summary>Move a GameObject along a set of bezier curves, in local space</summary>
     * 
     * @method LeanTween.moveLocal
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
@@ -1410,7 +1410,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a GameObject to another transform <summary>Move a GameObject to another transform</summary>
+    * <summary>Move a GameObject to another transform</summary>
     * 
     * @method LeanTween.move
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to move
@@ -1424,7 +1424,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a GameObject, to values are in passed in degrees <summary>Rotate a GameObject, to values are in passed in degrees</summary>
+    * <summary>Rotate a GameObject, to values are in passed in degrees</summary>
     * 
     * @method LeanTween.rotate
     * @param {GameObject} GameObject gameObject Gameobject that you wish to rotate
@@ -1439,7 +1439,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a GUI element (using an LTRect object), to a value that is in degrees <summary>Rotate a GUI element (using an LTRect object), to a value that is in degrees</summary>
+    * <summary>Rotate a GUI element (using an LTRect object), to a value that is in degrees</summary>
     * 
     * @method LeanTween.rotate
     * @param {LTRect} ltRect:LTRect LTRect that you wish to rotate
@@ -1457,7 +1457,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a GameObject in the objects local space (on the transforms localEulerAngles object) <summary>Rotate a GameObject in the objects local space (on the transforms localEulerAngles object)</summary>
+    * <summary>Rotate a GameObject in the objects local space (on the transforms localEulerAngles object)</summary>
     * 
     * @method LeanTween.rotateLocal
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
@@ -1483,7 +1483,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a GameObject only on the Y axis <summary>Rotate a GameObject only on the Y axis</summary>
+    * <summary>Rotate a GameObject only on the Y axis</summary>
     * 
     * @method LeanTween.rotateY
     * @param {GameObject} GameObject Gameobject that you wish to rotate
@@ -1496,7 +1496,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a GameObject only on the Z axis <summary>Rotate a GameObject only on the Z axis</summary>
+    * <summary>Rotate a GameObject only on the Z axis</summary>
     * 
     * @method LeanTween.rotateZ
     * @param {GameObject} GameObject Gameobject that you wish to rotate
@@ -1509,7 +1509,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a GameObject around a certain Axis (the best method to use when you want to rotate beyond 180 degrees) <summary>Rotate a GameObject around a certain Axis (the best method to use when you want to rotate beyond 180 degrees)</summary>
+    * <summary>Rotate a GameObject around a certain Axis (the best method to use when you want to rotate beyond 180 degrees)</summary>
     * 
     * @method LeanTween.rotateAround
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
@@ -1526,7 +1526,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a GameObject around a certain Axis in Local Space (the best method to use when you want to rotate beyond 180 degrees) <summary>Rotate a GameObject around a certain Axis in Local Space (the best method to use when you want to rotate beyond 180 degrees) </summary>
+    * <summary>Rotate a GameObject around a certain Axis in Local Space (the best method to use when you want to rotate beyond 180 degrees) </summary>
     * 
     * @method LeanTween.rotateAroundLocal
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to rotate
@@ -1543,7 +1543,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Scale a GameObject to a certain size <summary>Scale a GameObject to a certain size</summary>
+    * <summary>Scale a GameObject to a certain size</summary>
     * 
     * @method LeanTween.scale
     * @param {GameObject} gameObject:GameObject gameObject Gameobject that you wish to scale
@@ -1556,7 +1556,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Scale a GUI Element to a certain width and height <summary>Scale a GUI Element to a certain width and height</summary>
+    * <summary>Scale a GUI Element to a certain width and height</summary>
     * 
     * @method LeanTween.scale (GUI)
     * @param {LTRect} LTRect ltRect LTRect object that you wish to move
@@ -1583,7 +1583,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Scale a GameObject to a certain size along the x-axis only <summary>Scale a GameObject to a certain size along the x-axis only</summary>
+    * <summary>Scale a GameObject to a certain size along the x-axis only</summary>
     * 
     * @method LeanTween.scaleX
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
@@ -1596,7 +1596,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Scale a GameObject to a certain size along the y-axis only <summary>Scale a GameObject to a certain size along the y-axis only</summary>
+    * <summary>Scale a GameObject to a certain size along the y-axis only</summary>
     * 
     * @method LeanTween.scaleY
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
@@ -1609,7 +1609,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Scale a GameObject to a certain size along the z-axis only <summary>Scale a GameObject to a certain size along the z-axis only</summary>
+    * <summary>Scale a GameObject to a certain size along the z-axis only</summary>
     * 
     * @method LeanTween.scaleZ
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to scale
@@ -1622,7 +1622,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value (float) <summary>Tween any particular value (float)</summary>
+    * <summary>Tween any particular value (float)</summary>
     * 
     * @method LeanTween.value (float)
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -1649,7 +1649,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value (Vector2) 
+    * <summary>Tween any particular value (Vector2)</summary>
     * 
     * @method LeanTween.value (Vector2)
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -1673,7 +1673,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value (Vector3)
+    * <summary>Tween any particular value (Vector3)</summary>
     * 
     * @method LeanTween.value (Vector3)
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -1697,7 +1697,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value (Color)
+    * Tween any particular value (Color)<summary></summary>
     * 
     * @method LeanTween.value (Color)
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -1728,7 +1728,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value, it does not need to be tied to any particular type or GameObject 
+    * <summary>Tween any particular value, it does not need to be tied to any particular type or GameObject</summary>
     * 
     * @method LeanTween.value (float)
     * @param {GameObject} GameObject gameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
@@ -1756,7 +1756,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tweens any float value, it does not need to be tied to any particular type or GameObject 
+    * <summary>Tweens any float value, it does not need to be tied to any particular type or GameObject</summary>
     * 
     * @method LeanTween.value (float)
     * @param {GameObject} GameObject gameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
@@ -1784,7 +1784,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween from one color to another 
+    * <summary>Tween from one color to another</summary>
     * 
     * @method LeanTween.value (Color)
     * @param {GameObject} GameObject gameObject GameObject with which to tie the tweening with. This is only used when you need to cancel this tween, it does not actually perform any operations on this gameObject
@@ -1817,7 +1817,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value (Vector2), this could be used to tween an arbitrary value like offset property
+    * <summary>Tween any particular value (Vector2), this could be used to tween an arbitrary value like offset property</summary>
     * 
     * @method LeanTween.value (Vector2)
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -1832,7 +1832,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value (Vector3), this could be used to tween an arbitrary property that uses a Vector
+    * <summary>Tween any particular value (Vector3), this could be used to tween an arbitrary property that uses a Vector</summary>
     * 
     * @method LeanTween.value (Vector3)
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -1847,7 +1847,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Tween any particular value (float)
+    * <summary>Tween any particular value (float)</summary>
     * 
     * @method LeanTween.value (float,object)
     * @param {GameObject} gameObject:GameObject Gameobject that you wish to attach the tween to
@@ -1874,7 +1874,7 @@ public class LeanTween : MonoBehaviour {
     #if !UNITY_3_5 && !UNITY_4_0 && !UNITY_4_0_1 && !UNITY_4_1 && !UNITY_4_2 && !UNITY_4_3 && !UNITY_4_5
 
     /**
-    * Move a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Move a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Move a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.move (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -1888,7 +1888,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a RectTransform object affecting x-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Move a RectTransform object affecting x-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Move a RectTransform object affecting x-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.moveX (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -1902,7 +1902,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a RectTransform object affecting y-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Move a RectTransform object affecting y-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Move a RectTransform object affecting y-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.moveY (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -1916,7 +1916,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Move a RectTransform object affecting z-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Move a RectTransform object affecting z-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)n</summary>
+    * <summary>Move a RectTransform object affecting z-axis only (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)n</summary>
     * 
     * @method LeanTween.moveZ (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -1930,7 +1930,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.rotate (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -1948,7 +1948,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Rotate a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.rotateAround (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -1963,7 +1963,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Rotate a RectTransform object around it's local axis (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Rotate a RectTransform object around it's local axis (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Rotate a RectTransform object around it's local axis (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.rotateAroundLocal (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -1978,7 +1978,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Scale a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Scale a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Scale a RectTransform object (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.scale (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -1992,7 +1992,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Change the sizeDelta of a RectTransform object (used in Unity Canvas, for Buttons, Panel, Scrollbar, etc...) <summary>Change the sizeDelta of a RectTransform object (used in Unity Canvas, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Change the sizeDelta of a RectTransform object (used in Unity Canvas, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.size (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -2006,7 +2006,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Alpha an Image Component attached to a RectTransform (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Alpha an Image Component attached to a RectTransform (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Alpha an Image Component attached to a RectTransform (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.alpha (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -2020,7 +2020,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Change the Color of an Image Component attached to a RectTransform (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...) <summary>Change the Color of an Image Component attached to a RectTransform (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
+    * <summary>Change the Color of an Image Component attached to a RectTransform (used in Unity GUI in 4.6+, for Buttons, Panel, Scrollbar, etc...)</summary>
     * 
     * @method LeanTween.alpha (RectTransform)
     * @param {RectTransform} rectTrans:RectTransform RectTransform that you wish to attach the tween to
@@ -2650,7 +2650,7 @@ public class LTBezierPath {
     }
 
     /**
-    * Retrieve a point along a path <summary>Move a GameObject to a certain location</summary>
+    * <summary>Retrieve a point along a path</summary>
     * 
     * @method point
     * @param {float} ratio:float ratio of the point along the path you wish to receive (0-1)
@@ -2689,7 +2689,7 @@ public class LTBezierPath {
     }
 
     /**
-    * Place an object along a certain point on the path (facing the direction perpendicular to the path) <summary>Move a GameObject to a certain location</summary>
+    * <summary>Place an object along a certain point on the path (facing the direction perpendicular to the path)</summary>
     * 
     * @method place
     * @param {Transform} transform:Transform the transform of the object you wish to place along the path
@@ -2703,7 +2703,7 @@ public class LTBezierPath {
     }
 
     /**
-    * Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path <summary>Move a GameObject to a certain location</summary>
+    * <summary>Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path</summary>
     * 
     * @method place
     * @param {Transform} transform:Transform the transform of the object you wish to place along the path
@@ -2721,7 +2721,7 @@ public class LTBezierPath {
     }
 
     /**
-    * Place an object along a certain point on the path (facing the direction perpendicular to the path) - Local Space, not world-space <summary>Move a GameObject to a certain location</summary>
+    * <summary>Place an object along a certain point on the path (facing the direction perpendicular to the path) - Local Space, not world-space</summary>
     * 
     * @method placeLocal
     * @param {Transform} transform:Transform the transform of the object you wish to place along the path
@@ -2734,7 +2734,7 @@ public class LTBezierPath {
     }
 
     /**
-    * Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path - Local Space, not world-space <summary>Move a GameObject to a certain location</summary>
+    * <summary>Place an object along a certain point on the path, with it facing a certain direction perpendicular to the path - Local Space, not world-space</summary>
     * 
     * @method placeLocal
     * @param {Transform} transform:Transform the transform of the object you wish to place along the path
@@ -2768,6 +2768,35 @@ public class LTBezierPath {
             prevPt = currPt2;
             previousBezier = currentBezier;
         }
+    }
+
+    /**
+    * <summary>Retrieve the closest ratio near the point</summary>
+    * 
+    * @method ratioAtPoint
+    * @param {Vector3} point:Vector3 given a current location it makes the best approximiation of where it is along the path ratio-wise (0-1)
+    * @return {float} float of ratio along the path
+    * @example
+    * ratioIter = ltBezier.ratioAtPoint( transform.position );
+    */
+    public float ratioAtPoint(Vector3 pt, float precision = 0.01f)
+    {
+        float closestDist = float.MaxValue;
+        int closestI = 0;
+        int maxIndex = Mathf.RoundToInt(1f / precision);
+        for (int i = 0; i < maxIndex; i++)
+        {
+            float ratio = (float)i / (float)maxIndex;
+            float dist = Vector3.Distance(pt, point( ratio ) );
+            // Debug.Log("i:"+i+" dist:"+dist);
+            if (dist < closestDist)
+            {
+                closestDist = dist;
+                closestI = i;
+            }
+        }
+        //Debug.Log("closestI:"+closestI+" maxIndex:"+maxIndex);
+        return (float)closestI / (float)(maxIndex);
     }
 }
 
