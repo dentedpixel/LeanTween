@@ -894,7 +894,7 @@ public class LeanTween : MonoBehaviour {
                 i = 0;
             //          Debug.Log("searching i:"+i);
             if(tweens[i].toggle==false){
-                if(i+1>tweenMaxSearch)
+                if(i+1>tweenMaxSearch && i+1 < maxTweens)
                     tweenMaxSearch = i+1;
                 startSearch = i + 1;
                 found = true;
