@@ -32,7 +32,11 @@ public class Testing246 : MonoBehaviour {
     void Start()
     {
         object tweenFinishedObj = "hi" as object;
-        LeanTween.moveX(gameObject, 5f, 2.0f).setOnComplete(tweenFinished, tweenFinishedObj);
+        int tweenId = LeanTween.moveX(gameObject, 5f, 2.0f).setOnComplete(tweenFinished, tweenFinishedObj).id;
+
+        LeanTween.pause(gameObject);
+
+        Debug.Log("isPaused:" + LeanTween.isPaused(gameObject) + " id based pause:"+LeanTween.isPaused(tweenId));
     }
 
     void tweenFinished(object obj)

@@ -768,6 +768,60 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
+    * Test whether or not a tween is paused on a GameObject <summary>Test whether or not a tween is paused on a GameObject</summary>
+    * 
+    * @method LeanTween.isPaused
+    * @param {GameObject} gameObject:GameObject GameObject that you want to test if it is tweening
+    */
+    public static bool isPaused(GameObject gameObject = null)
+    {
+        if (gameObject == null)
+        {
+            for (int i = 0; i <= tweenMaxSearch; i++)
+            {
+                if (Mathf.Equals(tweens[i].direction, 0f))
+                    return true;
+            }
+            return false;
+        }
+        Transform trans = gameObject.transform;
+        for (int i = 0; i <= tweenMaxSearch; i++)
+        {
+            if (Mathf.Equals(tweens[i].direction, 0f) && tweens[i].trans == trans)
+                return true;
+        }
+        return false;
+    }
+
+    public static bool isPaused(RectTransform rect)
+    {
+        return isTweening(rect.gameObject);
+    }
+
+    /**
+    * Test whether or not a tween is active or not <summary>Test whether or not a tween is active or not</summary>
+    * 
+    * @method LeanTween.isTweening
+    * @param {GameObject} id:int id of the tween that you want to test if it is tweening
+    * @example
+    * int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br />
+    * if(LeanTween.isTweening( id ))<br />
+    * &#160;&#160; &#160;&#160;Debug.Log("I am tweening!");<br />
+    */
+    public static bool isPaused(int uniqueId)
+    {
+        int backId = uniqueId & 0xFFFF;
+        int backCounter = uniqueId >> 16;
+        if (backId < 0 || backId >= maxTweens) return false;
+        // Debug.Log("tweens[backId].counter:"+tweens[backId].counter+" backCounter:"+backCounter +" toggle:"+tweens[backId].toggle);
+        if (tweens[backId].counter == backCounter && Mathf.Equals(tweens[i].direction, 0f))
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /**
     * Test whether or not a tween is active on a GameObject <summary>Test whether or not a tween is active on a GameObject</summary>
     * 
     * @method LeanTween.isTweening

@@ -337,6 +337,12 @@ namespace DentedPixel.LTExamples{
 				LeanTest.expect(didPassBounds,"OUT OF BOUNDS","pos x:"+failPoint.x + " y:"+ failPoint.y+" z:"+failPoint.z);
 			});
 
+            // Local scale check
+            //GameObject cubeLocal = cubeNamed("cLocal");
+            //LeanTween.scale(cubeLocal, new Vector3(0.5f, 0.5f, 0.5f), 0.2f).setOnComplete(() =>
+            //{
+            //    LeanTest.expect((cubeLocal.transform.localScale.x == 0.5f && cubeLocal.transform.localScale.y == 0.5f && cubeLocal.transform.localScale.z == 0.5f), "SCALE WORKS", "scale x:" + cubeLocal.transform.localScale.x + " y:" + cubeLocal.transform.localScale.y + " z:" + cubeLocal.transform.localScale.z);
+            //});
 			
 			// Groups of tweens testing
 			groupTweens = new LTDescr[ 1200 ];
@@ -451,6 +457,7 @@ namespace DentedPixel.LTExamples{
 			LeanTest.expect( LeanTween.isTweening(cube2)==false, "CANCEL TWEEN LEANTWEEN" );
 
 			LeanTest.expect( pauseCount==0, "ON UPDATE NOT CALLED DURING PAUSE", "expect pause count of 0, but got "+pauseCount);
+
 
 			yield return new WaitForEndOfFrame();
 			Time.timeScale = 0.25f;
