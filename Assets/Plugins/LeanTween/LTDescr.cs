@@ -131,7 +131,7 @@ public class LTDescr
 			return _optional;
 		}
 		set{
-			this._optional = optional;
+			this._optional = value;
 		}
 	}
 

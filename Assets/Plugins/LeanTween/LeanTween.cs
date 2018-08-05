@@ -272,7 +272,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Find out how many tweens you have animating at a given time <summary>Find out how many tweens you have animating at a given time</summary>
+    * <summary>Find out how many tweens you have animating at a given time</summary>
     * 
     * @method LeanTween.tweensRunning
     * @example
@@ -483,7 +483,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Cancels all tweens <summary>Cancels all tweens</summary>
+    * <summary>Cancels all tweens</summary>
     * 
     * @method LeanTween.cancelAll 
     * @param {bool} callComplete:bool (optional) if true, then the all onCompletes will run before canceling
@@ -505,7 +505,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Cancel all tweens that are currently targeting the gameObject<summary>Cancel all tweens that are currently targeting the gameObject</summary>
+    * <summary>Cancel all tweens that are currently targeting the gameObject</summary>
     * 
     * @method LeanTween.cancel 
     * @param {GameObject} gameObject:GameObject gameObject whose tweens you wish to cancel
@@ -569,7 +569,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Cancel a specific tween with the provided id <summary>Cancel a specific tween with the provided id</summary>
+    * <summary>Cancel a specific tween with the provided id</summary>
     * 
     * @method LeanTween.cancel
     * @param {int} id:int unique id that represents that tween
@@ -610,7 +610,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Retrieve a tweens LTDescr object to modify <summary>Retrieve a tweens LTDescr object to modify</summary>
+    * <summary>Retrieve a tweens LTDescr object to modify</summary>
     * 
     * @method LeanTween.descr
     * @param {int} id:int unique id that represents that tween
@@ -644,7 +644,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Retrieve a tweens LTDescr object(s) to modify <summary>Retrieve a tweens LTDescr object(s) to modifyn</summary>
+    * <summary>Retrieve a tweens LTDescr object(s) to modify</summary>
     * 
     * @method LeanTween.descriptions
     * @param {GameObject} id:GameObject object whose tween descriptions you want to retrieve
@@ -672,7 +672,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Pause all tweens for a GameObject <summary>Pause all tweens for a GameObject</summary>
+    * <summary>Pause all tweens for a GameObject</summary>
     * 
     * @method LeanTween.pause
     * @param {int} id:int Id of the tween you want to pause
@@ -691,7 +691,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Pause all tweens for a GameObject <summary>Pause all tweens for a GameObject</summary>
+    *  <summary>Pause all tweens for a GameObject</summary>
     * 
     * @method LeanTween.pause
     * @param {GameObject} gameObject:GameObject GameObject whose tweens you want to pause
@@ -706,7 +706,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Pause all active tweens <summary>Pause all active tweens</summary>
+    * <summary>Pause all active tweens</summary>
     * 
     * @method LeanTween.pauseAll
     */
@@ -718,7 +718,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Resume all active tweens <summary>Resume all active tweens</summary>
+    * <summary>Resume all active tweens</summary>
     * 
     * @method LeanTween.resumeAll
     */
@@ -735,7 +735,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Resume a specific tween <summary>Resume a specific tween</summary>
+    * <summary>Resume a specific tween</summary>
     * 
     * @method LeanTween.resume
     * @param {int} id:int Id of the tween you want to resume
@@ -754,7 +754,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Resume all the tweens on a GameObject <summary>Resume all the tweens on a GameObject</summary>
+    * <summary>Resume all the tweens on a GameObject</summary>
     * 
     * @method LeanTween.resume
     * @param {GameObject} gameObject:GameObject GameObject whose tweens you want to resume
@@ -768,10 +768,10 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Test whether or not a tween is paused on a GameObject <summary>Test whether or not a tween is paused on a GameObject</summary>
+    * <summary>Test whether or not a tween is paused on a GameObject</summary>
     * 
     * @method LeanTween.isPaused
-    * @param {GameObject} gameObject:GameObject GameObject that you want to test if it is tweening
+    * @param {GameObject} gameObject:GameObject GameObject that you want to test if it is paused
     */
     public static bool isPaused(GameObject gameObject = null)
     {
@@ -799,14 +799,15 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Test whether or not a tween is active or not <summary>Test whether or not a tween is active or not</summary>
+    * <summary>Test whether or not a tween is paused or not</summary>
     * 
-    * @method LeanTween.isTweening
-    * @param {GameObject} id:int id of the tween that you want to test if it is tweening
+    * @method LeanTween.isPaused
+    * @param {GameObject} id:int id of the tween that you want to test if it is paused
     * @example
     * int id = LeanTween.moveX(gameObject, 1f, 3f).id;<br />
-    * if(LeanTween.isTweening( id ))<br />
-    * &#160;&#160; &#160;&#160;Debug.Log("I am tweening!");<br />
+    * LeanTween.pause(gameObject);<br />
+    * if(LeanTween.isPaused( id ))<br />
+    * &#160;&#160; &#160;&#160;Debug.Log("I am paused!");<br />
     */
     public static bool isPaused(int uniqueId)
     {
@@ -822,7 +823,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Test whether or not a tween is active on a GameObject <summary>Test whether or not a tween is active on a GameObject</summary>
+    * <summary>Test whether or not a tween is active on a GameObject</summary>
     * 
     * @method LeanTween.isTweening
     * @param {GameObject} gameObject:GameObject GameObject that you want to test if it is tweening
@@ -848,7 +849,7 @@ public class LeanTween : MonoBehaviour {
     }
 
     /**
-    * Test whether or not a tween is active or not <summary>Test whether or not a tween is active or not</summary>
+    * <summary>Test whether or not a tween is active or not</summary>
     * 
     * @method LeanTween.isTweening
     * @param {GameObject} id:int id of the tween that you want to test if it is tweening
