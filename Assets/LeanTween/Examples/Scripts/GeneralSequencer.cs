@@ -17,6 +17,7 @@ public class GeneralSequencer : MonoBehaviour {
 		// Jump up
 		var seq = LeanTween.sequence();
 
+
 		seq.append( LeanTween.moveY( avatar1, avatar1.transform.localPosition.y + 6f, 1f).setEaseOutQuad() );
 
         // Power up star, use insert when you want to branch off from the regular sequence (this does not push back the delay of other subsequent tweens)
@@ -49,6 +50,12 @@ public class GeneralSequencer : MonoBehaviour {
 		// You can speed up or slow down the sequence of events
 		seq.setScale(speedScale);
 
-		// seq.reverse();
+        // seq.reverse(); // not working yet
+
+        // Testing canceling sequence after a bit of time
+        //LeanTween.delayedCall(3f, () =>
+        //{
+        //    LeanTween.cancel(seq.id);
+        //});
 	}
 }

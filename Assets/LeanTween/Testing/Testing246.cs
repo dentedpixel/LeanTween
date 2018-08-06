@@ -32,11 +32,11 @@ public class Testing246 : MonoBehaviour {
     void Start()
     {
         //LeanTween.rotateLocal(tweenAlpha, new Vector3(0f,0f,360f), 1f).setRepeat(-1);
-        LeanTween.rotateAroundLocal(tweenAlpha, Vector3.forward, 360f, 1f).setRepeat(-1);
+        //LeanTween.rotateAroundLocal(tweenAlpha, Vector3.forward, 360f, 1f).setOnComplete(()=>{
+        //    LeanTween.cancel(tweenAlpha);
+
+        //});
+        LeanTween.moveX(tweenAlpha, 10f, 0f);
     }
 
-    void tweenFinished(object obj)
-    {
-        string returnObj = obj as string;
-    }
 }

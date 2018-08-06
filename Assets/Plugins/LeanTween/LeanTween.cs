@@ -588,15 +588,17 @@ public class LeanTween : MonoBehaviour {
             if (backId > tweens.Length - 1) { // sequence
                 int sequenceId = backId - tweens.Length;
                 LTSeq seq = sequences[sequenceId];
+                // Debug.Log("sequenceId:" + sequenceId+" maxSequences:"+maxSequences+" prev:"+seq.previous);
+
                 for (int i = 0; i < maxSequences; i++) {
                     if (seq.current.tween != null) {
                         int tweenId = seq.current.tween.uniqueId;
                         int tweenIndex = tweenId & 0xFFFF;
                         removeTween(tweenIndex);
                     }
-                    if (seq.previous == null)
+                    if (seq.current.previous == null)
                         break;
-                    seq.current = seq.previous;
+                    seq.current = seq.current.previous;
                 }
             } else { // tween
                 // Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" action:"+(TweenAction)backType + " tweens[id].type:"+tweens[backId].type);
