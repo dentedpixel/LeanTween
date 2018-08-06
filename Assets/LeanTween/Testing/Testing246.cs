@@ -31,12 +31,8 @@ public class Testing246 : MonoBehaviour {
 
     void Start()
     {
-        object tweenFinishedObj = "hi" as object;
-        int tweenId = LeanTween.moveX(gameObject, 5f, 2.0f).setOnComplete(tweenFinished, tweenFinishedObj).id;
-
-        LeanTween.pause(gameObject);
-
-        Debug.Log("isPaused:" + LeanTween.isPaused(gameObject) + " id based pause:"+LeanTween.isPaused(tweenId));
+        //LeanTween.rotateLocal(tweenAlpha, new Vector3(0f,0f,360f), 1f).setRepeat(-1);
+        LeanTween.rotateAroundLocal(tweenAlpha, Vector3.forward, 360f, 1f).setRepeat(-1);
     }
 
     void tweenFinished(object obj)
