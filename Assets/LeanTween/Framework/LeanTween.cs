@@ -1,6 +1,6 @@
 //namespace DentedPixel{
 
-// LeanTween version 2.47 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.48 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
@@ -1020,6 +1020,56 @@ public class LeanTween : MonoBehaviour {
     }
     #endif
 
+
+    /**
+    * <summary>Retrieve a sequencer object where you can easily chain together tweens and methods one after another</summary>
+    * 
+    * @method LeanTween.sequence
+    * @return {LTSeq} LTSeq an object that you can add tweens, methods and time on to
+    * @example
+    * var seq = LeanTween.sequence();<br />
+    * seq.add(1f); // delay everything one second<br />
+    * seq.add( () => { // fire an event before start<br />
+    * &#160;Debug.Log("I have started");<br />
+    * });<br />
+    * seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br />
+    * seq.add( () => { // fire event after tween<br />
+    * &#160;Debug.Log("We are done now");<br />
+    * });;<br />
+    */
+    public static LTSeq sequence(bool initSequence = true)
+    {
+        init(maxTweens);
+        // Loop through and find available sequence
+        for (int i = 0; i < sequences.Length; i++)
+        {
+            //          Debug.Log("i:" + i + " sequences[i]:" + sequences[i]);
+            if (sequences[i].tween == null || sequences[i].tween.toggle == false)
+            {
+                if (sequences[i].toggle == false)
+                {
+                    LTSeq seq = sequences[i];
+                    if (initSequence)
+                    {
+                        seq.init((uint)(i + tweens.Length), global_counter);
+
+                        global_counter++;
+                        if (global_counter > 0x8000)
+                            global_counter = 0;
+                    }
+                    else
+                    {
+                        seq.reset();
+                    }
+
+                    return seq;
+                }
+            }
+        }
+
+        return null;
+    }
+
     /**
     * <summary>Fade a gameobject's material to a certain alpha value.</summary>
     * 
@@ -1040,49 +1090,6 @@ public class LeanTween : MonoBehaviour {
         #endif
         return lt;
     }
-
-    /**
-    * <summary>Retrieve a sequencer object where you can easily chain together tweens and methods one after another</summary>
-    * 
-    * @method LeanTween.sequence
-    * @return {LTSeq} LTSeq an object that you can add tweens, methods and time on to
-    * @example
-    * var seq = LeanTween.sequence();<br />
-    * seq.add(1f); // delay everything one second<br />
-    * seq.add( () => { // fire an event before start<br />
-    * &#160;Debug.Log("I have started");<br />
-    * });<br />
-    * seq.add( LeanTween.move(cube1, Vector3.one * 10f, 1f) ); // do a tween<br />
-    * seq.add( () => { // fire event after tween<br />
-    * &#160;Debug.Log("We are done now");<br />
-    * });;<br />
-    */
-    public static LTSeq sequence( bool initSequence = true){
-        init(maxTweens);
-        // Loop through and find available sequence
-        for (int i = 0; i < sequences.Length; i++) {
-//          Debug.Log("i:" + i + " sequences[i]:" + sequences[i]);
-            if (sequences[i].tween==null || sequences[i].tween.toggle == false) {
-                if (sequences[i].toggle == false) {
-                    LTSeq seq = sequences[i];
-                    if (initSequence) {
-                        seq.init((uint)(i + tweens.Length), global_counter);
-
-                        global_counter++;
-                        if (global_counter > 0x8000)
-                            global_counter = 0;
-                    } else {
-                        seq.reset();
-                    }
-                
-                    return seq;
-                }
-            }
-        }
-
-        return null;
-    }
-
 
     /**
     * <summary>Fade a GUI Object</summary>
