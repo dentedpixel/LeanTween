@@ -520,9 +520,10 @@ public class LeanTween : MonoBehaviour {
         init();
         Transform trans = gameObject.transform;
         for(int i = 0; i <= tweenMaxSearch; i++){
-            if(tweens[i].toggle && tweens[i].trans==trans){
-                if (callOnComplete && tweens[i].optional.onComplete != null)
-                    tweens[i].optional.onComplete();
+            LTDescr tween = tweens[i];
+            if(tween!=null && tween.toggle && tween.trans==trans){
+                if (callOnComplete && tween.optional.onComplete != null)
+                    tween.optional.onComplete();
                 removeTween(i);
             }
         }

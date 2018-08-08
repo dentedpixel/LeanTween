@@ -6,7 +6,7 @@ public class Testing246 : MonoBehaviour {
 
     public float gameScale = 1f;
 
-    private float nextElapsed = 0f;
+    //private float nextElapsed = 0f;
 
     public GameObject tweenAlpha;
 
