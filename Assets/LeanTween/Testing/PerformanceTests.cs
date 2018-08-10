@@ -4,16 +4,13 @@ using UnityEngine;
 
 public class PerformanceTests : MonoBehaviour {
 
-    public class Anim : MonoBehaviour
-    {
-        public int animId;
-    }
-
     public bool debug = false;
 
     public GameObject bulletPrefab;
 
     private LeanPool bulletPool = new LeanPool();
+
+    private Dictionary<GameObject, int> animIds = new Dictionary<GameObject, int>();
 
     public float shipSpeed = 1f;
     private float shipDirectionX = 1f;
@@ -21,34 +18,37 @@ public class PerformanceTests : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-        //for (int i = 0; i < cached.Length; i++){
-        //    GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
-        //    Destroy(cube.GetComponent(typeof(BoxCollider)) as Component);
-        //    cube.name = "cube" + i;
-        //}
-
-
-        bulletPool.init(bulletPrefab, 80, null, true);
+        GameObject[] pool = bulletPool.init(bulletPrefab, 400, null, true);
+        for (int i = 0; i < pool.Length; i++){
+            animIds[pool[i]] = -1;
+        }
 	}
 	
 	// Update is called once per frame
 	void Update () {
-        GameObject go = bulletPool.retrieve();
-        var anim = go.GetComponent<Anim>();
-        if(anim!=null){
-            if(debug)
-                Debug.Log("canceling id:" + anim.animId);
-            
-            LeanTween.cancel(anim.animId);
-        }else{
-            anim = go.AddComponent<Anim>();
+
+        // Spray bullets
+        for (int i = 0; i < 10; i++)
+        {
+            GameObject go = bulletPool.retrieve();
+            int animId = animIds[go];
+            if (animId >= 0){
+                if (debug)
+                    Debug.Log("canceling id:" + animId);
+
+                LeanTween.cancel(animId);
+            }
+            go.transform.position = transform.position;
+
+            float incr = (float)(5-i) * 0.1f;
+            Vector3 to = new Vector3(Mathf.Sin(incr) * 180f, 0f, Mathf.Cos(incr) * 180f);
+
+            animIds[go] = LeanTween.move(go, go.transform.position+to, 5f).setOnComplete(() => {
+                go.GetComponent<LeanPool.Item>().destroy();
+            }).id;
         }
-        go.transform.position = transform.position;
-        anim.animId = LeanTween.moveLocalZ(go, 80f, 5f).setOnComplete(()=>{
-            go.GetComponent<LeanPool.Item>().destroy();
-        }).id;
 
-
+        // Move Ship
         if(transform.position.x<-20f){
             shipDirectionX = 1f;
         }else if (transform.position.x > 20f){
