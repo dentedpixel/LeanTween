@@ -18,7 +18,7 @@ public class TestingZLegacyExt : MonoBehaviour {
     private int exampleIter = 0;
     private string[] exampleFunctions = new string[] { /**/"updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample", "colorExample" };
     public bool useEstimatedTime = true;
-    private GameObject ltLogo;
+    private Transform ltLogo;
     private TimingType timingType = TimingType.SteadyNormalTime;
     private int descrTimeScaleChangeId;
     private Vector3 origin;
@@ -39,9 +39,9 @@ public class TestingZLegacyExt : MonoBehaviour {
 
     void Start()
     {
-        ltLogo = GameObject.Find("LeanTweenLogo");
+        ltLogo = GameObject.Find("LeanTweenLogo").transform;
         LeanTween.delayedCall(1f, cycleThroughExamples);
-        origin = ltLogo.transform.position;
+        origin = ltLogo.position;
 
         //      alphaExample();
     }
@@ -118,16 +118,16 @@ public class TestingZLegacyExt : MonoBehaviour {
     public void loopTestClamp()
     {
         Debug.Log("loopTestClamp Time:" + Time.time);
-        GameObject cube1 = GameObject.Find("Cube1");
-        cube1.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		Transform cube1 = GameObject.Find("Cube1").transform;
+        cube1.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 		cube1.LeanScaleZ( 4.0f, 1.0f).setEase(LeanTweenType.easeOutElastic).setRepeat(7).setLoopClamp().setUseEstimatedTime(useEstimatedTime);//
     }
 
     public void loopTestPingPong()
     {
         Debug.Log("loopTestPingPong Time:" + Time.time);
-        GameObject cube2 = GameObject.Find("Cube2");
-        cube2.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		Transform cube2 = GameObject.Find("Cube2").transform;
+        cube2.localScale = new Vector3(1.0f, 1.0f, 1.0f);
 		cube2.LeanScaleY( 4.0f, 1.0f).setEase(LeanTweenType.easeOutQuad).setLoopPingPong(4).setUseEstimatedTime(useEstimatedTime);
         //LeanTween.scaleY( cube2, 4.0f, 1.0f, LeanTween.options().setEaseOutQuad().setRepeat(8).setLoopPingPong().setUseEstimatedTime(useEstimatedTime) );
     }
@@ -148,7 +148,7 @@ public class TestingZLegacyExt : MonoBehaviour {
 
     public void customTweenExample()
     {
-        Debug.Log("customTweenExample starting pos:" + ltLogo.transform.position + " origin:" + origin);
+        Debug.Log("customTweenExample starting pos:" + ltLogo.position + " origin:" + origin);
 
 		ltLogo.LeanMoveX(-10.0f, 0.5f).setEase(customAnimationCurve).setUseEstimatedTime(useEstimatedTime);
 		ltLogo.LeanMoveX( 0.0f, 0.5f).setEase(customAnimationCurve).setDelay(0.5f).setUseEstimatedTime(useEstimatedTime);
@@ -187,7 +187,7 @@ public class TestingZLegacyExt : MonoBehaviour {
     {
         Debug.Log("scaleExample");
 
-        Vector3 currentScale = ltLogo.transform.localScale;
+        Vector3 currentScale = ltLogo.localScale;
 		ltLogo.LeanScale(new Vector3(currentScale.x + 0.2f, currentScale.y + 0.2f, currentScale.z + 0.2f), 1f).setEase(LeanTweenType.easeOutBounce).setUseEstimatedTime(useEstimatedTime);
     }
 
@@ -196,14 +196,14 @@ public class TestingZLegacyExt : MonoBehaviour {
         Debug.Log("updateValueExample");
         Hashtable pass = new Hashtable();
         pass.Add("message", "hi");
-		gameObject.LeanValue( (Action<float, object>)updateValueExampleCallback, ltLogo.transform.eulerAngles.y, 270f, 1f).setEase(LeanTweenType.easeOutElastic).setOnUpdateParam(pass).setUseEstimatedTime(useEstimatedTime);
+		gameObject.LeanValue( (Action<float, object>)updateValueExampleCallback, ltLogo.eulerAngles.y, 270f, 1f).setEase(LeanTweenType.easeOutElastic).setOnUpdateParam(pass).setUseEstimatedTime(useEstimatedTime);
     }
 
     public void updateValueExampleCallback(float val, object hash)
     {
         // Hashtable h = hash as Hashtable;
         // Debug.Log("message:"+h["message"]+" val:"+val);
-        Vector3 tmp = ltLogo.transform.eulerAngles;
+        Vector3 tmp = ltLogo.eulerAngles;
         tmp.y = val;
         ltLogo.transform.eulerAngles = tmp;
     }
@@ -218,7 +218,7 @@ public class TestingZLegacyExt : MonoBehaviour {
     public void delayedCallExampleCallback()
     {
         Debug.Log("Delayed function was called");
-        Vector3 currentScale = ltLogo.transform.localScale;
+        Vector3 currentScale = ltLogo.localScale;
 
 		ltLogo.LeanScale( new Vector3(currentScale.x - 0.2f, currentScale.y - 0.2f, currentScale.z - 0.2f), 0.5f).setEase(LeanTweenType.easeInOutCirc).setUseEstimatedTime(useEstimatedTime);
     }

@@ -40,36 +40,53 @@ public static class LeanTweenExt
     //LeanTween.isTweening
     //LeanTween.move
     public static LTDescr LeanMove(this GameObject gameObject, Vector3 to, float time) { return LeanTween.move(gameObject, to, time); }
+    public static LTDescr LeanMove(this Transform transform, Vector3 to, float time) { return LeanTween.move(transform.gameObject, to, time); }
     public static LTDescr LeanMove(this RectTransform rectTransform, Vector3 to, float time) { return LeanTween.move(rectTransform, to, time); }
     //LeanTween.move
     public static LTDescr LeanMove(this GameObject gameObject, Vector2 to, float time) { return LeanTween.move(gameObject, to, time); }
+    public static LTDescr LeanMove(this Transform transform, Vector2 to, float time) { return LeanTween.move(transform.gameObject, to, time); }
     //LeanTween.move
     public static LTDescr LeanMove(this GameObject gameObject, Vector3[] to, float time) { return LeanTween.move(gameObject, to, time); }
     public static LTDescr LeanMove(this GameObject gameObject, LTBezierPath to, float time) { return LeanTween.move(gameObject, to, time); }
     public static LTDescr LeanMove(this GameObject gameObject, LTSpline to, float time) { return LeanTween.move(gameObject, to, time); }
+    public static LTDescr LeanMove(this Transform transform, Vector3[] to, float time) { return LeanTween.move(transform.gameObject, to, time); }
+    public static LTDescr LeanMove(this Transform transform, LTBezierPath to, float time) { return LeanTween.move(transform.gameObject, to, time); }
+    public static LTDescr LeanMove(this Transform transform, LTSpline to, float time) { return LeanTween.move(transform.gameObject, to, time); }
     //LeanTween.moveLocal
     public static LTDescr LeanMoveLocal(this GameObject gameObject, Vector3 to, float time) { return LeanTween.moveLocal(gameObject, to, time); }
     public static LTDescr LeanMoveLocal(this GameObject gameObject, LTBezierPath to, float time) { return LeanTween.moveLocal(gameObject, to, time); }
     public static LTDescr LeanMoveLocal(this GameObject gameObject, LTSpline to, float time) { return LeanTween.moveLocal(gameObject, to, time); }
+    public static LTDescr LeanMoveLocal(this Transform transform, Vector3 to, float time) { return LeanTween.moveLocal(transform.gameObject, to, time); }
+    public static LTDescr LeanMoveLocal(this Transform transform, LTBezierPath to, float time) { return LeanTween.moveLocal(transform.gameObject, to, time); }
+    public static LTDescr LeanMoveLocal(this Transform transform, LTSpline to, float time) { return LeanTween.moveLocal(transform.gameObject, to, time); }
     //LeanTween.moveLocal
     public static LTDescr LeanMoveLocalX(this GameObject gameObject, float to, float time) { return LeanTween.moveLocalX(gameObject, to, time); }
     public static LTDescr LeanMoveLocalY(this GameObject gameObject, float to, float time) { return LeanTween.moveLocalY(gameObject, to, time); }
     public static LTDescr LeanMoveLocalZ(this GameObject gameObject, float to, float time) { return LeanTween.moveLocalZ(gameObject, to, time); }
+    public static LTDescr LeanMoveLocalX(this Transform transform, float to, float time) { return LeanTween.moveLocalX(transform.gameObject, to, time); }
+    public static LTDescr LeanMoveLocalY(this Transform transform, float to, float time) { return LeanTween.moveLocalY(transform.gameObject, to, time); }
+    public static LTDescr LeanMoveLocalZ(this Transform transform, float to, float time) { return LeanTween.moveLocalZ(transform.gameObject, to, time); }
     //LeanTween.moveSpline
     public static LTDescr LeanMoveSpline(this GameObject gameObject, Vector3[] to, float time) { return LeanTween.moveSpline(gameObject, to, time); }
     public static LTDescr LeanMoveSpline(this GameObject gameObject, LTSpline to, float time) { return LeanTween.moveSpline(gameObject, to, time); }
+    public static LTDescr LeanMoveSpline(this Transform transform, Vector3[] to, float time) { return LeanTween.moveSpline(transform.gameObject, to, time); }
+    public static LTDescr LeanMoveSpline(this Transform transform, LTSpline to, float time) { return LeanTween.moveSpline(transform.gameObject, to, time); }
     //LeanTween.moveSplineLocal
     public static LTDescr LeanMoveSplineLocal(this GameObject gameObject, Vector3[] to, float time) { return LeanTween.moveSplineLocal(gameObject, to, time); }
+    public static LTDescr LeanMoveSplineLocal(this Transform transform, Vector3[] to, float time) { return LeanTween.moveSplineLocal(transform.gameObject, to, time); }
     //LeanTween.moveX
     public static LTDescr LeanMoveX(this GameObject gameObject, float to, float time) { return LeanTween.moveX(gameObject, to, time); }
+    public static LTDescr LeanMoveX(this Transform transform, float to, float time) { return LeanTween.moveX(transform.gameObject, to, time); }
     //LeanTween.moveX (RectTransform)
     public static LTDescr LeanMoveX(this RectTransform rectTransform, float to, float time) { return LeanTween.moveX(rectTransform, to, time); }
     //LeanTween.moveY
     public static LTDescr LeanMoveY(this GameObject gameObject, float to, float time) { return LeanTween.moveY(gameObject, to, time); }
+    public static LTDescr LeanMoveY(this Transform transform, float to, float time) { return LeanTween.moveY(transform.gameObject, to, time); }
     //LeanTween.moveY (RectTransform)
     public static LTDescr LeanMoveY(this RectTransform rectTransform, float to, float time) { return LeanTween.moveY(rectTransform, to, time); }
     //LeanTween.moveZ
     public static LTDescr LeanMoveZ(this GameObject gameObject, float to, float time) { return LeanTween.moveZ(gameObject, to, time); }
+    public static LTDescr LeanMoveZ(this Transform transform, float to, float time) { return LeanTween.moveZ(transform.gameObject, to, time); }
     //LeanTween.moveZ (RectTransform)
     public static LTDescr LeanMoveZ(this RectTransform rectTransform, float to, float time) { return LeanTween.moveZ(rectTransform, to, time); }
     //LeanTween.pause
@@ -82,35 +99,45 @@ public static class LeanTweenExt
     //LeanTween.resumeAll
     //LeanTween.rotate 
     public static LTDescr LeanRotate(this GameObject gameObject, Vector3 to, float time) { return LeanTween.rotate(gameObject, to, time); }
+    public static LTDescr LeanRotate(this Transform transform, Vector3 to, float time) { return LeanTween.rotate(transform.gameObject, to, time); }
     //LeanTween.rotate
     //LeanTween.rotate (RectTransform)
     public static LTDescr LeanRotate(this RectTransform rectTransform, Vector3 to, float time) { return LeanTween.rotate(rectTransform, to, time); }
     //LeanTween.rotateAround
     public static LTDescr LeanRotateAround(this GameObject gameObject, Vector3 axis, float add, float time) { return LeanTween.rotateAround(gameObject, axis, add, time); }
+    public static LTDescr LeanRotateAround(this Transform transform, Vector3 axis, float add, float time) { return LeanTween.rotateAround(transform.gameObject, axis, add, time); }
     //LeanTween.rotateAround (RectTransform)
     public static LTDescr LeanRotateAround(this RectTransform rectTransform, Vector3 axis, float add, float time) { return LeanTween.rotateAround(rectTransform, axis, add, time); }
     //LeanTween.rotateAroundLocal
     public static LTDescr LeanRotateAroundLocal(this GameObject gameObject, Vector3 axis, float add, float time) { return LeanTween.rotateAroundLocal(gameObject, axis, add, time); }
+    public static LTDescr LeanRotateAroundLocal(this Transform transform, Vector3 axis, float add, float time) { return LeanTween.rotateAroundLocal(transform.gameObject, axis, add, time); }
     //LeanTween.rotateAround (RectTransform)
     public static LTDescr LeanRotateAroundLocal(this RectTransform rectTransform, Vector3 axis, float add, float time) { return LeanTween.rotateAroundLocal(rectTransform, axis, add, time); }
     //LeanTween.rotateLocal
     //LeanTween.rotateX
     public static LTDescr LeanRotateX(this GameObject gameObject, float to, float time) { return LeanTween.rotateX(gameObject, to, time); }
+    public static LTDescr LeanRotateX(this Transform transform, float to, float time) { return LeanTween.rotateX(transform.gameObject, to, time); }
     //LeanTween.rotateY
     public static LTDescr LeanRotateY(this GameObject gameObject, float to, float time) { return LeanTween.rotateY(gameObject, to, time); }
+    public static LTDescr LeanRotateY(this Transform transform, float to, float time) { return LeanTween.rotateY(transform.gameObject, to, time); }
     //LeanTween.rotateZ
     public static LTDescr LeanRotateZ(this GameObject gameObject, float to, float time) { return LeanTween.rotateZ(gameObject, to, time); }
+    public static LTDescr LeanRotateZ(this Transform transform, float to, float time) { return LeanTween.rotateZ(transform.gameObject, to, time); }
     //LeanTween.scale
     public static LTDescr LeanScale(this GameObject gameObject, Vector3 to, float time) { return LeanTween.scale(gameObject, to, time); }
+    public static LTDescr LeanScale(this Transform transform, Vector3 to, float time) { return LeanTween.scale(transform.gameObject, to, time); }
     //LeanTween.scale (GUI)
     //LeanTween.scale (RectTransform)
     public static LTDescr LeanScale(this RectTransform rectTransform, Vector3 to, float time) { return LeanTween.scale(rectTransform, to, time); }
     //LeanTween.scaleX
     public static LTDescr LeanScaleX(this GameObject gameObject, float to, float time) { return LeanTween.scaleX(gameObject, to, time); }
+    public static LTDescr LeanScaleX(this Transform transform, float to, float time) { return LeanTween.scaleX(transform.gameObject, to, time); }
     //LeanTween.scaleY
     public static LTDescr LeanScaleY(this GameObject gameObject, float to, float time) { return LeanTween.scaleY(gameObject, to, time); }
+    public static LTDescr LeanScaleY(this Transform transform, float to, float time) { return LeanTween.scaleY(transform.gameObject, to, time); }
     //LeanTween.scaleZ
     public static LTDescr LeanScaleZ(this GameObject gameObject, float to, float time) { return LeanTween.scaleZ(gameObject, to, time); }
+    public static LTDescr LeanScaleZ(this Transform transform, float to, float time) { return LeanTween.scaleZ(transform.gameObject, to, time); }
     //LeanTween.sequence
     //LeanTween.size (RectTransform)
     public static LTDescr LeanSize(this RectTransform rectTransform, Vector2 to, float time) { return LeanTween.size(rectTransform, to, time); }
