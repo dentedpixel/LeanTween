@@ -14,31 +14,6 @@ public class LeanSmooth{
 
         return curr + velocity;
     }
-
-    public static float dampX(float current, float target, ref float currentVelocity, float smoothTime) {
-
-        float num = 2f / smoothTime;
-        float num2 = num * Time.deltaTime;
-        float num3 = 1f / (1f + num2);
-        float numR = Time.deltaTime / smoothTime;
-
-        float diff = target - current;
-        float preclampTarget = target;
-
-        //float num7 = currentVelocity - num * diff;
-        currentVelocity += diff * numR;
-
-        currentVelocity = currentVelocity - Time.deltaTime*10f;
-
-        float returned = current + currentVelocity;
-        //if (preclampTarget - current > 0f == returned > preclampTarget)
-        //{
-        //    returned = preclampTarget;
-        //    currentVelocity = (returned - preclampTarget) / Time.deltaTime;
-        //}
-        return returned;
-    }
-
 }
 
 public class FollowingTests : MonoBehaviour {
@@ -61,12 +36,13 @@ public class FollowingTests : MonoBehaviour {
     }
 
     public float damping = 2f;
+    public float accelDamping = 1f;
 
     public float dampX(float current, float target, ref float currentVelocity, float smoothTime)
     {
         float diff = target - current;
 
-        float numR = Time.deltaTime / smoothTime;
+        float numR = Time.deltaTime / smoothTime * accelDamping;
 
         currentVelocity += diff * numR;
                
