@@ -8,6 +8,10 @@ public class Testing248 : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        dude1.LeanMoveX(10f, 1f);
+        //dude1.LeanMoveX(10f, 1f);
+        int id = LeanTween.moveX(dude1, 1f, 3f).id;
+        Debug.Log("id:" + id);
+        if (LeanTween.isTweening(id))
+            Debug.Log("I am tweening!");
 	}
 }

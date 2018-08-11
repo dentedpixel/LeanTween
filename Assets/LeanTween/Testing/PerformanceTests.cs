@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DentedPixel;
 
 public class PerformanceTests : MonoBehaviour {
 
@@ -44,7 +45,7 @@ public class PerformanceTests : MonoBehaviour {
             Vector3 to = new Vector3(Mathf.Sin(incr) * 180f, 0f, Mathf.Cos(incr) * 180f);
 
             animIds[go] = LeanTween.move(go, go.transform.position+to, 5f).setOnComplete(() => {
-                go.GetComponent<LeanPool.Item>().destroy();
+                bulletPool.giveup(go);
             }).id;
         }
 

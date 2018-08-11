@@ -2,6 +2,45 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public class LeanSmooth{
+
+    public static Vector3 damp( Vector3 curr, Vector3 dest, ref Vector3 velocity, float time){
+
+        Vector3 diff = dest - curr;
+
+        Vector3 diff2 = curr + velocity * time;
+        float numerator = /*Mathf.Sqrt(diff.magnitude)**/0.001f;
+        velocity += diff*(numerator/time);
+
+        return curr + velocity;
+    }
+
+    public static float dampX(float current, float target, ref float currentVelocity, float smoothTime) {
+
+        float num = 2f / smoothTime;
+        float num2 = num * Time.deltaTime;
+        float num3 = 1f / (1f + num2);
+        float numR = Time.deltaTime / smoothTime;
+
+        float diff = target - current;
+        float preclampTarget = target;
+
+        //float num7 = currentVelocity - num * diff;
+        currentVelocity += diff * numR;
+
+        currentVelocity = currentVelocity - Time.deltaTime*10f;
+
+        float returned = current + currentVelocity;
+        //if (preclampTarget - current > 0f == returned > preclampTarget)
+        //{
+        //    returned = preclampTarget;
+        //    currentVelocity = (returned - preclampTarget) / Time.deltaTime;
+        //}
+        return returned;
+    }
+
+}
+
 public class FollowingTests : MonoBehaviour {
 
     public Transform followTrans;
@@ -11,21 +50,43 @@ public class FollowingTests : MonoBehaviour {
 
     public Transform cube2;
     private Vector3 cube2Velocity;
+    private float cube2VelocityX;
 
-    private void Start()
+    private void Start(){
+        followTrans.gameObject.LeanDelayedCall(2f, moveFollow).setOnStart(moveFollow).setRepeat(-1);
+    }
+
+    private void moveFollow(){
+        followTrans.LeanMove(new Vector3(Random.Range(-50f, 50f), Random.Range(-50f, 50f), 0f), 0f);
+    }
+
+    public float damping = 2f;
+
+    public float dampX(float current, float target, ref float currentVelocity, float smoothTime)
     {
-        followTrans.LeanMove(new Vector3(0f, 2f, 0f)*10f, 0.1f).setDelay(0f);
-        followTrans.LeanMove(new Vector3(2f, -2f, 0f)* 10f, 0.1f).setDelay(1f);
-        followTrans.LeanMove(new Vector3(5f, 0f, 0f)* 10f, 0.1f).setDelay(2f);
-        followTrans.LeanMove(new Vector3(1f, -2f, 0f)* 10f, 0.1f).setDelay(3f);
-        followTrans.LeanMove(new Vector3(-4f, 2f, 0f)* 10f, 0.1f).setDelay(4f);
+        float diff = target - current;
+
+        float numR = Time.deltaTime / smoothTime;
+
+        currentVelocity += diff * numR;
+               
+        currentVelocity *= (1f - Time.deltaTime * damping);
+
+        float returned = current + currentVelocity;
+
+        return returned;
     }
 
     // Update is called once per frame
     void Update () {
-        
         cube1.position = Vector3.SmoothDamp(cube1.position, followTrans.position, ref cube1Velocity, 1.1f);
+        // cube2.position = LeanSmooth.damp(cube2.position, followTrans.position, ref cube2Velocity, 1.1f);
 
-
+        var pos = cube2.position;
+        //pos.x = mySmoothDamp(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
+        pos.x = dampX(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
+        cube2.position = pos;
 	}
+
+
 }
