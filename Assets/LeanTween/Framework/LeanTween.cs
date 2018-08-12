@@ -2440,6 +2440,152 @@ public class LeanTween : MonoBehaviour {
         return end + start + a * Mathf.Pow(2f, -10f * val) * Mathf.Sin((val - s) * (2f * Mathf.PI) / p) * 0.5f * overshoot;
     }
 
+    // LeanTween Following
+
+    public static float followDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+        
+        smoothTime = Mathf.Max(0.0001f, smoothTime);
+        float num = 2f / smoothTime;
+        float num2 = num * deltaTime;
+        float num3 = 1f / (1f + num2 + 0.48f * num2 * num2 + 0.235f * num2 * num2 * num2);
+        float num4 = current - target;
+        float num5 = target;
+        if (maxSpeed > 0f) {
+            float num6 = maxSpeed * smoothTime;
+            num4 = Mathf.Clamp(num4, -num6, num6);
+        }
+        target = current - num4;
+        float num7 = (currentVelocity + num * num4) * deltaTime;
+        currentVelocity = (currentVelocity - num * num7) * num3;
+        float num8 = target + (num4 + num7) * num3;
+        if (num5 - current > 0f == num8 > num5)
+        {
+            num8 = num5;
+            currentVelocity = (num8 - num5) / deltaTime;
+        }
+        return num8;
+    }
+
+    public static float followGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+
+        float diff = target - current;
+
+        currentVelocity += deltaTime / smoothTime * accelDamping * diff;
+
+        currentVelocity *= (1f - deltaTime * friction);
+
+        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
+            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
+
+        float returned = current + currentVelocity;
+
+        return returned;
+    }
+
+    public static Vector3 followGravity(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    {
+        float x = followGravity(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float y = followGravity(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float z = followGravity(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+
+        return new Vector3(x, y, z);
+    }
+
+    public static float followQuint(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+
+        float diff = target - current;
+
+        currentVelocity = Time.deltaTime / smoothTime * diff;
+
+        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
+            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
+
+        return current + currentVelocity;
+    }
+
+    public static Vector3 followQuint(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    {
+        float x = followQuint(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
+        float y = followQuint(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime);
+        float z = followQuint(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime);
+
+        return new Vector3(x, y, z);
+    }
+
+    public static float followLinear(float current, float target, float moveSpeed, float deltaTime = -1f)
+    {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+
+        bool targetGreater = (target > current);
+
+        float currentVelocity = deltaTime * moveSpeed * (targetGreater ? 1f : -1f);
+
+        float returned = current + currentVelocity;
+
+        float returnPassed = returned - target;
+        if ((targetGreater && returnPassed > 0) || !targetGreater && returnPassed < 0)
+        { // Has passed point, return target
+            return target;
+        }
+
+        return returned;
+    }
+
+    public static Vector3 followLinear(Vector3 current, Vector3 target, float moveSpeed, float deltaTime = -1f)
+    {
+        float x = followLinear(current.x, target.x, moveSpeed, deltaTime);
+        float y = followLinear(current.y, target.y, moveSpeed, deltaTime);
+        float z = followLinear(current.z, target.z, moveSpeed, deltaTime);
+
+        return new Vector3(x, y, z);
+    }
+
+    public static float followBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+
+        float diff = target - current;
+
+        currentVelocity += deltaTime / smoothTime * accelDamping * diff;
+
+        currentVelocity *= (1f - deltaTime * friction);
+
+        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
+            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
+
+        float returned = current + currentVelocity;
+
+        bool targetGreater = (target > current);
+        float returnPassed = returned - target;
+        if ((targetGreater && returnPassed > 0) || !targetGreater && returnPassed < 0)
+        { // Start a bounce
+            currentVelocity = -currentVelocity * hitDamping;
+            returned = current + currentVelocity;
+        }
+
+        return returned;
+    }
+
+    public static Vector3 followBounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    {
+        float x = followBounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float y = followBounceOut(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float z = followBounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+
+        return new Vector3(x, y, z);
+    }
+
     // LeanTween Listening/Dispatch
 
     private static System.Action<LTEvent>[] eventListeners;

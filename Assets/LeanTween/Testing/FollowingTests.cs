@@ -2,42 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LeanSmooth{
-
-    public static Vector3 damp( Vector3 curr, Vector3 dest, ref Vector3 velocity, float time){
-
-        Vector3 diff = dest - curr;
-
-        float numerator = /*Mathf.Sqrt(diff.magnitude)**/0.001f;
-        velocity += diff*(numerator/time);
-
-        return curr + velocity;
-    }
-
-
-    public static float SmoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed, float deltaTime)
-    {
-        smoothTime = Mathf.Max(0.0001f, smoothTime);
-        float num = 2f / smoothTime;
-        float num2 = num * deltaTime;
-        float num3 = 1f / (1f + num2 + 0.48f * num2 * num2 + 0.235f * num2 * num2 * num2);
-        float num4 = current - target;
-        float num5 = target;
-        float num6 = maxSpeed * smoothTime;
-        num4 = Mathf.Clamp(num4, -num6, num6);
-        target = current - num4;
-        float num7 = (currentVelocity + num * num4) * deltaTime;
-        currentVelocity = (currentVelocity - num * num7) * num3;
-        float num8 = target + (num4 + num7) * num3;
-        if (num5 - current > 0f == num8 > num5)
-        {
-            num8 = num5;
-            currentVelocity = (num8 - num5) / deltaTime;
-        }
-        return num8;
-    }
-}
-
 public class FollowingTests : MonoBehaviour {
 
     public Transform followTrans;
@@ -57,118 +21,41 @@ public class FollowingTests : MonoBehaviour {
     public Transform cube5;
     private float cube5VelocityX;
 
+    public Transform cube6;
+    private Vector3 cube6Velocity;
+
     private void Start(){
         followTrans.gameObject.LeanDelayedCall(3f, moveFollow).setOnStart(moveFollow).setRepeat(-1);
     }
 
     private void moveFollow(){
-        followTrans.LeanMoveX( Random.Range(-50f, 50f), 0f);
+        followTrans.LeanMove( new Vector3(Random.Range(-50f, 50f), Random.Range(-10f, 10f), 0f), 0f);
     }
 
     void Update()
     {
         var pos = cube1.position;
-        pos.x = Mathf.SmoothDamp(cube1.position.x, followTrans.position.x, ref cube1VelocityX, 1.1f);
+        pos.x = LeanTween.followDamp(cube1.position.x, followTrans.position.x, ref cube1VelocityX, 1.1f);
         cube1.position = pos;
 
         pos = cube2.position;
-        pos.x = followGravity(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
+        pos.x = LeanTween.followGravity(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
         cube2.position = pos;
 
         pos = cube3.position;
-        pos.x = followBounceOut(cube3.position.x, followTrans.position.x, ref cube3VelocityX, 1.1f);
+        pos.x = LeanTween.followBounceOut(cube3.position.x, followTrans.position.x, ref cube3VelocityX, 1.1f);
         cube3.position = pos;
 
         pos = cube4.position;
-        pos.x = followQuint(cube4.position.x, followTrans.position.x, ref cube4VelocityX, 1.1f);
+        pos.x = LeanTween.followQuint(cube4.position.x, followTrans.position.x, ref cube4VelocityX, 1.1f);
         cube4.position = pos;
 
         pos = cube5.position;
-        pos.x = followLinear(cube5.position.x, followTrans.position.x, 10f);
+        pos.x = LeanTween.followLinear(cube5.position.x, followTrans.position.x, 10f);
         cube5.position = pos;
-    }
 
-    public float friction = 2f;
-    public float accelDamping = 0.5f;
-    public float hitDamping = 0.9f;
 
-    public float followGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
-    {
-        if (deltaTime < 0f)
-            deltaTime = Time.deltaTime;
-            
-        float diff = target - current;
-
-        currentVelocity += deltaTime / smoothTime * accelDamping * diff;
-               
-        currentVelocity *= (1f - deltaTime * friction);
-
-        if (maxSpeed>0f && maxSpeed < Mathf.Abs(currentVelocity))
-            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
-
-        float returned = current + currentVelocity;
-
-        return returned;
-    }
-
-    public float followQuint(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
-    {
-        if (deltaTime < 0f)
-            deltaTime = Time.deltaTime;
-        
-        float diff = target - current;
-
-        currentVelocity = Time.deltaTime / smoothTime * diff;
-
-        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
-            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
-
-        return current + currentVelocity;
-    }
-
-    public float followLinear(float current, float target, float moveSpeed, float deltaTime = -1f)
-    {
-        if (deltaTime < 0f)
-            deltaTime = Time.deltaTime;
-        
-        bool targetGreater = (target > current);
-
-        float currentVelocity = deltaTime * moveSpeed * (targetGreater ? 1f : -1f);
-
-        float returned = current + currentVelocity;
-
-        float returnPassed = returned - target;
-        if ((targetGreater && returnPassed > 0) || !targetGreater && returnPassed < 0) { // Has passed point, return target
-            return target;
-        }
-
-        return returned;
-    }
-
-    public float followBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
-    {
-        if (deltaTime < 0f)
-            deltaTime = Time.deltaTime;
-        
-        float diff = target - current;
-
-        currentVelocity += deltaTime / smoothTime * accelDamping * diff;
-
-        currentVelocity *= (1f - deltaTime * friction);
-
-        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
-            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
-
-        float returned = current + currentVelocity;
-
-        bool targetGreater = (target > current);
-        float returnPassed = returned - target;
-        if( (targetGreater && returnPassed > 0) || !targetGreater && returnPassed < 0){ // Start a bounce
-            currentVelocity = -currentVelocity*hitDamping;
-            returned = current + currentVelocity;
-        }
-
-        return returned;
+        cube6.position = LeanTween.followGravity(cube6.position, followTrans.position, ref cube6Velocity, 1.1f);
     }
 
 }
