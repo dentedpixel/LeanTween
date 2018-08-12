@@ -43,25 +43,22 @@ public class FollowingTests : MonoBehaviour {
     public Transform followTrans;
 
     public Transform cube1;
-    private Vector3 cube1Velocity;
     private float cube1VelocityX;
 
     public Transform cube2;
     private float cube2VelocityX;
 
     public Transform cube3;
-    private Vector3 cube3Velocity;
     private float cube3VelocityX;
 
     public Transform cube4;
-    private Vector3 cube4Velocity;
     private float cube4VelocityX;
 
     public Transform cube5;
     private float cube5VelocityX;
 
     private void Start(){
-        followTrans.gameObject.LeanDelayedCall(2f, moveFollow).setOnStart(moveFollow).setRepeat(-1);
+        followTrans.gameObject.LeanDelayedCall(3f, moveFollow).setOnStart(moveFollow).setRepeat(-1);
     }
 
     private void moveFollow(){
@@ -73,10 +70,8 @@ public class FollowingTests : MonoBehaviour {
         var pos = cube1.position;
         pos.x = Mathf.SmoothDamp(cube1.position.x, followTrans.position.x, ref cube1VelocityX, 1.1f);
         cube1.position = pos;
-        // cube2.position = LeanSmooth.damp(cube2.position, followTrans.position, ref cube2Velocity, 1.1f);
 
         pos = cube2.position;
-        //pos.x = mySmoothDamp(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
         pos.x = followGravity(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
         cube2.position = pos;
 
@@ -97,35 +92,48 @@ public class FollowingTests : MonoBehaviour {
     public float accelDamping = 0.5f;
     public float hitDamping = 0.9f;
 
-    public float followGravity(float current, float target, ref float currentVelocity, float smoothTime)
+    public float followGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+            
         float diff = target - current;
 
-        float numR = Time.deltaTime / smoothTime * accelDamping;
-
-        currentVelocity += diff * numR;
+        currentVelocity += deltaTime / smoothTime * accelDamping * diff;
                
-        currentVelocity *= (1f - Time.deltaTime * friction);
+        currentVelocity *= (1f - deltaTime * friction);
+
+        if (maxSpeed>0f && maxSpeed < Mathf.Abs(currentVelocity))
+            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
 
         float returned = current + currentVelocity;
 
         return returned;
     }
 
-    public float followQuint(float current, float target, ref float currentVelocity, float smoothTime)
+    public float followQuint(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+        
         float diff = target - current;
 
         currentVelocity = Time.deltaTime / smoothTime * diff;
 
+        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
+            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
+
         return current + currentVelocity;
     }
 
-    public float followLinear(float current, float target, float moveSpeed)
+    public float followLinear(float current, float target, float moveSpeed, float deltaTime = -1f)
     {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+        
         bool targetGreater = (target > current);
 
-        float currentVelocity = Time.deltaTime * moveSpeed * (targetGreater ? 1f : -1f);
+        float currentVelocity = deltaTime * moveSpeed * (targetGreater ? 1f : -1f);
 
         float returned = current + currentVelocity;
 
@@ -137,15 +145,19 @@ public class FollowingTests : MonoBehaviour {
         return returned;
     }
 
-    public float followBounceOut(float current, float target, ref float currentVelocity, float smoothTime)
+    public float followBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
+        if (deltaTime < 0f)
+            deltaTime = Time.deltaTime;
+        
         float diff = target - current;
 
-        float numR = Time.deltaTime / smoothTime * accelDamping;
+        currentVelocity += deltaTime / smoothTime * accelDamping * diff;
 
-        currentVelocity += diff * numR;
+        currentVelocity *= (1f - deltaTime * friction);
 
-        currentVelocity *= (1f - Time.deltaTime * friction);
+        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
+            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
 
         float returned = current + currentVelocity;
 
@@ -158,7 +170,5 @@ public class FollowingTests : MonoBehaviour {
 
         return returned;
     }
-
-
 
 }
