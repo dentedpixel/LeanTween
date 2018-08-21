@@ -2442,7 +2442,7 @@ public class LeanTween : MonoBehaviour {
 
     // LeanTween Following
 
-    public static float followDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    public static float smoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -2469,7 +2469,16 @@ public class LeanTween : MonoBehaviour {
         return num8;
     }
 
-    public static float followGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    public static Vector3 followDamp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    {
+        float x = smoothDamp(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
+        float y = smoothDamp(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime);
+        float z = smoothDamp(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime);
+
+        return new Vector3(x, y, z);
+    }
+
+    public static float smoothGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -2488,16 +2497,16 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
-    public static Vector3 followGravity(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    public static Vector3 smoothGravity(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
     {
-        float x = followGravity(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float y = followGravity(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float z = followGravity(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float x = smoothGravity(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float y = smoothGravity(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float z = smoothGravity(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
 
         return new Vector3(x, y, z);
     }
 
-    public static float followQuint(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    public static float smoothQuint(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -2512,16 +2521,16 @@ public class LeanTween : MonoBehaviour {
         return current + currentVelocity;
     }
 
-    public static Vector3 followQuint(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    public static Vector3 smoothQuint(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
-        float x = followQuint(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
-        float y = followQuint(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime);
-        float z = followQuint(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime);
+        float x = smoothQuint(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
+        float y = smoothQuint(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime);
+        float z = smoothQuint(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime);
 
         return new Vector3(x, y, z);
     }
 
-    public static float followLinear(float current, float target, float moveSpeed, float deltaTime = -1f)
+    public static float smoothLinear(float current, float target, float moveSpeed, float deltaTime = -1f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -2541,16 +2550,16 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
-    public static Vector3 followLinear(Vector3 current, Vector3 target, float moveSpeed, float deltaTime = -1f)
+    public static Vector3 smoothLinear(Vector3 current, Vector3 target, float moveSpeed, float deltaTime = -1f)
     {
-        float x = followLinear(current.x, target.x, moveSpeed, deltaTime);
-        float y = followLinear(current.y, target.y, moveSpeed, deltaTime);
-        float z = followLinear(current.z, target.z, moveSpeed, deltaTime);
+        float x = smoothLinear(current.x, target.x, moveSpeed, deltaTime);
+        float y = smoothLinear(current.y, target.y, moveSpeed, deltaTime);
+        float z = smoothLinear(current.z, target.z, moveSpeed, deltaTime);
 
         return new Vector3(x, y, z);
     }
 
-    public static float followBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    public static float smoothBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -2577,11 +2586,11 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
-    public static Vector3 followBounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    public static Vector3 smoothBounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
     {
-        float x = followBounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
-        float y = followBounceOut(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
-        float z = followBounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float x = smoothBounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float y = smoothBounceOut(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float z = smoothBounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
 
         return new Vector3(x, y, z);
     }

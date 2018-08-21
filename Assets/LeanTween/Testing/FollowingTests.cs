@@ -35,27 +35,31 @@ public class FollowingTests : MonoBehaviour {
     void Update()
     {
         var pos = cube1.position;
-        pos.x = LeanTween.followDamp(cube1.position.x, followTrans.position.x, ref cube1VelocityX, 1.1f);
+        pos.x = LeanTween.smoothDamp(cube1.position.x, followTrans.position.x, ref cube1VelocityX, 1.1f);
         cube1.position = pos;
 
         pos = cube2.position;
-        pos.x = LeanTween.followGravity(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
+        pos.x = LeanTween.smoothGravity(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
         cube2.position = pos;
 
         pos = cube3.position;
-        pos.x = LeanTween.followBounceOut(cube3.position.x, followTrans.position.x, ref cube3VelocityX, 1.1f);
+        pos.x = LeanTween.smoothBounceOut(cube3.position.x, followTrans.position.x, ref cube3VelocityX, 1.1f);
         cube3.position = pos;
 
         pos = cube4.position;
-        pos.x = LeanTween.followQuint(cube4.position.x, followTrans.position.x, ref cube4VelocityX, 1.1f);
+        pos.x = LeanTween.smoothQuint(cube4.position.x, followTrans.position.x, ref cube4VelocityX, 1.1f);
         cube4.position = pos;
 
         pos = cube5.position;
-        pos.x = LeanTween.followLinear(cube5.position.x, followTrans.position.x, 10f);
+        pos.x = LeanTween.smoothLinear(cube5.position.x, followTrans.position.x, 10f);
         cube5.position = pos;
 
 
-        cube6.position = LeanTween.followGravity(cube6.position, followTrans.position, ref cube6Velocity, 1.1f);
+        cube6.position = LeanTween.smoothGravity(cube6.position, followTrans.position, ref cube6Velocity, 1.1f);
+
+        if(LeanTween.isTweening(0)){
+            Debug.Log("Tweening");
+        }
     }
 
 }
