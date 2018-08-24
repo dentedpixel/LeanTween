@@ -881,6 +881,23 @@ public class LTDescr
 		return this;
 	}
 
+    public LTDescr setFollowDamp()
+    {
+        this.type = TweenAction.FOLLOW_POSITION;
+        this.initInternal = () => { this.fromInternal = Vector3.zero; };
+        this.easeInternal = () => {
+            newVect = LeanTween.smoothDamp(this.trans.position, this.optional.toTrans.position, ref this.fromInternal, this.to.x, this.to.y, Time.deltaTime);
+            this.trans.position = newVect;
+        };
+        return this;
+    }
+
+    public LTDescr setTarget(Transform trans)
+    {
+        this.optional.toTrans = trans;
+        return this;
+    }
+
 	private void init(){
 		this.hasInitiliazed = true;
 

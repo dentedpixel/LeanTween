@@ -196,6 +196,7 @@ public enum TweenAction{
     CANVAS_MOVE,
     CANVAS_SCALE,
     CANVAS_SIZEDELTA,
+    FOLLOW_POSITION
 }
 
 public enum LeanTweenType{
@@ -2469,13 +2470,18 @@ public class LeanTween : MonoBehaviour {
         return num8;
     }
 
-    public static Vector3 followDamp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    public static Vector3 smoothDamp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
         float x = smoothDamp(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
         float y = smoothDamp(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime);
         float z = smoothDamp(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime);
 
         return new Vector3(x, y, z);
+    }
+
+    public static LTDescr followDamp(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
+    {
+        return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDamp().setTarget(target)); 
     }
 
     public static float smoothGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)

@@ -24,8 +24,12 @@ public class FollowingTests : MonoBehaviour {
     public Transform cube6;
     private Vector3 cube6Velocity;
 
+    public Transform fly1;
+
     private void Start(){
         followTrans.gameObject.LeanDelayedCall(3f, moveFollow).setOnStart(moveFollow).setRepeat(-1);
+
+        LeanTween.followDamp(cube6, followTrans, 0.6f);
     }
 
     private void moveFollow(){
@@ -55,7 +59,7 @@ public class FollowingTests : MonoBehaviour {
         cube5.position = pos;
 
 
-        cube6.position = LeanTween.smoothGravity(cube6.position, followTrans.position, ref cube6Velocity, 1.1f);
+        // cube6.position = LeanTween.smoothGravity(cube6.position, followTrans.position, ref cube6Velocity, 1.1f);
 
         if(LeanTween.isTweening(0)){
             Debug.Log("Tweening");
