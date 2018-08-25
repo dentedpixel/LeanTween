@@ -150,8 +150,6 @@ public class LTDescr
 		this.easeMethod = this.easeLinear;
 		this.from = this.to = Vector3.zero;
 		this._optional.reset();
-
-
 	}
 
 	// Initialize and Internal Methods
@@ -884,10 +882,40 @@ public class LTDescr
     public LTDescr setFollowDamp()
     {
         this.type = TweenAction.FOLLOW_POSITION;
-        this.initInternal = () => { this.fromInternal = Vector3.zero; };
+        this.initInternal = () => {};
         this.easeInternal = () => {
             newVect = LeanTween.smoothDamp(this.trans.position, this.optional.toTrans.position, ref this.fromInternal, this.to.x, this.to.y, Time.deltaTime);
             this.trans.position = newVect;
+        };
+        return this;
+    }
+
+    public LTDescr setFollowDampX()
+    {
+        this.type = TweenAction.FOLLOW_POSITION_X;
+        this.initInternal = () => { };
+        this.easeInternal = () => {
+            this.trans.LeanSetPosY(LeanTween.smoothDamp(this.trans.position.x, this.optional.toTrans.position.x, ref this.fromInternal.x, this.to.x, this.to.y, Time.deltaTime));
+        };
+        return this;
+    }
+
+    public LTDescr setFollowDampY()
+    {
+        this.type = TweenAction.FOLLOW_POSITION_Y;
+        this.initInternal = () => {};
+        this.easeInternal = () => {
+            this.trans.LeanSetPosY( LeanTween.smoothDamp(this.trans.position.y, this.optional.toTrans.position.y, ref this.fromInternal.y, this.to.x, this.to.y, Time.deltaTime) );
+        };
+        return this;
+    }
+
+    public LTDescr setFollowDampZ()
+    {
+        this.type = TweenAction.FOLLOW_POSITION_Z;
+        this.initInternal = () => { };
+        this.easeInternal = () => {
+            this.trans.LeanSetPosY( LeanTween.smoothDamp(this.trans.position.z, this.optional.toTrans.position.z, ref this.fromInternal.z, this.to.x, this.to.y, Time.deltaTime));
         };
         return this;
     }

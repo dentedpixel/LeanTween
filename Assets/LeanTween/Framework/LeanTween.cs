@@ -196,7 +196,11 @@ public enum TweenAction{
     CANVAS_MOVE,
     CANVAS_SCALE,
     CANVAS_SIZEDELTA,
-    FOLLOW_POSITION
+    FOLLOW_POSITION,
+    FOLLOW_POSITION_X,
+    FOLLOW_POSITION_Y,
+    FOLLOW_POSITION_Z
+
 }
 
 public enum LeanTweenType{
@@ -2482,6 +2486,21 @@ public class LeanTween : MonoBehaviour {
     public static LTDescr followDamp(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
     {
         return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDamp().setTarget(target)); 
+    }
+
+    public static LTDescr followDampX(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
+    {
+        return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDampX().setTarget(target));
+    }
+
+    public static LTDescr followDampY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
+    {
+        return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDampY().setTarget(target));
+    }
+
+    public static LTDescr followDampZ(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
+    {
+        return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDampZ().setTarget(target));
     }
 
     public static float smoothGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)

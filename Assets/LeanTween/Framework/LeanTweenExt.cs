@@ -162,4 +162,14 @@ public static class LeanTweenExt
     //LeanTween.value (Vector2)
     //LeanTween.value (Vector3)
     //LeanTween.value (Vector3)
+
+    public static void LeanSetPosX(this Transform transform, float val){
+        transform.position = new Vector3(val, transform.position.y, transform.position.z);
+    }
+    public static void LeanSetPosY(this Transform transform, float val) {
+        transform.position = new Vector3(transform.position.x, val, transform.position.z);
+    }
+    public static void LeanSetPosZ(this Transform transform, float val) {
+        transform.position = new Vector3(transform.position.x, transform.position.y, val);
+    }
 }
