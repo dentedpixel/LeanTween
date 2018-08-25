@@ -879,47 +879,6 @@ public class LTDescr
 		return this;
 	}
 
-    public LTDescr setFollowDamp()
-    {
-        this.type = TweenAction.FOLLOW_POSITION;
-        this.initInternal = () => {};
-        this.easeInternal = () => {
-            newVect = LeanTween.smoothDamp(this.trans.position, this.optional.toTrans.position, ref this.fromInternal, this.to.x, this.to.y, Time.deltaTime);
-            this.trans.position = newVect;
-        };
-        return this;
-    }
-
-    public LTDescr setFollowDampX()
-    {
-        this.type = TweenAction.FOLLOW_POSITION_X;
-        this.initInternal = () => { };
-        this.easeInternal = () => {
-            this.trans.LeanSetPosY(LeanTween.smoothDamp(this.trans.position.x, this.optional.toTrans.position.x, ref this.fromInternal.x, this.to.x, this.to.y, Time.deltaTime));
-        };
-        return this;
-    }
-
-    public LTDescr setFollowDampY()
-    {
-        this.type = TweenAction.FOLLOW_POSITION_Y;
-        this.initInternal = () => {};
-        this.easeInternal = () => {
-            this.trans.LeanSetPosY( LeanTween.smoothDamp(this.trans.position.y, this.optional.toTrans.position.y, ref this.fromInternal.y, this.to.x, this.to.y, Time.deltaTime) );
-        };
-        return this;
-    }
-
-    public LTDescr setFollowDampZ()
-    {
-        this.type = TweenAction.FOLLOW_POSITION_Z;
-        this.initInternal = () => { };
-        this.easeInternal = () => {
-            this.trans.LeanSetPosY( LeanTween.smoothDamp(this.trans.position.z, this.optional.toTrans.position.z, ref this.fromInternal.z, this.to.x, this.to.y, Time.deltaTime));
-        };
-        return this;
-    }
-
     public LTDescr setTarget(Transform trans)
     {
         this.optional.toTrans = trans;
@@ -937,7 +896,8 @@ public class LTDescr
 		if (this.time <= 0f) // avoid dividing by zero
 			this.time = Mathf.Epsilon;
 
-		this.initInternal();
+        if(this.initInternal!=null)
+    		this.initInternal();
 
 		this.diff = this.to - this.from;
 		this.diffDiv2 = this.diff * 0.5f;

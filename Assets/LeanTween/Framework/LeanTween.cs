@@ -2485,22 +2485,34 @@ public class LeanTween : MonoBehaviour {
 
     public static LTDescr followDamp(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
     {
-        return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDamp().setTarget(target)); 
+        var d = pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setTarget(target));
+        d.easeInternal = () =>
+        {
+            d.trans.position = LeanTween.smoothDamp(d.trans.position, d.optional.toTrans.position, ref d.fromInternal, d.to.x, d.to.y, Time.deltaTime);
+        };
+        return d;
+        //return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDamp().setTarget(target)); 
     }
 
     public static LTDescr followDampX(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
     {
-        return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDampX().setTarget(target));
+        var d = pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setTarget(target));
+        d.easeInternal = () => { d.trans.LeanSetPosX(LeanTween.smoothDamp(d.trans.position.x, d.optional.toTrans.position.x, ref d.fromInternal.x, d.to.x, d.to.y, Time.deltaTime)); };
+        return d;
     }
 
     public static LTDescr followDampY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
     {
-        return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDampY().setTarget(target));
+        var d = pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setTarget(target));
+        d.easeInternal = () => { d.trans.LeanSetPosY(LeanTween.smoothDamp(d.trans.position.y, d.optional.toTrans.position.y, ref d.fromInternal.y, d.to.x, d.to.y, Time.deltaTime)); };
+        return d;
     }
 
     public static LTDescr followDampZ(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
     {
-        return pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setFollowDampZ().setTarget(target));
+        var d = pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setTarget(target));
+        d.easeInternal = () => { d.trans.LeanSetPosY(LeanTween.smoothDamp(d.trans.position.z, d.optional.toTrans.position.z, ref d.fromInternal.z, d.to.x, d.to.y, Time.deltaTime)); };
+        return d;
     }
 
     public static float smoothGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
