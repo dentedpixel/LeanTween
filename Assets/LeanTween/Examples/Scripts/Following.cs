@@ -17,6 +17,10 @@ public class Following : MonoBehaviour {
         followArrow.gameObject.LeanDelayedCall(3f, moveFollow).setOnStart(moveFollow).setRepeat(-1);
 
         LeanTween.followDampY(dude1, followArrow, 1.1f);
+        LeanTween.followGravityY(dude2, followArrow, 1.1f);
+        LeanTween.followBounceOutY(dude3, followArrow, 1.1f);
+        LeanTween.followQuintY(dude4, followArrow, 1.1f);
+        LeanTween.followLinearY(dude5, followArrow, 50f);
     }
 
     private void moveFollow()
