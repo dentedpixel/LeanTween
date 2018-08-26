@@ -172,4 +172,17 @@ public static class LeanTweenExt
     public static void LeanSetPosZ(this Transform transform, float val) {
         transform.position = new Vector3(transform.position.x, transform.position.y, val);
     }
+
+    public static void LeanSetLocalPosX(this Transform transform, float val)
+    {
+        transform.localPosition = new Vector3(val, transform.localPosition.y, transform.localPosition.z);
+    }
+    public static void LeanSetLocalPosY(this Transform transform, float val)
+    {
+        transform.localPosition = new Vector3(transform.localPosition.x, val, transform.localPosition.z);
+    }
+    public static void LeanSetLocalPosZ(this Transform transform, float val)
+    {
+        transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, val);
+    }
 }
