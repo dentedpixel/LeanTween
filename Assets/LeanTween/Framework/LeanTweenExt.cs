@@ -185,4 +185,9 @@ public static class LeanTweenExt
     {
         transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, val);
     }
+
+    public static Color LeanColor(this Transform transform)
+    {
+        return transform.GetComponent<Renderer>().material.color;
+    }
 }

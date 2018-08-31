@@ -209,6 +209,23 @@ public enum LeanTweenType{
     easeInBounce, easeOutBounce, easeInOutBounce, easeInBack, easeOutBack, easeInOutBack, easeInElastic, easeOutElastic, easeInOutElastic, easeSpring, easeShake, punch, once, clamp, pingPong, animationCurve
 }
 
+public enum LeanProp
+{
+    position,
+    localPosition,
+    x,
+    y,
+    z,
+    localX,
+    localY,
+    localZ,
+    scale,
+    scaleX,
+    scaleY,
+    scaleZ,
+    color
+}
+
 /**
 * LeanTween is an efficient tweening engine for Unity3d<br /><br />
 * <a href="#index">Index of All Methods</a> | <a href="LTDescr.html">Optional Paramaters that can be passed</a><br /><br />
@@ -2483,68 +2500,138 @@ public class LeanTween : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
-    public static LTDescr followDamp(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
+    public static Color smoothDamp(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
-        var d = pushNewTween(trans.gameObject, new Vector3(smoothTime, maxSpeed, 0), float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => {
-            d.trans.position = smoothDamp(d.trans.position, d.optional.toTrans.position, ref d.fromInternal, d.to.x, d.to.y, Time.deltaTime);
-        };
+        float r = smoothDamp(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime);
+        float g = smoothDamp(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime);
+        float b = smoothDamp(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime);
+        float a = smoothDamp(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime);
+
+        return new Color(r, g, b, a);
+    }
+
+    public static LTDescr followDamp(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f)
+    {
+        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
+        switch(prop){
+            case LeanProp.position:
+                d.easeInternal = () => {
+                    d.trans.position = smoothDamp(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                }; break;
+            case LeanProp.localY: 
+                d.easeInternal = () => { 
+                    d.trans.LeanSetLocalPosY(smoothDamp(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime)); 
+                }; break;
+            case LeanProp.y:
+                d.easeInternal = () => { 
+                    d.trans.LeanSetPosY(smoothDamp(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime)); 
+                }; break;
+            case LeanProp.scale:
+                d.easeInternal = () => {
+                    d.trans.localScale = smoothDamp(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                }; break;
+            case LeanProp.color:
+                d.easeInternal = () => {
+                    var col = smoothDamp(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime);
+                    d.trans.GetComponent<Renderer>().material.color = col;
+                }; break;
+        }
+
         return d;
     }
 
-    public static LTDescr followDampX(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
+    public static LTDescr followSpring(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f)
     {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetPosX(smoothDamp(d.trans.position.x, d.optional.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime)); };
+        switch (prop)
+        {
+            case LeanProp.position:
+                d.easeInternal = () => {
+                    d.trans.position = smoothSpring(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                }; break;
+            case LeanProp.localX:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosX(smoothSpring(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                }; break;
+            case LeanProp.localY:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosY(smoothSpring(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                }; break;
+            case LeanProp.localZ:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosZ(smoothSpring(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                }; break;
+            case LeanProp.x:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosX(smoothSpring(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                }; break;
+            case LeanProp.y:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosY(smoothSpring(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                }; break;
+            case LeanProp.z:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosZ(smoothSpring(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                }; break;
+            case LeanProp.scale:
+                d.easeInternal = () => {
+                    d.trans.localScale = smoothSpring(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                }; break;
+            case LeanProp.color:
+                d.easeInternal = () => {
+                    var col = smoothSpring(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    d.trans.GetComponent<Renderer>().material.color = col;
+                }; break;
+        }
+
         return d;
     }
 
-    public static LTDescr followDampY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
-    {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetPosY(smoothDamp(d.trans.position.y, d.optional.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime)); };
-        return d;
-    }
 
-    public static LTDescr followLocalDampY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
+    public static LTDescr followBounceOut(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
     {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetLocalPosY(smoothDamp(d.trans.localPosition.y, d.optional.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime)); };
-        return d;
-    }
+        switch (prop)
+        {
+            case LeanProp.position:
+                d.easeInternal = () => {
+                    d.trans.position = smoothBounceOut(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                }; break;
+            case LeanProp.localX:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosX(smoothBounceOut(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                }; break;
+            case LeanProp.localY:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosY(smoothBounceOut(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                }; break;
+            case LeanProp.localZ:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosZ(smoothBounceOut(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                }; break;
+            case LeanProp.x:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosX(smoothBounceOut(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                }; break;
+            case LeanProp.y:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosY(smoothBounceOut(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                }; break;
+            case LeanProp.z:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosZ(smoothBounceOut(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                }; break;
+            case LeanProp.scale:
+                d.easeInternal = () => {
+                    d.trans.localScale = smoothBounceOut(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                }; break;
+            case LeanProp.color:
+                d.easeInternal = () => {
+                    var col = smoothBounceOut(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                    d.trans.GetComponent<Renderer>().material.color = col;
+                }; break;
+        }
 
-    public static LTDescr followDampZ(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
-    {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetPosY(smoothDamp(d.trans.position.z, d.optional.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime)); };
-        return d;
-    }
-
-    public static LTDescr followGravityY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f)
-    {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetPosY(smoothGravity(d.trans.position.y, d.optional.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping)); };
-        return d;
-    }
-
-    public static LTDescr followLocalGravityY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f)
-    {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetLocalPosY(smoothGravity(d.trans.localPosition.y, d.optional.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping)); };
-        return d;
-    }
-
-    public static LTDescr followBounceOutY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
-    {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetPosY(smoothBounceOut(d.trans.position.y, d.optional.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping)); };
-        return d;
-    }
-
-    public static LTDescr followLocalBounceOutY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
-    {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetLocalPosY(smoothBounceOut(d.trans.localPosition.y, d.optional.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping)); };
         return d;
     }
 
@@ -2562,21 +2649,54 @@ public class LeanTween : MonoBehaviour {
         return d;
     }
 
-    public static LTDescr followLinearY(Transform trans, Transform target, float moveSpeed)
+    public static LTDescr followLinear(Transform trans, Transform target, LeanProp prop, float moveSpeed)
     {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetPosY(smoothLinear(d.trans.position.y, d.optional.toTrans.position.y, moveSpeed, Time.deltaTime)); };
+        switch (prop)
+        {
+            case LeanProp.position:
+                d.easeInternal = () => {
+                    d.trans.position = smoothLinear(d.trans.position, d.toTrans.position,  moveSpeed);
+                }; break;
+            case LeanProp.localX:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosX(smoothLinear(d.trans.localPosition.x, d.toTrans.localPosition.x, moveSpeed));
+                }; break;
+            case LeanProp.localY:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosY(smoothLinear(d.trans.localPosition.y, d.toTrans.localPosition.y, moveSpeed));
+                }; break;
+            case LeanProp.localZ:
+                d.easeInternal = () => {
+                    d.trans.LeanSetLocalPosZ(smoothLinear(d.trans.localPosition.z, d.toTrans.localPosition.z, moveSpeed));
+                }; break;
+            case LeanProp.x:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosX(smoothLinear(d.trans.position.x, d.toTrans.position.x, moveSpeed));
+                }; break;
+            case LeanProp.y:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosY(smoothLinear(d.trans.position.y, d.toTrans.position.y, moveSpeed));
+                }; break;
+            case LeanProp.z:
+                d.easeInternal = () => {
+                    d.trans.LeanSetPosZ(smoothLinear(d.trans.position.z, d.toTrans.position.z, moveSpeed));
+                }; break;
+            case LeanProp.scale:
+                d.easeInternal = () => {
+                    d.trans.localScale = smoothLinear(d.trans.localScale, d.toTrans.localScale, moveSpeed);
+                }; break;
+            case LeanProp.color:
+                d.easeInternal = () => {
+                    var col = smoothLinear(d.trans.LeanColor(), d.toTrans.LeanColor(), moveSpeed);
+                    d.trans.GetComponent<Renderer>().material.color = col;
+                }; break;
+        }
+
         return d;
     }
 
-    public static LTDescr followLocalLinearY(Transform trans, Transform target, float moveSpeed)
-    {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
-        d.easeInternal = () => { d.trans.LeanSetLocalPosY(smoothLinear(d.trans.localPosition.y, d.optional.toTrans.localPosition.y, moveSpeed, Time.deltaTime)); };
-        return d;
-    }
-
-    public static float smoothGravity(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    public static float smoothSpring(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -2595,13 +2715,23 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
-    public static Vector3 smoothGravity(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    public static Vector3 smoothSpring(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
     {
-        float x = smoothGravity(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float y = smoothGravity(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float z = smoothGravity(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float x = smoothSpring(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float y = smoothSpring(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float z = smoothSpring(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
 
         return new Vector3(x, y, z);
+    }
+
+    public static Color smoothSpring(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    {
+        float r = smoothSpring(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float g = smoothSpring(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float b = smoothSpring(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float a = smoothSpring(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+
+        return new Color(r, g, b, a);
     }
 
     public static float smoothQuint(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
@@ -2657,6 +2787,16 @@ public class LeanTween : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
+    public static Color smoothLinear(Color current, Color target, float moveSpeed)
+    {
+        float r = smoothLinear(current.r, target.r, moveSpeed);
+        float g = smoothLinear(current.g, target.g, moveSpeed);
+        float b = smoothLinear(current.b, target.b, moveSpeed);
+        float a = smoothLinear(current.a, target.a, moveSpeed);
+
+        return new Color(r, g, b, a);
+    }
+
     public static float smoothBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
     {
         if (deltaTime < 0f)
@@ -2691,6 +2831,16 @@ public class LeanTween : MonoBehaviour {
         float z = smoothBounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
 
         return new Vector3(x, y, z);
+    }
+
+    public static Color smoothBounceOut(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    {
+        float r = smoothBounceOut(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float g = smoothBounceOut(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float b = smoothBounceOut(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float a = smoothBounceOut(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+
+        return new Color(r, g, b, a);
     }
 
     // LeanTween Listening/Dispatch

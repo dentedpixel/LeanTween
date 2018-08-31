@@ -86,7 +86,14 @@ public class LTDescr
 	public UnityEngine.UI.Image uiImage;
 	public UnityEngine.UI.RawImage rawImage;
 	public UnityEngine.Sprite[] sprites;
-	#endif
+#endif
+
+    // Convenience Getters
+    public Transform toTrans{
+        get{
+            return optional.toTrans;
+        }
+    }
 
 	public LTDescrOptional _optional = new LTDescrOptional();
 

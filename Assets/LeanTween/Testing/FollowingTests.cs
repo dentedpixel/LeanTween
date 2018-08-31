@@ -29,7 +29,7 @@ public class FollowingTests : MonoBehaviour {
     private void Start(){
         followTrans.gameObject.LeanDelayedCall(3f, moveFollow).setOnStart(moveFollow).setRepeat(-1);
 
-        LeanTween.followDamp(cube6, followTrans, 0.6f);
+        LeanTween.followDamp(cube6, followTrans, LeanProp.position, 0.6f);
     }
 
     private void moveFollow(){
@@ -43,7 +43,7 @@ public class FollowingTests : MonoBehaviour {
         cube1.position = pos;
 
         pos = cube2.position;
-        pos.x = LeanTween.smoothGravity(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
+        pos.x = LeanTween.smoothSpring(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
         cube2.position = pos;
 
         pos = cube3.position;

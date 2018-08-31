@@ -15,6 +15,7 @@ public class LTDescrOptional  {
 	public LTSpline spline { get; set; }
 	public AnimationCurve animationCurve;
 	public int initFrameCount;
+    public Color color;
 
 	public LTRect ltRect { get; set; } // maybe get rid of this eventually
 
