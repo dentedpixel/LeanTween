@@ -14,9 +14,12 @@ public class Following : MonoBehaviour {
     public Transform dude4;
     public Transform dude5;
 
+    public RectTransform dude1Title;
+    public RectTransform dude2Title;
+
     private Color dude1ColorVelocity;
 
-    public Material followMaterial;
+    private Material followMaterial;
 
     private void Start()
     {
@@ -44,6 +47,10 @@ public class Following : MonoBehaviour {
         LeanTween.followBounceOut(dude3, followArrow, LeanProp.scale, 1.1f);
         LeanTween.followSpring(dude4, followArrow, LeanProp.scale, 1.1f, -1f, 1.5f, 0.8f);
         LeanTween.followLinear(dude5, followArrow, LeanProp.scale, 5f);
+
+        // Titles
+        LeanTween.followDamp(dude1Title, dude1, LeanProp.position, 0.6f).setOffset(new Vector3(0.5f, -6f,  1.5f));//.setOffset( new Vector3(45f,-60,-20.0f) );
+        LeanTween.followSpring(dude2Title, dude2, LeanProp.position, 0.6f).setOffset(new Vector3(0.5f, -6f, 1.5f));
 
         // Rotate Planet
         var localPos = Camera.main.transform.InverseTransformPoint(planet.transform.position);

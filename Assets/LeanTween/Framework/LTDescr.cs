@@ -161,6 +161,12 @@ public class LTDescr
 
 	// Initialize and Internal Methods
 
+    public LTDescr setFollow()
+    {
+        this.type = TweenAction.FOLLOW;
+        return this;
+    }
+
 	public LTDescr setMoveX(){
 		this.type = TweenAction.MOVE_X;
 		this.initInternal = ()=>{ this.fromInternal.x = trans.position.x; };
@@ -204,6 +210,11 @@ public class LTDescr
 	}
 
 	private void initFromInternal(){ this.fromInternal.x = 0; }
+
+    public LTDescr setOffset( Vector3 offset ){
+        this.toInternal = offset;
+        return this;
+    }
 
 	public LTDescr setMoveCurved(){
 		this.type = TweenAction.MOVE_CURVED;

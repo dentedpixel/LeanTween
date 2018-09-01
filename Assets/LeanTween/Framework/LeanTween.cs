@@ -196,10 +196,7 @@ public enum TweenAction{
     CANVAS_MOVE,
     CANVAS_SCALE,
     CANVAS_SIZEDELTA,
-    FOLLOW_POSITION,
-    FOLLOW_POSITION_X,
-    FOLLOW_POSITION_Y,
-    FOLLOW_POSITION_Z
+    FOLLOW,
 
 }
 
@@ -2512,11 +2509,11 @@ public class LeanTween : MonoBehaviour {
 
     public static LTDescr followDamp(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f)
     {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
+        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch(prop){
             case LeanProp.position:
                 d.easeInternal = () => {
-                    d.trans.position = smoothDamp(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.trans.position = smoothDamp(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime) + d.toInternal;
                 }; break;
             case LeanProp.localY: 
                 d.easeInternal = () => { 
@@ -2542,12 +2539,12 @@ public class LeanTween : MonoBehaviour {
 
     public static LTDescr followSpring(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f)
     {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
+        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch (prop)
         {
             case LeanProp.position:
                 d.easeInternal = () => {
-                    d.trans.position = smoothSpring(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    d.trans.position = smoothSpring(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping) + d.toInternal;
                 }; break;
             case LeanProp.localX:
                 d.easeInternal = () => {
@@ -2590,7 +2587,7 @@ public class LeanTween : MonoBehaviour {
 
     public static LTDescr followBounceOut(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
     {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
+        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch (prop)
         {
             case LeanProp.position:
@@ -2637,21 +2634,21 @@ public class LeanTween : MonoBehaviour {
 
     public static LTDescr followQuintY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
     {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
+        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         d.easeInternal = () => { d.trans.LeanSetPosY(smoothQuint(d.trans.position.y, d.optional.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime)); };
         return d;
     }
 
     public static LTDescr followLocalQuintY(Transform trans, Transform target, float smoothTime, float maxSpeed = -1f)
     {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
+        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         d.easeInternal = () => { d.trans.LeanSetLocalPosY(smoothQuint(d.trans.localPosition.y, d.optional.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime)); };
         return d;
     }
 
     public static LTDescr followLinear(Transform trans, Transform target, LeanProp prop, float moveSpeed)
     {
-        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setTarget(target));
+        var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch (prop)
         {
             case LeanProp.position:
