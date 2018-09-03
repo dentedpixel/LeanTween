@@ -2510,10 +2510,23 @@ public class LeanTween : MonoBehaviour {
     public static LTDescr followDamp(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f)
     {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
+
         switch(prop){
-            case LeanProp.position:
+            case LeanProp.localPosition:
+                d.diff = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.trans.position = smoothDamp(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime) + d.toInternal;
+                    // d.trans.position = Vector3.SmoothDamp(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime) + d.toInternal;
+                    // d.diff = Vector3.SmoothDamp(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.diff = smoothDamp(d.diff, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.trans.localPosition = d.diff + d.toInternal;
+                }; break;
+            case LeanProp.position:
+                d.diff = d.trans.position;
+                d.easeInternal = () => {
+                    // d.trans.position = Vector3.SmoothDamp(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime) + d.toInternal;
+                    // d.diff = Vector3.SmoothDamp(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.diff = smoothDamp(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.trans.position = d.diff;// + d.toInternal;
                 }; break;
             case LeanProp.localY: 
                 d.easeInternal = () => { 
@@ -2542,9 +2555,17 @@ public class LeanTween : MonoBehaviour {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch (prop)
         {
-            case LeanProp.position:
+            case LeanProp.localPosition:
+                d.diff = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.trans.position = smoothSpring(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping) + d.toInternal;
+                    d.diff = smoothSpring(d.diff, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    d.trans.localPosition = d.diff + d.toInternal;
+                }; break;
+            case LeanProp.position:
+                d.diff = d.trans.position;
+                d.easeInternal = () => {
+                    d.diff = smoothSpring(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    d.trans.position = d.diff;// + d.toInternal;
                 }; break;
             case LeanProp.localX:
                 d.easeInternal = () => {
@@ -2590,6 +2611,12 @@ public class LeanTween : MonoBehaviour {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch (prop)
         {
+            case LeanProp.localPosition:
+                d.diff = d.trans.localPosition;
+                d.easeInternal = () => {
+                    d.diff = smoothBounceOut(d.diff, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                    d.trans.localPosition = d.diff + d.toInternal;
+                }; break;
             case LeanProp.position:
                 d.easeInternal = () => {
                     d.trans.position = smoothBounceOut(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
@@ -2651,6 +2678,12 @@ public class LeanTween : MonoBehaviour {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch (prop)
         {
+            case LeanProp.localPosition:
+                d.diff = d.trans.localPosition;
+                d.easeInternal = () => {
+                    d.diff = smoothLinear(d.diff, d.toTrans.localPosition, moveSpeed);
+                    d.trans.localPosition = d.diff + d.toInternal;
+                }; break;
             case LeanProp.position:
                 d.easeInternal = () => {
                     d.trans.position = smoothLinear(d.trans.position, d.toTrans.position,  moveSpeed);

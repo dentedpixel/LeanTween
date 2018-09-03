@@ -14,12 +14,16 @@ public class Following : MonoBehaviour {
     public Transform dude4;
     public Transform dude5;
 
-    public RectTransform dude1Title;
-    public RectTransform dude2Title;
+    public Transform dude1Title;
+    public Transform dude2Title;
+    public Transform dude3Title;
+    public Transform dude4Title;
+    public Transform dude5Title;
 
     private Color dude1ColorVelocity;
 
     private Material followMaterial;
+    private Vector3 velocityPos;
 
     private void Start()
     {
@@ -49,17 +53,23 @@ public class Following : MonoBehaviour {
         LeanTween.followLinear(dude5, followArrow, LeanProp.scale, 5f);
 
         // Titles
-        LeanTween.followDamp(dude1Title, dude1, LeanProp.position, 0.6f).setOffset(new Vector3(0.5f, -6f,  1.5f));//.setOffset( new Vector3(45f,-60,-20.0f) );
-        LeanTween.followSpring(dude2Title, dude2, LeanProp.position, 0.6f).setOffset(new Vector3(0.5f, -6f, 1.5f));
+        LeanTween.followDamp(dude1Title, dude1, LeanProp.localPosition, 0.6f).setOffset(new Vector3(0.0f, -20f, -18f));
+        LeanTween.followSpring(dude2Title, dude2, LeanProp.localPosition, 0.6f).setOffset(new Vector3(0.0f, -20f, -18f));
+        LeanTween.followBounceOut(dude3Title, dude3, LeanProp.localPosition, 0.6f).setOffset(new Vector3(0.0f, -20f, -18f));
+        LeanTween.followSpring(dude4Title, dude4, LeanProp.localPosition, 0.6f).setOffset(new Vector3(0.0f, -20f, -18f));
+        LeanTween.followLinear(dude5Title, dude5, LeanProp.localPosition, 30f).setOffset(new Vector3(0.0f, -20f, -18f));
 
         // Rotate Planet
         var localPos = Camera.main.transform.InverseTransformPoint(planet.transform.position);
         LeanTween.rotateAround(Camera.main.gameObject, Vector3.left, 360f, 300f).setPoint(localPos).setRepeat(-1);
     }
 
+
     private void Update()
     {
         // dude2.GetComponent<Renderer>().material.color = LeanTween.smoothGravity(dude2.GetComponent<Renderer>().material.color, followMaterial.color, ref dude1ColorVelocity, 1.1f);
+        //dude1Title.localPosition = Vector3.SmoothDamp(dude1Title.localPosition, dude2.localPosition, ref velocityPos, 1.1f);
+        //Debug.Log("1:" + dude1Title.position + " 2:" + dude2.position);
     }
 
 	private void moveArrow()
