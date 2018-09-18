@@ -2513,12 +2513,12 @@ public class LeanTween : MonoBehaviour {
 
         switch(prop){
             case LeanProp.localPosition:
-                d.diff = d.trans.localPosition;
+                d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
                     // d.trans.position = Vector3.SmoothDamp(d.trans.position, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime) + d.toInternal;
                     // d.diff = Vector3.SmoothDamp(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
-                    d.diff = smoothDamp(d.diff, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
-                    d.trans.localPosition = d.diff + d.toInternal;
+                    d.optional.axis = smoothDamp(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.diff = d.trans.position;
@@ -2556,10 +2556,10 @@ public class LeanTween : MonoBehaviour {
         switch (prop)
         {
             case LeanProp.localPosition:
-                d.diff = d.trans.localPosition;
+                d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.diff = smoothSpring(d.diff, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
-                    d.trans.localPosition = d.diff + d.toInternal;
+                    d.optional.axis = smoothSpring(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.diff = d.trans.position;
@@ -2612,10 +2612,10 @@ public class LeanTween : MonoBehaviour {
         switch (prop)
         {
             case LeanProp.localPosition:
-                d.diff = d.trans.localPosition;
+                d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.diff = smoothBounceOut(d.diff, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
-                    d.trans.localPosition = d.diff + d.toInternal;
+                    d.optional.axis = smoothBounceOut(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                    d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.easeInternal = () => {
@@ -2679,10 +2679,10 @@ public class LeanTween : MonoBehaviour {
         switch (prop)
         {
             case LeanProp.localPosition:
-                d.diff = d.trans.localPosition;
+                d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.diff = smoothLinear(d.diff, d.toTrans.localPosition, moveSpeed);
-                    d.trans.localPosition = d.diff + d.toInternal;
+                    d.optional.axis = smoothLinear(d.optional.axis, d.toTrans.localPosition, moveSpeed);
+                    d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.easeInternal = () => {
