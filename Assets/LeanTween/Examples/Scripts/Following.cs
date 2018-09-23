@@ -53,11 +53,12 @@ public class Following : MonoBehaviour {
         LeanTween.followLinear(dude5, followArrow, LeanProp.scale, 5f);
 
         // Titles
-        LeanTween.followDamp(dude1Title, dude1, LeanProp.localPosition, 0.6f).setOffset(new Vector3(0.0f, -20f, -18f));
-        LeanTween.followSpring(dude2Title, dude2, LeanProp.localPosition, 0.6f).setOffset(new Vector3(0.0f, -20f, -18f));
-        LeanTween.followBounceOut(dude3Title, dude3, LeanProp.localPosition, 0.6f).setOffset(new Vector3(0.0f, -20f, -18f));
-        LeanTween.followSpring(dude4Title, dude4, LeanProp.localPosition, 0.6f).setOffset(new Vector3(0.0f, -20f, -18f));
-        LeanTween.followLinear(dude5Title, dude5, LeanProp.localPosition, 30f).setOffset(new Vector3(0.0f, -20f, -18f));
+        var titleOffset = new Vector3(0.0f, -20f, -18f);
+        LeanTween.followDamp(dude1Title, dude1, LeanProp.localPosition, 0.6f).setOffset(titleOffset);
+        LeanTween.followSpring(dude2Title, dude2, LeanProp.localPosition, 0.6f).setOffset(titleOffset);
+        LeanTween.followBounceOut(dude3Title, dude3, LeanProp.localPosition, 0.6f).setOffset(titleOffset);
+        LeanTween.followSpring(dude4Title, dude4, LeanProp.localPosition, 0.6f, -1f, 1.5f, 0.8f).setOffset(titleOffset);
+        LeanTween.followLinear(dude5Title, dude5, LeanProp.localPosition, 30f).setOffset(titleOffset);
 
         // Rotate Planet
         var localPos = Camera.main.transform.InverseTransformPoint(planet.transform.position);

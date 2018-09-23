@@ -50,9 +50,9 @@ public class FollowingTests : MonoBehaviour {
         pos.x = LeanTween.smoothBounceOut(cube3.position.x, followTrans.position.x, ref cube3VelocityX, 1.1f);
         cube3.position = pos;
 
-        pos = cube4.position;
-        pos.x = LeanTween.smoothQuint(cube4.position.x, followTrans.position.x, ref cube4VelocityX, 1.1f);
-        cube4.position = pos;
+        //pos = cube4.position;
+        //pos.x = LeanTween.smoothQuint(cube4.position.x, followTrans.position.x, ref cube4VelocityX, 1.1f);
+        //cube4.position = pos;
 
         pos = cube5.position;
         pos.x = LeanTween.smoothLinear(cube5.position.x, followTrans.position.x, 10f);
