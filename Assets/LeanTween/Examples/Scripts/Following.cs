@@ -65,12 +65,17 @@ public class Following : MonoBehaviour {
         LeanTween.rotateAround(Camera.main.gameObject, Vector3.left, 360f, 300f).setPoint(localPos).setRepeat(-1);
     }
 
+    private float fromY;
+    private float velocityY;
+    private Vector3 fromVec3;
+    private Vector3 velocityVec3;
 
     private void Update()
     {
-        // dude2.GetComponent<Renderer>().material.color = LeanTween.smoothGravity(dude2.GetComponent<Renderer>().material.color, followMaterial.color, ref dude1ColorVelocity, 1.1f);
-        //dude1Title.localPosition = Vector3.SmoothDamp(dude1Title.localPosition, dude2.localPosition, ref velocityPos, 1.1f);
-        //Debug.Log("1:" + dude1Title.position + " 2:" + dude2.position);
+        // Use the smooth methods to follow variables in which ever manner you wish!
+        fromY = LeanTween.smoothSpring(fromY, followArrow.localPosition.y, ref velocityY, 1.1f);
+        fromVec3 = LeanTween.smoothDamp(fromVec3, dude5Title.localPosition, ref velocityVec3, 1.1f);
+        Debug.Log("Smoothed y:" + fromY + " vec3:" + fromVec3);
     }
 
 	private void moveArrow()

@@ -1,6 +1,6 @@
 //namespace DentedPixel{
 
-// LeanTween version 2.48 - http://dentedpixel.com/developer-diary/
+// LeanTween version 2.50 - http://dentedpixel.com/developer-diary/
 //
 // The MIT License (MIT)
 //
@@ -2456,8 +2456,20 @@ public class LeanTween : MonoBehaviour {
         return end + start + a * Mathf.Pow(2f, -10f * val) * Mathf.Sin((val - s) * (2f * Mathf.PI) / p) * 0.5f * overshoot;
     }
 
-    // LeanTween Following
+    // Mark: LeanTween Following
 
+    /**
+    * <summary>Follow another transforms position/scale/color with a damp transition (eases in and out to destination with no overshoot)</summary>
+    * 
+    * @method LeanTween.followDamp
+    * @param {Transform} transform:Transform the transform you wish to be the follower
+    * @param {Transform} transform:Transform the transform you wish to follow
+    * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
+    * @param {float} smoothTime:float speed at which it moves towards the destination
+    * @param {float} maxSpeed:float maximum speed at which it moves towards the destination
+    * @example
+    * LeanTween.followDamp(transform, followTransform, LeanProp.localY, 1.1f);
+    */
     public static LTDescr followDamp(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f)
     {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
