@@ -2465,7 +2465,7 @@ public class LeanTween : MonoBehaviour {
     * @param {Transform} transform:Transform the transform you wish to be the follower
     * @param {Transform} transform:Transform the transform you wish to follow
     * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
-    * @param {float} smoothTime:float speed at which it moves towards the destination
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
     * @param {float} [maxSpeed]:float maximum speed at which it moves towards the destination
     * @example
     * LeanTween.followDamp(transform, followTransform, LeanProp.localY, 1.1f);
@@ -2532,7 +2532,7 @@ public class LeanTween : MonoBehaviour {
     * @param {Transform} transform:Transform the transform you wish to be the follower
     * @param {Transform} transform:Transform the transform you wish to follow
     * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
-    * @param {float} smoothTime:float speed at which it moves towards the destination
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
     * @param {float} [maxSpeed]:float maximum speed at which it moves towards the destination
     * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
     * @param {float} [accelRate]:float the rate it accelerates from it's initial position
@@ -2601,7 +2601,7 @@ public class LeanTween : MonoBehaviour {
     * @param {Transform} transform:Transform the transform you wish to be the follower
     * @param {Transform} transform:Transform the transform you wish to follow
     * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
-    * @param {float} smoothTime:float speed at which it moves towards the destination
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
     * @param {float} [maxSpeed]:float maximum speed at which it moves towards the destination
     * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
     * @param {float} [accelRate]:float the rate it accelerates from it's initial position
@@ -2670,7 +2670,7 @@ public class LeanTween : MonoBehaviour {
     * @param {Transform} transform:Transform the transform you wish to be the follower
     * @param {Transform} transform:Transform the transform you wish to follow
     * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
-    * @param {float} moveSpeed:float speed at which it moves towards the destination
+    * @param {float} moveSpeed:float roughly the time it takes to reach the destination
     * @example
     * LeanTween.followLinear(transform, followTransform, LeanProp.localY, 50f);
     */
@@ -2729,6 +2729,20 @@ public class LeanTween : MonoBehaviour {
 
     // Smooth Methods
 
+    /**
+    * <summary>Moves one value towards another (eases in and out to destination with no overshoot)</summary>
+    * 
+    * @method LeanTween.smoothDamp (float)
+    * @param {float} current:float the current value
+    * @param {float} target:float the value we are trying to reach
+    * @param {float} currentVelocity:float the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @example
+    * followVar = LeanTween.smoothDamp(followVar, destinationVar, ref followVelocity, 1.1f);\n
+    * Debug.Log("current:"+followVar);
+    */
     public static float smoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
         if (deltaTime < 0f)
@@ -2757,6 +2771,20 @@ public class LeanTween : MonoBehaviour {
         return num8;
     }
 
+    /**
+    * <summary>Moves one value towards another (eases in and out to destination with no overshoot)</summary>
+    * 
+    * @method LeanTween.smoothDamp (Vector3)
+    * @param {float} current:Vector3 the current value
+    * @param {float} target:Vector3 the value we are trying to reach
+    * @param {float} currentVelocity:Vector3 the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @example
+    * transform.position = LeanTween.smoothDamp(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
+    * Debug.Log("current:"+transform.position);
+    */
     public static Vector3 smoothDamp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
         float x = smoothDamp(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
@@ -2766,6 +2794,20 @@ public class LeanTween : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
+    /**
+    * <summary>Moves one color value towards another color (eases in and out to destination with no overshoot)</summary>
+    * 
+    * @method LeanTween.smoothDamp (Color)
+    * @param {float} current:Color the current value
+    * @param {float} target:Color the value we are trying to reach
+    * @param {float} currentVelocity:Color the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @example
+    * fromColor = LeanTween.smoothDamp(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
+    * Debug.Log("current:"+fromColor);
+    */
     public static Color smoothDamp(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
         float r = smoothDamp(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime);

@@ -69,13 +69,16 @@ public class Following : MonoBehaviour {
     private float velocityY;
     private Vector3 fromVec3;
     private Vector3 velocityVec3;
+    private Color fromColor;
+    private Color velocityColor;
 
     private void Update()
     {
         // Use the smooth methods to follow variables in which ever manner you wish!
         fromY = LeanTween.smoothSpring(fromY, followArrow.localPosition.y, ref velocityY, 1.1f);
         fromVec3 = LeanTween.smoothDamp(fromVec3, dude5Title.localPosition, ref velocityVec3, 1.1f);
-        Debug.Log("Smoothed y:" + fromY + " vec3:" + fromVec3);
+        fromColor = LeanTween.smoothDamp(fromColor, dude5Title.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);
+        Debug.Log("Smoothed y:" + fromY + " vec3:" + fromVec3 + " color:" + fromColor);
     }
 
 	private void moveArrow()
