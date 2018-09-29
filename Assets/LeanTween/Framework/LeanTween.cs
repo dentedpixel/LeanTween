@@ -2466,7 +2466,7 @@ public class LeanTween : MonoBehaviour {
     * @param {Transform} transform:Transform the transform you wish to follow
     * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
     * @param {float} smoothTime:float speed at which it moves towards the destination
-    * @param {float} maxSpeed:float maximum speed at which it moves towards the destination
+    * @param {float} [maxSpeed]:float maximum speed at which it moves towards the destination
     * @example
     * LeanTween.followDamp(transform, followTransform, LeanProp.localY, 1.1f);
     */
@@ -2525,7 +2525,21 @@ public class LeanTween : MonoBehaviour {
         return d;
     }
 
-    public static LTDescr followSpring(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f)
+    /**
+    * <summary>Follow another transforms position/scale/color with a springy transition (eases in and out to destination with possible overshoot bounciness)</summary>
+    * 
+    * @method LeanTween.followSpring
+    * @param {Transform} transform:Transform the transform you wish to be the follower
+    * @param {Transform} transform:Transform the transform you wish to follow
+    * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
+    * @param {float} smoothTime:float speed at which it moves towards the destination
+    * @param {float} [maxSpeed]:float maximum speed at which it moves towards the destination
+    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
+    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
+    * @example
+    * LeanTween.followSpring(transform, followTransform, LeanProp.localY);
+    */
+    public static LTDescr followSpring(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelRate = 0.5f)
     {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch (prop)
@@ -2533,46 +2547,46 @@ public class LeanTween : MonoBehaviour {
             case LeanProp.localPosition:
                 d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.optional.axis = smoothSpring(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    d.optional.axis = smoothSpring(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
                     d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.diff = d.trans.position;
                 d.easeInternal = () => {
-                    d.diff = smoothSpring(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    d.diff = smoothSpring(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
                     d.trans.position = d.diff;// + d.toInternal;
                 }; break;
             case LeanProp.localX:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosX(smoothSpring(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                    d.trans.LeanSetLocalPosX(smoothSpring(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.localY:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosY(smoothSpring(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                    d.trans.LeanSetLocalPosY(smoothSpring(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.localZ:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosZ(smoothSpring(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                    d.trans.LeanSetLocalPosZ(smoothSpring(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.x:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosX(smoothSpring(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                    d.trans.LeanSetPosX(smoothSpring(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.y:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosY(smoothSpring(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                    d.trans.LeanSetPosY(smoothSpring(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.z:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosZ(smoothSpring(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping));
+                    d.trans.LeanSetPosZ(smoothSpring(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.scale:
                 d.easeInternal = () => {
-                    d.trans.localScale = smoothSpring(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    d.trans.localScale = smoothSpring(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
                 }; break;
             case LeanProp.color:
                 d.easeInternal = () => {
-                    var col = smoothSpring(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping);
+                    var col = smoothSpring(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
                     d.trans.GetComponent<Renderer>().material.color = col;
                 }; break;
         }
@@ -2580,8 +2594,22 @@ public class LeanTween : MonoBehaviour {
         return d;
     }
 
-
-    public static LTDescr followBounceOut(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    /**
+    * <summary>Follow another transforms position/scale/color (with an ease that bounces back some when it reaches it's destination)</summary>
+    * 
+    * @method LeanTween.followBounceOut
+    * @param {Transform} transform:Transform the transform you wish to be the follower
+    * @param {Transform} transform:Transform the transform you wish to follow
+    * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
+    * @param {float} smoothTime:float speed at which it moves towards the destination
+    * @param {float} [maxSpeed]:float maximum speed at which it moves towards the destination
+    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
+    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
+    * @param {float} [hitDamp]:float the rate at which to dampen the bounciness of when it reaches it's destination
+    * @example
+    * LeanTween.followBounceOut(transform, followTransform, LeanProp.localY, 1.1f);
+    */
+    public static LTDescr followBounceOut(Transform trans, Transform target, LeanProp prop, float smoothTime, float maxSpeed = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
         switch (prop)
@@ -2589,45 +2617,45 @@ public class LeanTween : MonoBehaviour {
             case LeanProp.localPosition:
                 d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.optional.axis = smoothBounceOut(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                    d.optional.axis = smoothBounceOut(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
                     d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.easeInternal = () => {
-                    d.optional.axis = smoothBounceOut(d.optional.axis, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                    d.optional.axis = smoothBounceOut(d.optional.axis, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
                     d.trans.position = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.localX:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosX(smoothBounceOut(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                    d.trans.LeanSetLocalPosX(smoothBounceOut(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.localY:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosY(smoothBounceOut(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                    d.trans.LeanSetLocalPosY(smoothBounceOut(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.localZ:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosZ(smoothBounceOut(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                    d.trans.LeanSetLocalPosZ(smoothBounceOut(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.x:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosX(smoothBounceOut(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                    d.trans.LeanSetPosX(smoothBounceOut(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.y:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosY(smoothBounceOut(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                    d.trans.LeanSetPosY(smoothBounceOut(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.z:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosZ(smoothBounceOut(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping));
+                    d.trans.LeanSetPosZ(smoothBounceOut(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.scale:
                 d.easeInternal = () => {
-                    d.trans.localScale = smoothBounceOut(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                    d.trans.localScale = smoothBounceOut(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
                 }; break;
             case LeanProp.color:
                 d.easeInternal = () => {
-                    var col = smoothBounceOut(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelDamping, hitDamping);
+                    var col = smoothBounceOut(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
                     d.trans.GetComponent<Renderer>().material.color = col;
                 }; break;
         }
@@ -2635,6 +2663,17 @@ public class LeanTween : MonoBehaviour {
         return d;
     }
 
+    /**
+    * <summary>Follow another transforms position/scale/color with a constant speed</summary>
+    * 
+    * @method LeanTween.followLinear
+    * @param {Transform} transform:Transform the transform you wish to be the follower
+    * @param {Transform} transform:Transform the transform you wish to follow
+    * @param {LeanProp} leanProp:LeanProp enum of the type of following you wish to do position, scale, color, etc.
+    * @param {float} moveSpeed:float speed at which it moves towards the destination
+    * @example
+    * LeanTween.followLinear(transform, followTransform, LeanProp.localY, 50f);
+    */
     public static LTDescr followLinear(Transform trans, Transform target, LeanProp prop, float moveSpeed)
     {
         var d = pushNewTween(trans.gameObject, Vector3.zero, float.MaxValue, options().setFollow().setTarget(target));
@@ -2737,14 +2776,14 @@ public class LeanTween : MonoBehaviour {
         return new Color(r, g, b, a);
     }
 
-    public static float smoothSpring(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    public static float smoothSpring(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
 
         float diff = target - current;
 
-        currentVelocity += deltaTime / smoothTime * accelDamping * diff;
+        currentVelocity += deltaTime / smoothTime * accelRate * diff;
 
         currentVelocity *= (1f - deltaTime * friction);
 
@@ -2756,21 +2795,21 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
-    public static Vector3 smoothSpring(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    public static Vector3 smoothSpring(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
-        float x = smoothSpring(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float y = smoothSpring(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float z = smoothSpring(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float x = smoothSpring(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float y = smoothSpring(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float z = smoothSpring(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelRate);
 
         return new Vector3(x, y, z);
     }
 
-    public static Color smoothSpring(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f)
+    public static Color smoothSpring(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
-        float r = smoothSpring(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float g = smoothSpring(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float b = smoothSpring(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
-        float a = smoothSpring(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelDamping);
+        float r = smoothSpring(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float g = smoothSpring(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float b = smoothSpring(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float a = smoothSpring(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelRate);
 
         return new Color(r, g, b, a);
     }
@@ -2814,14 +2853,14 @@ public class LeanTween : MonoBehaviour {
         return new Color(r, g, b, a);
     }
 
-    public static float smoothBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    public static float smoothBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
 
         float diff = target - current;
 
-        currentVelocity += deltaTime / smoothTime * accelDamping * diff;
+        currentVelocity += deltaTime / smoothTime * accelRate * diff;
 
         currentVelocity *= (1f - deltaTime * friction);
 
@@ -2841,21 +2880,21 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
-    public static Vector3 smoothBounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    public static Vector3 smoothBounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
-        float x = smoothBounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
-        float y = smoothBounceOut(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
-        float z = smoothBounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float x = smoothBounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float y = smoothBounceOut(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float z = smoothBounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
 
         return new Vector3(x, y, z);
     }
 
-    public static Color smoothBounceOut(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelDamping = 0.5f, float hitDamping = 0.9f)
+    public static Color smoothBounceOut(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
-        float r = smoothBounceOut(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
-        float g = smoothBounceOut(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
-        float b = smoothBounceOut(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
-        float a = smoothBounceOut(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelDamping, hitDamping);
+        float r = smoothBounceOut(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float g = smoothBounceOut(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float b = smoothBounceOut(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float a = smoothBounceOut(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
 
         return new Color(r, g, b, a);
     }

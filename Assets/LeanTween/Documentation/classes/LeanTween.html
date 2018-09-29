@@ -248,7 +248,19 @@
                         
                                                     </li>
                                                     <li class="index-item method">
+                                                        <a href="#method_LeanTween.followBounceOut">LeanTween.followBounceOut</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
                                                         <a href="#method_LeanTween.followDamp">LeanTween.followDamp</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
+                                                        <a href="#method_LeanTween.followLinear">LeanTween.followLinear</a>
+                        
+                                                    </li>
+                                                    <li class="index-item method">
+                                                        <a href="#method_LeanTween.followSpring">LeanTween.followSpring</a>
                         
                                                     </li>
                                                     <li class="index-item method">
@@ -524,7 +536,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2876"><code>LeanTween.cs:2876</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2915"><code>LeanTween.cs:2915</code></a>
                                                     </p>
                                             
                                             
@@ -1932,7 +1944,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2971"><code>LeanTween.cs:2971</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l3010"><code>LeanTween.cs:3010</code></a>
                                                     </p>
                                             
                                             
@@ -2008,7 +2020,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2960"><code>LeanTween.cs:2960</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2999"><code>LeanTween.cs:2999</code></a>
                                                     </p>
                                             
                                             
@@ -2048,6 +2060,168 @@
                                                         </div>
                                                     </div>
                                             </div>
+                                            <div id="method_LeanTween.followBounceOut" class="method item">
+                                                <h3 class="name"><code>LeanTween.followBounceOut</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>transform:Transform</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>transform:Transform</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>leanProp:LeanProp</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>smoothTime:float</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code class="optional">[maxSpeed]</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code class="optional">[friction]</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code class="optional">[accelRate]</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code class="optional">[hitDamp]</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l2597"><code>LeanTween.cs:2597</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <summary>Follow another transforms position/scale/color (with an ease that bounces back some when it reaches it's destination)</summary>
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">transform:Transform</code>
+                                                                    <span class="type">Transform</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>the transform you wish to be the follower</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">transform:Transform</code>
+                                                                    <span class="type">Transform</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>the transform you wish to follow</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">leanProp:LeanProp</code>
+                                                                    <span class="type">LeanProp</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>enum of the type of following you wish to do position, scale, color, etc.</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">smoothTime:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>speed at which it moves towards the destination</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name optional">[maxSpeed]</code>
+                                                                    <span class="type">Float</span>
+                                                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>:float maximum speed at which it moves towards the destination</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name optional">[friction]</code>
+                                                                    <span class="type">Float</span>
+                                                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>:float rate at which the spring is slowed down once it reaches it's destination</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name optional">[accelRate]</code>
+                                                                    <span class="type">Float</span>
+                                                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>:float the rate it accelerates from it's initial position</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name optional">[hitDamp]</code>
+                                                                    <span class="type">Float</span>
+                                                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>:float the rate at which to dampen the bounciness of when it reaches it's destination</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LeanTween.followBounceOut(transform, followTransform, LeanProp.localY, 1.1f);</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
                                             <div id="method_LeanTween.followDamp" class="method item">
                                                 <h3 class="name"><code>LeanTween.followDamp</code></h3>
                                             
@@ -2066,7 +2240,7 @@
                                                                     <code>smoothTime:float</code>
                                                             </li>
                                                             <li class="arg">
-                                                                    <code>maxSpeed:float</code>
+                                                                    <code class="optional">[maxSpeed]</code>
                                                             </li>
                                                         </ul><span class="paren">)</span>
                                                     </div>
@@ -2141,12 +2315,13 @@
                                             
                                                             </li>
                                                             <li class="param">
-                                                                    <code class="param-name">maxSpeed:float</code>
+                                                                    <code class="param-name optional">[maxSpeed]</code>
                                                                     <span class="type">Float</span>
+                                                                    <span class="flag optional" title="This parameter is optional.">optional</span>
                                             
                                             
                                                                 <div class="param-description">
-                                                                    <p>maximum speed at which it moves towards the destination</p>
+                                                                    <p>:float maximum speed at which it moves towards the destination</p>
                                             
                                                                 </div>
                                             
@@ -2160,6 +2335,255 @@
                                             
                                                         <div class="example-content">
                                                             <p>LeanTween.followDamp(transform, followTransform, LeanProp.localY, 1.1f);</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_LeanTween.followLinear" class="method item">
+                                                <h3 class="name"><code>LeanTween.followLinear</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>transform:Transform</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>transform:Transform</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>leanProp:LeanProp</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>moveSpeed:float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l2666"><code>LeanTween.cs:2666</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <summary>Follow another transforms position/scale/color with a constant speed</summary>
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">transform:Transform</code>
+                                                                    <span class="type">Transform</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>the transform you wish to be the follower</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">transform:Transform</code>
+                                                                    <span class="type">Transform</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>the transform you wish to follow</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">leanProp:LeanProp</code>
+                                                                    <span class="type">LeanProp</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>enum of the type of following you wish to do position, scale, color, etc.</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">moveSpeed:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>speed at which it moves towards the destination</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LeanTween.followLinear(transform, followTransform, LeanProp.localY, 50f);</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_LeanTween.followSpring" class="method item">
+                                                <h3 class="name"><code>LeanTween.followSpring</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
+                                                                    <code>transform:Transform</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>transform:Transform</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>leanProp:LeanProp</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>smoothTime:float</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code class="optional">[maxSpeed]</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code class="optional">[friction]</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code class="optional">[accelRate]</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l2528"><code>LeanTween.cs:2528</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <summary>Follow another transforms position/scale/color with a springy transition (eases in and out to destination with possible overshoot bounciness)</summary>
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">transform:Transform</code>
+                                                                    <span class="type">Transform</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>the transform you wish to be the follower</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">transform:Transform</code>
+                                                                    <span class="type">Transform</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>the transform you wish to follow</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">leanProp:LeanProp</code>
+                                                                    <span class="type">LeanProp</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>enum of the type of following you wish to do position, scale, color, etc.</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">smoothTime:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>speed at which it moves towards the destination</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name optional">[maxSpeed]</code>
+                                                                    <span class="type">Float</span>
+                                                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>:float maximum speed at which it moves towards the destination</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name optional">[friction]</code>
+                                                                    <span class="type">Float</span>
+                                                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>:float rate at which the spring is slowed down once it reaches it's destination</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name optional">[accelRate]</code>
+                                                                    <span class="type">Float</span>
+                                                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>:float the rate it accelerates from it's initial position</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LeanTween.followSpring(transform, followTransform, LeanProp.localY);</p>
                                             
                                                         </div>
                                                     </div>
@@ -2463,7 +2887,7 @@
                                                                     <code>gameObject:GameObject</code>
                                                             </li>
                                                             <li class="arg">
-                                                                    <code>vec:Vector3</code>
+                                                                    <code>destination:Transform</code>
                                                             </li>
                                                             <li class="arg">
                                                                     <code>time:float</code>
@@ -2484,7 +2908,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1256"><code>LeanTween.cs:1256</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1493"><code>LeanTween.cs:1493</code></a>
                                                     </p>
                                             
                                             
@@ -2492,7 +2916,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <summary>Move a GameObject to a certain location</summary>
+                                                    <summary>Move a GameObject to another transform</summary>
                                                 </div>
                                             
                                                     <div class="params">
@@ -2511,12 +2935,12 @@
                                             
                                                             </li>
                                                             <li class="param">
-                                                                    <code class="param-name">vec:Vector3</code>
-                                                                    <span class="type">Vector3</span>
+                                                                    <code class="param-name">destination:Transform</code>
+                                                                    <span class="type">Transform</span>
                                             
                                             
                                                                 <div class="param-description">
-                                                                    <p>to The final positin with which to move to</p>
+                                                                    <p>Transform whose position the tween will finally end on</p>
                                             
                                                                 </div>
                                             
@@ -2549,7 +2973,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>LeanTween.move(gameObject, new Vector3(0f,-3f,5f), 2.0f) .setEase( LeanTweenType.easeOutQuad );</p>
+                                                            <p>LeanTween.move(gameObject, anotherTransform, 2.0f) .setEase( LeanTweenType.easeOutQuad );</p>
                                             
                                                         </div>
                                                     </div>
@@ -2666,7 +3090,7 @@
                                                                     <code>gameObject:GameObject</code>
                                                             </li>
                                                             <li class="arg">
-                                                                    <code>destination:Transform</code>
+                                                                    <code>vec:Vector3</code>
                                                             </li>
                                                             <li class="arg">
                                                                     <code>time:float</code>
@@ -2687,7 +3111,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1493"><code>LeanTween.cs:1493</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l1256"><code>LeanTween.cs:1256</code></a>
                                                     </p>
                                             
                                             
@@ -2695,7 +3119,7 @@
                                                 </div>
                                             
                                                 <div class="description">
-                                                    <summary>Move a GameObject to another transform</summary>
+                                                    <summary>Move a GameObject to a certain location</summary>
                                                 </div>
                                             
                                                     <div class="params">
@@ -2714,12 +3138,12 @@
                                             
                                                             </li>
                                                             <li class="param">
-                                                                    <code class="param-name">destination:Transform</code>
-                                                                    <span class="type">Transform</span>
+                                                                    <code class="param-name">vec:Vector3</code>
+                                                                    <span class="type">Vector3</span>
                                             
                                             
                                                                 <div class="param-description">
-                                                                    <p>Transform whose position the tween will finally end on</p>
+                                                                    <p>to The final positin with which to move to</p>
                                             
                                                                 </div>
                                             
@@ -2752,7 +3176,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>LeanTween.move(gameObject, anotherTransform, 2.0f) .setEase( LeanTweenType.easeOutQuad );</p>
+                                                            <p>LeanTween.move(gameObject, new Vector3(0f,-3f,5f), 2.0f) .setEase( LeanTweenType.easeOutQuad );</p>
                                             
                                                         </div>
                                                     </div>
@@ -2955,6 +3379,98 @@
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
                                                             <li class="arg">
+                                                                    <code>GameObject</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>Vector3</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l1431"><code>LeanTween.cs:1431</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <summary>Move a GameObject to a certain location relative to the parent transform.</summary>
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">GameObject</code>
+                                                                    <span class="type">GameObject</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>gameObject Gameobject that you wish to rotate</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">Vector3</code>
+                                                                    <span class="type">Vector3</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>to The final positin with which to move to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>time The time to complete the tween in</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                            </div>
+                                            <div id="method_LeanTween.moveLocal" class="method item">
+                                                <h3 class="name"><code>LeanTween.moveLocal</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
                                                                     <code>gameObject:GameObject</code>
                                                             </li>
                                                             <li class="arg">
@@ -3051,98 +3567,6 @@
                                             
                                                         </div>
                                                     </div>
-                                            </div>
-                                            <div id="method_LeanTween.moveLocal" class="method item">
-                                                <h3 class="name"><code>LeanTween.moveLocal</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>GameObject</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>Vector3</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>float</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1431"><code>LeanTween.cs:1431</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <summary>Move a GameObject to a certain location relative to the parent transform.</summary>
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">GameObject</code>
-                                                                    <span class="type">GameObject</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>gameObject Gameobject that you wish to rotate</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">Vector3</code>
-                                                                    <span class="type">Vector3</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>to The final positin with which to move to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>time The time to complete the tween in</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
-                                                                <p>LTDescr an object that distinguishes the tween</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
                                             </div>
                                             <div id="method_LeanTween.moveSpline" class="method item">
                                                 <h3 class="name"><code>LeanTween.moveSpline</code></h3>
@@ -4286,7 +4710,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanTween.cs.html#l2933"><code>LeanTween.cs:2933</code></a>
+                                                    <a href="../files/LeanTween.cs.html#l2972"><code>LeanTween.cs:2972</code></a>
                                                     </p>
                                             
                                             
@@ -4500,6 +4924,106 @@
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
                                                             <li class="arg">
+                                                                    <code>GameObject</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>Vector3</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l1507"><code>LeanTween.cs:1507</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <summary>Rotate a GameObject, to values are in passed in degrees</summary>
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">GameObject</code>
+                                                                    <span class="type">GameObject</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>gameObject Gameobject that you wish to rotate</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">Vector3</code>
+                                                                    <span class="type">Vector3</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>to The final rotation with which to rotate to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>time The time to complete the tween in</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p>LeanTween.rotate(cube, new Vector3(180f,30f,0f), 1.5f);</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_LeanTween.rotate" class="method item">
+                                                <h3 class="name"><code>LeanTween.rotate</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
                                                                     <code>ltRect:LTRect</code>
                                                             </li>
                                                             <li class="arg">
@@ -4606,106 +5130,6 @@
                                                             <p>if(GUI.Button(buttonRect.rect, &quot;Rotate&quot;))<br />
                                             LeanTween.rotate( buttonRect4, 150.0f, 1.0f).setEase(LeanTweenType.easeOutElastic);<br />
                                             GUI.matrix = Matrix4x4.identity;<br /></p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_LeanTween.rotate" class="method item">
-                                                <h3 class="name"><code>LeanTween.rotate</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>GameObject</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>Vector3</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>float</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1507"><code>LeanTween.cs:1507</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <summary>Rotate a GameObject, to values are in passed in degrees</summary>
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">GameObject</code>
-                                                                    <span class="type">GameObject</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>gameObject Gameobject that you wish to rotate</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">Vector3</code>
-                                                                    <span class="type">Vector3</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>to The final rotation with which to rotate to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>time The time to complete the tween in</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
-                                                                <p>LTDescr an object that distinguishes the tween</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p>LeanTween.rotate(cube, new Vector3(180f,30f,0f), 1.5f);</p>
                                             
                                                         </div>
                                                     </div>
@@ -6678,6 +7102,128 @@
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
                                                             <li class="arg">
+                                                                    <code>gameObject:GameObject</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>from:float</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>to:float</code>
+                                                            </li>
+                                                            <li class="arg">
+                                                                    <code>time:float</code>
+                                                            </li>
+                                                        </ul><span class="paren">)</span>
+                                                    </div>
+                                            
+                                                    <span class="returns-inline">
+                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
+                                                    </span>
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                            
+                                                <div class="meta">
+                                                            <p>
+                                                            Defined in
+                                                    <a href="../files/LeanTween.cs.html#l1705"><code>LeanTween.cs:1705</code></a>
+                                                    </p>
+                                            
+                                            
+                                            
+                                                </div>
+                                            
+                                                <div class="description">
+                                                    <summary>Tween any particular value (float)</summary>
+                                                </div>
+                                            
+                                                    <div class="params">
+                                                        <h4>Parameters:</h4>
+                                            
+                                                        <ul class="params-list">
+                                                            <li class="param">
+                                                                    <code class="param-name">gameObject:GameObject</code>
+                                                                    <span class="type">GameObject</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>Gameobject that you wish to attach the tween to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">from:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The original value to start the tween from</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">to:float</code>
+                                                                    <span class="type">Vector3</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The final float with which to tween to</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                            <li class="param">
+                                                                    <code class="param-name">time:float</code>
+                                                                    <span class="type">Float</span>
+                                            
+                                            
+                                                                <div class="param-description">
+                                                                    <p>The time to complete the tween in</p>
+                                            
+                                                                </div>
+                                            
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                            
+                                                    <div class="returns">
+                                                        <h4>Returns:</h4>
+                                            
+                                                        <div class="returns-description">
+                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
+                                                                <p>LTDescr an object that distinguishes the tween</p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            
+                                                    <div class="example">
+                                                        <h4>Example:</h4>
+                                            
+                                                        <div class="example-content">
+                                                            <p><i>Example Javascript: </i><br />
+                                            LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( function( val:float ){ <br />
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br />
+                                            } );<br />
+                                            <br />
+                                            <i>Example C#: </i> <br />
+                                            LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( (float val)=&gt;{ <br />
+                                             Debug.Log(&quot;tweened val:&quot;+val);<br />
+                                            } );<br /></p>
+                                            
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                            <div id="method_LeanTween.value (float)" class="method item">
+                                                <h3 class="name"><code>LeanTween.value (float)</code></h3>
+                                            
+                                                    <div class="args">
+                                                        <span class="paren">(</span><ul class="args-list inline commas">
+                                                            <li class="arg">
                                                                     <code>GameObject</code>
                                                             </li>
                                                             <li class="arg">
@@ -6806,128 +7352,6 @@
                                             void updateValueExampleCallback( float val, float ratio ){<br />
                                               Debug.Log(&quot;tweened value:&quot;+val+&quot; percent complete:&quot;+ratio</em>100);<br />
                                             }<br /></p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            </div>
-                                            <div id="method_LeanTween.value (float)" class="method item">
-                                                <h3 class="name"><code>LeanTween.value (float)</code></h3>
-                                            
-                                                    <div class="args">
-                                                        <span class="paren">(</span><ul class="args-list inline commas">
-                                                            <li class="arg">
-                                                                    <code>gameObject:GameObject</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>from:float</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>to:float</code>
-                                                            </li>
-                                                            <li class="arg">
-                                                                    <code>time:float</code>
-                                                            </li>
-                                                        </ul><span class="paren">)</span>
-                                                    </div>
-                                            
-                                                    <span class="returns-inline">
-                                                        <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>
-                                                    </span>
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                            
-                                                <div class="meta">
-                                                            <p>
-                                                            Defined in
-                                                    <a href="../files/LeanTween.cs.html#l1705"><code>LeanTween.cs:1705</code></a>
-                                                    </p>
-                                            
-                                            
-                                            
-                                                </div>
-                                            
-                                                <div class="description">
-                                                    <summary>Tween any particular value (float)</summary>
-                                                </div>
-                                            
-                                                    <div class="params">
-                                                        <h4>Parameters:</h4>
-                                            
-                                                        <ul class="params-list">
-                                                            <li class="param">
-                                                                    <code class="param-name">gameObject:GameObject</code>
-                                                                    <span class="type">GameObject</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>Gameobject that you wish to attach the tween to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">from:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The original value to start the tween from</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">to:float</code>
-                                                                    <span class="type">Vector3</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The final float with which to tween to</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                            <li class="param">
-                                                                    <code class="param-name">time:float</code>
-                                                                    <span class="type">Float</span>
-                                            
-                                            
-                                                                <div class="param-description">
-                                                                    <p>The time to complete the tween in</p>
-                                            
-                                                                </div>
-                                            
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                            
-                                                    <div class="returns">
-                                                        <h4>Returns:</h4>
-                                            
-                                                        <div class="returns-description">
-                                                                    <span class="type"><a href="../classes/LTDescr.html" class="crosslink">LTDescr</a></span>:
-                                                                <p>LTDescr an object that distinguishes the tween</p>
-                                            
-                                                        </div>
-                                                    </div>
-                                            
-                                                    <div class="example">
-                                                        <h4>Example:</h4>
-                                            
-                                                        <div class="example-content">
-                                                            <p><i>Example Javascript: </i><br />
-                                            LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( function( val:float ){ <br />
-                                             Debug.Log(&quot;tweened val:&quot;+val);<br />
-                                            } );<br />
-                                            <br />
-                                            <i>Example C#: </i> <br />
-                                            LeanTween.value( gameObject, 1f, 5f, 5f).setOnUpdate( (float val)=&gt;{ <br />
-                                             Debug.Log(&quot;tweened val:&quot;+val);<br />
-                                            } );<br /></p>
                                             
                                                         </div>
                                                     </div>
