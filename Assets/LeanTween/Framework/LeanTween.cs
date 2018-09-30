@@ -2478,46 +2478,46 @@ public class LeanTween : MonoBehaviour {
             case LeanProp.localPosition:
                 d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.optional.axis = smoothDamp(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.optional.axis = LeanSmooth.smoothDamp(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
                     d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.diff = d.trans.position;
                 d.easeInternal = () => {
-                    d.optional.axis = smoothDamp(d.optional.axis, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.optional.axis = LeanSmooth.smoothDamp(d.optional.axis, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
                     d.trans.position = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.localX: 
                 d.easeInternal = () => { 
-                    d.trans.LeanSetLocalPosX(smoothDamp(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime)); 
+                    d.trans.LeanSetLocalPosX(LeanSmooth.smoothDamp(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime)); 
                 }; break;
             case LeanProp.localY:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosY(smoothDamp(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime));
+                    d.trans.LeanSetLocalPosY(LeanSmooth.smoothDamp(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime));
                 }; break;
             case LeanProp.localZ:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosZ(smoothDamp(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime));
+                    d.trans.LeanSetLocalPosZ(LeanSmooth.smoothDamp(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime));
                 }; break;
             case LeanProp.x:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosX(smoothDamp(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime));
+                    d.trans.LeanSetPosX(LeanSmooth.smoothDamp(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime));
                 }; break;
             case LeanProp.y:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosY(smoothDamp(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime));
+                    d.trans.LeanSetPosY(LeanSmooth.smoothDamp(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime));
                 }; break;
             case LeanProp.z:
                 d.easeInternal = () => { 
-                    d.trans.LeanSetPosZ(smoothDamp(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime)); 
+                    d.trans.LeanSetPosZ(LeanSmooth.smoothDamp(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime)); 
                 }; break;
             case LeanProp.scale:
                 d.easeInternal = () => {
-                    d.trans.localScale = smoothDamp(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
+                    d.trans.localScale = LeanSmooth.smoothDamp(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime);
                 }; break;
             case LeanProp.color:
                 d.easeInternal = () => {
-                    var col = smoothDamp(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime);
+                    var col = LeanSmooth.smoothDamp(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime);
                     d.trans.GetComponent<Renderer>().material.color = col;
                 }; break;
         }
@@ -2547,46 +2547,46 @@ public class LeanTween : MonoBehaviour {
             case LeanProp.localPosition:
                 d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.optional.axis = smoothSpring(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
+                    d.optional.axis = LeanSmooth.smoothSpring(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
                     d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.diff = d.trans.position;
                 d.easeInternal = () => {
-                    d.diff = smoothSpring(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
+                    d.diff = LeanSmooth.smoothSpring(d.diff, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
                     d.trans.position = d.diff;// + d.toInternal;
                 }; break;
             case LeanProp.localX:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosX(smoothSpring(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
+                    d.trans.LeanSetLocalPosX(LeanSmooth.smoothSpring(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.localY:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosY(smoothSpring(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
+                    d.trans.LeanSetLocalPosY(LeanSmooth.smoothSpring(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.localZ:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosZ(smoothSpring(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
+                    d.trans.LeanSetLocalPosZ(LeanSmooth.smoothSpring(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.x:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosX(smoothSpring(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
+                    d.trans.LeanSetPosX(LeanSmooth.smoothSpring(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.y:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosY(smoothSpring(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
+                    d.trans.LeanSetPosY(LeanSmooth.smoothSpring(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.z:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosZ(smoothSpring(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
+                    d.trans.LeanSetPosZ(LeanSmooth.smoothSpring(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate));
                 }; break;
             case LeanProp.scale:
                 d.easeInternal = () => {
-                    d.trans.localScale = smoothSpring(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
+                    d.trans.localScale = LeanSmooth.smoothSpring(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
                 }; break;
             case LeanProp.color:
                 d.easeInternal = () => {
-                    var col = smoothSpring(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
+                    var col = LeanSmooth.smoothSpring(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate);
                     d.trans.GetComponent<Renderer>().material.color = col;
                 }; break;
         }
@@ -2617,45 +2617,45 @@ public class LeanTween : MonoBehaviour {
             case LeanProp.localPosition:
                 d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.optional.axis = smoothBounceOut(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
+                    d.optional.axis = LeanSmooth.smoothBounceOut(d.optional.axis, d.toTrans.localPosition, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
                     d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.easeInternal = () => {
-                    d.optional.axis = smoothBounceOut(d.optional.axis, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
+                    d.optional.axis = LeanSmooth.smoothBounceOut(d.optional.axis, d.toTrans.position, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
                     d.trans.position = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.localX:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosX(smoothBounceOut(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
+                    d.trans.LeanSetLocalPosX(LeanSmooth.smoothBounceOut(d.trans.localPosition.x, d.toTrans.localPosition.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.localY:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosY(smoothBounceOut(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
+                    d.trans.LeanSetLocalPosY(LeanSmooth.smoothBounceOut(d.trans.localPosition.y, d.toTrans.localPosition.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.localZ:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosZ(smoothBounceOut(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
+                    d.trans.LeanSetLocalPosZ(LeanSmooth.smoothBounceOut(d.trans.localPosition.z, d.toTrans.localPosition.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.x:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosX(smoothBounceOut(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
+                    d.trans.LeanSetPosX(LeanSmooth.smoothBounceOut(d.trans.position.x, d.toTrans.position.x, ref d.fromInternal.x, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.y:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosY(smoothBounceOut(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
+                    d.trans.LeanSetPosY(LeanSmooth.smoothBounceOut(d.trans.position.y, d.toTrans.position.y, ref d.fromInternal.y, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.z:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosZ(smoothBounceOut(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
+                    d.trans.LeanSetPosZ(LeanSmooth.smoothBounceOut(d.trans.position.z, d.toTrans.position.z, ref d.fromInternal.z, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping));
                 }; break;
             case LeanProp.scale:
                 d.easeInternal = () => {
-                    d.trans.localScale = smoothBounceOut(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
+                    d.trans.localScale = LeanSmooth.smoothBounceOut(d.trans.localScale, d.toTrans.localScale, ref d.fromInternal, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
                 }; break;
             case LeanProp.color:
                 d.easeInternal = () => {
-                    var col = smoothBounceOut(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
+                    var col = LeanSmooth.smoothBounceOut(d.trans.LeanColor(), d.toTrans.LeanColor(), ref d.optional.color, smoothTime, maxSpeed, Time.deltaTime, friction, accelRate, hitDamping);
                     d.trans.GetComponent<Renderer>().material.color = col;
                 }; break;
         }
@@ -2682,398 +2682,49 @@ public class LeanTween : MonoBehaviour {
             case LeanProp.localPosition:
                 d.optional.axis = d.trans.localPosition;
                 d.easeInternal = () => {
-                    d.optional.axis = smoothLinear(d.optional.axis, d.toTrans.localPosition, moveSpeed);
+                    d.optional.axis = LeanSmooth.smoothLinear(d.optional.axis, d.toTrans.localPosition, moveSpeed);
                     d.trans.localPosition = d.optional.axis + d.toInternal;
                 }; break;
             case LeanProp.position:
                 d.easeInternal = () => {
-                    d.trans.position = smoothLinear(d.trans.position, d.toTrans.position,  moveSpeed);
+                    d.trans.position = LeanSmooth.smoothLinear(d.trans.position, d.toTrans.position,  moveSpeed);
                 }; break;
             case LeanProp.localX:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosX(smoothLinear(d.trans.localPosition.x, d.toTrans.localPosition.x, moveSpeed));
+                    d.trans.LeanSetLocalPosX(LeanSmooth.smoothLinear(d.trans.localPosition.x, d.toTrans.localPosition.x, moveSpeed));
                 }; break;
             case LeanProp.localY:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosY(smoothLinear(d.trans.localPosition.y, d.toTrans.localPosition.y, moveSpeed));
+                    d.trans.LeanSetLocalPosY(LeanSmooth.smoothLinear(d.trans.localPosition.y, d.toTrans.localPosition.y, moveSpeed));
                 }; break;
             case LeanProp.localZ:
                 d.easeInternal = () => {
-                    d.trans.LeanSetLocalPosZ(smoothLinear(d.trans.localPosition.z, d.toTrans.localPosition.z, moveSpeed));
+                    d.trans.LeanSetLocalPosZ(LeanSmooth.smoothLinear(d.trans.localPosition.z, d.toTrans.localPosition.z, moveSpeed));
                 }; break;
             case LeanProp.x:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosX(smoothLinear(d.trans.position.x, d.toTrans.position.x, moveSpeed));
+                    d.trans.LeanSetPosX(LeanSmooth.smoothLinear(d.trans.position.x, d.toTrans.position.x, moveSpeed));
                 }; break;
             case LeanProp.y:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosY(smoothLinear(d.trans.position.y, d.toTrans.position.y, moveSpeed));
+                    d.trans.LeanSetPosY(LeanSmooth.smoothLinear(d.trans.position.y, d.toTrans.position.y, moveSpeed));
                 }; break;
             case LeanProp.z:
                 d.easeInternal = () => {
-                    d.trans.LeanSetPosZ(smoothLinear(d.trans.position.z, d.toTrans.position.z, moveSpeed));
+                    d.trans.LeanSetPosZ(LeanSmooth.smoothLinear(d.trans.position.z, d.toTrans.position.z, moveSpeed));
                 }; break;
             case LeanProp.scale:
                 d.easeInternal = () => {
-                    d.trans.localScale = smoothLinear(d.trans.localScale, d.toTrans.localScale, moveSpeed);
+                    d.trans.localScale = LeanSmooth.smoothLinear(d.trans.localScale, d.toTrans.localScale, moveSpeed);
                 }; break;
             case LeanProp.color:
                 d.easeInternal = () => {
-                    var col = smoothLinear(d.trans.LeanColor(), d.toTrans.LeanColor(), moveSpeed);
+                    var col = LeanSmooth.smoothLinear(d.trans.LeanColor(), d.toTrans.LeanColor(), moveSpeed);
                     d.trans.GetComponent<Renderer>().material.color = col;
                 }; break;
         }
 
         return d;
-    }
-
-    // Smooth Methods
-
-    /**
-    * <summary>Moves one value towards another (eases in and out to destination with no overshoot)</summary>
-    * 
-    * @method LeanTween.smoothDamp (float)
-    * @param {float} current:float the current value
-    * @param {float} target:float the value we are trying to reach
-    * @param {float} currentVelocity:float the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @example
-    * followVar = LeanTween.smoothDamp(followVar, destinationVar, ref followVelocity, 1.1f);\n
-    * Debug.Log("current:"+followVar);
-    */
-    public static float smoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
-    {
-        if (deltaTime < 0f)
-            deltaTime = Time.deltaTime;
-
-        smoothTime = Mathf.Max(0.0001f, smoothTime);
-        float num = 2f / smoothTime;
-        float num2 = num * deltaTime;
-        float num3 = 1f / (1f + num2 + 0.48f * num2 * num2 + 0.235f * num2 * num2 * num2);
-        float num4 = current - target;
-        float num5 = target;
-        if (maxSpeed > 0f)
-        {
-            float num6 = maxSpeed * smoothTime;
-            num4 = Mathf.Clamp(num4, -num6, num6);
-        }
-        target = current - num4;
-        float num7 = (currentVelocity + num * num4) * deltaTime;
-        currentVelocity = (currentVelocity - num * num7) * num3;
-        float num8 = target + (num4 + num7) * num3;
-        if (num5 - current > 0f == num8 > num5)
-        {
-            num8 = num5;
-            currentVelocity = (num8 - num5) / deltaTime;
-        }
-        return num8;
-    }
-
-    /**
-    * <summary>Moves one value towards another (eases in and out to destination with no overshoot)</summary>
-    * 
-    * @method LeanTween.smoothDamp (Vector3)
-    * @param {float} current:Vector3 the current value
-    * @param {float} target:Vector3 the value we are trying to reach
-    * @param {float} currentVelocity:Vector3 the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @example
-    * transform.position = LeanTween.smoothDamp(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
-    * Debug.Log("current:"+transform.position);
-    */
-    public static Vector3 smoothDamp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
-    {
-        float x = smoothDamp(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
-        float y = smoothDamp(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime);
-        float z = smoothDamp(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime);
-
-        return new Vector3(x, y, z);
-    }
-
-    /**
-    * <summary>Moves one color value towards another color (eases in and out to destination with no overshoot)</summary>
-    * 
-    * @method LeanTween.smoothDamp (Color)
-    * @param {float} current:Color the current value
-    * @param {float} target:Color the value we are trying to reach
-    * @param {float} currentVelocity:Color the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @example
-    * fromColor = LeanTween.smoothDamp(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
-    * Debug.Log("current:"+fromColor);
-    */
-    public static Color smoothDamp(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
-    {
-        float r = smoothDamp(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime);
-        float g = smoothDamp(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime);
-        float b = smoothDamp(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime);
-        float a = smoothDamp(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime);
-
-        return new Color(r, g, b, a);
-    }
-
-    /**
-    * <summary>Moves one value towards another (eases in and out to destination with possible overshoot bounciness)</summary>
-    * 
-    * @method LeanTween.smoothSpring (float)
-    * @param {float} current:float the current value
-    * @param {float} target:float the value we are trying to reach
-    * @param {float} currentVelocity:float the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
-    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
-    * @example
-    * followVar = LeanTween.smoothSpring(followVar, destinationVar, ref followVelocity, 1.1f);\n
-    * Debug.Log("current:"+followVar);
-    */
-    public static float smoothSpring(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
-    {
-        if (deltaTime < 0f)
-            deltaTime = Time.deltaTime;
-
-        float diff = target - current;
-
-        currentVelocity += deltaTime / smoothTime * accelRate * diff;
-
-        currentVelocity *= (1f - deltaTime * friction);
-
-        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
-            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
-
-        float returned = current + currentVelocity;
-
-        return returned;
-    }
-
-    /**
-    * <summary>Moves one value towards another (eases in and out to destination with possible overshoot bounciness)</summary>
-    * 
-    * @method LeanTween.smoothSpring (Vector3)
-    * @param {Vector3} current:float the current value
-    * @param {Vector3} target:float the value we are trying to reach
-    * @param {Vector3} currentVelocity:float the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
-    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
-    * @example
-    * transform.position = LeanTween.smoothSpring(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
-    * Debug.Log("current:"+transform.position);
-    */
-    public static Vector3 smoothSpring(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
-    {
-        float x = smoothSpring(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float y = smoothSpring(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float z = smoothSpring(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-
-        return new Vector3(x, y, z);
-    }
-
-    /**
-    * <summary>Moves one color towards another (eases in and out to destination with possible overshoot bounciness)</summary>
-    * 
-    * @method LeanTween.smoothSpring (Color)
-    * @param {Color} current:float the current value
-    * @param {Color} target:float the value we are trying to reach
-    * @param {Color} currentVelocity:float the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
-    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
-    * @example
-    * fromColor = LeanTween.smoothSpring(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
-    * Debug.Log("current:"+fromColor);
-    */
-    public static Color smoothSpring(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
-    {
-        float r = smoothSpring(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float g = smoothSpring(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float b = smoothSpring(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float a = smoothSpring(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-
-        return new Color(r, g, b, a);
-    }
-
-    /**
-    * <summary>Moves one value towards another (at a constant speed)</summary>
-    * 
-    * @method LeanTween.smoothLinear (float)
-    * @param {float} current:float the current value
-    * @param {float} target:float the value we are trying to reach
-    * @param {float} moveSpeed:float the speed at which to move towards the target
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @example
-    * followVar = LeanTween.smoothLinear(followVar, destinationVar, 50f);\n
-    * Debug.Log("current:"+followVar);
-    */
-    public static float smoothLinear(float current, float target, float moveSpeed, float deltaTime = -1f)
-    {
-        if (deltaTime < 0f)
-            deltaTime = Time.deltaTime;
-
-        bool targetGreater = (target > current);
-
-        float currentVelocity = deltaTime * moveSpeed * (targetGreater ? 1f : -1f);
-
-        float returned = current + currentVelocity;
-
-        float returnPassed = returned - target;
-        if ((targetGreater && returnPassed > 0) || !targetGreater && returnPassed < 0)
-        { // Has passed point, return target
-            return target;
-        }
-
-        return returned;
-    }
-
-    /**
-    * <summary>Moves one value towards another (at a constant speed)</summary>
-    * 
-    * @method LeanTween.smoothLinear (Vector3)
-    * @param {Vector3} current:float the current value
-    * @param {Vector3} target:float the value we are trying to reach
-    * @param {float} moveSpeed:float the speed at which to move towards the target
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @example
-    * transform.position = LeanTween.smoothLinear(transform.position, followTrans.position, 50f);\n
-    * Debug.Log("current:"+transform.position);
-    */
-    public static Vector3 smoothLinear(Vector3 current, Vector3 target, float moveSpeed, float deltaTime = -1f)
-    {
-        float x = smoothLinear(current.x, target.x, moveSpeed, deltaTime);
-        float y = smoothLinear(current.y, target.y, moveSpeed, deltaTime);
-        float z = smoothLinear(current.z, target.z, moveSpeed, deltaTime);
-
-        return new Vector3(x, y, z);
-    }
-
-    /**
-    * <summary>Moves one color towards another (at a constant speed)</summary>
-    * 
-    * @method LeanTween.smoothLinear (Color)
-    * @param {Color} current:float the current value
-    * @param {Color} target:float the value we are trying to reach
-    * @param {float} moveSpeed:float the speed at which to move towards the target
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @example
-    * fromColor = LeanTween.smoothLinear(fromColor, transform.GetComponent<Renderer>().material.color, 50f);\n
-    * Debug.Log("current:"+fromColor);
-    */
-    public static Color smoothLinear(Color current, Color target, float moveSpeed)
-    {
-        float r = smoothLinear(current.r, target.r, moveSpeed);
-        float g = smoothLinear(current.g, target.g, moveSpeed);
-        float b = smoothLinear(current.b, target.b, moveSpeed);
-        float a = smoothLinear(current.a, target.a, moveSpeed);
-
-        return new Color(r, g, b, a);
-    }
-
-    /**
-    * <summary>Moves one value towards another (with an ease that bounces back some when it reaches it's destination)</summary>
-    * 
-    * @method LeanTween.smoothBounceOut (float)
-    * @param {float} current:float the current value
-    * @param {float} target:float the value we are trying to reach
-    * @param {float} currentVelocity:float the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
-    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
-    * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
-    * @example
-    * followVar = LeanTween.smoothBounceOut(followVar, destinationVar, ref followVelocity, 1.1f);\n
-    * Debug.Log("current:"+followVar);
-    */
-    public static float smoothBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
-    {
-        if (deltaTime < 0f)
-            deltaTime = Time.deltaTime;
-
-        float diff = target - current;
-
-        currentVelocity += deltaTime / smoothTime * accelRate * diff;
-
-        currentVelocity *= (1f - deltaTime * friction);
-
-        if (maxSpeed > 0f && maxSpeed < Mathf.Abs(currentVelocity))
-            currentVelocity = maxSpeed * Mathf.Sign(currentVelocity);
-
-        float returned = current + currentVelocity;
-
-        bool targetGreater = (target > current);
-        float returnPassed = returned - target;
-        if ((targetGreater && returnPassed > 0) || !targetGreater && returnPassed < 0)
-        { // Start a bounce
-            currentVelocity = -currentVelocity * hitDamping;
-            returned = current + currentVelocity;
-        }
-
-        return returned;
-    }
-
-    /**
-    * <summary>Moves one value towards another (with an ease that bounces back some when it reaches it's destination)</summary>
-    * 
-    * @method LeanTween.smoothBounceOut (Vector3)
-    * @param {Vector3} current:float the current value
-    * @param {Vector3} target:float the value we are trying to reach
-    * @param {Vector3} currentVelocity:float the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
-    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
-    * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
-    * @example
-    * transform.position = LeanTween.smoothBounceOut(transform.position, followTrans.position, ref followVelocity, 1.1f);\n
-    * Debug.Log("current:"+transform.position);
-    */
-    public static Vector3 smoothBounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
-    {
-        float x = smoothBounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float y = smoothBounceOut(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float z = smoothBounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-
-        return new Vector3(x, y, z);
-    }
-
-    /**
-    * <summary>Moves one color towards another (with an ease that bounces back some when it reaches it's destination)</summary>
-    * 
-    * @method LeanTween.smoothBounceOut (Color)
-    * @param {Color} current:float the current value
-    * @param {Color} target:float the value we are trying to reach
-    * @param {Color} currentVelocity:float the current velocity of the value
-    * @param {float} smoothTime:float roughly the time it takes to reach the destination
-    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
-    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
-    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
-    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
-    * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
-    * @example
-    * fromColor = LeanTween.smoothBounceOut(fromColor, transform.GetComponent<Renderer>().material.color, ref followVelocity, 1.1f);\n
-    * Debug.Log("current:" + fromColor);
-    */
-    public static Color smoothBounceOut(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
-    {
-        float r = smoothBounceOut(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float g = smoothBounceOut(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float b = smoothBounceOut(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float a = smoothBounceOut(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-
-        return new Color(r, g, b, a);
     }
 
     // LeanTween Listening/Dispatch
