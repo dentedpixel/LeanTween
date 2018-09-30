@@ -2818,6 +2818,22 @@ public class LeanTween : MonoBehaviour {
         return new Color(r, g, b, a);
     }
 
+    /**
+    * <summary>Moves one value towards another (eases in and out to destination with possible overshoot bounciness)</summary>
+    * 
+    * @method LeanTween.smoothSpring (float)
+    * @param {float} current:float the current value
+    * @param {float} target:float the value we are trying to reach
+    * @param {float} currentVelocity:float the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
+    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
+    * @example
+    * followVar = LeanTween.smoothSpring(followVar, destinationVar, ref followVelocity, 1.1f);\n
+    * Debug.Log("current:"+followVar);
+    */
     public static float smoothSpring(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
         if (deltaTime < 0f)
@@ -2837,6 +2853,22 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
+    /**
+    * <summary>Moves one value towards another (eases in and out to destination with possible overshoot bounciness)</summary>
+    * 
+    * @method LeanTween.smoothSpring (Vector3)
+    * @param {Vector3} current:float the current value
+    * @param {Vector3} target:float the value we are trying to reach
+    * @param {Vector3} currentVelocity:float the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
+    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
+    * @example
+    * transform.position = LeanTween.smoothSpring(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
+    * Debug.Log("current:"+transform.position);
+    */
     public static Vector3 smoothSpring(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
         float x = smoothSpring(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate);
@@ -2846,6 +2878,22 @@ public class LeanTween : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
+    /**
+    * <summary>Moves one color towards another (eases in and out to destination with possible overshoot bounciness)</summary>
+    * 
+    * @method LeanTween.smoothSpring (Color)
+    * @param {Color} current:float the current value
+    * @param {Color} target:float the value we are trying to reach
+    * @param {Color} currentVelocity:float the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
+    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
+    * @example
+    * fromColor = LeanTween.smoothSpring(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
+    * Debug.Log("current:"+fromColor);
+    */
     public static Color smoothSpring(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
         float r = smoothSpring(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate);
@@ -2856,6 +2904,18 @@ public class LeanTween : MonoBehaviour {
         return new Color(r, g, b, a);
     }
 
+    /**
+    * <summary>Moves one value towards another (at a constant speed)</summary>
+    * 
+    * @method LeanTween.smoothLinear (float)
+    * @param {float} current:float the current value
+    * @param {float} target:float the value we are trying to reach
+    * @param {float} moveSpeed:float the speed at which to move towards the target
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @example
+    * followVar = LeanTween.smoothLinear(followVar, destinationVar, 50f);\n
+    * Debug.Log("current:"+followVar);
+    */
     public static float smoothLinear(float current, float target, float moveSpeed, float deltaTime = -1f)
     {
         if (deltaTime < 0f)
@@ -2876,6 +2936,18 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
+    /**
+    * <summary>Moves one value towards another (at a constant speed)</summary>
+    * 
+    * @method LeanTween.smoothLinear (Vector3)
+    * @param {Vector3} current:float the current value
+    * @param {Vector3} target:float the value we are trying to reach
+    * @param {float} moveSpeed:float the speed at which to move towards the target
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @example
+    * transform.position = LeanTween.smoothLinear(transform.position, followTrans.position, 50f);\n
+    * Debug.Log("current:"+transform.position);
+    */
     public static Vector3 smoothLinear(Vector3 current, Vector3 target, float moveSpeed, float deltaTime = -1f)
     {
         float x = smoothLinear(current.x, target.x, moveSpeed, deltaTime);
@@ -2885,6 +2957,18 @@ public class LeanTween : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
+    /**
+    * <summary>Moves one color towards another (at a constant speed)</summary>
+    * 
+    * @method LeanTween.smoothLinear (Color)
+    * @param {Color} current:float the current value
+    * @param {Color} target:float the value we are trying to reach
+    * @param {float} moveSpeed:float the speed at which to move towards the target
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @example
+    * fromColor = LeanTween.smoothLinear(fromColor, transform.GetComponent<Renderer>().material.color, 50f);\n
+    * Debug.Log("current:"+fromColor);
+    */
     public static Color smoothLinear(Color current, Color target, float moveSpeed)
     {
         float r = smoothLinear(current.r, target.r, moveSpeed);
@@ -2895,6 +2979,23 @@ public class LeanTween : MonoBehaviour {
         return new Color(r, g, b, a);
     }
 
+    /**
+    * <summary>Moves one value towards another (with an ease that bounces back some when it reaches it's destination)</summary>
+    * 
+    * @method LeanTween.smoothBounceOut (float)
+    * @param {float} current:float the current value
+    * @param {float} target:float the value we are trying to reach
+    * @param {float} currentVelocity:float the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
+    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
+    * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
+    * @example
+    * followVar = LeanTween.smoothBounceOut(followVar, destinationVar, ref followVelocity, 1.1f);\n
+    * Debug.Log("current:"+followVar);
+    */
     public static float smoothBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
         if (deltaTime < 0f)
@@ -2922,6 +3023,23 @@ public class LeanTween : MonoBehaviour {
         return returned;
     }
 
+    /**
+    * <summary>Moves one value towards another (with an ease that bounces back some when it reaches it's destination)</summary>
+    * 
+    * @method LeanTween.smoothBounceOut (Vector3)
+    * @param {Vector3} current:float the current value
+    * @param {Vector3} target:float the value we are trying to reach
+    * @param {Vector3} currentVelocity:float the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
+    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
+    * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
+    * @example
+    * transform.position = LeanTween.smoothBounceOut(transform.position, followTrans.position, ref followVelocity, 1.1f);\n
+    * Debug.Log("current:"+transform.position);
+    */
     public static Vector3 smoothBounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
         float x = smoothBounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
@@ -2931,6 +3049,23 @@ public class LeanTween : MonoBehaviour {
         return new Vector3(x, y, z);
     }
 
+    /**
+    * <summary>Moves one color towards another (with an ease that bounces back some when it reaches it's destination)</summary>
+    * 
+    * @method LeanTween.smoothBounceOut (Color)
+    * @param {Color} current:float the current value
+    * @param {Color} target:float the value we are trying to reach
+    * @param {Color} currentVelocity:float the current velocity of the value
+    * @param {float} smoothTime:float roughly the time it takes to reach the destination
+    * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
+    * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
+    * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
+    * @param {float} [accelRate]:float the rate it accelerates from it's initial position
+    * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
+    * @example
+    * fromColor = LeanTween.smoothBounceOut(fromColor, transform.GetComponent<Renderer>().material.color, ref followVelocity, 1.1f);\n
+    * Debug.Log("current:" + fromColor);
+    */
     public static Color smoothBounceOut(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
         float r = smoothBounceOut(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
