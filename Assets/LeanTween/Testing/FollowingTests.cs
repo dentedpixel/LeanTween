@@ -39,15 +39,15 @@ public class FollowingTests : MonoBehaviour {
     void Update()
     {
         var pos = cube1.position;
-        pos.x = LeanTween.smoothDamp(cube1.position.x, followTrans.position.x, ref cube1VelocityX, 1.1f);
+        pos.x = LeanSmooth.damp(cube1.position.x, followTrans.position.x, ref cube1VelocityX, 1.1f);
         cube1.position = pos;
 
         pos = cube2.position;
-        pos.x = LeanTween.smoothSpring(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
+        pos.x = LeanSmooth.spring(cube2.position.x, followTrans.position.x, ref cube2VelocityX, 1.1f);
         cube2.position = pos;
 
         pos = cube3.position;
-        pos.x = LeanTween.smoothBounceOut(cube3.position.x, followTrans.position.x, ref cube3VelocityX, 1.1f);
+        pos.x = LeanSmooth.bounceOut(cube3.position.x, followTrans.position.x, ref cube3VelocityX, 1.1f);
         cube3.position = pos;
 
         //pos = cube4.position;
@@ -55,7 +55,7 @@ public class FollowingTests : MonoBehaviour {
         //cube4.position = pos;
 
         pos = cube5.position;
-        pos.x = LeanTween.smoothLinear(cube5.position.x, followTrans.position.x, 10f);
+        pos.x = LeanSmooth.linear(cube5.position.x, followTrans.position.x, 10f);
         cube5.position = pos;
 
 

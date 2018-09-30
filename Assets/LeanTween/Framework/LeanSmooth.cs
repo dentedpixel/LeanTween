@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /**
-* Pass this to the "ease" parameter, to get a different easing behavior<br /><br />
-* <strong>Example: </strong><br />fromY = LeanSmooth.smoothSpring(fromY, followArrow.localPosition.y, ref velocityY, 1.1f);<br />
-* fromVec3 = LeanSmooth.smoothDamp(fromVec3, dude5Title.localPosition, ref velocityVec3, 1.1f);<br />
-* fromColor = LeanSmooth.smoothDamp(fromColor, dude5Title.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);<br />
+* Use these smooth methods to move one value towards another<br /><br />
+* <strong>Example: </strong><br />fromY = LeanSmooth.spring(fromY, followArrow.localPosition.y, ref velocityY, 1.1f);<br />
+* fromVec3 = LeanSmooth.damp(fromVec3, dude5Title.localPosition, ref velocityVec3, 1.1f);<br />
+* fromColor = LeanSmooth.damp(fromColor, dude5Title.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);<br />
 * Debug.Log("Smoothed y:" + fromY + " vec3:" + fromVec3 + " color:" + fromColor);<br />
 *
 * @class LeanSmooth
@@ -14,12 +14,11 @@ using UnityEngine;
 
 public class LeanSmooth {
 
-    // Smooth Methods
 
     /**
     * <summary>Moves one value towards another (eases in and out to destination with no overshoot)</summary>
     * 
-    * @method LeanSmooth.smoothDamp (float)
+    * @method LeanSmooth.damp (float)
     * @param {float} current:float the current value
     * @param {float} target:float the value we are trying to reach
     * @param {float} currentVelocity:float the current velocity of the value
@@ -27,10 +26,10 @@ public class LeanSmooth {
     * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
     * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
     * @example
-    * followVar = LeanSmooth.smoothDamp(followVar, destinationVar, ref followVelocity, 1.1f);\n
+    * followVar = LeanSmooth.damp(followVar, destinationVar, ref followVelocity, 1.1f);\n
     * Debug.Log("current:"+followVar);
     */
-    public static float smoothDamp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    public static float damp(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -61,7 +60,7 @@ public class LeanSmooth {
     /**
     * <summary>Moves one value towards another (eases in and out to destination with no overshoot)</summary>
     * 
-    * @method LeanSmooth.smoothDamp (Vector3)
+    * @method LeanSmooth.damp (Vector3)
     * @param {float} current:Vector3 the current value
     * @param {float} target:Vector3 the value we are trying to reach
     * @param {float} currentVelocity:Vector3 the current velocity of the value
@@ -69,14 +68,14 @@ public class LeanSmooth {
     * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
     * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
     * @example
-    * transform.position = LeanSmooth.smoothDamp(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
+    * transform.position = LeanSmooth.damp(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
     * Debug.Log("current:"+transform.position);
     */
-    public static Vector3 smoothDamp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    public static Vector3 damp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
-        float x = smoothDamp(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
-        float y = smoothDamp(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime);
-        float z = smoothDamp(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime);
+        float x = damp(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime);
+        float y = damp(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime);
+        float z = damp(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime);
 
         return new Vector3(x, y, z);
     }
@@ -84,7 +83,7 @@ public class LeanSmooth {
     /**
     * <summary>Moves one color value towards another color (eases in and out to destination with no overshoot)</summary>
     * 
-    * @method LeanSmooth.smoothDamp (Color)
+    * @method LeanSmooth.damp (Color)
     * @param {float} current:Color the current value
     * @param {float} target:Color the value we are trying to reach
     * @param {float} currentVelocity:Color the current velocity of the value
@@ -92,15 +91,15 @@ public class LeanSmooth {
     * @param {float} maxSpeed:float the top speed you want the value to move at (defaults to unlimited -1f)
     * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
     * @example
-    * fromColor = LeanSmooth.smoothDamp(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
+    * fromColor = LeanSmooth.damp(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
     * Debug.Log("current:"+fromColor);
     */
-    public static Color smoothDamp(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
+    public static Color damp(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f)
     {
-        float r = smoothDamp(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime);
-        float g = smoothDamp(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime);
-        float b = smoothDamp(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime);
-        float a = smoothDamp(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime);
+        float r = damp(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime);
+        float g = damp(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime);
+        float b = damp(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime);
+        float a = damp(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime);
 
         return new Color(r, g, b, a);
     }
@@ -108,7 +107,7 @@ public class LeanSmooth {
     /**
     * <summary>Moves one value towards another (eases in and out to destination with possible overshoot bounciness)</summary>
     * 
-    * @method LeanSmooth.smoothSpring (float)
+    * @method LeanSmooth.spring (float)
     * @param {float} current:float the current value
     * @param {float} target:float the value we are trying to reach
     * @param {float} currentVelocity:float the current velocity of the value
@@ -118,10 +117,10 @@ public class LeanSmooth {
     * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
     * @param {float} [accelRate]:float the rate it accelerates from it's initial position
     * @example
-    * followVar = LeanSmooth.smoothSpring(followVar, destinationVar, ref followVelocity, 1.1f);\n
+    * followVar = LeanSmooth.spring(followVar, destinationVar, ref followVelocity, 1.1f);\n
     * Debug.Log("current:"+followVar);
     */
-    public static float smoothSpring(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
+    public static float spring(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -143,7 +142,7 @@ public class LeanSmooth {
     /**
     * <summary>Moves one value towards another (eases in and out to destination with possible overshoot bounciness)</summary>
     * 
-    * @method LeanSmooth.smoothSpring (Vector3)
+    * @method LeanSmooth.spring (Vector3)
     * @param {Vector3} current:float the current value
     * @param {Vector3} target:float the value we are trying to reach
     * @param {Vector3} currentVelocity:float the current velocity of the value
@@ -153,14 +152,14 @@ public class LeanSmooth {
     * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
     * @param {float} [accelRate]:float the rate it accelerates from it's initial position
     * @example
-    * transform.position = LeanSmooth.smoothSpring(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
+    * transform.position = LeanSmooth.spring(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
     * Debug.Log("current:"+transform.position);
     */
-    public static Vector3 smoothSpring(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
+    public static Vector3 spring(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
-        float x = smoothSpring(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float y = smoothSpring(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float z = smoothSpring(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float x = spring(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float y = spring(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float z = spring(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelRate);
 
         return new Vector3(x, y, z);
     }
@@ -168,7 +167,7 @@ public class LeanSmooth {
     /**
     * <summary>Moves one color towards another (eases in and out to destination with possible overshoot bounciness)</summary>
     * 
-    * @method LeanSmooth.smoothSpring (Color)
+    * @method LeanSmooth.spring (Color)
     * @param {Color} current:float the current value
     * @param {Color} target:float the value we are trying to reach
     * @param {Color} currentVelocity:float the current velocity of the value
@@ -178,15 +177,15 @@ public class LeanSmooth {
     * @param {float} [friction]:float rate at which the spring is slowed down once it reaches it's destination
     * @param {float} [accelRate]:float the rate it accelerates from it's initial position
     * @example
-    * fromColor = LeanSmooth.smoothSpring(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
+    * fromColor = LeanSmooth.spring(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
     * Debug.Log("current:"+fromColor);
     */
-    public static Color smoothSpring(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
+    public static Color spring(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f)
     {
-        float r = smoothSpring(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float g = smoothSpring(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float b = smoothSpring(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelRate);
-        float a = smoothSpring(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float r = spring(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float g = spring(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float b = spring(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelRate);
+        float a = spring(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelRate);
 
         return new Color(r, g, b, a);
     }
@@ -194,16 +193,16 @@ public class LeanSmooth {
     /**
     * <summary>Moves one value towards another (at a constant speed)</summary>
     * 
-    * @method LeanSmooth.smoothLinear (float)
+    * @method LeanSmooth.linear (float)
     * @param {float} current:float the current value
     * @param {float} target:float the value we are trying to reach
     * @param {float} moveSpeed:float the speed at which to move towards the target
     * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
     * @example
-    * followVar = LeanSmooth.smoothLinear(followVar, destinationVar, 50f);\n
+    * followVar = LeanSmooth.linear(followVar, destinationVar, 50f);\n
     * Debug.Log("current:"+followVar);
     */
-    public static float smoothLinear(float current, float target, float moveSpeed, float deltaTime = -1f)
+    public static float linear(float current, float target, float moveSpeed, float deltaTime = -1f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -226,20 +225,20 @@ public class LeanSmooth {
     /**
     * <summary>Moves one value towards another (at a constant speed)</summary>
     * 
-    * @method LeanSmooth.smoothLinear (Vector3)
+    * @method LeanSmooth.linear (Vector3)
     * @param {Vector3} current:float the current value
     * @param {Vector3} target:float the value we are trying to reach
     * @param {float} moveSpeed:float the speed at which to move towards the target
     * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
     * @example
-    * transform.position = LeanSmooth.smoothLinear(transform.position, followTrans.position, 50f);\n
+    * transform.position = LeanSmooth.linear(transform.position, followTrans.position, 50f);\n
     * Debug.Log("current:"+transform.position);
     */
-    public static Vector3 smoothLinear(Vector3 current, Vector3 target, float moveSpeed, float deltaTime = -1f)
+    public static Vector3 linear(Vector3 current, Vector3 target, float moveSpeed, float deltaTime = -1f)
     {
-        float x = smoothLinear(current.x, target.x, moveSpeed, deltaTime);
-        float y = smoothLinear(current.y, target.y, moveSpeed, deltaTime);
-        float z = smoothLinear(current.z, target.z, moveSpeed, deltaTime);
+        float x = linear(current.x, target.x, moveSpeed, deltaTime);
+        float y = linear(current.y, target.y, moveSpeed, deltaTime);
+        float z = linear(current.z, target.z, moveSpeed, deltaTime);
 
         return new Vector3(x, y, z);
     }
@@ -247,21 +246,21 @@ public class LeanSmooth {
     /**
     * <summary>Moves one color towards another (at a constant speed)</summary>
     * 
-    * @method LeanSmooth.smoothLinear (Color)
+    * @method LeanSmooth.linear (Color)
     * @param {Color} current:float the current value
     * @param {Color} target:float the value we are trying to reach
     * @param {float} moveSpeed:float the speed at which to move towards the target
     * @param {float} deltaTime:float the difference in time since the method was called (defaults to Time.deltaTime)
     * @example
-    * fromColor = LeanSmooth.smoothLinear(fromColor, transform.GetComponent<Renderer>().material.color, 50f);\n
+    * fromColor = LeanSmooth.linear(fromColor, transform.GetComponent<Renderer>().material.color, 50f);\n
     * Debug.Log("current:"+fromColor);
     */
-    public static Color smoothLinear(Color current, Color target, float moveSpeed)
+    public static Color linear(Color current, Color target, float moveSpeed)
     {
-        float r = smoothLinear(current.r, target.r, moveSpeed);
-        float g = smoothLinear(current.g, target.g, moveSpeed);
-        float b = smoothLinear(current.b, target.b, moveSpeed);
-        float a = smoothLinear(current.a, target.a, moveSpeed);
+        float r = linear(current.r, target.r, moveSpeed);
+        float g = linear(current.g, target.g, moveSpeed);
+        float b = linear(current.b, target.b, moveSpeed);
+        float a = linear(current.a, target.a, moveSpeed);
 
         return new Color(r, g, b, a);
     }
@@ -269,7 +268,7 @@ public class LeanSmooth {
     /**
     * <summary>Moves one value towards another (with an ease that bounces back some when it reaches it's destination)</summary>
     * 
-    * @method LeanSmooth.smoothBounceOut (float)
+    * @method LeanSmooth.bounceOut (float)
     * @param {float} current:float the current value
     * @param {float} target:float the value we are trying to reach
     * @param {float} currentVelocity:float the current velocity of the value
@@ -280,10 +279,10 @@ public class LeanSmooth {
     * @param {float} [accelRate]:float the rate it accelerates from it's initial position
     * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
     * @example
-    * followVar = LeanSmooth.smoothBounceOut(followVar, destinationVar, ref followVelocity, 1.1f);\n
+    * followVar = LeanSmooth.bounceOut(followVar, destinationVar, ref followVelocity, 1.1f);\n
     * Debug.Log("current:"+followVar);
     */
-    public static float smoothBounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
+    public static float bounceOut(float current, float target, ref float currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
         if (deltaTime < 0f)
             deltaTime = Time.deltaTime;
@@ -313,7 +312,7 @@ public class LeanSmooth {
     /**
     * <summary>Moves one value towards another (with an ease that bounces back some when it reaches it's destination)</summary>
     * 
-    * @method LeanSmooth.smoothBounceOut (Vector3)
+    * @method LeanSmooth.bounceOut (Vector3)
     * @param {Vector3} current:float the current value
     * @param {Vector3} target:float the value we are trying to reach
     * @param {Vector3} currentVelocity:float the current velocity of the value
@@ -324,14 +323,14 @@ public class LeanSmooth {
     * @param {float} [accelRate]:float the rate it accelerates from it's initial position
     * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
     * @example
-    * transform.position = LeanSmooth.smoothBounceOut(transform.position, followTrans.position, ref followVelocity, 1.1f);\n
+    * transform.position = LeanSmooth.bounceOut(transform.position, followTrans.position, ref followVelocity, 1.1f);\n
     * Debug.Log("current:"+transform.position);
     */
-    public static Vector3 smoothBounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
+    public static Vector3 bounceOut(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
-        float x = smoothBounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float y = smoothBounceOut(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float z = smoothBounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float x = bounceOut(current.x, target.x, ref currentVelocity.x, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float y = bounceOut(current.y, target.y, ref currentVelocity.y, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float z = bounceOut(current.z, target.z, ref currentVelocity.z, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
 
         return new Vector3(x, y, z);
     }
@@ -339,7 +338,7 @@ public class LeanSmooth {
     /**
     * <summary>Moves one color towards another (with an ease that bounces back some when it reaches it's destination)</summary>
     * 
-    * @method LeanSmooth.smoothBounceOut (Color)
+    * @method LeanSmooth.bounceOut (Color)
     * @param {Color} current:float the current value
     * @param {Color} target:float the value we are trying to reach
     * @param {Color} currentVelocity:float the current velocity of the value
@@ -350,15 +349,15 @@ public class LeanSmooth {
     * @param {float} [accelRate]:float the rate it accelerates from it's initial position
     * @param {float} [hitDamping]:float the rate at which to dampen the bounciness of when it reaches it's destination
     * @example
-    * fromColor = LeanSmooth.smoothBounceOut(fromColor, transform.GetComponent<Renderer>().material.color, ref followVelocity, 1.1f);\n
+    * fromColor = LeanSmooth.bounceOut(fromColor, transform.GetComponent<Renderer>().material.color, ref followVelocity, 1.1f);\n
     * Debug.Log("current:" + fromColor);
     */
-    public static Color smoothBounceOut(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
+    public static Color bounceOut(Color current, Color target, ref Color currentVelocity, float smoothTime, float maxSpeed = -1f, float deltaTime = -1f, float friction = 2f, float accelRate = 0.5f, float hitDamping = 0.9f)
     {
-        float r = smoothBounceOut(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float g = smoothBounceOut(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float b = smoothBounceOut(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
-        float a = smoothBounceOut(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float r = bounceOut(current.r, target.r, ref currentVelocity.r, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float g = bounceOut(current.g, target.g, ref currentVelocity.g, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float b = bounceOut(current.b, target.b, ref currentVelocity.b, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
+        float a = bounceOut(current.a, target.a, ref currentVelocity.a, smoothTime, maxSpeed, deltaTime, friction, accelRate, hitDamping);
 
         return new Color(r, g, b, a);
     }

@@ -22,13 +22,10 @@ public class Following : MonoBehaviour {
 
     private Color dude1ColorVelocity;
 
-    private Material followMaterial;
     private Vector3 velocityPos;
 
     private void Start()
     {
-        followMaterial = followArrow.GetComponent<Renderer>().material;
-
         followArrow.gameObject.LeanDelayedCall(3f, moveArrow).setOnStart(moveArrow).setRepeat(-1);
 
         // Follow Local Y Position of Arrow
@@ -75,9 +72,9 @@ public class Following : MonoBehaviour {
     private void Update()
     {
         // Use the smooth methods to follow variables in which ever manner you wish!
-        fromY = LeanSmooth.smoothSpring(fromY, followArrow.localPosition.y, ref velocityY, 1.1f);
-        fromVec3 = LeanSmooth.smoothDamp(fromVec3, dude5Title.localPosition, ref velocityVec3, 1.1f);
-        fromColor = LeanSmooth.smoothDamp(fromColor, dude5Title.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);
+        fromY = LeanSmooth.spring(fromY, followArrow.localPosition.y, ref velocityY, 1.1f);
+        fromVec3 = LeanSmooth.spring(fromVec3, dude5Title.localPosition, ref velocityVec3, 1.1f);
+        fromColor = LeanSmooth.spring(fromColor, dude1.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);
         Debug.Log("Smoothed y:" + fromY + " vec3:" + fromVec3 + " color:" + fromColor);
     }
 
