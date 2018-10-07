@@ -141,10 +141,10 @@
                         
                         
                         <div class="box intro">
-                            <p>Pass this to the &quot;ease&quot; parameter, to get a different easing behavior<br /><br />
-                        <strong>Example: </strong><br />fromY = LeanSmooth.smoothSpring(fromY, followArrow.localPosition.y, ref velocityY, 1.1f);<br />
-                        fromVec3 = LeanSmooth.smoothDamp(fromVec3, dude5Title.localPosition, ref velocityVec3, 1.1f);<br />
-                        fromColor = LeanSmooth.smoothDamp(fromColor, dude5Title.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);<br />
+                            <p>Use these smooth methods to move one value towards another<br /><br />
+                        <strong>Example: </strong><br />fromY = LeanSmooth.spring(fromY, followArrow.localPosition.y, ref velocityY, 1.1f);<br />
+                        fromVec3 = LeanSmooth.damp(fromVec3, dude5Title.localPosition, ref velocityVec3, 1.1f);<br />
+                        fromColor = LeanSmooth.damp(fromColor, dude5Title.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);<br />
                         Debug.Log(&quot;Smoothed y:&quot; + fromY + &quot; vec3:&quot; + fromVec3 + &quot; color:&quot; + fromColor);<br /></p>
                         
                         </div>
@@ -166,51 +166,51 @@
                         
                                             <ul class="index-list methods">
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothBounceOut (Color)">LeanSmooth.smoothBounceOut (Color)</a>
+                                                        <a href="#method_LeanSmooth.bounceOut (Color)">LeanSmooth.bounceOut (Color)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothBounceOut (float)">LeanSmooth.smoothBounceOut (float)</a>
+                                                        <a href="#method_LeanSmooth.bounceOut (float)">LeanSmooth.bounceOut (float)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothBounceOut (Vector3)">LeanSmooth.smoothBounceOut (Vector3)</a>
+                                                        <a href="#method_LeanSmooth.bounceOut (Vector3)">LeanSmooth.bounceOut (Vector3)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothDamp (Color)">LeanSmooth.smoothDamp (Color)</a>
+                                                        <a href="#method_LeanSmooth.damp (Color)">LeanSmooth.damp (Color)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothDamp (float)">LeanSmooth.smoothDamp (float)</a>
+                                                        <a href="#method_LeanSmooth.damp (float)">LeanSmooth.damp (float)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothDamp (Vector3)">LeanSmooth.smoothDamp (Vector3)</a>
+                                                        <a href="#method_LeanSmooth.damp (Vector3)">LeanSmooth.damp (Vector3)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothLinear (Color)">LeanSmooth.smoothLinear (Color)</a>
+                                                        <a href="#method_LeanSmooth.linear (Color)">LeanSmooth.linear (Color)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothLinear (float)">LeanSmooth.smoothLinear (float)</a>
+                                                        <a href="#method_LeanSmooth.linear (float)">LeanSmooth.linear (float)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothLinear (Vector3)">LeanSmooth.smoothLinear (Vector3)</a>
+                                                        <a href="#method_LeanSmooth.linear (Vector3)">LeanSmooth.linear (Vector3)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothSpring (Color)">LeanSmooth.smoothSpring (Color)</a>
+                                                        <a href="#method_LeanSmooth.spring (Color)">LeanSmooth.spring (Color)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothSpring (float)">LeanSmooth.smoothSpring (float)</a>
+                                                        <a href="#method_LeanSmooth.spring (float)">LeanSmooth.spring (float)</a>
                         
                                                     </li>
                                                     <li class="index-item method">
-                                                        <a href="#method_LeanSmooth.smoothSpring (Vector3)">LeanSmooth.smoothSpring (Vector3)</a>
+                                                        <a href="#method_LeanSmooth.spring (Vector3)">LeanSmooth.spring (Vector3)</a>
                         
                                                     </li>
                                             </ul>
@@ -223,8 +223,8 @@
                                     <div id="methods" class="api-class-tabpanel">
                                         <h2 class="off-left">Methods</h2>
                         
-                                            <div id="method_LeanSmooth.smoothBounceOut (Color)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothBounceOut (Color)</code></h3>
+                                            <div id="method_LeanSmooth.bounceOut (Color)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.bounceOut (Color)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -268,7 +268,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l339"><code>LeanSmooth.cs:339</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l338"><code>LeanSmooth.cs:338</code></a>
                                                     </p>
                                             
                                             
@@ -393,14 +393,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>fromColor = LeanSmooth.smoothBounceOut(fromColor, transform.GetComponent<Renderer>().material.color, ref followVelocity, 1.1f);\n
+                                                            <p>fromColor = LeanSmooth.bounceOut(fromColor, transform.GetComponent<Renderer>().material.color, ref followVelocity, 1.1f);\n
                                             Debug.Log(&quot;current:&quot; + fromColor);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothBounceOut (float)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothBounceOut (float)</code></h3>
+                                            <div id="method_LeanSmooth.bounceOut (float)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.bounceOut (float)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -444,7 +444,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l269"><code>LeanSmooth.cs:269</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l268"><code>LeanSmooth.cs:268</code></a>
                                                     </p>
                                             
                                             
@@ -569,14 +569,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>followVar = LeanSmooth.smoothBounceOut(followVar, destinationVar, ref followVelocity, 1.1f);\n
+                                                            <p>followVar = LeanSmooth.bounceOut(followVar, destinationVar, ref followVelocity, 1.1f);\n
                                             Debug.Log(&quot;current:&quot;+followVar);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothBounceOut (Vector3)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothBounceOut (Vector3)</code></h3>
+                                            <div id="method_LeanSmooth.bounceOut (Vector3)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.bounceOut (Vector3)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -620,7 +620,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l313"><code>LeanSmooth.cs:313</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l312"><code>LeanSmooth.cs:312</code></a>
                                                     </p>
                                             
                                             
@@ -745,14 +745,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>transform.position = LeanSmooth.smoothBounceOut(transform.position, followTrans.position, ref followVelocity, 1.1f);\n
+                                                            <p>transform.position = LeanSmooth.bounceOut(transform.position, followTrans.position, ref followVelocity, 1.1f);\n
                                             Debug.Log(&quot;current:&quot;+transform.position);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothDamp (Color)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothDamp (Color)</code></h3>
+                                            <div id="method_LeanSmooth.damp (Color)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.damp (Color)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -787,7 +787,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l84"><code>LeanSmooth.cs:84</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l83"><code>LeanSmooth.cs:83</code></a>
                                                     </p>
                                             
                                             
@@ -876,14 +876,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>fromColor = LeanSmooth.smoothDamp(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
+                                                            <p>fromColor = LeanSmooth.damp(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
                                             Debug.Log(&quot;current:&quot;+fromColor);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothDamp (float)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothDamp (float)</code></h3>
+                                            <div id="method_LeanSmooth.damp (float)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.damp (float)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -918,7 +918,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l19"><code>LeanSmooth.cs:19</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l18"><code>LeanSmooth.cs:18</code></a>
                                                     </p>
                                             
                                             
@@ -1007,14 +1007,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>followVar = LeanSmooth.smoothDamp(followVar, destinationVar, ref followVelocity, 1.1f);\n
+                                                            <p>followVar = LeanSmooth.damp(followVar, destinationVar, ref followVelocity, 1.1f);\n
                                             Debug.Log(&quot;current:&quot;+followVar);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothDamp (Vector3)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothDamp (Vector3)</code></h3>
+                                            <div id="method_LeanSmooth.damp (Vector3)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.damp (Vector3)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -1049,7 +1049,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l61"><code>LeanSmooth.cs:61</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l60"><code>LeanSmooth.cs:60</code></a>
                                                     </p>
                                             
                                             
@@ -1138,14 +1138,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>transform.position = LeanSmooth.smoothDamp(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
+                                                            <p>transform.position = LeanSmooth.damp(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
                                             Debug.Log(&quot;current:&quot;+transform.position);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothLinear (Color)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothLinear (Color)</code></h3>
+                                            <div id="method_LeanSmooth.linear (Color)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.linear (Color)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -1174,7 +1174,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l247"><code>LeanSmooth.cs:247</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l246"><code>LeanSmooth.cs:246</code></a>
                                                     </p>
                                             
                                             
@@ -1241,14 +1241,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>fromColor = LeanSmooth.smoothLinear(fromColor, transform.GetComponent<Renderer>().material.color, 50f);\n
+                                                            <p>fromColor = LeanSmooth.linear(fromColor, transform.GetComponent<Renderer>().material.color, 50f);\n
                                             Debug.Log(&quot;current:&quot;+fromColor);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothLinear (float)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothLinear (float)</code></h3>
+                                            <div id="method_LeanSmooth.linear (float)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.linear (float)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -1277,7 +1277,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l194"><code>LeanSmooth.cs:194</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l193"><code>LeanSmooth.cs:193</code></a>
                                                     </p>
                                             
                                             
@@ -1344,14 +1344,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>followVar = LeanSmooth.smoothLinear(followVar, destinationVar, 50f);\n
+                                                            <p>followVar = LeanSmooth.linear(followVar, destinationVar, 50f);\n
                                             Debug.Log(&quot;current:&quot;+followVar);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothLinear (Vector3)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothLinear (Vector3)</code></h3>
+                                            <div id="method_LeanSmooth.linear (Vector3)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.linear (Vector3)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -1380,7 +1380,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l226"><code>LeanSmooth.cs:226</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l225"><code>LeanSmooth.cs:225</code></a>
                                                     </p>
                                             
                                             
@@ -1447,14 +1447,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>transform.position = LeanSmooth.smoothLinear(transform.position, followTrans.position, 50f);\n
+                                                            <p>transform.position = LeanSmooth.linear(transform.position, followTrans.position, 50f);\n
                                             Debug.Log(&quot;current:&quot;+transform.position);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothSpring (Color)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothSpring (Color)</code></h3>
+                                            <div id="method_LeanSmooth.spring (Color)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.spring (Color)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -1495,7 +1495,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l168"><code>LeanSmooth.cs:168</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l167"><code>LeanSmooth.cs:167</code></a>
                                                     </p>
                                             
                                             
@@ -1608,14 +1608,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>fromColor = LeanSmooth.smoothSpring(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
+                                                            <p>fromColor = LeanSmooth.spring(fromColor, transform.GetComponent<Renderer>().material.color, ref velocityColor, 1.1f);\n
                                             Debug.Log(&quot;current:&quot;+fromColor);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothSpring (float)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothSpring (float)</code></h3>
+                                            <div id="method_LeanSmooth.spring (float)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.spring (float)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -1656,7 +1656,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l108"><code>LeanSmooth.cs:108</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l107"><code>LeanSmooth.cs:107</code></a>
                                                     </p>
                                             
                                             
@@ -1769,14 +1769,14 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>followVar = LeanSmooth.smoothSpring(followVar, destinationVar, ref followVelocity, 1.1f);\n
+                                                            <p>followVar = LeanSmooth.spring(followVar, destinationVar, ref followVelocity, 1.1f);\n
                                             Debug.Log(&quot;current:&quot;+followVar);</p>
                                             
                                                         </div>
                                                     </div>
                                             </div>
-                                            <div id="method_LeanSmooth.smoothSpring (Vector3)" class="method item">
-                                                <h3 class="name"><code>LeanSmooth.smoothSpring (Vector3)</code></h3>
+                                            <div id="method_LeanSmooth.spring (Vector3)" class="method item">
+                                                <h3 class="name"><code>LeanSmooth.spring (Vector3)</code></h3>
                                             
                                                     <div class="args">
                                                         <span class="paren">(</span><ul class="args-list inline commas">
@@ -1817,7 +1817,7 @@
                                                 <div class="meta">
                                                             <p>
                                                             Defined in
-                                                    <a href="../files/LeanSmooth.cs.html#l143"><code>LeanSmooth.cs:143</code></a>
+                                                    <a href="../files/LeanSmooth.cs.html#l142"><code>LeanSmooth.cs:142</code></a>
                                                     </p>
                                             
                                             
@@ -1930,7 +1930,7 @@
                                                         <h4>Example:</h4>
                                             
                                                         <div class="example-content">
-                                                            <p>transform.position = LeanSmooth.smoothSpring(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
+                                                            <p>transform.position = LeanSmooth.spring(transform.position, destTrans.position, ref followVelocity, 1.1f);\n
                                             Debug.Log(&quot;current:&quot;+transform.position);</p>
                                             
                                                         </div>
