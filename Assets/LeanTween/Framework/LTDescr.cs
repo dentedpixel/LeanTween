@@ -66,8 +66,8 @@ public class LTDescr
 	internal Vector3 diff;
 	internal Vector3 diffDiv2;
 	public TweenAction type;
-	private LeanTweenType easeType;
-	public LeanTweenType loopType;
+    private LeanTweenType easeType;
+    public LeanTweenType loopType;
 
 	public bool hasUpdateCallback;
 
@@ -147,7 +147,7 @@ public class LTDescr
 		this.trans = null;
 		this.spriteRen = null;
 		this.passed = this.delay = this.lastVal = 0.0f;
-		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = this.hasExtraOnCompletes = false;
+		this.hasUpdateCallback = this.useEstimatedTime = this.useFrames = this.hasInitiliazed = this.onCompleteOnRepeat = this.destroyOnComplete = this.onCompleteOnStart = this.useManualTime = this.hasExtraOnCompletes = this.toggle = false;
 		this.easeType = LeanTweenType.linear;
 		this.loopType = LeanTweenType.once;
 		this.loopCount = 0;
