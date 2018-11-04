@@ -429,10 +429,33 @@ public class LeanTween : MonoBehaviour {
                 if (tween.id == tweensFinishedIds[i]){
                     //              Debug.Log("removing tween:"+tween);
 
-                    removeTween(j, false);
-                    if(tween.hasExtraOnCompletes && tween.trans!=null)
-                        tween.callOnCompletes();
-                    tween.reset();
+                    if (tween.hasExtraOnCompletes && tween.trans != null)
+                    {
+                        var onComplete = tween._optional.onComplete;
+                        var param = tween._optional.onCompleteParam;
+                        var onCompletObject = tween._optional.onCompleteObject;
+
+                        removeTween(j);
+                        if (onComplete != null){
+                            onComplete();
+                        } else if (onCompletObject != null) {
+                            onCompletObject(param);
+                        }
+                    } else if (tween.type == TweenAction.GUI_ROTATE || tween.type == TweenAction.GUI_ROTATE) {
+                        var ltRect = tween._optional.ltRect;
+                        var onCompleteParam = (AudioClip)tween._optional.onCompleteParam;
+                        var to = tween.to;
+                        var vol = tween.from.x;
+
+                        removeTween(j);
+                        if (tween.type == TweenAction.GUI_ROTATE)
+                            ltRect.rotateFinished = true;
+                        if (tween.type == TweenAction.DELAYED_SOUND)
+                            AudioSource.PlayClipAtPoint(onCompleteParam, to, vol);
+                    }else {
+                        removeTween(j);
+                    }
+                        
                 }
             }
 
@@ -1243,7 +1266,8 @@ public class LeanTween : MonoBehaviour {
     }
 
     public static LTDescr delayedCall( GameObject gameObject, float delayTime, Action callback){
-        return pushNewTween( gameObject, Vector3.zero, delayTime, options().setCallback().setOnComplete(callback) );
+        var opt = options().setCallback().setOnComplete(callback);
+        return pushNewTween( gameObject, Vector3.zero, delayTime, opt );
     }
 
     public static LTDescr delayedCall( GameObject gameObject, float delayTime, Action<object> callback){
@@ -1445,7 +1469,8 @@ public class LeanTween : MonoBehaviour {
     * @return {LTDescr} LTDescr an object that distinguishes the tween
     */
     public static LTDescr moveLocal(GameObject gameObject, Vector3 to, float time){
-        return pushNewTween( gameObject, to, time, options().setMoveLocal() );
+        var opt = options().setMoveLocal();
+        return pushNewTween( gameObject, to, time, opt);
     }
 
     /**

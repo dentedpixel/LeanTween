@@ -17,7 +17,7 @@ public class TestingZLegacy : MonoBehaviour {
 	private string[] exampleFunctions = new string[] { /**/"updateValue3Example", "loopTestClamp", "loopTestPingPong", "moveOnACurveExample", "customTweenExample", "moveExample", "rotateExample", "scaleExample", "updateValueExample", "delayedCallExample", "alphaExample", "moveLocalExample", "rotateAroundExample", "colorExample" };
 	public bool useEstimatedTime = true;
 	private GameObject ltLogo;
-	private TimingType timingType = TimingType.SteadyNormalTime;
+    private TimingType timingType = TimingType.HalfTimeScale;
 	private int descrTimeScaleChangeId;
 	private Vector3 origin;
 
@@ -30,7 +30,7 @@ public class TestingZLegacy : MonoBehaviour {
 	}
 
 	void Awake(){
-		// LeanTween.init(3200); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
+		LeanTween.init(3200); // This line is optional. Here you can specify the maximum number of tweens you will use (the default is 400).  This must be called before any use of LeanTween is made for it to be effective.
 	}
 
 	void Start () {
