@@ -197,7 +197,7 @@ public enum TweenAction{
     CANVAS_SCALE,
     CANVAS_SIZEDELTA,
     FOLLOW,
-
+    NONE
 }
 
 public enum LeanTweenType{
@@ -561,15 +561,19 @@ public class LeanTween : MonoBehaviour {
     public static void cancel( GameObject gameObject ){
         cancel( gameObject, false);
     }
-    public static void cancel( GameObject gameObject, bool callOnComplete ){
+    public static void cancel( GameObject gameObject, bool callOnComplete, TweenAction matchType = TweenAction.NONE ){
         init();
         Transform trans = gameObject.transform;
         for(int i = 0; i <= tweenMaxSearch; i++){
             LTDescr tween = tweens[i];
-            if(tween!=null && tween.toggle && tween.trans==trans){
-                if (callOnComplete && tween.optional.onComplete != null)
-                    tween.optional.onComplete();
-                removeTween(i);
+            if (matchType == TweenAction.NONE || matchType == tween.type) // only match the type if it is specified to a value other than none
+            {
+                if (tween != null && tween.toggle && tween.trans == trans)
+                {
+                    if (callOnComplete && tween.optional.onComplete != null)
+                        tween.optional.onComplete();
+                    removeTween(i);
+                }
             }
         }
     }
@@ -577,17 +581,6 @@ public class LeanTween : MonoBehaviour {
     public static void cancel( RectTransform rect ){
         cancel( rect.gameObject, false);
     }
-
-//  public static void cancel( GameObject gameObject, int uniqueId ){
-//      if(uniqueId>=0){
-//          init();
-//          int backId = uniqueId & 0xFFFF;
-//          int backCounter = uniqueId >> 16;
-//          // Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" counter:"+backCounter + " setCounter:"+ tweens[backId].counter + " tweens[id].type:"+tweens[backId].type);
-//          if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter))
-//              removeTween((int)backId);
-//      }
-//  }
 
     public static void cancel( GameObject gameObject, int uniqueId, bool callOnComplete = false ){
         if(uniqueId>=0){
