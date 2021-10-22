@@ -295,7 +295,7 @@ public class LeanTween : MonoBehaviour {
         dtEstimated = -1f;
         dtManual = 0;
 #if UNITY_3_5 || UNITY_4_0 || UNITY_4_0_1 || UNITY_4_1 || UNITY_4_2 || UNITY_4_3 || UNITY_4_5
-        float previousRealTime = 0;
+        previousRealTime = 0;
 #endif
         dtActual = 0;
         global_counter = 0;
