@@ -531,7 +531,7 @@ public class LeanTween : MonoBehaviour {
     * <summary>Cancels all tweens</summary>
     * 
     * @method LeanTween.cancelAll 
-    * @param {bool} callComplete:bool (optional) if true, then the all onCompletes will run before canceling
+    * @param {bool} callComplete:bool (optional) if true, then the all onCompletes will run before canceling. defaults to false
     * @example LeanTween.cancelAll(true); <br />
     */
     public static void cancelAll(){
@@ -554,7 +554,7 @@ public class LeanTween : MonoBehaviour {
     * 
     * @method LeanTween.cancel 
     * @param {GameObject} gameObject:GameObject gameObject whose tweens you wish to cancel
-    * @param {bool} callOnComplete:bool (optional) whether to call the onComplete method before canceling
+    * @param {bool} callOnComplete:bool (optional) whether to call the onComplete method before canceling. defaults to false
     * @example LeanTween.move( gameObject, new Vector3(0f,1f,2f), 1f); <br />
     * LeanTween.cancel( gameObject );
     */
