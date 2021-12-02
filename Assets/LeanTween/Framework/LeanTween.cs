@@ -588,7 +588,7 @@ public class LeanTween : MonoBehaviour {
             int backId = uniqueId & 0xFFFF;
             int backCounter = uniqueId >> 16;
                 // Debug.Log("uniqueId:"+uniqueId+ " id:"+backId +" counter:"+backCounter + " setCounter:"+ tw     eens[backId].counter + " tweens[id].type:"+tweens[backId].type);
-            if(tweens[backId].trans==null || (tweens[backId].trans.gameObject == gameObject && tweens[backId].counter==backCounter)) {
+            if(tweens[backId].trans?.gameObject == gameObject && tweens[backId].counter==backCounter) {
                 if (callOnComplete && tweens[backId].optional.onComplete != null)
                     tweens[backId].optional.onComplete();
                 removeTween((int)backId);
